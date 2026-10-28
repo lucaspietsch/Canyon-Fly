@@ -1,0 +1,17 @@
+{
+  "name": "canyonfly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild src/trolley3d.js --bundle --format=iife --global-name=Trolley3D --minify --outfile=dist/trolley3d.min.js",
+    "start": "npx serve .."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.28.2",
+    "three": "^0.170.0"
+  }
+}

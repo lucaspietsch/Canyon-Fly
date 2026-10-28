@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>CanyonFly</title>
+<style>html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden}#palco{position:fixed;inset:0}</style>
+</head>
+<body>
+<div id="palco"></div>
+<script src="t3d/dist/trolley3d.min.js"></script>
+<script>
+  /* CanyonFly: mundo aberto do Cânion Fortaleza e arredores. Abra por um servidor estático (ex.: Live Server do VS Code, ou `npx serve .`). */
+  const ctl = Trolley3D.montar(document.getElementById("palco"), { avatar: true });
+  window.ctl = ctl;                                                         // depuração: ctl.mundo (M), ctl.andarMod
+  let n = 0; const t = setInterval(() => { if(ctl.podeAndar || ++n > 40){ clearInterval(t); try{ ctl.andar(true); }catch(e){ console.warn(e); } } }, 250);
+</script>
+</body>
+</html>

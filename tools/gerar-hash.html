@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Gerar hash de senha · CanyonFly</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{font:15px system-ui,sans-serif;background:#12130e;color:#e9efc0;max-width:620px;margin:30px auto;padding:0 16px}input,button{font:inherit;padding:10px;border-radius:8px;border:1.5px solid #5d6b2c;background:#0c0e08;color:#fff;width:100%;box-sizing:border-box;margin:6px 0}button{background:#25331a;cursor:pointer}pre{background:#0c0e08;padding:12px;border-radius:8px;overflow:auto;white-space:pre-wrap;word-break:break-all}small{opacity:.7}</style></head><body>
+<h2>Gerar hash de senha</h2>
+<p><small>Esta página roda só no seu computador: não carrega nada da internet e não envia nada. A senha não é guardada. Feche a página depois de copiar a linha.</small></p>
+<label>Identificação (ex.: vila-santana, operador-1 … operador-8)<input id="id" value="vila-santana" autocomplete="off"></label>
+<label>Senha<input id="s" type="password" autocomplete="off"></label>
+<button id="g">Gerar linha</button>
+<p>Cole a linha abaixo em <code>data/seguranca/senhas.js</code>, dentro de <code>SENHAS</code>:</p>
+<pre id="o">—</pre>
+<script>
+document.getElementById("g").onclick = async () => {
+  const id = document.getElementById("id").value.trim(), s = document.getElementById("s").value; if(!id || !s){ document.getElementById("o").textContent = "Preencha a identificação e a senha."; return; }
+  const salt = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2, "0")).join("");
+  const h = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(salt + ":" + s)))).map(b => b.toString(16).padStart(2, "0")).join("");
+  document.getElementById("o").textContent = '  "' + id + '": { salt: "' + salt + '", hash: "' + h + '" },'; document.getElementById("s").value = "";
+};
+</script></body></html>

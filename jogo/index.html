@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Operar Tirolesa · Tirolesa Mais Alta das Américas</title>
+<style>
+/* ===== estilo da página (o jogo inteiro é desenhado no <canvas>) ===== */
+html,body{margin:0;height:100%;background:#07080d;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+canvas{display:block;position:fixed;inset:0;touch-action:none;outline:none}
+#v3d{position:fixed;inset:0;z-index:0;background:#0b0d14}
+#v3d canvas{z-index:0;pointer-events:none}
+#c{z-index:2}
+#gire{position:fixed;inset:0;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#0b0d14;color:#ffd9b0;
+  font:700 20px/1.4 "Segoe UI",Roboto,Helvetica,Arial,sans-serif;text-align:center;padding:24px}
+#gire i{font-style:normal;font-size:64px;display:block;animation:gira 2.4s ease-in-out infinite}
+@keyframes gira{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait) and (max-width:900px){#gire{display:flex}}
+</style>
+</head>
+<body>
+<div id="v3d"></div>
+<canvas id="c" aria-label="Operar Tirolesa" tabindex="0"></canvas>
+<div id="gire"><i>📱</i>Gire o aparelho para o modo paisagem<br><small style="font-weight:400;opacity:.8">O jogo foi feito para tela deitada.</small></div>
+<noscript>Este jogo precisa de JavaScript.</noscript>
+<script>/*__T3D__*/</script>
+<script>
+(function(){
+'use strict';
+
+/* =====================================================================
+   CONFIG — tudo que costuma ser ajustado fica aqui, no topo
+   ===================================================================== */
+const CONFIG = {
+  titulo: 'TIROLESA MAIS ALTA DAS AMÉRICAS',
+  subtitulo: 'Operação de Lançamento · Serra Geral Vertical',
+  /* limites de peso do cliente (pessoa + mochila/bag liberada) */
+  peso: { min: 40, max: 110 },
+  /* tabela de operação por vento (km/h): até X km/h vale min/max; acima de ventoSuspende a atividade é suspensa */
+  ventoTabela: [ { ate: 40, min: 40, max: 110 }, { ate: 60, min: 60, max: 110 } ],
+  ventoSuspende: 60,
+  /* 6 cabos em 3 vias: o cliente desce só nas vias 1, 3 e 5 (roldana no par de cabos da via) */
+  vias: [ { id: 1, cabos: [1, 2] }, { id: 3, cabos: [3, 4] }, { id: 5, cabos: [5, 6] } ],
+  /* vista a partir do deck, da esquerda para a direita: Cabo 6, 5 | 4, 3 | 2, 1  =  Via 5 | Via 3 | Via 1 */
+  ordemDeck: [5, 3, 1],
+  tirolesa: { extensao: 720, profundidade: 900, velMax: 35 },      // metros e km/h
+  cores: { capaceteEquipe: '#FF7A00', capaceteCliente: ['#F2F6FF', '#4DA3FF', '#7CE0C3', '#FFE066'] },
+  descidaSegundos: 17,            // duração da descida na tela
+  viaRetornoSegundos: 14,         // via fica ocupada depois de usada (kit voltando / retensionamento das molas)
+  dificuldades: {
+    treinamento: { nome: 'Treinamento', clientes: 6, eventos: { 2: 'simples', 5: 'moderada' }, tempoCliente: 0,   vento: [5, 30],  recusa: 0.25, npc: 0,    erroDupla: 0.7, dicas: true,  fator: 0.8 },
+    operacao:    { nome: 'Operação',    clientes: 8, eventos: { 2: 'simples', 5: 'moderada' }, tempoCliente: 170, vento: [10, 52], recusa: 0.22, npc: 0.06, erroDupla: 0.55, dicas: false, fator: 1.0 },
+    lotado:      { nome: 'Dia Lotado',  clientes: 10, eventos: { 2: 'simples', 5: 'moderada', 8: 'simples' }, tempoCliente: 120, vento: [15, 58], recusa: 0.28, npc: 0.12, erroDupla: 0.5,  dicas: false, fator: 1.25 }
+  },
+  pontos: { passoBase: 100, bonusRapido: 30, penalErro: 25, penalGrave: 80, recusaCorreta: 150, foto: 25, fotoPerfeita: 60, viaEquilibrada: 20 },
+  chave: 'sgv:jogo-lancamento'
+};
+
+/* =====================================================================
+   PROCEDIMENTOS — as etapas do checklist, na ordem. Troque por aqui pelos oficiais.
+   tipo = mini-jogo usado (pesagem, briefing, epi, roldana, mosquetao, dupla, radio, contagem)
+   ===================================================================== */
+const PROCEDIMENTOS = [
+  { id: 'pesagem',  tipo: 'pesagem',   nome: 'Conferir pesagem',   alvo: 14,
+    instrucao: 'Some pessoa + mochila/bag e compare com os limites vigentes. Fora do limite: recuse com educação.',
+    explica: 'O atrativo foi dimensionado para até 110 kg (pessoa + mochila somados) e o mínimo é 40 kg (60 kg com vento entre 40 e 60 km/h). Fora disso a descida é proibida.' },
+  { id: 'briefing', tipo: 'briefing',  nome: 'Briefing de segurança', alvo: 12,
+    instrucao: 'O cliente pergunta. Dê a orientação correta do procedimento.',
+    explica: 'O briefing segue o procedimento: celular e objetos na bolsa anexa, área de lançamento só com autorização verbal, olhos abertos, sem mexer em equipamentos.' },
+  { id: 'epi',      tipo: 'epi',       nome: 'Colocar e ajustar o EPI', alvo: 30,
+    instrucao: 'Arraste touca, óculos (se o cliente não trouxe os dele), capacete, cinto paraquedista e cadeirinha até o cliente. A touca vai por baixo do capacete. Depois ajuste as fitas na zona verde.',
+    explica: 'EPI mal ajustado solta em uma queda ou escorrega no cinto: sempre ajuste antes de ancorar o cliente.' },
+  { id: 'roldana',  tipo: 'roldana',   nome: 'Conectar a roldana à via', alvo: 14,
+    instrucao: 'Arraste a roldana para o par de cabos da via escolhida (Via 1: cabos 1 e 2 · Via 3: cabos 3 e 4 · Via 5: cabos 5 e 6).',
+    explica: 'A roldana só pode correr no par de cabos da via liberada. Via trocada = risco de colisão e cabo sem freio pronto.' },
+  { id: 'mosq',     tipo: 'mosquetao', nome: 'Mosquetões: fechar, travar e conferir', alvo: 20,
+    instrucao: 'Em cada mosquetão: feche o gatilho, depois trave a rosca. Quando os três estiverem travados, confira puxando.',
+    explica: 'Mosquetão fechado mas sem travar pode abrir sob carga. Feche, trave e puxe para conferir.' },
+  { id: 'dupla',    tipo: 'dupla',     nome: 'Dupla checagem (segundo operador)', alvo: 20,
+    instrucao: 'O segundo operador confere tudo com você. Marque o item errado, se houver, ou confirme que está tudo conforme.',
+    explica: 'A dupla checagem é a barreira que neutraliza erro humano: um segundo par de olhos confere EPI e ancoragens antes de qualquer lançamento.' },
+  { id: 'radio',    tipo: 'radio',     nome: 'Rádio com o Recebimento', alvo: 14,
+    instrucao: 'Peça o status da via ao Recebimento, peça a confirmação e só avance depois das duas respostas.',
+    explica: 'Sem a confirmação do Recebimento (via liberada, kit já desequipado) não há lançamento. O protocolo: "QAP Recebimento, status da via X" → "Via X liberada" → "confirmação?" → "Confirmado".' },
+  { id: 'contagem', tipo: 'contagem',  nome: 'Contagem e lançamento', alvo: 8,
+    instrucao: 'O Líder dá as boas-vindas, faz a contagem 3-2-1 e libera o cliente.',
+    explica: 'O gatilho só é liberado após todas as etapas e a contagem.' }
+];
+
+/* banco de perguntas do briefing: a primeira opção marcada "ok" é a certa */
+const BRIEFING = [
+  { q: 'O cliente pergunta: "Posso levar o celular e a garrafa de água na mão?"',
+    o: [ ['Pode, desde que segure firme.', 0], ['Não: guarde na bolsa anexa à cadeirinha.', 1], ['Pode deixar no bolso aberto da jaqueta.', 0] ],
+    e: 'Objetos soltos ou em bolsos abertos podem cair sobre outras pessoas ou no cânion. Vão na bolsa anexa à cadeirinha.' },
+  { q: 'Qual é o peso máximo permitido (pessoa + mochila somados)?',
+    o: [ ['90 kg', 0], ['110 kg', 1], ['130 kg', 0] ],
+    e: 'O atrativo foi dimensionado para até 110 kg, somando o peso da pessoa e da mochila.' },
+  { q: 'Quando o cliente pode entrar na área de lançamento?',
+    o: [ ['Quando o portão estiver aberto.', 0], ['Só com autorização verbal do operador, equipado e ancorado.', 1], ['Assim que terminar o briefing.', 0] ],
+    e: 'Mesmo com o portão aberto, só entra com autorização verbal, com cinto paraquedista, capacete e ancorado.' },
+  { q: 'Durante a descida, o que o cliente deve fazer?',
+    o: [ ['Fechar os olhos e segurar o cabo.', 0], ['Tentar frear com as mãos.', 0], ['Manter os olhos abertos e não mexer nos equipamentos.', 1] ],
+    e: 'Olhos abertos para apreciar a paisagem; mãos e objetos longe dos cabos e dos equipamentos.' },
+  { q: 'O cliente com mochila pode abrir ou reposicionar a bolsa no meio do percurso?',
+    o: [ ['Sim, se precisar pegar algo.', 0], ['Não: é proibido abrir, tirar objetos ou reposicionar.', 1], ['Só para pegar o celular.', 0] ],
+    e: 'Nas descidas com mochila é proibido abrir zíperes, tirar objetos ou tentar reposicionar a bolsa durante o percurso.' },
+  { q: 'Duas pessoas podem dividir a mesma cadeirinha?',
+    o: [ ['Sim, criança com adulto.', 0], ['Não, nunca.', 1], ['Sim, se somarem até 110 kg.', 0] ],
+    e: 'É proibido duas pessoas compartilharem a mesma cadeirinha: um cliente por vez, por cadeirinha.' }
+];
+
+/* itens da dupla checagem: texto normal e texto com falha */
+const ITENS_DUPLA = [
+  { n: 'Capacete',                 ok: 'Jugular afivelada e ajustada',            ruim: 'Jugular solta, capacete balançando',  e: 'Capacete sem jugular ajustada sai da cabeça em um impacto.' },
+  { n: 'Cinto paraquedista',       ok: 'Fivelas travadas · ancoragem frontal ok', ruim: 'Fivela da perna aberta',             e: 'Fivela aberta no cinto paraquedista é ponto de falha na ancoragem extra do cliente.' },
+  { n: 'Cadeirinha · abdominais',  ok: 'Cintos abdominais clipados',              ruim: 'Cinto abdominal sem clipar',          e: 'Os cintos abdominais da cadeirinha precisam estar clipados antes de qualquer descida.' },
+  { n: 'Cadeirinha · vertical',    ok: 'Cinto vertical (peitoral) clipado',       ruim: 'Cinto vertical torcido e solto',      e: 'O cinto vertical mantém o cliente na cadeirinha; torcido ou solto, ele pode escorregar.' },
+  { n: 'Mosquetão cervical',       ok: 'Traseiro (anti-suicídio) travado',        ruim: 'Mosquetão traseiro destravado',       e: 'O mosquetão traseiro (anti-suicídio) precisa estar travado.' },
+  { n: 'Roldana esquerda',         ok: 'Mosquetão travado no cabo esquerdo',      ruim: 'Mosquetão esquerdo sem trava',        e: 'Cada roldana é conferida, da esquerda para a direita; mosquetão sem trava abre sob carga.' },
+  { n: 'Roldana direita',          ok: 'Mosquetão travado no cabo direito',       ruim: 'Mosquetão direito sem trava',         e: 'Cada roldana é conferida, da esquerda para a direita; mosquetão sem trava abre sob carga.' },
+  { n: 'Gatilho (manilha orca)',   ok: 'Manilha orca fechada corretamente',       ruim: 'Manilha orca mal fechada',            e: 'A manilha orca (gatilho) precisa estar fechada corretamente antes do lançamento.' },
+  { n: 'Backup no cabo',           ok: 'Corda de backup ancorada (cabo esquerdo)',ruim: 'Backup solto do cabo',                e: 'O backup é a segunda barreira: precisa estar ancorado até o momento do lançamento.' }
+];
+
+const NOMES = ['Ana Paula', 'Carlos', 'Marina', 'Rafael', 'Beatriz', 'João Pedro', 'Luciana', 'Thiago', 'Fernanda', 'Marcos', 'Juliana', 'Eduardo', 'Camila', 'Roberto', 'Patrícia', 'Vinícius', 'Helena', 'Gustavo', 'Sônia', 'Otávio'];
+
+/* estados do jogo */
+const ST = { MENU: 'MENU', PLAT: 'PLATAFORMA', CHK: 'CHECKLIST', DESC: 'DESCIDA', FADE: 'FADE', REC: 'RECEBIMENTO', EXT: 'EXTRACAO', FIM: 'FIM' };
+
+/* =====================================================================
+   UTILITÁRIOS
+   ===================================================================== */
+const cv = document.getElementById('c'), c = cv.getContext('2d');
+const FONTE = '"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = k => { k = clamp(k, 0, 1); return k * k * (3 - 2 * k); };
+const rnd = (a, b) => a + Math.random() * (b - a);
+const rint = (a, b) => Math.floor(rnd(a, b + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function guarda(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+function seedRand(s){ return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+
+/* tela: lógica de 720 de altura, largura variável (900 a 1800) */
+let W = 1280, H = 720, S = 1, DPR = 1, OY = 0, CW = 1, CH = 1;
+function resize(){
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  CW = Math.max(1, window.innerWidth); CH = Math.max(1, window.innerHeight);
+  cv.width = Math.round(CW * DPR); cv.height = Math.round(CH * DPR);
+  S = Math.min(CH / 720, CW / 900);
+  W = clamp(CW / S, 900, 1900); if(CW / S > 1900) S = CW / 1900, W = 1900;
+  H = CH / S; OY = (H - 720) / 2;
+}
+window.addEventListener('resize', resize); resize();
+
+/* ---------- cenário 3D (v2): cenas reais da plataforma por trás da interface 2D; sem WebGL o jogo cai no desenho 2D original ---------- */
+let V3 = null;
+try{ if(window.Trolley3D){ const k = Trolley3D.montar(document.getElementById('v3d'), { avatar: true, jogo3d: true }); window.__v3k = k ? Object.keys(k).join(',') : 'null'; V3 = k && k.jogo3d ? k.jogo3d : null; } }catch(e){ V3 = null; window.__v3erro = String(e && e.stack || e); }
+if(!V3){ const h = document.getElementById('v3d'); if(h) h.style.display = 'none'; }
+
+/* ---------- desenho de texto e formas ---------- */
+function rr(x, y, w, h, r){ c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function txt(s, x, y, size, cor, al, peso, fonte){ c.font = (peso || '600') + ' ' + size + 'px ' + (fonte || FONTE); c.fillStyle = cor || '#fff'; c.textAlign = al || 'left'; c.textBaseline = 'alphabetic'; c.fillText(s, x, y); }
+function quebra(s, maxW, size, peso){
+  c.font = (peso || '500') + ' ' + size + 'px ' + FONTE; const ps = String(s).split(' '), ls = []; let l = '';
+  ps.forEach(p => { const t = l ? l + ' ' + p : p; if(c.measureText(t).width > maxW && l){ ls.push(l); l = p; } else l = t; }); if(l) ls.push(l); return ls;
+}
+function par(s, x, y, maxW, size, cor, al, peso, lh){
+  const ls = quebra(s, maxW, size, peso); lh = lh || size * 1.32; ls.forEach((l, i) => txt(l, x, y + i * lh, size, cor, al, peso)); return ls.length * lh;
+}
+
+/* ---------- entrada: botões/arrastos desenhados a cada quadro (modo imediato) ---------- */
+let hits = [], drags = [], ptr = { x: -1, y: -1, down: false }, drag = null;
+function btn(id, x, y, w, h, label, o, fn){
+  o = o || {}; const en = o.en !== false, hover = en && ptr.x >= x && ptr.x <= x + w && ptr.y >= y && ptr.y <= y + h;
+  const cor = o.cor || '#FF7A00';
+  c.save(); if(en){ c.shadowColor = cor; c.shadowBlur = hover ? 22 : (o.pulso ? 16 + 8 * Math.sin(T0 * 6) : 8); }
+  rr(x, y, w, h, o.r || 14);
+  if(o.solido !== false && en){ const g = c.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, hover ? '#ffa24a' : cor); g.addColorStop(1, shade(cor, -0.28)); c.fillStyle = g; c.fill(); }
+  else { c.fillStyle = en ? 'rgba(20,22,32,.72)' : 'rgba(40,42,54,.55)'; c.fill(); c.lineWidth = 2.5; c.strokeStyle = en ? cor : '#555a6a'; c.stroke(); }
+  c.restore();
+  const tc = o.solido !== false && en ? (o.texto || '#1a0f00') : (en ? '#fff' : '#8a90a2');
+  const ls = String(label).split('\n'); const fs = o.fs || (h > 56 ? 21 : 17);
+  ls.forEach((l, i) => txt(l, x + w / 2, y + h / 2 + fs * 0.35 + (i - (ls.length - 1) / 2) * fs * 1.15, i ? fs * 0.8 : fs, tc, 'center', i ? '600' : '800'));
+  hits.push({ id, x, y, w, h, fn, en });
+}
+function shade(hex, k){ const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255; const f = v => clamp(Math.round(k < 0 ? v * (1 + k) : v + (255 - v) * k), 0, 255); return 'rgb(' + f(r) + ',' + f(g) + ',' + f(b) + ')'; }
+function area(id, x, y, w, h, fn){ hits.push({ id, x, y, w, h, fn, en: true, invisivel: true }); }
+function bloqueia(x, y, w, h){ hits.push({ id: 'bloco', x, y, w, h, fn: null, en: false }); }
+function arrastavel(id, x, y, w, h, dados){ drags.push({ id, x, y, w, h, dados }); }
+
+function ponto(e){ const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / S, y: (e.clientY - r.top) / S - OY }; }
+cv.addEventListener('pointerdown', e => {
+  e.preventDefault(); Som.init(); const p = ponto(e); ptr.x = p.x; ptr.y = p.y; ptr.down = true;
+  try{ cv.setPointerCapture(e.pointerId); }catch(_){ }
+  for(let i = drags.length - 1; i >= 0; i--){ const d = drags[i]; if(p.x >= d.x && p.x <= d.x + d.w && p.y >= d.y && p.y <= d.y + d.h){ drag = { d, ox: p.x - d.x, oy: p.y - d.y, x0: p.x, y0: p.y }; return; } }
+});
+cv.addEventListener('pointermove', e => { const p = ponto(e); ptr.x = p.x; ptr.y = p.y; });
+cv.addEventListener('pointerup', e => {
+  e.preventDefault(); const p = ponto(e); ptr.x = p.x; ptr.y = p.y; ptr.down = false;
+  if(drag){ const d = drag; drag = null; if(Math.hypot(p.x - d.x0, p.y - d.y0) > 6 || !d.d.dados.clique){ if(chk && chk.solta) chk.solta(d.d, p.x, p.y); } else if(d.d.dados.clique){ d.d.dados.clique(); } return; }
+  for(let i = hits.length - 1; i >= 0; i--){ const h = hits[i]; if(p.x >= h.x && p.x <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h){ if(h.en && h.fn){ Som.clique(); h.fn(); } return; } }
+});
+cv.addEventListener('pointercancel', () => { drag = null; ptr.down = false; });
+cv.addEventListener('pointerleave', () => { if(!ptr.down){ ptr.x = -1; ptr.y = -1; } });
+cv.addEventListener('contextmenu', e => e.preventDefault());
+window.addEventListener('keydown', e => { if(e.key === 'Escape' || e.key === 'p' || e.key === 'P') alternaPausa(); if(e.key === 'm' || e.key === 'M') Som.alterna(); });
+
+/* =====================================================================
+   SOM — tudo sintetizado com Web Audio API
+   ===================================================================== */
+const Som = {
+  ctx: null, mestre: null, mudo: guarda(CONFIG.chave + ':mudo') === '1', rolando: null,
+  init(){
+    if(this.ctx){ if(this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    try{ const A = window.AudioContext || window.webkitAudioContext; if(!A) return; this.ctx = new A(); this.mestre = this.ctx.createGain(); this.mestre.gain.value = this.mudo ? 0 : 0.5; this.mestre.connect(this.ctx.destination); }catch(e){ this.ctx = null; }
+  },
+  alterna(){ this.mudo = !this.mudo; guarda(CONFIG.chave + ':mudo', this.mudo ? '1' : '0'); if(this.mestre) this.mestre.gain.value = this.mudo ? 0 : 0.5; },
+  tom(f, d, tipo, v, f2, atraso){
+    if(!this.ctx) return; const t = this.ctx.currentTime + (atraso || 0), o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = tipo || 'sine'; o.frequency.setValueAtTime(f, t); if(f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v || 0.2, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(this.mestre); o.start(t); o.stop(t + d + 0.05);
+  },
+  ruido(d, v, fil, atraso, q){
+    if(!this.ctx) return; const t = this.ctx.currentTime + (atraso || 0), n = Math.floor(this.ctx.sampleRate * d), b = this.ctx.createBuffer(1, n, this.ctx.sampleRate), x = b.getChannelData(0);
+    for(let i = 0; i < n; i++) x[i] = (Math.random() * 2 - 1);
+    const s = this.ctx.createBufferSource(); s.buffer = b; const f = this.ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = fil || 1500; f.Q.value = q || 0.8;
+    const g = this.ctx.createGain(); g.gain.setValueAtTime(v || 0.2, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d); s.connect(f); f.connect(g); g.connect(this.mestre); s.start(t);
+  },
+  clique(){ this.tom(620, 0.06, 'triangle', 0.12, 420); },
+  ok(){ this.tom(660, 0.12, 'sine', 0.18); this.tom(880, 0.18, 'sine', 0.18, null, 0.09); },
+  erro(){ this.tom(180, 0.3, 'sawtooth', 0.16, 90); },
+  bip(f){ this.tom(f || 880, 0.18, 'square', 0.12); },
+  radio(){ this.ruido(0.25, 0.14, 2600, 0, 0.5); this.tom(1200, 0.05, 'square', 0.05); },
+  mola(){ this.tom(140, 0.7, 'triangle', 0.25, 60); this.ruido(0.5, 0.1, 400); },
+  foto(){ this.ruido(0.08, 0.2, 5000); this.tom(1800, 0.05, 'square', 0.06); },
+  festa(){ [523, 659, 784, 1047].forEach((f, i) => this.tom(f, 0.25, 'triangle', 0.16, null, i * 0.1)); },
+  roldanaInicio(){
+    if(!this.ctx || this.rolando) return; const o = this.ctx.createOscillator(), g = this.ctx.createGain(), n = this.ctx.createBufferSource();
+    const nb = this.ctx.createBuffer(1, this.ctx.sampleRate * 2, this.ctx.sampleRate), d = nb.getChannelData(0); for(let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; n.buffer = nb; n.loop = true;
+    const f = this.ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 900; f.Q.value = 1.2; const gn = this.ctx.createGain(); gn.gain.value = 0;
+    o.type = 'sawtooth'; o.frequency.value = 90; g.gain.value = 0; const lp = this.ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+    o.connect(lp); lp.connect(g); g.connect(this.mestre); n.connect(f); f.connect(gn); gn.connect(this.mestre); o.start(); n.start();
+    this.rolando = { o, g, n, f, gn };
+  },
+  roldana(v){ if(!this.rolando) return; const t = this.ctx.currentTime, r = this.rolando; r.o.frequency.setTargetAtTime(70 + v * 260, t, 0.1); r.g.gain.setTargetAtTime(0.07 * v, t, 0.1); r.gn.gain.setTargetAtTime(0.16 * v, t, 0.1); r.f.frequency.setTargetAtTime(600 + v * 2400, t, 0.1); },
+  roldanaFim(){ if(!this.rolando) return; const r = this.rolando; this.rolando = null; const t = this.ctx.currentTime; r.g.gain.setTargetAtTime(0, t, 0.15); r.gn.gain.setTargetAtTime(0, t, 0.15); setTimeout(() => { try{ r.o.stop(); r.n.stop(); }catch(e){} }, 700); }
+};
+
+/* =====================================================================
+   PERSONAGENS — silhuetas "ninja das sombras" desenhadas por código
+   ===================================================================== */
+const SIL = '#07070c', SIL2 = '#0c0c14', BORDA = 'rgba(150,175,255,.22)';
+function pose(nome, t){
+  const s = Math.sin;
+  switch(nome){
+    case 'andar': { const w = s(t * 7); return { aL: [w * .65, .35 + .25 * Math.max(0, w)], aR: [-w * .65, .35 + .25 * Math.max(0, -w)], lL: [-w * .62, Math.max(0, w) * .8], lR: [w * .62, Math.max(0, -w) * .8], bob: Math.abs(s(t * 7)) * 3, torso: .06 }; }
+    case 'trabalho': return { aL: [1.25 + .1 * s(t * 3), .6], aR: [1.1 + .1 * s(t * 3 + 1), .7], lL: [.06, 0], lR: [-.1, 0], bob: .4 * s(t * 2), torso: .12 };
+    case 'radio': return { aL: [.1, .1], aR: [2.4, 2.0], lL: [.04, 0], lR: [-.04, 0], bob: .6 * s(t * 1.7), torso: .02 };
+    case 'festa': return { aL: [2.9 + .2 * s(t * 8), .1], aR: [-2.9 - .2 * s(t * 8 + 1), -.1], lL: [.1, 0], lR: [-.1, 0], bob: -Math.abs(s(t * 6)) * 16, torso: 0 };
+    case 'suspenso': return { aL: [2.8, .2], aR: [2.7, .15], lL: [.35, .55 + .1 * s(t * 2)], lR: [.15, .4 + .1 * s(t * 2 + 1)], bob: 0, torso: -.02 + .03 * s(t * 1.4) };
+    case 'pendurado': return { aL: [2.7, .15], aR: [2.6, .1], lL: [1.45, 1.35 + .1 * s(t * 2)], lR: [1.3, 1.25 + .1 * s(t * 2 + 1)], bob: 0, torso: -.04 + .03 * s(t * 1.4) };
+    case 'apontar': return { aL: [.1, .1], aR: [1.45, .15], lL: [.04, 0], lR: [-.05, 0], bob: .5 * s(t * 1.7), torso: .05 };
+    case 'cumprimento': return { aL: [.1, .1], aR: [2.7 + .35 * s(t * 5), .5], lL: [.04, 0], lR: [-.04, 0], bob: .5 * s(t * 1.7), torso: 0 };
+    default: return { aL: [.09 + .03 * s(t * 1.6), .12], aR: [-.09, .12], lL: [.1, 0], lR: [-.1, 0], bob: .8 * s(t * 1.6), torso: .015 * s(t * 1.6) };
+  }
+}
+/* capacete: laranja da equipe (com brilho) ou cor do cliente */
+function capacete(x, y, r, cor, brilho){
+  c.save(); if(brilho){ c.shadowColor = cor; c.shadowBlur = 14; }
+  const g = c.createLinearGradient(x - r, y - r, x + r, y); g.addColorStop(0, shade(cor, .35)); g.addColorStop(.55, cor); g.addColorStop(1, shade(cor, -.35));
+  c.fillStyle = g; c.beginPath(); c.arc(x, y, r * 1.12, Math.PI, 0); c.lineTo(x + r * 1.28, y + r * .18); c.quadraticCurveTo(x, y + r * .34, x - r * 1.05, y + r * .18); c.closePath(); c.fill(); c.restore();
+  c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.ellipse(x - r * .35, y - r * .62, r * .42, r * .13, -.5, 0, 7); c.fill();
+  c.strokeStyle = 'rgba(0,0,0,.25)'; c.lineWidth = r * .09; c.beginPath(); c.moveTo(x, y - r * 1.1); c.lineTo(x, y - r * .1); c.stroke();
+}
+/* pessoa: (x,y) = pés, s = escala, face = 1 (direita) ou -1 (esquerda). o = { pose, t, capacete: cor|null, glow, equipe, harness, seat, cadeirinha } */
+function pessoa(x, y, s, face, o){
+  const p = pose(o.pose || 'idle', o.t || 0), bob = p.bob || 0;
+  c.save(); c.translate(x, y); c.scale(s * face, s);
+  const pernaL = 44, pernaS = 42, tronco = 56, braco = 30, ante = 29, hipY = -86 + bob * (o.pose === 'pendurado' ? 0 : -0.2);
+  const pos = (px, py, a, l) => [px + Math.sin(a) * l, py + Math.cos(a) * l];
+  const membro = (px, py, a1, a2, l1, l2, w, cor, tipo, band) => {
+    const arm = l1 === braco, b2 = arm ? (a1 > 1.5 ? a1 - a2 : a1 + a2) : a1 - a2;
+    const j = pos(px, py, a1, l1), e = pos(j[0], j[1], b2, l2);
+    [[BORDA, 2.8], [cor, 0]].forEach(([col, ex]) => { c.strokeStyle = col; c.lineCap = 'round'; c.lineJoin = 'round'; c.lineWidth = w + ex; c.beginPath(); c.moveTo(px, py); c.lineTo(j[0], j[1]); c.stroke(); c.lineWidth = w * .78 + ex; c.beginPath(); c.moveTo(j[0], j[1]); c.lineTo(e[0], e[1]); c.stroke(); });
+    if(band){ const q = k => [px + (j[0] - px) * k, py + (j[1] - py) * k], a = q(.3), b = q(.7); c.lineCap = 'butt'; c.strokeStyle = band.cor; c.lineWidth = w + 5; c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+      c.strokeStyle = 'rgba(0,0,0,.55)'; c.lineWidth = 1.6; [a, b].forEach(q => { const nx = -(j[1] - py), ny = (j[0] - px), nl = Math.hypot(nx, ny) || 1, h = (w + 5) / 2; c.beginPath(); c.moveTo(q[0] - nx / nl * h, q[1] - ny / nl * h); c.lineTo(q[0] + nx / nl * h, q[1] + ny / nl * h); c.stroke(); }); if(band.pin) pinDesenha((a[0] + b[0]) / 2 + 0, (a[1] + b[1]) / 2, band.pin); }
+    c.fillStyle = cor; if(tipo === 'pe'){ c.beginPath(); c.ellipse(e[0] + 5, e[1] + 1.5, 10.5, 5, 0, 0, 7); c.fill(); } else { c.beginPath(); c.arc(e[0], e[1], w * .5, 0, 7); c.fill(); }
+    return e;
+  };
+  const shY = hipY - tronco * Math.cos(p.torso || 0), shX = Math.sin(p.torso || 0) * tronco * .9;
+  /* membros de trás */
+  const PP = PAPEIS[o.papel]; const cPerna = PP ? PP.calca : SIL, cPernaT = PP ? shade(PP.calca, -.3) : SIL2, cBraco = PP ? PP.manga : SIL, cBracoT = PP ? shade(PP.manga, -.32) : SIL2, cTronco = PP ? PP.camisa : SIL;
+  membro(-3, hipY, p.lR[0], p.lR[1], pernaL, pernaS, 14, cPernaT, 'pe');
+  const faixaR = PP ? { cor: shade(PP.faixa, -.25) } : null, faixaL = PP ? { cor: PP.faixa, pin: PP.pin } : null;
+  membro(shX - 3, shY + 5, p.aR[0], p.aR[1], braco, ante, 10, cBracoT, null, faixaR);
+  /* tronco */
+  c.save(); c.translate(0, 0);
+  const tronc = () => { c.beginPath(); c.moveTo(shX - 19, shY + 3); c.quadraticCurveTo(shX - 14, (shY + hipY) / 2, -13, hipY + 6); c.lineTo(13, hipY + 6); c.quadraticCurveTo(shX + 14, (shY + hipY) / 2, shX + 19, shY + 3); c.quadraticCurveTo(shX + 14, shY - 6, shX, shY - 6); c.quadraticCurveTo(shX - 14, shY - 6, shX - 19, shY + 3); c.closePath(); };
+  tronc(); c.fillStyle = BORDA; c.save(); c.lineWidth = 2.6; c.strokeStyle = BORDA; c.stroke(); c.restore(); c.fillStyle = cTronco; c.fill();
+  if(PP && PP.calca){ c.fillStyle = PP.calca; c.fillRect(-13, hipY - 2, 26, 10); }
+  /* cinto/cadeirinha do cliente */
+  const mostraArnes = PP ? !!PP.arnes : !!o.harness;
+  if(PP && PP.arnes){ c.lineCap = 'round'; [['#0b0b0e', 5.4], ['#d62d2d', 2.4]].forEach(([col, lw]) => { c.strokeStyle = col; c.lineWidth = lw; c.beginPath(); c.moveTo(shX - 10, shY + 4); c.lineTo(5, hipY + 2); c.moveTo(shX + 10, shY + 4); c.lineTo(-5, hipY + 2); c.moveTo(-13, hipY + 4); c.lineTo(13, hipY + 4); c.stroke(); });
+    c.fillStyle = '#cfd6e6'; c.beginPath(); c.arc(0, hipY - 22, 4.2, 0, 7); c.fill(); c.strokeStyle = '#8f98ab'; c.lineWidth = 1.2; c.stroke(); }
+  else if(mostraArnes){ c.strokeStyle = '#a8b4cc'; c.lineWidth = 3; c.lineCap = 'round'; c.beginPath(); c.moveTo(shX - 10, shY + 6); c.lineTo(5, hipY + 2); c.moveTo(shX + 10, shY + 6); c.lineTo(-5, hipY + 2); c.stroke();
+    c.strokeStyle = '#6b7791'; c.lineWidth = 4; c.beginPath(); c.moveTo(-13, hipY + 3); c.lineTo(13, hipY + 3); c.stroke(); }
+  if(o.colete){ c.strokeStyle = '#c9d3e6'; c.lineWidth = 2.6; c.lineCap = 'round'; c.beginPath(); c.moveTo(shX - 7, shY + 4); c.lineTo(-6, hipY + 2); c.moveTo(shX + 7, shY + 4); c.lineTo(6, hipY + 2); c.stroke(); c.lineWidth = 2; c.beginPath(); c.moveTo(shX - 7, shY + 14); c.lineTo(shX + 7, shY + 14); c.stroke(); }
+  if(o.cinta){ c.strokeStyle = '#e6edf8'; c.lineWidth = 4.2; c.beginPath(); c.moveTo(-12.5, hipY - 8); c.lineTo(12.5, hipY - 8); c.stroke(); }
+  if(o.seat){ c.fillStyle = '#39445c'; rr(-19, hipY + 2, 38, 13, 6); c.fill(); c.strokeStyle = '#8f9bb8'; c.lineWidth = 1.5; c.stroke(); }
+  c.restore();
+  /* pescoço e cabeça */
+  const hx = shX * 1.04 + (p.head || 0) * 4, hy = shY - 14;
+  c.fillStyle = SIL; c.strokeStyle = BORDA; c.lineWidth = 2.4; c.beginPath(); c.arc(hx, hy, 13, 0, 7); c.stroke(); c.fill();
+  c.fillRect(hx - 4.5, hy + 6, 9, 10);
+  if(o.touca){ c.fillStyle = '#8d99ae'; c.beginPath(); c.arc(hx, hy - 1, 13.6, Math.PI * 1.02, Math.PI * 1.98); c.lineTo(hx + 13, hy - 4); c.lineTo(hx - 13, hy - 4); c.closePath(); c.fill(); }
+  if(o.oculos){ c.strokeStyle = '#d8ecff'; c.lineWidth = 2; c.beginPath(); c.moveTo(hx - 12, hy + 1); c.lineTo(hx + 12, hy + 1); c.stroke(); c.fillStyle = 'rgba(190,225,255,.55)'; c.fillRect(hx + 2, hy - 2.5, 10, 5); }
+  if(o.capacete) capacete(hx, hy - 2, 13, (PP && PP.cap) || o.capacete, o.glow);
+  /* membros da frente */
+  membro(3, hipY, p.lL[0], p.lL[1], pernaL, pernaS, 15, cPerna, 'pe');
+  membro(shX + 2, shY + 5, p.aL[0], p.aL[1], braco, ante, 11, cBraco, null, faixaL);
+  c.restore();
+  /* número da hierarquia acima da cabeça (fora do espelhamento, para o texto não inverter) */
+  if(PP && o.num !== false){ const nx = x + hx * s * face, ny = y + (hy - 34) * s; c.save(); c.beginPath(); c.arc(nx, ny, 9.5, 0, 7); c.fillStyle = '#0b0d14'; c.fill(); c.lineWidth = 2.2; c.strokeStyle = PP.faixa; c.stroke(); txt(String(PP.num), nx, ny + 4.6, 12.5, '#fff', 'center', '800'); c.restore(); }
+}
+const COR_EQ = () => CONFIG.cores.capaceteEquipe;
+const VERMELHO = '#d62d2d', LARANJA = '#FF7A00';
+/* hierarquia: 1 Coordenador · 2 Líder de Operações · 3 Líder · 4 a 7 Operadores · 8 Resgatista.
+   faixa = cor da braçadeira; pin = bottom da escala (barra, pílulas, mosquetão); cap = cor do capacete (resgatistas usam vermelho) */
+const PAPEIS = {
+  coord:  { num: 1, nome: 'Coordenador',        faixa: VERMELHO, pin: { barra: '#e8731a', pil: 1, mosq: '#3b82e0' }, camisa: '#E8731A', manga: '#4f6330', calca: '#2b3520' },   // laranja e verde
+  lider:  { num: 2, nome: 'Líder de Operações', faixa: VERMELHO, pin: { barra: '#951c24', pil: 4, mosq: '#ece3cf' }, camisa: '#4f6330', manga: '#4f6330', calca: '#2b3520', arnes: true },   // verde · Pietsch também é resgatista: usa o cinto
+  lider2: { num: 3, nome: 'Líder',              faixa: LARANJA,  pin: { barra: '#951c24', pil: 1, mosq: '#ece3cf' }, camisa: '#4f6330', manga: '#4f6330', calca: '#2b3520' },   // verde
+  op1:    { num: 4, nome: 'Operador',           faixa: LARANJA,  pin: { barra: '#0a0a0a', pil: 2, mosq: '#ece3cf' }, camisa: '#E8731A', manga: '#E8731A', calca: '#2b3520' },   // laranja
+  op2:    { num: 5, nome: 'Operador',           faixa: LARANJA,  pin: { barra: '#0a0a0a', pil: 2, mosq: '#ece3cf' }, camisa: '#E8731A', manga: '#E8731A', calca: '#2b3520' },
+  op3:    { num: 6, nome: 'Operador',           faixa: LARANJA,  pin: { barra: '#0a0a0a', pil: 2, mosq: '#ece3cf' }, camisa: '#E8731A', manga: '#E8731A', calca: '#2b3520' },
+  op4:    { num: 7, nome: 'Operador',           faixa: LARANJA,  pin: { barra: '#0a0a0a', pil: 2, mosq: '#ece3cf' }, camisa: '#E8731A', manga: '#E8731A', calca: '#2b3520' },
+  resg:   { num: 8, nome: 'Resgatista',         faixa: VERMELHO, pin: { barra: '#0a0a0a', pil: 2, mosq: '#ece3cf' }, camisa: '#E8731A', manga: '#E8731A', calca: '#2b3520', cap: '#E53935', arnes: true }  // só o resgatista usa o cinto (7Y)
+};
+/* bottom da escala, desenhado exatamente como nas imagens (viewBox 460x580) */
+function desenhaBottom(x, pin){
+  const borda = { '#e8731a': '#c85f0e', '#951c24': '#7a1219', '#0a0a0a': '#4a4d5e' }[pin.barra] || '#4a4d5e';
+  const rrp = (a, b, w, h, r) => { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); };
+  rrp(30, 30, 400, 520, 42); x.fillStyle = '#1c1d29'; x.fill(); x.lineWidth = 12; x.strokeStyle = '#0e0e16'; x.stroke();
+  rrp(55, 55, 350, 470, 26); x.lineWidth = 3; x.strokeStyle = 'rgba(255,255,255,.10)'; x.stroke();
+  rrp(80, 80, 130, 420, 14); x.fillStyle = pin.barra; x.fill(); x.lineWidth = 5; x.strokeStyle = borda; x.stroke();
+  for(let i = 0; i < pin.pil; i++){ const y = 424 - i * 68; rrp(94, y + 6, 104, 54, 27); x.fillStyle = '#b8ad93'; x.fill(); rrp(94, y, 104, 54, 27); x.fillStyle = '#ece3cf'; x.fill(); }
+  const cr = new Path2D('M375 218C380 140 262 130 262 215L290 415C296 450 356 450 358 415L376 236');
+  x.lineCap = 'round'; x.lineWidth = 16; x.strokeStyle = pin.mosq; x.stroke(cr);
+  x.lineCap = 'butt'; x.lineWidth = 5; x.strokeStyle = '#1c1d29'; x.beginPath(); x.moveTo(374, 224); x.lineTo(384, 224); x.moveTo(350, 372); x.lineTo(366, 372); x.stroke();
+}
+const PIN_CACHE = {};
+function pinDesenha(x, y, t){
+  const k = t.barra + t.pil + t.mosq; let cv2 = PIN_CACHE[k];
+  if(!cv2){ cv2 = document.createElement('canvas'); cv2.width = 230; cv2.height = 290; const g = cv2.getContext('2d'); g.scale(.5, .5); desenhaBottom(g, { barra: t.barra, pil: t.pil, mosq: t.mosq }); PIN_CACHE[k] = cv2; }
+  c.drawImage(cv2, x - 11, y - 13.9, 22, 27.7);
+}
+
+/* =====================================================================
+   CENÁRIO — camadas em parallax: céu, serra, cânions, araucárias, neblina
+   ===================================================================== */
+const PAL = {
+  tarde: { c: ['#16204d', '#7a4a8c', '#f0805a', '#ffc27a'], sol: [0.7, 0.62, '#ffd9a0'], serra: ['#4a3a78', '#3a2f66', '#2a2650', '#1b1b3a'], neb: 'rgba(255,214,176,', ch: '#0f1424' },
+  dia:   { c: ['#2f7fd0', '#6db5ec', '#bfe0f5', '#fde7c0'], sol: [0.2, 0.28, '#fff6d8'], serra: ['#6d89b8', '#516c9c', '#38527f', '#233a62'], neb: 'rgba(235,245,255,', ch: '#122238' },
+  fim:   { c: ['#1d2160', '#8c4a8f', '#ff7a55', '#ffb870'], sol: [0.4, 0.66, '#ffd9a0'], serra: ['#503a80', '#3c2f6a', '#2c2650', '#1c1b3a'], neb: 'rgba(255,200,170,', ch: '#0f1424' }
+};
+const CAMADAS = [0, 1, 2, 3].map(i => { const r = seedRand(77 + i * 31); return { a: [r() * 6, r() * 6, r() * 6], f: [0.0021 + i * .0004, 0.0057 + i * .0006, 0.013 + i * .001], amp: [60 + i * 8, 26, 10], base: 380 + i * 52 }; });
+function ceu(pal, y0, y1){
+  const g = c.createLinearGradient(0, y0, 0, y1); pal.c.forEach((cor, i) => g.addColorStop(i / (pal.c.length - 1), cor)); c.fillStyle = g; c.fillRect(-300, -OY - 10, W + 600, H + 20);
+  const sx = pal.sol[0] * W, sy = pal.sol[1] * 720, rg = c.createRadialGradient(sx, sy, 6, sx, sy, 380); rg.addColorStop(0, pal.sol[2]); rg.addColorStop(.12, 'rgba(255,214,160,.55)'); rg.addColorStop(1, 'rgba(255,170,100,0)'); c.fillStyle = rg; c.fillRect(0, -OY, W, H);
+}
+function serra(pal, i, off, escala, dy){
+  const L = CAMADAS[i], f = pal.serra[i]; c.fillStyle = f; c.beginPath(); const x0 = -W * 1.3, x1 = W * 2.3; c.moveTo(x0, 1600);
+  for(let x = x0; x <= x1; x += 14){ const xx = x + off; const sm = Math.sin(xx * L.f[0] + L.a[0]) * L.amp[0] + Math.sin(xx * L.f[1] + L.a[1]) * L.amp[1] + Math.sin(xx * L.f[2] + L.a[2]) * L.amp[2];
+    const h = (i === 1 || i === 3) ? L.base + dy - (Math.tanh(sm / 34) * 52 + 34) : L.base + dy - sm * (i === 0 ? 1.25 : 1); c.lineTo(x, h); }
+  c.lineTo(x1, 1600); c.closePath(); c.fill();
+}
+function neblina(pal, t, y, alt, off){
+  for(let k = 0; k < 3; k++){ const yy = y + k * 22 + Math.sin(t * .2 + k) * 6, g = c.createLinearGradient(0, yy - alt, 0, yy + alt); g.addColorStop(0, pal.neb + '0)'); g.addColorStop(.5, pal.neb + (0.22 - k * .04) + ')'); g.addColorStop(1, pal.neb + '0)'); c.fillStyle = g; c.fillRect(-W * 1.3, yy - alt, W * 3.6, alt * 2); }
+}
+function araucaria(x, y, h, cor){
+  c.fillStyle = cor; c.fillRect(x - h * .018, y - h, h * .036, h);
+  for(let k = 0; k < 4; k++){ const yy = y - h * (1 - k * .06) , w = h * (.34 - k * .03); c.beginPath(); c.ellipse(x, yy, w, h * .045, 0, 0, 7); c.fill();
+    c.beginPath(); c.ellipse(x - w * .55, yy + h * .035, w * .55, h * .03, -.15, 0, 7); c.fill(); c.beginPath(); c.ellipse(x + w * .55, yy + h * .035, w * .55, h * .03, .15, 0, 7); c.fill(); }
+}
+function mata(off, y, cor, passo, hmin, hmax, seed){
+  const ini = Math.floor((off - W * 1.3) / passo), fim = Math.ceil((off + W * 2.3) / passo);
+  for(let k = ini; k <= fim; k++){ const r2 = seedRand(Math.abs(k) * 977 + seed + 7); const x = k * passo - off + r2() * passo * .6; araucaria(x, y, hmin + r2() * (hmax - hmin), cor); }
+}
+function camadas(pal, t, off, o){
+  o = o || {}; serra(pal, 0, off * .05, 1, o.dy || 0); serra(pal, 1, off * .11, 1, (o.dy || 0) * 1.1 + 14);
+  neblina(pal, t, 470 + (o.dy || 0), 60);
+  serra(pal, 2, off * .22, 1, (o.dy || 0) * 1.3 + 40); mata(off * .3, 640 + (o.dy || 0) * 1.4, pal.serra[2], 150, 90, 150, 5);
+  serra(pal, 3, off * .4, 1, (o.dy || 0) * 1.6 + 70); neblina(pal, t + 3, 560 + (o.dy || 0), 46);
+}
+function cenario(pal, t, off, o){ ceu(pal, -OY, 720); camadas(pal, t, off, o); }
+
+/* =====================================================================
+   ESTADO DO JOGO
+   ===================================================================== */
+let estado = ST.MENU, pausado = false, comoJogar = false, T0 = 0, tCena = 0;
+let semLeg = guarda(CONFIG.chave + ':semleg') === '1';          // modo sem legenda: sem textos de apoio, só o clique nos itens (as regras continuam valendo)
+function alternaLeg(){ semLeg = !semLeg; guarda(CONFIG.chave + ':semleg', semLeg ? '1' : '0'); }
+function telaCheia(){ const el = document.documentElement; if(document.fullscreenElement){ document.exitFullscreen(); } else if(el.requestFullscreen){ const r = el.requestFullscreen(); if(r && r.catch) r.catch(() => toast('Este navegador não permitiu a tela cheia.', 'aviso')); } else toast('Tela cheia indisponível neste navegador.', 'aviso'); }
+document.addEventListener('fullscreenchange', () => setTimeout(resize, 80));
+let dif = guarda(CONFIG.chave + ':dif') || 'operacao'; if(!CONFIG.dificuldades[dif]) dif = 'operacao';
+let T = null;         // turno
+let chk = null;       // checklist em andamento
+let D = null;         // descida
+let REC = null;       // recebimento
+let aviso = null;     // mensagem rápida (toast)
+let fade = 0;         // 0..1 (preto)
+let npc = [];         // clientes de fundo descendo em outras vias
+let confete = [];
+const recorde = () => { try{ return JSON.parse(guarda(CONFIG.chave) || 'null'); }catch(e){ return null; } };
+
+function viaPorId(id){ return CONFIG.vias.find(v => v.id === id); }
+function cabosVisuais(){ return CONFIG.ordemDeck.map(id => ({ via: id, cabos: viaPorId(id).cabos.slice().sort((a, b) => b - a) })); }
+function limites(v){ if(v > CONFIG.ventoSuspende) return null; for(const l of CONFIG.ventoTabela) if(v <= l.ate) return { min: l.min, max: l.max }; return null; }
+function toast(m, tipo, seg){ if(semLeg && (tipo === undefined || tipo === 'info' || tipo === 'ok' || tipo === 'bom')) return; aviso = { m, tipo: tipo || 'info', t: seg || 3.2 }; }
+
+/* ---------- geração do turno e dos clientes ---------- */
+function novoCliente(d, i){
+  const ev = (d.eventos || {})[i] || null;
+  let vento = Math.round(rnd(d.vento[0], d.vento[1])), lim = limites(vento) || { min: 60, max: 110 };
+  if(ev === 'simples') vento = rint(30, 38); if(ev === 'moderada') vento = rint(12, 22);
+  lim = limites(vento) || lim;
+  const fora = !ev && Math.random() < d.recusa; let total;
+  if(ev === 'moderada') total = 80;
+  else if(!fora) total = rint(lim.min + 3, lim.max - 3);
+  else if(Math.random() < .55 && lim.min > 25) total = rint(Math.max(22, lim.min - 22), lim.min - 2);
+  else total = rint(lim.max + 3, lim.max + 18);
+  let mochila = 0; if(ev !== 'moderada' && Math.random() < .3 && total > 52){ mochila = rint(2, 8); }
+  const peso = total - mochila;
+  let tipo; if(ev) tipo = 'Adulto(a)'; else if(peso < 48) tipo = 'Criança'; else if(peso < 62 && Math.random() < .35) tipo = 'Adolescente'; else if(peso > 55 && peso < 100 && Math.random() < .25) tipo = 'Idoso(a)'; else tipo = 'Adulto(a)';
+  return { nome: NOMES[(i * 7 + rint(0, NOMES.length - 1)) % NOMES.length], tipo, peso, mochila, total, vento, ev, traz: { touca: Math.random() < .3, oculos: Math.random() < .3 },
+    capaceteCor: pick(CONFIG.cores.capaceteCliente), escala: tipo === 'Criança' ? .72 : tipo === 'Adolescente' ? .88 : tipo === 'Idoso(a)' ? .95 : 1 };
+}
+function iniciarTurno(){
+  const d = CONFIG.dificuldades[dif];
+  T = { d, fila: Array.from({ length: d.clientes }, (_, i) => novoCliente(d, i)), idx: 0, pts: 0, lancados: 0, recusasOk: 0, recusasErradas: 0, erros: 0, graves: 0, tempos: [], uso: { 1: 0, 3: 0, 5: 0 }, cool: { 1: 0, 3: 0, 5: 0 }, fotos: 0, premat: 0, t: 0 };
+  npc = []; confete = []; chk = null; D = null; REC = null; fade = 0; aviso = null;
+  cliX = null; estado = ST.PLAT; Som.init(); Som.ok();
+  toast('Turno iniciado! Nenhum cliente desce sem todos os procedimentos concluídos.', 'info', 4);
+}
+const atual = () => T && T.fila[T.idx];
+function addPts(n){ T.pts = Math.max(0, T.pts + n); }
+
+function viaOcupada(id){ return T.cool[id] > 0 || npc.some(n => n.via === id) || (chk && chk.via === id && estado !== ST.PLAT && false); }
+
+/* =====================================================================
+   PLATAFORMA DE LANÇAMENTO
+   ===================================================================== */
+function viasGeom(){
+  const gap = Math.min(300, W * .235), res = [];
+  cabosVisuais().forEach((g, i) => {
+    let gx = W / 2 + (i - 1) * gap;
+    if(V3){ const q = V3.proj(V3.lanX - 7, -3.2, V3.viaZ(g.via), S, OY); if(q.ok) gx = clamp(q.x, 150, W - 150); }
+    res.push({ via: g.via, cabos: g.cabos, gx, xs: [gx - 38, gx + 38] });
+  });
+  return res;
+}
+const VP = () => ({ x: W / 2, y: 332 });
+function desenhaCabos(destaque, comLabels){
+  const vp = VP(), yb = 596;
+  viasGeom().forEach(g => {
+    const sel = destaque === g.via;
+    g.xs.forEach((x, k) => {
+      const xt = vp.x + (x - vp.x) * .05;
+      c.save(); if(sel){ c.shadowColor = '#FF7A00'; c.shadowBlur = 14; }
+      c.strokeStyle = sel ? '#ffd9a8' : '#b9c3d8'; c.lineWidth = sel ? 3.4 : 2.6; c.beginPath(); c.moveTo(x, yb + 10); c.lineTo(xt, vp.y); c.stroke();
+      c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1; c.beginPath(); c.moveTo(x - 1, yb + 10); c.lineTo(xt - .3, vp.y); c.stroke(); c.restore();
+    });
+  });
+}
+function posNoCabo(g, t){ const vp = VP(), xm = g.gx, y = lerp(596, vp.y, t), x = lerp(xm, vp.x + (xm - vp.x) * .05, t); return { x, y, k: lerp(1, .12, t) }; }
+function desenhaDeck(){
+  const g = c.createLinearGradient(0, 590, 0, 760); g.addColorStop(0, '#2a1d17'); g.addColorStop(1, '#0d0907'); c.fillStyle = g; c.fillRect(-300, 596, W + 600, 300);
+  c.fillStyle = '#3b2a20'; c.fillRect(-300, 590, W + 600, 8);
+  c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = 2; for(let i = -6; i < 40; i++){ const x = W / 2 + i * 80; c.beginPath(); c.moveTo(W / 2 + (x - W / 2) * .55, 598); c.lineTo(x * 1.25 - W * .125, 760); c.stroke(); }
+  /* corrimão em silhueta, com trava */
+  c.fillStyle = '#050509'; for(let i = 0; i < 9; i++){ const x = i * (W / 8); c.fillRect(x - 3, 560, 6, 40); } c.fillRect(0, 556, W, 6);
+}
+function npcsDesenha(){
+  const geo = viasGeom(); npc.forEach(n => { const g = geo.find(q => q.via === n.via), p = posNoCabo(g, ease(n.t));
+    c.save(); c.translate(p.x, p.y); c.scale(p.k * 1.4, p.k * 1.4); c.fillStyle = SIL; c.beginPath(); c.arc(0, 18, 7, 0, 7); c.fill(); c.fillRect(-4, 24, 8, 16); c.strokeStyle = '#d0d8ea'; c.lineWidth = 2; c.beginPath(); c.moveTo(0, 14); c.lineTo(0, 0); c.stroke(); c.beginPath(); c.arc(0, -2, 4, 0, 7); c.stroke(); capacete(0, 15, 6, '#e8e8f2', false); c.restore(); });
+}
+function hud(titulo){
+  /* barra superior */
+  c.fillStyle = 'rgba(8,10,18,.72)'; c.fillRect(-300, -OY, W + 600, 58 + OY);
+  const estreito = W < 1150;
+  txt(estreito ? '🛡 SEGURANÇA EM 1º LUGAR' : '🛡 SEGURANÇA EM PRIMEIRO LUGAR', 20, 36, estreito ? 15 : 18, '#FF7A00', 'left', '800');
+  if(T){
+    const d = T.d; txt('Cliente ' + Math.min(T.idx + 1, d.clientes) + '/' + d.clientes, W * (estreito ? .46 : .4), 36, 18, '#fff', 'center', '700');
+    txt('★ ' + T.pts + ' pts', W * (estreito ? .59 : .5), 36, 18, '#ffd26a', 'center', '800');
+    const cli = atual(); if(cli && (estado === ST.PLAT || estado === ST.CHK)) txt('Vento ' + cli.vento + ' km/h', W * (estreito ? .72 : .61), 36, 18, cli.vento > 40 ? '#ffb347' : '#9fe0ff', 'center', '700');
+  }
+  btn('pausa', W - 56, -OY + 8 + OY, 44, 42, '❚❚', { cor: '#5a6178', fs: 16, r: 10 }, alternaPausa);
+  btn('som', W - 108, 8, 44, 42, Som.mudo ? '🔇' : '🔊', { cor: '#5a6178', fs: 18, r: 10 }, () => Som.alterna());
+  btn('tcheia', W - 160, 8, 44, 42, '⛶', { cor: '#5a6178', fs: 20, r: 10 }, telaCheia);
+  btn('leg', W - 212, 8, 44, 42, semLeg ? '💬✕' : '💬', { cor: semLeg ? '#a2452f' : '#5a6178', fs: 15, r: 10 }, alternaLeg);
+}
+function alternaPausa(){ if(estado === ST.MENU) return; pausado = !pausado; if(pausado) Som.roldanaFim(); }
+
+let cliX = null;
+function cenaPlataforma(dt){
+  if(V3){
+    const eq = chk ? chk.equip : {}, pronto = !!(chk && chk.i >= 3 && eq.capacete && eq.cinto && eq.cadeirinha && eq.touca && eq.oculos);
+    V3.plataforma({ t: tCena, chk, cli: atual(), equip: { capacete: eq.capacete, touca: eq.touca, oculos: eq.oculos, harness: eq.cinto, colete: eq.cadeirinha, cinta: eq.cadeirinha, seat: eq.cadeirinha }, pronto, fila: T ? Math.max(0, Math.min(3, T.fila.length - T.idx - 1)) : 0 });
+    return;
+  }
+  const pal = PAL.tarde; cenario(pal, tCena, tCena * 6, { dy: 0 });
+  desenhaCabos(chk ? chk.via : null); npcsDesenha(); desenhaDeck();
+  const cli = atual(); const geo = viasGeom();
+  /* fila ao fundo, à esquerda (fora da área dos cabos) */
+  if(T){ const rest = T.fila.length - T.idx - 1; for(let i = 0; i < Math.min(rest, 5); i++) pessoa(40 + i * 54, 600, .6, 1, { pose: 'idle', t: tCena + i }); }
+  /* equipe: 4 operador (jogador), 5 operador, 2 líder e 1 coordenador, todos de cinto e capacete */
+  const sel = chk ? geo.find(g => g.via === chk.via) : null; const cx = sel ? sel.gx : W / 2;
+  pessoa(W * .93, 622, 1.1, -1, { pose: 'idle', t: tCena + 3, capacete: COR_EQ(), glow: true, harness: true, papel: 'coord' });
+  pessoa(W * .86, 632, 1.14, -1, { pose: 'idle', t: tCena + 4, capacete: COR_EQ(), glow: true, harness: true, papel: 'lider' });
+  pessoa(cx - 130, 640, 1.18, 1, { pose: chk && chk.pose ? chk.pose : 'trabalho', t: tCena, capacete: COR_EQ(), glow: true, harness: true, papel: 'op1' });
+  pessoa(cx + 150, 640, 1.18, -1, { pose: 'radio', t: tCena + 1, capacete: COR_EQ(), glow: true, harness: true, papel: 'op2' });
+  /* cliente: espera fora dos cabos e só se aproxima quando está totalmente equipado */
+  if(cli){
+    const eq = chk ? chk.equip : {}, pronto = chk && chk.i >= 3 && eq.capacete && eq.cinto && eq.cadeirinha && eq.touca && eq.oculos;
+    const espera = Math.max(120, W * .17), alvo = pronto ? cx : espera;
+    if(cliX === null) cliX = espera; const dif2 = alvo - cliX, anda = Math.abs(dif2) > 4;
+    if(anda) cliX += Math.sign(dif2) * Math.min(Math.abs(dif2), 170 * (1 / 60));
+    pessoa(cliX, 650, 1.22 * cli.escala, anda ? Math.sign(dif2) : 1, { pose: anda ? 'andar' : 'idle', t: tCena + 2, capacete: eq.capacete ? cli.capaceteCor : null, touca: eq.touca, oculos: eq.oculos, harness: eq.cinto, colete: eq.cadeirinha, cinta: eq.cadeirinha, seat: eq.cadeirinha });
+    if(!pronto){ txt('área de equipagem · fora dos cabos', cliX, 690 + 0, 11, 'rgba(255,255,255,.55)', 'center', '700'); }
+  }
+}
+function cartaoCliente(cli){
+  const x = 20, y = 76, w = 300, h = 92; c.save(); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 16; rr(x, y, w, h, 14); c.fillStyle = 'rgba(10,12,22,.82)'; c.fill(); c.restore(); rr(x, y, w, h, 14); c.strokeStyle = 'rgba(255,122,0,.65)'; c.lineWidth = 2; c.stroke();
+  txt('PRÓXIMO CLIENTE', x + 16, y + 24, 12, '#FF7A00', 'left', '800'); txt(cli.nome, x + 16, y + 52, 24, '#fff', 'left', '800');
+  txt(cli.tipo + (cli.mochila ? ' · com mochila' : '') + ' · pesagem pendente', x + 16, y + 76, 14, '#aab4cc', 'left', '600');
+}
+function atualizaPlataforma(dt){
+  const d = T.d; T.t += dt;
+  ['1', '3', '5'].forEach(k => { if(T.cool[k] > 0) T.cool[k] = Math.max(0, T.cool[k] - dt); });
+  npc.forEach(n => n.t += dt / n.dur); npc = npc.filter(n => n.t < 1);
+  if(d.npc && Math.random() < d.npc * dt && npc.length < 2){ const livres = CONFIG.vias.map(v => v.id).filter(id => !npc.some(n => n.via === id) && !(chk && chk.via === id)); if(livres.length > 1) npc.push({ via: pick(livres), t: 0, dur: rnd(9, 16) }); }
+}
+function telaPlataforma(){
+  const cli = atual(); if(!cli) return; hud(); cartaoCliente(cli);
+  const geo = viasGeom(); const min = Math.min(...Object.values(T.uso));
+  geo.forEach(g => {
+    const oc = T.cool[g.via] > 0 || npc.some(n => n.via === g.via); const w = Math.min(230, W * .19);
+    const label = 'VIA ' + g.via + '\nCabos ' + g.cabos[0] + ' · ' + g.cabos[1] + (oc ? ' · ocupada' : '');
+    btn('via' + g.via, g.gx - w / 2, 650, w, 58, label, { en: !oc, cor: oc ? '#7a2a2a' : '#FF7A00', pulso: !oc && T.d.dicas && T.uso[g.via] === min, fs: 21 }, () => escolheVia(g.via));
+    txt('descidas: ' + T.uso[g.via], g.gx + w / 2 - 8, 641, 12, '#c9d2ea', 'right', '700');
+  });
+  if(!semLeg) txt('Escolha a via para lançar ' + cli.nome.split(' ')[0] + ' (vista do deck: Via 5 | 3 | 1)', 340, 98, 15, '#ffe6cc', 'left', '700');
+  if(T.d.dicas && !semLeg) txt('Dica: distribua as descidas entre as vias para equilibrar o desgaste dos cabos.', 340, 120, 13, '#9fe0ff', 'left', '600');
+}
+function escolheVia(id){
+  const min = Math.min(...Object.values(T.uso)); const eq = T.uso[id] <= min;
+  cliX = null; chk = { via: id, i: 0, t: 0, ti: 0, erros: 0, errosPasso: 0, pts: 0, equip: {}, cli: atual(), msg: '', msgTipo: '', d: {}, concl: [], equilibrada: eq, pose: 'trabalho', p0: T.pts };
+  if(!eq){ toast('Via com mais descidas que as outras: o procedimento pede distribuição equilibrada.', 'aviso', 3.4); }
+  estado = ST.CHK; iniciaPasso();
+}
+
+/* =====================================================================
+   CHECKLIST — painel com um mini-jogo por etapa
+   ===================================================================== */
+function iniciaPasso(){
+  const p = PROCEDIMENTOS[chk.i]; chk.ti = 0; chk.errosPasso = 0; chk.d = {}; chk.msg = ''; chk.msgTipo = ''; chk.solta = null;
+  const cli = chk.cli;
+  if(p.tipo === 'briefing'){ chk.d.q = pick(BRIEFING); chk.d.ops = shuffle(chk.d.q.o); chk.d.errados = []; }
+  if(p.tipo === 'pesagem'){ chk.d.disp = 0; chk.d.fase = 0; }
+  if(p.tipo === 'epi'){ chk.equip.touca = !!cli.traz.touca; chk.equip.oculos = !!cli.traz.oculos; chk.d.pos = 0; chk.d.dir = 1; chk.d.fase = 0; chk.d.zona = rnd(.22, .68); chk.d.vel = 0.9; chk.d.res = ''; }
+  if(p.tipo === 'roldana'){ chk.d.ok = false; chk.d.anim = 0; }
+  if(p.tipo === 'mosquetao'){ chk.d.m = [0, 0, 0]; chk.d.puxa = 0; chk.d.feito = false; }
+  if(p.tipo === 'dupla'){ const t = Math.random() < T.d.erroDupla; chk.d.falha = t ? rint(0, ITENS_DUPLA.length - 1) : -1; chk.d.marca = []; chk.d.corrigido = false; chk.d.ordem = ITENS_DUPLA.map((_, i) => i); }
+  if(p.tipo === 'radio'){ chk.d.f = 0; chk.d.espera = 0; chk.d.log = []; chk.d.ocupadaPrimeiro = T.d.nome === 'Dia Lotado' && Math.random() < .5; }
+  if(p.tipo === 'contagem'){ chk.d.f = 0; chk.d.n = 3; chk.d.tn = 0; }
+}
+function erro(m, grave){
+  chk.erros++; chk.errosPasso++; T.erros++; if(grave) T.graves++; addPts(-(grave ? CONFIG.pontos.penalGrave : CONFIG.pontos.penalErro));
+  chk.msg = m; chk.msgTipo = 'erro'; chk.flash = 1; Som.erro(); if(grave) chk.tremor = 1;
+}
+function passoOk(extra){
+  const p = PROCEDIMENTOS[chk.i]; const rapido = chk.ti <= p.alvo; let pts = Math.max(30, CONFIG.pontos.passoBase - chk.errosPasso * 25) + (rapido && !chk.errosPasso ? CONFIG.pontos.bonusRapido : 0) + (extra || 0);
+  addPts(pts); chk.pts += pts; chk.concl.push(p.id); Som.ok(); chk.i++;
+  if(chk.i >= PROCEDIMENTOS.length){ lancar(); return; }
+  iniciaPasso(); chk.msg = '✔ Etapa concluída (+' + pts + ')'; chk.msgTipo = 'ok';
+}
+function cancelaCliente(){ chk = null; T.idx++; proximoOuFim(); }
+function proximoOuFim(){ cliX = null; if(T.idx >= T.fila.length){ fimDoTurno(); } else { estado = ST.PLAT; } }
+
+/* painel */
+function painel(){
+  const pw = Math.min(1000, W - 40), ph = 610, px = (W - pw) / 2, py = 62;
+  c.fillStyle = 'rgba(4,6,12,.55)'; c.fillRect(-300, -OY, W + 600, H);
+  c.save(); c.shadowColor = 'rgba(0,0,0,.7)'; c.shadowBlur = 28; rr(px, py, pw, ph, 18); c.fillStyle = 'rgba(12,15,26,.95)'; c.fill(); c.restore();
+  rr(px, py, pw, ph, 18); c.strokeStyle = chk.flash > 0 ? 'rgba(255,60,50,' + (.4 + chk.flash * .6) + ')' : 'rgba(255,122,0,.7)'; c.lineWidth = 2.5; c.stroke();
+  bloqueia(px, py, pw, ph);
+  return { x: px, y: py, w: pw, h: ph };
+}
+function chipsPassos(P){
+  const n = PROCEDIMENTOS.length, gap = Math.min(112, (P.w - 60) / n), x0 = P.x + P.w / 2 - gap * (n - 1) / 2;
+  for(let i = 0; i < n; i++){
+    const x = x0 + i * gap, y = P.y + 30, feito = i < chk.i, at = i === chk.i;
+    if(i < n - 1){ c.strokeStyle = feito ? '#5fd37a' : '#2c3246'; c.lineWidth = 3; c.beginPath(); c.moveTo(x + 14, y); c.lineTo(x + gap - 14, y); c.stroke(); }
+    c.save(); if(at){ c.shadowColor = '#FF7A00'; c.shadowBlur = 14; } c.beginPath(); c.arc(x, y, 14, 0, 7); c.fillStyle = feito ? '#2e8a4a' : at ? '#FF7A00' : '#1a1f30'; c.fill(); c.restore();
+    c.lineWidth = 2; c.strokeStyle = feito ? '#5fd37a' : at ? '#ffd9a8' : '#3a4260'; c.stroke(); txt(feito ? '✓' : String(i + 1), x, y + 5, 14, at ? '#1a0f00' : '#fff', 'center', '800');
+  }
+}
+function cabecaPasso(P){
+  const p = PROCEDIMENTOS[chk.i]; chipsPassos(P);
+  txt(p.nome, P.x + 28, P.y + 88, 28, '#fff', 'left', '800');
+  txt('Etapa ' + (chk.i + 1) + ' de ' + PROCEDIMENTOS.length, P.x + P.w - 28, P.y + 88, 14, '#8e99b8', 'right', '700');
+  if(!semLeg) par(p.instrucao, P.x + 28, P.y + 114, P.w - 56, 16, '#cfd6ea', 'left', '500');
+}
+function mensagem(P){
+  if(!chk.msg || (semLeg && chk.msgTipo !== 'erro')) return; const y = P.y + P.h - 84, cor = chk.msgTipo === 'erro' ? '#ff6b5e' : chk.msgTipo === 'ok' ? '#6fe08c' : '#9fe0ff';
+  rr(P.x + 20, y, P.w - 40, 66, 12); c.fillStyle = chk.msgTipo === 'erro' ? 'rgba(90,16,16,.55)' : 'rgba(14,50,26,.5)'; c.fill(); c.strokeStyle = cor; c.lineWidth = 1.6; c.stroke();
+  par((chk.msgTipo === 'erro' ? '⚠ ' : '') + chk.msg, P.x + 36, y + 26, P.w - 72, 15, '#fff', 'left', '600', 19);
+}
+function relogioCliente(P){
+  const d = T.d; if(!d.tempoCliente) return; const restante = d.tempoCliente - chk.t, cor = restante < 20 ? '#ff6b5e' : '#ffd26a';
+  txt('⏱ ' + Math.max(0, Math.ceil(restante)) + ' s', P.x + P.w - 28, P.y + 62 + 0, 16, cor, 'right', '800');
+}
+function atualizaChk(dt){
+  chk.t += dt; chk.ti += dt; if(chk.flash > 0) chk.flash = Math.max(0, chk.flash - dt * 1.6); if(chk.tremor > 0) chk.tremor = Math.max(0, chk.tremor - dt * 2);
+  const p = PROCEDIMENTOS[chk.i], d = chk.d;
+  if(p.tipo === 'epi' && d.fase === 1 && !d.pare){ d.pos += d.dir * d.vel * dt; if(d.pos >= 1){ d.pos = 1; d.dir = -1; } if(d.pos <= 0){ d.pos = 0; d.dir = 1; } }
+  if(p.tipo === 'roldana' && d.ok) d.anim = Math.min(1, d.anim + dt * 2);
+  if(p.tipo === 'mosquetao' && d.puxa > 0){ d.puxa += dt; if(d.puxa > 1.4 && !d.feito){ d.feito = true; passoOk(); return; } }
+  if(p.tipo === 'radio'){ if(d.espera > 0){ d.espera -= dt; if(d.espera <= 0){ avancaRadio(); } } }
+  if(p.tipo === 'contagem' && d.f === 1){ d.tn += dt; if(d.tn >= .95){ d.tn = 0; d.n--; if(d.n <= 0){ d.f = 2; Som.bip(1320); } else Som.bip(880); } }
+  if(p.tipo === 'pesagem' && d.disp < 1) d.disp = Math.min(1, d.disp + dt * 1.1);
+}
+function telaChk(){
+  hud(); const P = painel(), p = PROCEDIMENTOS[chk.i], d = chk.d, cli = chk.cli;
+  c.save(); if(chk.tremor > 0) c.translate(Math.sin(tCena * 60) * 5 * chk.tremor, 0);
+  cabecaPasso(P); relogioCliente(P);
+  const x0 = P.x + 28, y0 = P.y + 172, cw = P.w - 56, chh = P.h - 172 - 100;
+  FUNCOES[p.tipo](P, x0, y0, cw, chh, p, d, cli);
+  mensagem(P); c.restore();
+  if(T.d.dicas && !chk.msg && !semLeg) txt('Dica: ' + dicaDe(p), P.x + 28, P.y + P.h - 28, 13, '#9fe0ff', 'left', '600');
+  txt('Nenhum cliente desce sem todos os procedimentos concluídos.', P.x + P.w - 28, P.y + P.h - 14, 12, '#7f8aa8', 'right', '600');
+}
+function dicaDe(p){ return { pesagem: 'compare a SOMA com os limites do vento atual.', briefing: 'leia o procedimento: segurança vem antes de pressa.', epi: 'solte o dedo/mouse quando a barra estiver na faixa verde.', roldana: 'olhe o número dos cabos da via escolhida.', mosquetao: 'primeiro o gatilho, depois a trava.', dupla: 'leia cada cartão com calma.', radio: 'espere a resposta antes de avançar.', contagem: 'só libere o gatilho após o 3-2-1.' }[p.tipo]; }
+
+const FUNCOES = {
+  /* ---------- 1. pesagem ---------- */
+  pesagem(P, x, y, w, h, p, d, cli){
+    const lim = limites(cli.vento) || { min: 60, max: 110 }, ok = cli.total >= lim.min && cli.total <= lim.max;
+    /* balança */
+    const bx = x + 130, by = y + 190; c.fillStyle = '#242a3c'; rr(bx - 110, by, 220, 22, 8); c.fill(); c.fillStyle = '#2f3750'; c.beginPath(); c.moveTo(bx - 100, by); c.lineTo(bx + 100, by); c.lineTo(bx + 70, by - 16); c.lineTo(bx - 70, by - 16); c.closePath(); c.fill();
+    pessoa(bx, by - 14, 1.05 * cli.escala, 1, { pose: 'idle', t: tCena, capacete: null, harness: false });
+    rr(bx - 70, by + 32, 140, 46, 8); c.fillStyle = '#05070b'; c.fill(); c.strokeStyle = '#3a4260'; c.stroke();
+    txt(Math.round(cli.total * ease(d.disp)) + ' kg', bx, by + 66, 30, '#7dffb1', 'center', '700', 'ui-monospace,Consolas,monospace');
+    /* informações */
+    const ix = x + 270; txt(cli.nome + '  ·  ' + cli.tipo, ix, y + 26, 22, '#fff', 'left', '800');
+    const li = (r, a, b, cor) => { txt(a, ix, y + 62 + r * 30, 17, '#9aa6c4', 'left', '600'); txt(b, ix + 215, y + 62 + r * 30, 17, cor || '#fff', 'left', '800'); };
+    li(0, 'Peso do cliente', cli.peso + ' kg'); li(1, 'Mochila / bag', cli.mochila ? cli.mochila + ' kg' : 'sem mochila'); li(2, 'Total (pessoa + mochila)', cli.total + ' kg', '#ffd26a');
+    li(3, 'Vento agora', cli.vento + ' km/h', cli.vento > 40 ? '#ffb347' : '#9fe0ff'); li(4, 'Limites vigentes', lim.min + ' a ' + lim.max + ' kg', '#7dffb1');
+    if(cli.vento > 40) par('Vento entre 40 e 60 km/h: mínimo sobe para 60 kg (tabela de operação).', ix, y + 232, 400, 13, '#ffb347', 'left', '600');
+    /* ações */
+    const bx2 = x + w - 310;
+    if(d.fase === 0){
+      btn('liberar', bx2, y + 20, 300, 60, '✔ Peso dentro do limite\nLiberar cliente', { cor: '#2e9a55', texto: '#fff', fs: 19 }, () => {
+        if(ok) passoOk(); else erro('Total de ' + cli.total + ' kg fora do limite (' + lim.min + '–' + lim.max + ' kg). ' + p.explica, true);
+      });
+      btn('recusar', bx2, y + 96, 300, 60, '🙏 Recusar com educação', { cor: '#FF7A00', fs: 19 }, () => { d.fase = 1; chk.msg = ''; });
+    } else {
+      txt('Como você recusa?', bx2, y + 22, 18, '#fff', 'left', '800');
+      const fr = d.frases || (d.frases = shuffle([ ['"Sinto muito, por segurança o seu peso está fora do limite do equipamento. Posso explicar e indicar outra atração."', 1], ['"Você não pode descer. Está acima/abaixo do peso, regra é regra."', 0], ['"Nossa, não dá pra você! Vai embora."', 0] ]));
+      fr.forEach((f, i) => { const ls = quebra(f[0], 276, 13.5, '600'); const hh = 24 + ls.length * 18; const yy = y + 36 + i * 96;
+        btn('frase' + i, bx2, yy, 300, 86, '', { cor: '#3a5a8a', solido: false, r: 12 }, () => {
+          if(ok){ T.recusasErradas++; erro('Esse cliente estava dentro do limite (' + cli.total + ' kg para ' + lim.min + '–' + lim.max + ' kg). Recusar quem pode descer também é erro.', false); d.fase = 0; d.frases = null; return; }
+          if(!f[1]){ erro('Cortesia faz parte da segurança: recuse sempre com educação e explique o motivo.', false); return; }
+          /* recusa correta */
+          addPts(CONFIG.pontos.recusaCorreta); T.recusasOk++; Som.ok(); toast('Recusa correta e educada: +' + CONFIG.pontos.recusaCorreta + ' pts', 'ok', 3.6); cancelaCliente();
+        });
+        ls.forEach((l, k) => txt(l, bx2 + 12, yy + 24 + k * 17, 13.5, '#e6ecff', 'left', '600')); });
+    }
+  },
+  /* ---------- 2. briefing ---------- */
+  briefing(P, x, y, w, h, p, d){
+    pessoa(x + 80, y + 250, 1.2, 1, { pose: 'apontar', t: tCena, capacete: COR_EQ(), glow: true, harness: true, papel: 'op1' });
+    par('"' + d.q.q + '"', x + 190, y + 28, w - 200, 22, '#fff', 'left', '700', 28);
+    d.ops.forEach((o, i) => { const yy = y + 108 + i * 66, errado = d.errados.includes(o[0]);
+      btn('op' + i, x + 190, yy, w - 200, 56, o[0], { cor: '#4a78c2', solido: false, en: !errado, fs: 17 }, () => {
+        if(o[1]) passoOk(); else { d.errados.push(o[0]); erro(d.q.e, false); } }); });
+  },
+  /* ---------- 3. EPI ---------- */
+  epi(P, x, y, w, h, p, d, cli){
+    const eq = chk.equip, cx = x + w * .68, base = y + 330, esc = 1.5 * cli.escala;
+    /* área do cliente (alvo para soltar) */
+    rr(cx - 110, base - 300, 220, 310, 18); c.strokeStyle = d.fase === 0 ? 'rgba(255,122,0,.5)' : 'rgba(255,255,255,.07)'; c.setLineDash([8, 7]); c.lineWidth = 2; c.stroke(); c.setLineDash([]);
+    pessoa(cx, base, esc, 1, { pose: 'idle', t: tCena, capacete: eq.capacete ? cli.capaceteCor : null, touca: eq.touca, oculos: eq.oculos, harness: eq.cinto, colete: eq.cadeirinha, cinta: eq.cadeirinha, seat: eq.cadeirinha });
+    if(d.fase === 0) txt('Área de equipagem, fora dos cabos', cx, base + 22, 12, 'rgba(255,255,255,.55)', 'center', '700');
+    const todos = [ ['touca', 'Touca', '🧢'], ['oculos', 'Óculos', '🥽'], ['capacete', 'Capacete', '⛑'], ['cinto', 'Cinto paraquedista', '🎽'], ['cadeirinha', 'Cadeirinha', '💺'] ];
+    const itens = todos.filter(it => !(it[0] === 'touca' && cli.traz.touca) && !(it[0] === 'oculos' && cli.traz.oculos));
+    chk.solta = (dg, px2, py2) => { if(px2 > cx - 120 && px2 < cx + 120 && py2 > base - 320 && py2 < base + 20){
+      if(dg.id === 'capacete' && !eq.touca){ erro('A touca vai por baixo do capacete: coloque a touca primeiro.', false); return; }
+      eq[dg.id] = true; Som.ok(); if(todos.every(t => eq[t[0]])){ d.fase = 1; d.pos = 0; chk.msg = 'Cliente equipado: agora ajuste as fitas!'; chk.msgTipo = 'ok'; } } };
+    if(d.fase === 0){
+      txt('Arraste até o cliente →', x + 20, y + 20, 16, '#ffd9a8', 'left', '700'); if(cli.traz.touca || cli.traz.oculos) txt('O cliente já trouxe: ' + [cli.traz.touca ? 'touca' : '', cli.traz.oculos ? 'óculos' : ''].filter(Boolean).join(' e ') + ' (próprio)', x + 20, y + 338, 12, '#9fe0ff', 'left', '700');
+      itens.forEach(([id, nome, ic], i) => {
+        if(eq[id]) return; const ix = x + 20, iy = y + 36 + i * 62; const emDrag = drag && drag.d.id === id;
+        const dx = emDrag ? ptr.x - drag.ox : ix, dy = emDrag ? ptr.y - drag.oy : iy;
+        c.save(); c.shadowColor = '#FF7A00'; c.shadowBlur = emDrag ? 22 : 6; rr(dx, dy, 220, 54, 14); c.fillStyle = 'rgba(26,30,46,.95)'; c.fill(); c.strokeStyle = '#FF7A00'; c.lineWidth = 2; c.stroke(); c.restore();
+        txt(ic, dx + 32, dy + 38, 26, '#fff', 'center', '400'); txt(nome, dx + 60, dy + 34, 16, '#fff', 'left', '800');
+        arrastavel(id, ix, iy, 220, 54, {});
+      });
+    } else {
+      const label = d.fase === 1 ? 'Ajuste a jugular do capacete e as fitas da cadeirinha' : '';
+      const bx = x + 20, bw = Math.min(380, w * .5), by = y + 160;
+      txt('Ajuste de fitas', bx, y + 60, 22, '#fff', 'left', '800'); par('Toque em AJUSTAR quando o marcador estiver na faixa verde. Nem frouxo, nem apertado demais.', bx, y + 86, bw, 15, '#cfd6ea', 'left', '500');
+      rr(bx, by, bw, 34, 17); c.fillStyle = '#1c2236'; c.fill(); c.strokeStyle = '#3a4260'; c.lineWidth = 2; c.stroke();
+      const zx = bx + d.zona * bw, zw = 74; c.fillStyle = 'rgba(70,220,120,.75)'; rr(zx - zw / 2, by + 3, zw, 28, 12); c.fill();
+      const mx = bx + d.pos * bw; c.fillStyle = '#fff'; c.shadowColor = '#fff'; c.shadowBlur = 10; c.fillRect(mx - 3, by - 6, 6, 46); c.shadowBlur = 0;
+      txt(d.res || '', bx, by + 70, 16, d.res && d.res.startsWith('✔') ? '#7dffb1' : '#ff9a8f', 'left', '700');
+      btn('ajustar', bx, by + 90, 220, 64, 'AJUSTAR', { fs: 22, pulso: true }, () => {
+        const dentro = Math.abs(d.pos - d.zona) <= (zw / 2) / bw;
+        if(dentro){ d.res = '✔ Ajuste perfeito!'; d.fase = 3; passoOk(); }
+        else { erro(d.pos < d.zona ? 'Fitas frouxas demais. ' + p.explica : 'Fitas apertadas demais. ' + p.explica, false); d.zona = rnd(.2, .7); d.pos = 0; d.dir = 1; d.vel = Math.min(1.4, d.vel + .12); d.res = '✖ Tente de novo'; }
+      });
+    }
+  },
+  /* ---------- 4. roldana ---------- */
+  roldana(P, x, y, w, h, p, d){
+    const via = viaPorId(chk.via), geo = viasGeom(), gap = Math.min(250, w / 3.4), cx0 = x + w / 2;
+    txt('Via escolhida: VIA ' + via.id + '  (cabos ' + via.cabos[0] + ' e ' + via.cabos[1] + ')', cx0, y + 14, 22, '#FFB070', 'center', '800');
+    const grupos = cabosVisuais().map((g, i) => ({ via: g.via, cabos: g.cabos, gx: cx0 + (i - 1) * gap }));
+    grupos.forEach(g => {
+      rr(g.gx - 96, y + 34, 192, 170, 16); c.fillStyle = 'rgba(255,255,255,.035)'; c.fill(); c.strokeStyle = 'rgba(255,255,255,.12)'; c.lineWidth = 1.5; c.stroke();
+      g.cabos.forEach((n, k) => { const cx = g.gx + (k ? 42 : -42), cy = y + 96; c.beginPath(); c.arc(cx, cy, 13, 0, 7); c.fillStyle = '#9aa6bd'; c.fill(); c.strokeStyle = '#e4ebf8'; c.lineWidth = 2; c.stroke(); txt('Cabo ' + n, cx, cy + 40, 14, '#cdd6ea', 'center', '700'); });
+      txt('VIA ' + g.via, g.gx, y + 190, 17, '#fff', 'center', '800');
+      if(d.ok && g.via === chk.via){ const k = ease(d.anim), yy = lerp(y - 4, y + 82, k); [-42, 42].forEach(dx => { c.beginPath(); c.arc(g.gx + dx, yy + 8, 17, 0, 7); c.fillStyle = '#5b6479'; c.fill(); c.strokeStyle = '#dfe6f4'; c.lineWidth = 3; c.stroke(); c.beginPath(); c.arc(g.gx + dx, yy + 8, 5, 0, 7); c.fillStyle = '#dfe6f4'; c.fill(); }); c.fillStyle = '#7b86a0'; rr(g.gx - 66, yy + 22, 132, 10, 5); c.fill(); }
+    });
+    chk.solta = (dg, px2, py2) => { const alvo = grupos.find(g => px2 > g.gx - 100 && px2 < g.gx + 100 && py2 > y + 20 && py2 < y + 215);
+      if(!alvo) return; if(alvo.via === chk.via){ d.ok = true; Som.ok(); setTimeout(() => { if(chk && PROCEDIMENTOS[chk.i].tipo === 'roldana') passoOk(); }, 700); }
+      else erro('Roldana na Via ' + alvo.via + ' (cabos ' + alvo.cabos.join(' e ') + ') — a via escolhida é a Via ' + via.id + '. ' + p.explica, true); };
+    if(!d.ok){ const ix = x + 40, iy = y + 238, emDrag = drag && drag.d.id === 'roldana';
+      const dx = emDrag ? ptr.x - drag.ox : ix, dy = emDrag ? ptr.y - drag.oy : iy;
+      c.save(); c.shadowColor = '#FF7A00'; c.shadowBlur = emDrag ? 22 : 8; rr(dx, dy, 180, 72, 14); c.fillStyle = 'rgba(26,30,46,.95)'; c.fill(); c.strokeStyle = '#FF7A00'; c.lineWidth = 2; c.stroke(); c.restore();
+      [-34, 34].forEach(o => { c.beginPath(); c.arc(dx + 90 + o, dy + 34, 17, 0, 7); c.fillStyle = '#5b6479'; c.fill(); c.strokeStyle = '#dfe6f4'; c.lineWidth = 3; c.stroke(); });
+      txt('Roldana dupla', dx + 90, dy + 66, 12, '#fff', 'center', '700'); arrastavel('roldana', ix, iy, 180, 72, {});
+      txt('← arraste a roldana até o par de cabos', x + 240, iy + 42, 16, '#ffd9a8', 'left', '700'); }
+  },
+  /* ---------- 5. mosquetões ---------- */
+  mosquetao(P, x, y, w, h, p, d){
+    const nomes = ['Roldana esquerda', 'Cinto / autosseguro', 'Roldana direita'];
+    for(let i = 0; i < 3; i++){
+      const cx = x + w * (.2 + i * .3), cy = y + 20, est = d.m[i], shake = d.puxa > 0 ? Math.sin(d.puxa * 40) * 3 * Math.max(0, 1 - d.puxa / 1.3) : 0;
+      c.save(); c.translate(cx + shake, cy + (d.puxa > 0 ? -Math.min(8, d.puxa * 14) : 0));
+      /* corpo (em D) */
+      c.strokeStyle = '#cfd6e6'; c.lineWidth = 11; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); c.moveTo(34, 14); c.lineTo(34, 108); c.arc(0, 108, 34, 0, Math.PI * .55); c.lineTo(-34, 70); c.lineTo(-34, 30); c.quadraticCurveTo(-34, 14, -18, 14); c.lineTo(34, 14); c.stroke();
+      /* gatilho */
+      c.save(); c.translate(34, 14); c.rotate(est === 0 ? .55 : 0); c.strokeStyle = est === 0 ? '#ff8a7a' : '#e9eef9'; c.lineWidth = 9; c.beginPath(); c.moveTo(0, 0); c.lineTo(0, 96); c.stroke();
+      /* trava (rosca) */
+      const ty = est === 2 ? 46 : 20; c.fillStyle = est === 2 ? '#3ad07c' : est === 1 ? '#ffd24a' : '#6b7490'; rr(-12, ty, 24, 28, 6); c.fill(); c.strokeStyle = 'rgba(0,0,0,.5)'; c.lineWidth = 2; c.stroke(); c.restore();
+      c.restore();
+      txt(nomes[i], cx, cy + 176, 15, '#fff', 'center', '800'); txt(['ABERTO', 'FECHADO', 'TRAVADO ✔'][est], cx, cy + 198, 15, ['#ff8a7a', '#ffd24a', '#6fe08c'][est], 'center', '800');
+      if(!d.puxa){
+        if(est === 0) area('gate' + i, cx + 2, cy + 72, 68, 56, () => { d.m[i] = 1; Som.clique(); });
+        if(est < 2) area('trava' + i, cx + 18, cy + 28, 36, 40, () => { if(est === 0){ erro('Feche o gatilho antes de travar a rosca.', false); } else { d.m[i] = 2; Som.ok(); } }); }
+    }
+    if(!d.puxa){ txt('Toque no gatilho para fechar e depois na rosca para travar.', x + w / 2, y + 252, 15, '#ffd9a8', 'center', '700');
+      btn('conferir', x + w / 2 - 150, y + 268, 300, 56, '⬇ Conferir (puxar)', { en: d.m.every(v => v === 2), fs: 20, pulso: d.m.every(v => v === 2) }, () => { d.puxa = .001; Som.mola(); }); }
+    else txt('Puxando cada mosquetão para conferir…', x + w / 2, y + 296, 18, '#6fe08c', 'center', '800');
+  },
+  /* ---------- 6. dupla checagem ---------- */
+  dupla(P, x, y, w, h, p, d){
+    pessoa(x + 60, y + 250, 1.2, 1, { pose: 'apontar', t: tCena, capacete: COR_EQ(), glow: true, harness: true, papel: 'op2' });
+    rr(x + 10, y - 8, 150, 52, 12); c.fillStyle = 'rgba(255,255,255,.08)'; c.fill(); txt('Confere comigo:', x + 84, y + 14, 14, '#fff', 'center', '800'); txt('algo errado?', x + 84, y + 32, 14, '#ffd9a8', 'center', '700');
+    const gx = x + 180, gw = w - 190, cwid = (gw - 20) / 3, chh = 76;
+    ITENS_DUPLA.forEach((it, i) => {
+      const col = i % 3, row = Math.floor(i / 3), ix = gx + col * (cwid + 10), iy = y + row * (chh + 8), marc = d.marca.includes(i), ruim = d.falha === i && !d.corrigido;
+      rr(ix, iy, cwid, chh, 12); c.fillStyle = marc ? 'rgba(255,90,70,.22)' : d.corrigido && d.falha === i ? 'rgba(50,200,100,.2)' : 'rgba(255,255,255,.05)'; c.fill(); c.strokeStyle = marc ? '#ff6b5e' : d.corrigido && d.falha === i ? '#5fd37a' : 'rgba(255,255,255,.18)'; c.lineWidth = 2; c.stroke();
+      txt(it.n, ix + 12, iy + 26, 15, '#fff', 'left', '800'); par(ruim ? it.ruim : it.ok, ix + 12, iy + 48, cwid - 24, 13, ruim ? '#ffd0c8' : '#b9c4de', 'left', '600', 16);
+      if(marc) txt('⚠', ix + cwid - 24, iy + 26, 18, '#ff6b5e', 'center', '800');
+      area('item' + i, ix, iy, cwid, chh, () => { if(d.corrigido) return; const k = d.marca.indexOf(i); if(k >= 0) d.marca.splice(k, 1); else d.marca.push(i); });
+    });
+    const by = y + 3 * (chh + 8) + 4;
+    btn('tudook', gx, by, (gw - 10) / 2, 54, '✔ Tudo conforme\nliberar', { cor: '#2e9a55', texto: '#fff', fs: 18 }, () => {
+      if(d.falha >= 0 && !d.corrigido){ erro('Você ia lançar com falha: "' + ITENS_DUPLA[d.falha].n + ' — ' + ITENS_DUPLA[d.falha].ruim + '". ' + ITENS_DUPLA[d.falha].e, true); d.marca = []; return; }
+      if(d.marca.length){ erro('Há itens marcados como errados. Desmarque-os ou use "Reportar".', false); return; }
+      passoOk(d.corrigido ? CONFIG.pontos.bonusRapido : 0);
+    });
+    btn('reportar', gx + (gw - 10) / 2 + 10, by, (gw - 10) / 2, 54, '⚠ Reportar item marcado\ne corrigir', { cor: '#FF7A00', fs: 18, en: !d.corrigido }, () => {
+      if(!d.marca.length){ toast('Toque no cartão do item que você acha errado.', 'aviso', 2.2); return; }
+      const certo = d.falha >= 0 && d.marca.length === 1 && d.marca[0] === d.falha;
+      if(certo){ d.corrigido = true; d.marca = []; Som.ok(); addPts(CONFIG.pontos.bonusRapido * 2); chk.msg = '✔ Boa! "' + ITENS_DUPLA[d.falha].n + '" corrigido e conferido de novo (+' + CONFIG.pontos.bonusRapido * 2 + '). Agora confirme que está tudo conforme.'; chk.msgTipo = 'ok'; }
+      else { const erradoMarc = d.marca.find(m => m !== d.falha); erro(d.falha >= 0 && d.marca.includes(d.falha) ? 'Marque só o item com falha: os outros estão corretos.' : '"' + ITENS_DUPLA[erradoMarc].n + '" estava conforme. Releia o cartão com calma' + (d.falha >= 0 ? ' — há outro item com problema.' : ' — nesta checagem não havia falha.'), false); d.marca = []; }
+    });
+  },
+  /* ---------- 7. rádio ---------- */
+  radio(P, x, y, w, h, p, d){
+    const via = chk.via;
+    /* aparelho de rádio */
+    const rx = x + 10, ry = y + 4; rr(rx, ry, 150, 230, 18); c.fillStyle = '#161a28'; c.fill(); c.strokeStyle = '#3a4260'; c.lineWidth = 3; c.stroke();
+    c.strokeStyle = '#2a3048'; c.lineWidth = 6; c.beginPath(); c.moveTo(rx + 112, ry); c.lineTo(rx + 112, ry - 40); c.stroke();
+    rr(rx + 16, ry + 22, 118, 60, 8); c.fillStyle = '#031208'; c.fill(); txt('CANAL 1', rx + 75, ry + 48, 15, '#6fe08c', 'center', '700', 'ui-monospace,Consolas,monospace'); txt(d.espera > 0 ? 'RX ···' : 'ESPERA', rx + 75, ry + 70, 13, d.espera > 0 ? '#ffd26a' : '#3d8f55', 'center', '700', 'ui-monospace,Consolas,monospace');
+    for(let i = 0; i < 6; i++){ c.fillStyle = '#0c0e18'; c.fillRect(rx + 24, ry + 110 + i * 14, 102, 4); }
+    c.beginPath(); c.arc(rx + 75, ry + 200, 12, 0, 7); c.fillStyle = d.espera > 0 ? '#ffd26a' : '#2c334c'; c.fill();
+    /* conversa */
+    const lx = x + 190, lw = w - 190 - 190;
+    d.log.forEach((l, i) => { const yy = y + 6 + i * 56, eu = l[0] === 'eu'; rr(lx, yy, lw, 48, 12); c.fillStyle = eu ? 'rgba(255,122,0,.16)' : 'rgba(70,170,255,.16)'; c.fill(); c.strokeStyle = eu ? '#FF7A00' : '#4aa8ff'; c.lineWidth = 1.5; c.stroke();
+      txt(eu ? 'LANÇAMENTO' : 'RECEBIMENTO', lx + 12, yy + 18, 11, eu ? '#FFB070' : '#9fd0ff', 'left', '800'); txt(l[1], lx + 12, yy + 38, 16, '#fff', 'left', '700'); });
+    if(d.espera > 0){ const yy = y + 6 + d.log.length * 56; txt('Recebimento respondendo' + '.'.repeat(1 + Math.floor(tCena * 3) % 3), lx, yy + 26, 15, '#9fd0ff', 'left', '600'); }
+    /* botões */
+    const bx = x + w - 180, bw = 180;
+    if(d.f === 0 && d.espera <= 0) btn('r1', bx, y + 4, bw, 90, '📻 Chamar\n"QAP Recebimento,\nstatus da Via ' + via + '"', { fs: 14, pulso: true }, () => { d.log.push(['eu', 'QAP Recebimento, status da Via ' + via + '.']); Som.radio(); d.f = 1; d.espera = rnd(1.3, 2.6) + (T.d.nome === 'Dia Lotado' ? 1.2 : 0); });
+    if(d.f === 2 && d.espera <= 0) btn('r2', bx, y + 4, bw, 90, '📻 Pedir\n"Recebimento,\nconfirma?"', { fs: 14, pulso: true }, () => { d.log.push(['eu', 'Recebimento, confirmação da Via ' + via + '?']); Som.radio(); d.f = 3; d.espera = rnd(1, 1.8); });
+    btn('avancar', bx, y + 110, bw, 80, '▶ Avançar para\ncontagem', { cor: d.f === 4 ? '#2e9a55' : '#5a6178', texto: '#fff', fs: 15, solido: d.f === 4 }, () => {
+      if(d.f !== 4){ T.premat++; erro('Você tentou avançar antes da resposta do Recebimento! ' + p.explica, true); return; } passoOk(); });
+  },
+  /* ---------- 8. contagem ---------- */
+  contagem(P, x, y, w, h, p, d){
+    const cx = x + w / 2;
+    pessoa(cx - 190, y + 270, 1.3, 1, { pose: 'trabalho', t: tCena, capacete: COR_EQ(), glow: true, harness: true, papel: 'op1' });
+    pessoa(cx + 190, y + 270, 1.3, -1, { pose: 'radio', t: tCena + 1, capacete: COR_EQ(), glow: true, harness: true, papel: 'op2' });
+    if(d.f === 0){ par('Via ' + chk.via + ' liberada pelo Recebimento. Líder: "Sejam muito bem-vindos à Tirolesa Mais Alta das Américas! Olhem muito para baixo, pois as nossas emoções começam em:"', cx, y + 34, 560, 17, '#fff', 'center', '700'); btn('iniciar', cx - 160, y + 120, 320, 70, 'INICIAR CONTAGEM', { fs: 24, pulso: true }, () => { d.f = 1; d.n = 3; d.tn = 0; Som.bip(880); }); }
+    else if(d.f === 1){ const k = 1 - d.tn / .95; txt('Olhem muito para baixo, pois as nossas emoções começam em…', cx, y + 30, 16, '#ffd9a8', 'center', '700'); c.save(); c.translate(cx, y + 150); c.scale(1 + k * .4, 1 + k * .4); txt(String(d.n), 0, 50, 150, 'rgba(255,122,0,' + (.4 + k * .6) + ')', 'center', '900'); c.restore(); }
+    else { txt('Valeu, galera! O mundo é de vocês!!!', cx, y + 56, 24, '#7dffb1', 'center', '900'); btn('gatilho', cx - 190, y + 100, 380, 90, 'RETIRAR BACKUP E\nLIBERAR O CLIENTE', { fs: 21, pulso: true }, () => { passoOk(); }); }
+  }
+};
+function avancaRadio(){
+  const d = chk.d, via = chk.via;
+  if(d.f === 1){ if(d.ocupadaPrimeiro){ d.ocupadaPrimeiro = false; d.log.push(['rx', 'Via ' + via + ' bloqueada: ainda desequipando. Aguarde.']); Som.radio(); d.espera = rnd(2, 3); return; } d.log.push(['rx', 'Via ' + via + ' liberada.']); Som.radio(); d.f = 2; }
+  else if(d.f === 3){ d.log.push(['rx', 'Confirmado: Via ' + via + ' liberada.']); Som.radio(); d.f = 4; chk.msg = '✔ Confirmação recebida. Pode avançar.'; chk.msgTipo = 'ok'; }
+}
+
+/* =====================================================================
+   LANÇAMENTO E DESCIDA
+   ===================================================================== */
+function lancar(){
+  const cli = chk.cli, via = chk.via; T.uso[via]++; T.lancados++; T.tempos.push(chk.t);
+  let bonus = 0; if(chk.equilibrada){ bonus += CONFIG.pontos.viaEquilibrada; addPts(CONFIG.pontos.viaEquilibrada); }
+  const lim = T.d.tempoCliente; if(lim && chk.t > lim){ const exc = Math.floor((chk.t - lim) / 10) + 1; addPts(-5 * exc); }
+  D = { t: 0, dur: CONFIG.descidaSegundos * (1.12 - clamp((cli.total - 40) / 400, 0, .3)), via, cli, foto: false, flash: 0, fotoMsg: '', chk, bonus, vento: [], uau: 0 };
+  for(let i = 0; i < 22; i++) D.vento.push({ x: Math.random() * 1, y: Math.random() * 720, l: rnd(.4, 1) });
+  T.cool[via] = CONFIG.viaRetornoSegundos + CONFIG.descidaSegundos * .0;
+  D.ext = cli.ev || null; D.parado = 0; D.gust = false; EXT = null;
+  fade = 0; estado = ST.DESC; Som.roldanaInicio(); Som.bip(1320);
+}
+function velocidade(t){ const acel = clamp(t / .2, 0, 1), fr = 1 - .22 * ease((t - .72) / .28); return clamp(acel * fr, 0, 1); }
+function atualizaDescida(dt){
+  /* nas extrações, uma rajada de vento para o cliente: simples = perto das molas; moderada = sobre o vão do cânion */
+  let k = 1; if(D.ext){ const tg = D.ext === 'simples' ? .66 : .36; k = 1 - ease((D.t - tg) / .14); if(k < .02) k = 0; D.gust = D.t > tg - .03; }
+  D.t += dt / D.dur * k; const sp = velocidade(D.t) * k, cli = D.cli;
+  D.kmh = sp * CONFIG.tirolesa.velMax * (.88 + .12 * clamp((cli.total - 40) / 70, 0, 1)); D.dist = clamp(D.t, 0, 1) * CONFIG.tirolesa.extensao;
+  D.zoom = 1 - .5 * Math.pow(Math.sin(Math.PI * clamp((D.t - .3) / .36, 0, 1)), 1.4); D.uau = Math.sin(Math.PI * clamp((D.t - .3) / .36, 0, 1));
+  if(D.flash > 0) D.flash = Math.max(0, D.flash - dt * 3);
+  Som.roldana(sp);
+  if(D.ext && k === 0){ D.parado += dt; if(D.parado > 2.8 && estado === ST.DESC){ estado = ST.FADE; Som.roldanaFim(); } }
+  if(!D.ext && estado === ST.DESC && D.t >= .86){ estado = ST.FADE; }
+  if(estado === ST.FADE){
+    if(D.ext){ fade = clamp(fade + dt / 1.1, 0, 1); if(fade >= 1) iniciaExt(D.ext); }
+    else { fade = clamp((D.t - .86) / .14, 0, 1); if(D.t >= 1){ iniciaRecebimento(); } }
+  }
+}
+function foto(){
+  if(D.foto || estado !== ST.DESC) return; D.foto = true; D.flash = 1; T.fotos++; Som.foto();
+  const perf = D.uau > .55; const pts = perf ? CONFIG.pontos.fotoPerfeita : CONFIG.pontos.foto; addPts(pts); D.fotoMsg = perf ? 'Foto perfeita do cânion! +' + pts : 'Foto tirada! +' + pts; D.fotoT = 2.4;
+}
+function cenaDescida(){
+  const z = D.zoom || 1, spn = D.kmh / CONFIG.tirolesa.velMax;
+  if(V3) V3.descida({ D, t: tCena }); else {
+  const pal = PAL.dia, t = D.t, off = t * 5200;
+  ceu(pal, -OY, 720);
+  c.save(); c.translate(W / 2, 330); c.scale(z, z); c.translate(-W / 2, -330);
+  camadas(pal, tCena, off, { dy: -t * 40 + (1 - z) * 80 });
+  const u = D.uau || 0; if(u > .02){
+    [-1, 1].forEach(sg => { const g = c.createLinearGradient(sg < 0 ? -200 : W + 200, 0, W / 2, 0); g.addColorStop(0, 'rgba(14,20,40,' + (.95 * u) + ')'); g.addColorStop(1, 'rgba(14,20,40,0)'); c.fillStyle = g; c.beginPath(); c.moveTo(sg < 0 ? -W : W * 2, -900); c.lineTo(sg < 0 ? W * .32 : W * .68, 160); c.lineTo(sg < 0 ? W * .22 : W * .78, 760); c.lineTo(sg < 0 ? -W : W * 2, 1600); c.closePath(); c.fill(); }); }
+  const ab = c.createLinearGradient(0, 520, 0, 900); ab.addColorStop(0, 'rgba(10,18,34,0)'); ab.addColorStop(1, 'rgba(10,18,34,.8)'); c.fillStyle = ab; c.fillRect(-W, 520, W * 3, 900);
+  c.restore();
+  /* cabo (reta descendo) e cliente pendurado, fixos no meio da tela */
+  const cx = W / 2, cy = 330, k = .08, esc = D.cli.escala;
+  c.save(); c.translate(cx, cy); c.scale(z * .9 + .1, z * .9 + .1);
+  c.strokeStyle = '#d6deef'; c.lineWidth = 3.2; c.beginPath(); c.moveTo(-W * 2, -W * 2 * k); c.lineTo(W * 2, W * 2 * k); c.stroke(); c.strokeStyle = 'rgba(255,255,255,.4)'; c.lineWidth = 1; c.beginPath(); c.moveTo(-W * 2, -W * 2 * k - 6); c.lineTo(W * 2, W * 2 * k - 6); c.stroke();
+  const bal = Math.sin(tCena * 1.6) * 2; c.rotate(Math.atan(k) + bal * .01);
+  const feet = 20 + 241 * esc;
+  [-14, 14].forEach(dx => { c.beginPath(); c.arc(dx, 0, 11, 0, 7); c.fillStyle = '#7e89a3'; c.fill(); c.strokeStyle = '#eef2fb'; c.lineWidth = 2.4; c.stroke(); }); c.fillStyle = '#5c6680'; rr(-26, 8, 52, 8, 4); c.fill();
+  c.strokeStyle = '#ff9c3a'; c.lineWidth = 3; c.beginPath(); c.moveTo(-10, 16); c.lineTo(-6, feet - 103 * esc); c.moveTo(10, 16); c.lineTo(6, feet - 103 * esc); c.stroke();
+  pessoa(0, feet, 1.2 * esc, 1, { pose: 'pendurado', t: tCena, capacete: D.cli.capaceteCor, touca: true, oculos: true, harness: true, colete: true, cinta: true, seat: true });
+  c.restore();
+  }
+  c.save(); c.strokeStyle = 'rgba(255,255,255,' + (.12 + spn * .28) + ')'; c.lineWidth = 2; c.lineCap = 'round';
+  D.vento.forEach(v => { const x = ((v.x * (W + 400) - tCena * (300 + 1500 * spn) * v.l) % (W + 400) + (W + 400)) % (W + 400) - 200, l = (20 + 180 * spn) * v.l; c.beginPath(); c.moveTo(x, v.y); c.lineTo(x + l, v.y); c.stroke(); }); c.restore();
+  if(!V3 && D.uau > .15){ const a = clamp((D.uau - .15) / .5, 0, 1); c.save(); c.globalAlpha = a; txt('UAU!', W / 2, 160, 84, '#fff', 'center', '900'); txt('O cânion se abre sob você', W / 2, 198, 22, '#ffe6cc', 'center', '700'); c.restore(); }
+  if(D.flash > 0){ c.fillStyle = 'rgba(255,255,255,' + D.flash + ')'; c.fillRect(-300, -OY, W + 600, H); }
+}
+function telaDescida(){
+  if(!V3) hud(); else { btn('som', W - 56, 8, 44, 42, Som.mudo ? '🔇' : '🔊', { cor: '#5a6178', fs: 18, r: 10 }, () => Som.alterna()); btn('pausa', W - 108, 8, 44, 42, '❚❚', { cor: '#5a6178', fs: 16, r: 10 }, alternaPausa); }
+  const cli = D.cli;
+  /* velocímetro */
+  const vx = 110, vy = 600, r = 76; c.save(); c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 16; c.beginPath(); c.arc(vx, vy, r, 0, 7); c.fillStyle = 'rgba(8,10,18,.78)'; c.fill(); c.restore();
+  c.lineWidth = 9; c.lineCap = 'round'; c.strokeStyle = '#242a3e'; c.beginPath(); c.arc(vx, vy, r - 12, Math.PI * .8, Math.PI * 2.2); c.stroke();
+  const f = clamp(D.kmh / 40, 0, 1); c.strokeStyle = '#FF7A00'; c.beginPath(); c.arc(vx, vy, r - 12, Math.PI * .8, Math.PI * (.8 + 1.4 * f)); c.stroke();
+  txt(Math.round(D.kmh), vx, vy + 10, 38, '#fff', 'center', '900'); if(!V3) txt('km/h', vx, vy + 32, 14, '#aab4cc', 'center', '700');
+  /* progresso */
+  const bw = Math.min(520, W * .4), bx = W / 2 - bw / 2, by = 668; rr(bx, by, bw, 14, 7); c.fillStyle = 'rgba(8,10,18,.75)'; c.fill(); rr(bx, by, Math.max(14, bw * clamp(D.t, 0, 1)), 14, 7); c.fillStyle = '#FF7A00'; c.fill();
+  if(!V3){ txt(Math.round(D.dist) + ' / ' + CONFIG.tirolesa.extensao + ' m  ·  profundidade do cânion: ' + CONFIG.tirolesa.profundidade + ' m', W / 2, by - 10, 15, '#fff', 'center', '700');
+  txt('Via ' + D.via + ' · cabos ' + viaPorId(D.via).cabos.join(' e '), W / 2, 90, 17, '#fff', 'center', '700'); }
+  /* foto */
+  btn('foto', W - 150, 620, 120, 70, D.foto ? '📷 ✔' : '📷 Foto', { en: !D.foto && estado === ST.DESC, fs: 20, pulso: !D.foto && D.uau > .5, cor: '#4aa8ff', texto: '#06121f' }, foto);
+  if(D.fotoT > 0){ D.fotoT -= 1 / 60; txt(D.fotoMsg, W / 2, 250, 26, '#ffe66b', 'center', '800'); }
+  if(D.ext && D.gust){ const w = Math.min(640, W - 60); rr(W / 2 - w / 2, 124, w, 58, 12); c.fillStyle = 'rgba(70,10,10,.88)'; c.fill(); c.strokeStyle = '#ff6b5e'; c.lineWidth = 2; c.stroke();
+    txt(D.parado > .3 ? 'CLIENTE PARADO' : 'RAJADA DE VENTO!', W / 2, 152, 24, '#ffb3ad', 'center', '900'); txt(D.ext === 'simples' ? (D.parado > .3 ? 'a 30 m das molas: extração simples' : 'rajadas perto do fim do cabo') : (D.parado > .3 ? 'sobre o vão do cânion: extração moderada' : 'rajadas de 90 km/h, de repente'), W / 2, 172, 14, '#ffd0c8', 'center', '700'); }
+}
+
+/* =====================================================================
+   RECEBIMENTO
+   ===================================================================== */
+/* =====================================================================
+   RECEBIMENTO — deck com molas grandes, cabo quase reto, receptivo e roteiro de desequipagem
+   ===================================================================== */
+function geoRec(){
+  const postX = W * .9, L0 = 250;
+  return { gY: 596, ch: 648, postX, L0, xContact: postX - L0 - 30, cabY: x => lerp(236, 270, clamp((x + 100) / (postX + 100), 0, 1)), recX: 36, recW: 300 };
+}
+function receptivo(G){
+  const x = G.recX, w = G.recW, top = 470;
+  c.fillStyle = 'rgba(10,13,26,.62)'; c.fillRect(x, top + 16, w, G.ch - top - 16);
+  c.strokeStyle = 'rgba(255,255,255,.12)'; c.lineWidth = 1; for(let i = 1; i < 6; i++){ c.beginPath(); c.moveTo(x + i * w / 6, top + 16); c.lineTo(x + i * w / 6, G.ch); c.stroke(); }
+  c.fillStyle = '#1a1f33'; c.beginPath(); c.moveTo(x - 16, top + 18); c.lineTo(x + 14, top); c.lineTo(x + w - 14, top); c.lineTo(x + w + 16, top + 18); c.closePath(); c.fill(); c.strokeStyle = '#FF7A00'; c.lineWidth = 2; c.stroke();
+  c.fillStyle = '#05060b'; c.fillRect(x - 4, top + 16, 9, G.ch - top - 16); c.fillRect(x + w - 5, top + 16, 9, G.ch - top - 16);
+  txt('RECEPTIVO · retirada de EPI', x + w / 2, top + 13, 12, '#ffd9a8', 'center', '800');
+}
+function molas(G, bx){
+  const mx0 = Math.max(bx, G.xContact) + 14, mx1 = G.postX, nn = 9, my = G.cabY(bx) + 2, amp = 30;
+  c.save(); c.lineJoin = 'round'; c.lineCap = 'round';
+  c.strokeStyle = '#2b3148'; c.lineWidth = 6; c.beginPath(); c.moveTo(mx0, my); c.lineTo(mx1, my); c.stroke();
+  [[10, '#6a7490'], [7, '#cfd6e6'], [2.4, '#ffffff']].forEach(([lw, col]) => { c.strokeStyle = col; c.lineWidth = lw; c.beginPath(); c.moveTo(mx0, my);
+    for(let i = 1; i <= nn; i++){ const xx = lerp(mx0, mx1, i / nn), xp = lerp(mx0, mx1, (i - .5) / nn); c.lineTo(xp, my + (i % 2 ? -amp : amp)); } c.lineTo(mx1, my); c.stroke(); });
+  c.fillStyle = '#8a93a8'; rr(mx0 - 10, my - 38, 16, 76, 5); c.fill(); c.restore();
+  c.fillStyle = '#10131c'; c.fillRect(mx1 - 6, G.cabY(mx1) - 70, 20, G.ch - G.cabY(mx1) + 66);
+}
+function deckBase(G, bx){
+  cenario(PAL.fim, tCena, 900, { dy: -20 });
+  const g = c.createLinearGradient(0, G.gY, 0, 760); g.addColorStop(0, '#2d2018'); g.addColorStop(1, '#0c0807'); c.fillStyle = g; c.fillRect(-300, G.gY, W + 600, 300); c.fillStyle = '#4a3527'; c.fillRect(-300, G.gY - 4, W + 600, 8);
+  receptivo(G);
+  c.save(); c.setLineDash([16, 12]); c.strokeStyle = '#e8b04a'; c.lineWidth = 5; c.beginPath(); c.moveTo(G.xContact - 60, G.ch + 24); c.lineTo(G.recX + G.recW - 20, G.ch + 24); c.stroke(); c.restore();
+  txt('siga a faixa até o receptivo', (G.xContact + G.recX) / 2, G.ch + 46, 12, '#e8b04a', 'center', '700');
+  c.fillStyle = '#e8b04a'; c.fillRect(G.postX - G.L0 - 70, G.gY - 3, 6, 8);
+  c.strokeStyle = '#d6deef'; c.lineWidth = 3.2; c.beginPath(); c.moveTo(-100, G.cabY(-100)); c.lineTo(G.postX, G.cabY(G.postX)); c.stroke();
+  molas(G, bx);
+}
+function bxRec(R, G){
+  const t = R.t; if(R.t0 >= 3.8) return G.xContact + G.L0 * .32;
+  if(t < 2.0) return lerp(-160, G.xContact, t / 2.0);
+  if(t < 2.9) return G.xContact + R.maxComp * G.L0 * Math.sin(Math.PI / 2 * ((t - 2) / .9));
+  if(t < 3.8) return lerp(G.xContact + R.maxComp * G.L0, G.xContact + G.L0 * .32, ease((t - 2.9) / .9));
+  return G.xContact + G.L0 * .32;
+}
+function iniciaRecebimento(o){
+  o = o || {}; Som.roldanaFim(); const cli = D.cli, t0 = o.t0 || 0;
+  REC = { t: t0, t0, cli, via: D.via, maxComp: rnd(.46, .74), fim: false, espera: null, dupla: t0 > 7.8, pts: { a: false, b: false }, ext: o.ext || null, ganho: 0, festa: false, ptPos: null,
+    legendas: [ [0, 3.6, 'Cliente chegando ao Deck de Recebimento…'], [3.6, 5.8, 'Frenagem pelas molas dentro do limite seguro. Operadores se aproximam; a escada é posicionada.'], [5.8, 7.8, 'Clipando a cadeirinha em duas cordas que saem do mesmo ponto do chão: a branca à esquerda do cliente e a vermelha à direita.'],
+      [8, 9.6, 'Desclipando a ancoragem anti-suicídio.'], [9.6, 11.2, 'Desclipando o cinto vertical (o “colete” de fita).'], [11.2, 12.8, 'Desclipando o cinto horizontal da barriga.'], [12.8, 14.8, 'O cliente desce com cuidado pela escada.'],
+      [14.8, 19.6, 'Cliente orientado a seguir a faixa até o receptivo. Operador retira as roldanas do cabo, uma por vez.'], [19.6, 23.6, 'No receptivo: retirada do capacete, da touca, dos óculos e do cinto paraquedista.'] ] };
+  estado = ST.REC; fade = o.t0 ? 0 : 1; if(!o.t0) Som.mola();
+}
+function atualizaRec(dt){
+  const R = REC; if(!R.espera) R.t += dt;
+  if(!R.ann1 && R.t >= 3.9 && R.t0 < 3.8){ R.ann1 = true; toast('📻 Recebimento → Lançamento: "Via ' + R.via + ' bloqueada." (cliente chegou, kit em uso)', 'aviso', 3.6); Som.radio(); }
+  if(!R.ann2 && R.t >= 17.5){ R.ann2 = true; toast('📻 Recebimento → Lançamento: "Via ' + R.via + ' liberada." (cadeirinha retirada)', 'ok', 3.6); Som.radio(); }
+  if(R.t >= 7.8 && !R.dupla){ R.t = 7.8; R.espera = 'dupla'; }
+  if(fade > 0){ fade = Math.max(0, fade - dt / 1.2); }
+  if(R.t0 === 0 && Math.abs(R.t - 2.0) < dt) Som.mola();
+  if(R.t > 23.6 && !R.festa){ R.festa = true; Som.festa(); for(let i = 0; i < 70; i++) confete.push({ x: REC.xFesta || W * .25, y: 260, vx: rnd(-170, 170), vy: rnd(-400, -90), r: rnd(3, 6), cor: pick(['#FF7A00', '#ffffff', '#4DA3FF', '#ffe066']), t: rnd(0, 6) }); }
+  confete.forEach(f => { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.t += dt * 8; }); confete = confete.filter(f => f.y < 800);
+  if(R.t > 24.6 && !R.fim){ R.fim = true; R.ganho = T.pts - D.chk.p0; }
+}
+function cenaRec3D(){
+  const R = REC; V3.recebimento({ R, t: tCena });
+  if(R.ptPos3){ R.ptPos = R.ptPos3.map(v => { const q = V3.proj(v.x, v.y, v.z, S, OY); return [q.x, q.y]; }); const q = V3.proj(R.ptPos3[0].x, R.ptPos3[0].y - 3, R.ptPos3[0].z, S, OY); R.xFesta = q.x; }
+  confete.forEach(f => { c.save(); c.translate(f.x, f.y); c.rotate(f.t); c.fillStyle = f.cor; c.fillRect(-f.r, -f.r / 2, f.r * 2, f.r); c.restore(); });
+}
+function cenaRecebimento(){
+  if(V3){ cenaRec3D(); return; }
+  const G = geoRec(), R = REC, t = R.t, ch = R.cli, esc = ch.escala, gnd = G.ch;
+  const bx = bxRec(R, G); R.comp = clamp((bx - G.xContact) / G.L0, 0, 1);
+  deckBase(G, bx);
+  const cy = G.cabY(bx), fh = cy + 20 + 241 * esc, hipW = fh - 103 * esc, recIn = G.recX + 170;
+  /* cliente: pendurado até 12.8; desce pela escada; caminha ao receptivo; retira o EPI */
+  const desce = ease((t - 12.8) / 2.0), anda = ease((t - 14.8) / 4.8);
+  const cxx = t < 12.8 ? bx : t < 14.8 ? bx + 60 * desce : lerp(bx + 60, recIn, anda);
+  const feet = t < 12.8 ? fh : t < 14.8 ? lerp(fh, gnd, desce) : gnd;
+  const andando = t > 14.8 && t < 19.6, face = andando ? -1 : 1;
+  R.xFesta = cxx;
+  /* escada e kit (roldanas, cordas) */
+  if(t > 5.6 && t < 15.4){ const lx = bx - 38; c.strokeStyle = '#8a8f9c'; c.lineWidth = 5; c.beginPath(); c.moveTo(lx - 20, gnd); c.lineTo(lx + 34, cy + 80); c.moveTo(lx + 8, gnd); c.lineTo(lx + 62, cy + 80); c.stroke(); c.lineWidth = 3; for(let i = 1; i < 7; i++){ const k = i / 7; c.beginPath(); c.moveTo(lerp(lx - 20, lx + 34, k), lerp(gnd, cy + 80, k)); c.lineTo(lerp(lx + 8, lx + 62, k), lerp(gnd, cy + 80, k)); c.stroke(); } }
+  const kitNoCabo = t < 17.4;
+  if(kitNoCabo){ [-14, 14].forEach(dx => { c.beginPath(); c.arc(bx + dx, cy, 11, 0, 7); c.fillStyle = '#7e89a3'; c.fill(); c.strokeStyle = '#eef2fb'; c.lineWidth = 2.4; c.stroke(); });
+    c.strokeStyle = '#ff9c3a'; c.lineWidth = 3; c.beginPath(); c.moveTo(bx - 10, cy + 12); c.lineTo(bx - 6, hipW); c.moveTo(bx + 10, cy + 12); c.lineTo(bx + 6, hipW); c.stroke();
+    if(t >= 12.8){ c.fillStyle = '#39445c'; rr(bx - 19, hipW, 38, 13, 6); c.fill(); } }
+  /* cordas de ancoragem da cadeirinha em dois pontos distintos */
+  R.ptPos = [[bx - 14, hipW + 6], [bx + 14, hipW + 6]];
+  /* as duas cordas saem do chão pelo mesmo ponto e se dividem: a branca vai clipada no lado esquerdo da cadeirinha do cliente e a vermelha no direito */
+  const gp = [bx + 46, gnd - 3], jx = [bx + 30, hipW + 150];                 // ponto de saída no chão e ponto onde as cordas se separam
+  c.fillStyle = '#2b3148'; c.beginPath(); c.arc(gp[0], gp[1], 7, 0, 7); c.fill(); c.strokeStyle = '#8a93a8'; c.lineWidth = 2; c.stroke();
+  c.lineWidth = 3.4; c.lineCap = 'round';
+  [[0, '#f6f6f2', 6.4], [1, '#dd2b2b', 7.2]].forEach(([i, cor, ini]) => { if(t > ini && t < 12.8){ const k = ease((t - ini) / .6), A = R.ptPos[i], sw = i ? 16 : -16;
+    const ex = lerp(gp[0], A[0], k), ey = lerp(gp[1], A[1], k), mx = lerp(gp[0], jx[0] + sw, k), my = lerp(gp[1], jx[1], k);
+    c.strokeStyle = cor; c.beginPath(); c.moveTo(gp[0], gp[1]); c.bezierCurveTo(gp[0] - 2, lerp(gp[1], jx[1], .6), mx, my + 8, ex, ey); c.stroke();
+    c.beginPath(); c.arc(R.ptPos[i][0], R.ptPos[i][1], 5.5, 0, 7); c.fillStyle = cor; c.fill(); c.lineWidth = 2; c.strokeStyle = (R.pts.a && i === 0) || (R.pts.b && i === 1) || R.dupla ? '#5fd37a' : 'rgba(0,0,0,.55)'; c.stroke(); c.lineWidth = 3.4; } });
+  if(t < 9.6 && t > 5){ c.strokeStyle = '#ff9c3a'; c.lineWidth = 2; c.beginPath(); c.moveTo(cxx + 4, hipW - 24); c.lineTo(bx + 10, cy + 6); c.stroke(); }          // anti-suicídio
+  /* cliente (EPI sai na ordem do procedimento) */
+  const poseC = t < 12.8 ? 'pendurado' : andando ? 'andar' : t > 23.6 ? 'festa' : 'idle';
+  pessoa(cxx, feet, 1.2 * esc, face, { pose: poseC, t: tCena, capacete: t < 19.8 ? ch.capaceteCor : null, touca: t < 20.6, oculos: t < 21.4, harness: t < 22.2, colete: t < 11.2, cinta: t < 12.8, seat: t < 12.8 });
+  /* EPI indo para a bolsa de higienização */
+  const bolsa = [G.recX + G.recW - 70, gnd - 40]; c.fillStyle = '#2b3148'; rr(bolsa[0], bolsa[1], 46, 38, 8); c.fill(); txt('EPI', bolsa[0] + 23, bolsa[1] + 24, 12, '#ffd9a8', 'center', '800');
+  [[19.8, '⛑'], [20.6, '🧢'], [21.4, '🥽'], [22.2, '🎽']].forEach(([ti, ic]) => { if(t > ti && t < ti + .8){ const k = ease((t - ti) / .8); txt(ic, lerp(recIn, bolsa[0] + 23, k), lerp(gnd - 150 * esc, bolsa[1], k), 26, '#fff', 'center', '400'); } });
+  /* equipe numerada: 6 e 7 operadores, 3 líder, 8 resgatista */
+  const aX = t < 3.8 ? W * .45 : t < 5.6 ? lerp(W * .45, bx - 100, ease((t - 3.8) / 1.8)) : t < 17.4 ? bx - 100 : t < 19.6 ? lerp(bx - 100, G.recX + G.recW + 70, ease((t - 17.4) / 2.2)) : G.recX + G.recW + 70;
+  const bX = t < 6 ? W * .62 : t < 7.6 ? lerp(W * .62, bx - 175, ease((t - 6) / 1.6)) : t < 12.8 ? bx - 175 : bx - 215;
+  const subindo = t > 15.2 && t < 17.4;
+  pessoa(aX, gnd - (subindo ? 70 : 0), 1.2, 1, { pose: t < 3.8 ? 'radio' : (t > 24 ? 'cumprimento' : subindo ? 'trabalho' : 'idle'), t: tCena, capacete: COR_EQ(), glow: true, harness: true, papel: 'op3' });
+  pessoa(bX, gnd, 1.2, 1, { pose: t > 7.6 && t < 12 ? 'apontar' : (t > 24 ? 'cumprimento' : 'idle'), t: tCena + 1, capacete: COR_EQ(), glow: true, harness: true, papel: 'op4' });
+  pessoa(G.recX + G.recW + 40, gnd, 1.2, -1, { pose: t > 13 ? 'apontar' : 'radio', t: tCena + 2, capacete: COR_EQ(), glow: true, harness: true, papel: 'lider2' });
+  pessoa(W * .965, gnd, 1.1, -1, { pose: 'idle', t: tCena + 3, capacete: COR_EQ(), glow: true, harness: true, papel: 'resg' });
+  confete.forEach(f => { c.save(); c.translate(f.x, f.y); c.rotate(f.t); c.fillStyle = f.cor; c.fillRect(-f.r, -f.r / 2, f.r * 2, f.r); c.restore(); });
+}
+function telaRecebimento(){
+  hud(); const R = REC, t = R.t, lg = R.legendas.find(l => t >= l[0] && t < l[1]);
+  if(lg && t < 24.6 && !semLeg){ const w = Math.min(820, W - 80); rr(W / 2 - w / 2, 72, w, 44, 12); c.fillStyle = 'rgba(8,10,18,.8)'; c.fill(); const ls = quebra(lg[2], w - 30, 17, '700'); txt(ls[0], W / 2, ls.length > 1 ? 92 : 100, 17, '#fff', 'center', '700'); if(ls[1]) txt(ls[1], W / 2, 110, 17, '#fff', 'center', '700'); }
+  { const w2 = 360, x2 = W / 2 - w2 / 2, y2 = 124, cp = R.comp || 0; rr(x2, y2, w2, 26, 10); c.fillStyle = 'rgba(8,10,18,.8)'; c.fill(); rr(x2 + 4, y2 + 4, Math.max(6, (w2 - 8) * cp), 18, 7); c.fillStyle = cp > .9 ? '#ff6b5e' : '#5fd37a'; c.fill(); txt('Molas fechadas: ' + Math.round(cp * 100) + '%  (limite seguro 90%)', W / 2, y2 + 19, 13, '#fff', 'center', '800'); }
+  if(R.espera === 'dupla' && R.ptPos){
+    const labs = ['a', 'b'];
+    R.ptPos.forEach((pp, i) => { const ok = R.pts[labs[i]]; c.save(); c.strokeStyle = ok ? '#5fd37a' : '#FF7A00'; c.lineWidth = 3; c.shadowColor = c.strokeStyle; c.shadowBlur = 14; c.beginPath(); c.arc(pp[0], pp[1], 16 + (ok ? 0 : 3 * Math.sin(tCena * 7)), 0, 7); c.stroke(); c.restore(); txt(String(i + 1), pp[0], pp[1] + 5, 14, '#fff', 'center', '800');
+      area('pt' + (i + 1), pp[0] - 22, pp[1] - 22, 44, 44, () => { R.pts[labs[i]] = true; Som.ok(); if(R.pts.a && R.pts.b){ R.dupla = true; R.espera = null; addPts(60); toast('Dupla checagem feita: a cadeirinha está clipada em 2 pontos. +60', 'ok', 2.6); } }); });
+    const w = Math.min(760, W - 80); rr(W / 2 - w / 2, 160, w, 54, 12); c.fillStyle = 'rgba(8,10,18,.9)'; c.fill(); c.strokeStyle = '#FF7A00'; c.lineWidth = 2; c.stroke();
+    txt('DUPLA CHECAGEM · toque nos 2 pontos em que a cadeirinha está clipada', W / 2, 184, 16, '#ffd9a8', 'center', '800'); txt('só depois o cliente pode ser liberado e desequipado', W / 2, 204, 13, '#cfd6ea', 'center', '600');
+  }
+  if(t > 3 && t < 24.6) btn('pular', W - 190, 640, 160, 50, 'Pular ▶▶', { cor: '#5a6178', fs: 16, en: !R.espera && R.dupla }, () => { REC.t = Math.max(REC.t, 23.7); });
+  if(R.fim){
+    const w = Math.min(640, W - 60), h = 340, x = W / 2 - w / 2, y = 130; c.save(); c.shadowColor = '#FF7A00'; c.shadowBlur = 30; rr(x, y, w, h, 20); c.fillStyle = 'rgba(10,12,22,.92)'; c.fill(); c.restore(); rr(x, y, w, h, 20); c.strokeStyle = '#FF7A00'; c.lineWidth = 3; c.stroke();
+    txt('Cliente recebido em segurança!', W / 2, y + 56, 32, '#7dffb1', 'center', '900'); txt(R.cli.nome + ' · Via ' + R.via + (R.ext ? ' · ' + (R.ext === 'simples' ? 'extração simples' : 'extração moderada') : ' · ' + Math.round(D.kmh) + ' km/h na chegada'), W / 2, y + 88, 17, '#cfd6ea', 'center', '600');
+    const c1 = D.chk; const linhas = [['Etapas do procedimento', PROCEDIMENTOS.length + '/' + PROCEDIMENTOS.length], ['Erros neste cliente', String(c1.erros + (D.errosExt || 0))], ['Tempo no deck de lançamento', Math.round(c1.t) + ' s'], ['Pontos deste cliente', '+' + R.ganho + (D.fotoMsg ? '  (com foto)' : '')]];
+    linhas.forEach((l, i) => { txt(l[0], x + 46, y + 132 + i * 30, 18, '#aab4cc', 'left', '600'); txt(l[1], x + w - 46, y + 132 + i * 30, 19, i === 1 && (c1.erros + (D.errosExt || 0)) ? '#ff9a8f' : '#fff', 'right', '800'); });
+    btn('continuar', W / 2 - 150, y + h - 72, 300, 54, T.idx + 1 >= T.fila.length ? 'Ver resumo do turno' : (R.ext === 'moderada' ? 'Resgatista sai da via ▶' : 'Próximo cliente ▶'), { fs: 20, pulso: true }, () => { confete = []; chk = null; D = null; REC = null; EXT = null; T.idx++; proximoOuFim(); });
+  }
+}
+
+/* =====================================================================
+   EXTRAÇÕES (PAE) — fase 2: extração simples · fase 3: extração moderada
+   ===================================================================== */
+let EXT = null;
+const ITENS_RESG = [
+  { n: 'Capacete vermelho',     ok: 'Jugular afivelada',                   ruim: 'Jugular solta',                      e: 'Capacete sem jugular ajustada sai da cabeça.' },
+  { n: 'Cinto paraquedista 7Y', ok: 'Fivelas travadas',                    ruim: 'Fivela da perna aberta',             e: 'O 7Y é o ponto de ancoragem do resgatista: fivela aberta é falha na ancoragem.' },
+  { n: 'Descensor',             ok: 'Corda passada e trava funcionando',   ruim: 'Corda passada ao contrário',         e: 'Descensor com a corda invertida não freia como esperado.' },
+  { n: 'Ascensor ventral',      ok: 'Preso no encordoamento',              ruim: 'Sem mosquetão de trava',             e: 'O ascensor ventral precisa estar travado no encordoamento.' },
+  { n: 'Link curto (2 mosq.)',  ok: 'Fita com 2 mosquetões travados',      ruim: 'Um mosquetão sem trava',             e: 'O link curto liga polia com polia: os dois mosquetões precisam estar travados.' },
+  { n: 'Rádio comunicador',     ok: 'Ligado e testado',                    ruim: 'Desligado',                          e: 'O resgatista precisa do rádio para avisar o coordenador e o APH.' }
+];
+const EXT_DEF = {
+  simples: { titulo: 'FASE 2 · EXTRAÇÃO SIMPLES', sub: 'Manobra tipo 1 · rajadas de vento pararam o cliente a 30 m das molas', passos: [
+    { nome: 'Comunicar a extração', tipo: 'radio', txt: 'Avise o Lançamento pelo rádio: haverá uma extração.', chama: '📻 "Extração simples na Via {via}: cliente parado a 30 m das molas"', resp: 'Lançamento: Recebido, extração na Via {via}. Descidas suspensas.' },
+    { nome: 'Bloquear as descidas', tipo: 'bloqueio', txt: 'Certifique-se de que não há nenhuma via com usuários e bloqueie todas as descidas.' },
+    { nome: 'Pegar o kit de extração', tipo: 'itens', txt: 'Toque só nos itens de que a extração simples precisa.', itens: [['Polia de extração', 1], ['Corda longa', 1], ['Mosquetão com trava', 1], ['Cinto 7Y e kit de resgate completo', 0, 'Isso é para a extração moderada, com acesso ao cabo. Na simples, a polia vai pelo cabo com a corda.']] },
+    { nome: 'Clipar a polia no cabo e na corda', tipo: 'toque', txt: 'Coloque a polia no cabo e clipe a corda nela.', btn: '🔗 Clipar polia + corda', alvo: 'pul0' },
+    { nome: 'Levar a polia até o cliente', tipo: 'puxar', txt: 'Empurre a polia pelo cabo até o cliente, 30 m. Toque várias vezes.', btn: '➡ EMPURRAR', n: 14, campo: 'pul' },
+    { nome: 'Orientar o cliente', tipo: 'escolha', txt: 'A polia chegou. O que você diz ao cliente?', ops: [['"Segure a corda com as duas mãos e fique calmo. Vamos puxar você."', 1], ['"Solte-se da cadeirinha e agarre a corda."', 0, 'O cliente nunca se solta da cadeirinha: ele continua ancorado até o deck.', 1], ['"Fique parado, não segure nada."', 0, 'Ele precisa segurar a corda para ser trazido; oriente com calma e clareza.']] },
+    { nome: 'Puxar o cliente até o deck', tipo: 'puxar', txt: 'Puxe a corda até o deck, junto com os operadores presentes.', btn: '⬅ PUXAR', n: 18, campo: 'cli' }
+  ] },
+  moderada: { titulo: 'FASE 3 · EXTRAÇÃO MODERADA', sub: 'Manobra tipo 2 · rajadas de 90 km/h pararam o cliente sobre o vão do cânion', passos: [
+    { nome: 'Primeira atitude', tipo: 'escolha', txt: 'O cliente (80 kg) parou sobre o vão. O que você faz primeiro?', ops: [['Pedir autorização ao coordenador pelo rádio.', 1], ['Me equipar e ir direto ao cabo.', 0, 'Sem autorização do coordenador não há extração: é ele quem determina as manobras.', 1], ['Esperar o vento passar sem avisar ninguém.', 0, 'A situação precisa ser comunicada de imediato ao coordenador.']] },
+    { nome: 'Pedir autorização', tipo: 'radio', txt: 'Peça autorização ao coordenador.', chama: '📻 "Coordenador, solicito autorização para extração moderada na Via {via}"', resp: 'Coordenador: Autorizado. Siga o PAE e mantenha o rádio aberto.' },
+    { nome: 'Bloquear as descidas', tipo: 'bloqueio', txt: 'Verifique se há vias liberadas e bloqueie imediatamente todas as descidas.' },
+    { nome: 'Equipar-se', tipo: 'itens', txt: 'Toque nos itens do resgatista.', itens: [['Cinto paraquedista 7Y', 1], ['Capacete vermelho', 1], ['Descensor', 1], ['Ascensor ventral', 1], ['Link curto com 2 mosquetões', 1], ['Rádio comunicador', 1], ['Cadeirinha ziprider', 0, 'A cadeirinha ziprider é do cliente. O resgatista usa o cinto 7Y.']], equipa: true },
+    { nome: 'Dupla checagem do resgatista', tipo: 'dupla', txt: 'Outro resgatista ou operador confere o seu equipamento. Marque o item errado, se houver.' },
+    { nome: 'Escolher a via de acesso', tipo: 'escolha', txt: 'Em qual via você se clipa? (Vias 2 e 4 são as intermediárias.)', ops: [['Via 1', 0, 'Nas vias de lançamento o peso baixa demais os cabos e o cliente pode se chocar contra o deck de chegada. Use uma via intermediária.'], ['Via 2 (intermediária)', 1], ['Via 3', 0, 'Nas vias de lançamento o peso baixa demais os cabos e o cliente pode se chocar contra o deck de chegada. Use uma via intermediária.'], ['Via 4 (intermediária)', 1], ['Via 5', 0, 'Nas vias de lançamento o peso baixa demais os cabos e o cliente pode se chocar contra o deck de chegada. Use uma via intermediária.']] },
+    { nome: 'Clipar o encordoamento no cabo', tipo: 'toque', txt: 'Coloque a polia no cabo e clipe o encordoamento nela.', btn: '🔗 Clipar encordoamento', alvo: 'res0' },
+    { nome: 'Ir pelo cabo até o cliente', tipo: 'puxar', txt: 'Puxe-se pelo cabo até o cliente, sobre o vão do cânion.', btn: '➡ PUXAR-SE', n: 22, campo: 'res' },
+    { nome: 'Clipar polia com polia', tipo: 'itens', txt: 'Ligue sua polia à polia do cliente com dois mosquetões em um link curto.', itens: [['Mosquetão 1 na polia do cliente', 1], ['Mosquetão 2 na sua polia', 1], ['Conferir as duas travas', 1]] },
+    { nome: 'Trazer o cliente até o deck', tipo: 'puxar', txt: 'Traga o cliente pelo cabo até o deck de chegada.', btn: '⬅ TRAZER', n: 22, campo: 'back' }
+  ] }
+};
+function iniciaExt(tipo){
+  Som.roldanaFim(); const def = EXT_DEF[tipo];
+  EXT = { tipo, def, i: 0, d: {}, msg: '', msgTipo: '', errosPasso: 0, sc: { pul0: false, pul: 0, cli: 0, res0: false, res: 0, back: 0, bloq: { 1: false, 3: false, 5: false }, eq: {}, prog: 0 }, t: 0 };
+  D.errosExt = 0; estado = ST.EXT; fade = 1; iniciaPassoExt(); toast(def.titulo, 'aviso', 3);
+}
+function iniciaPassoExt(){
+  const p = EXT.def.passos[EXT.i]; EXT.d = { f: 0, espera: 0, marc: [], feitos: [], falha: -1, corrigido: false }; EXT.errosPasso = 0; EXT.sc.prog = 0;
+  if(p.tipo === 'dupla') EXT.d.falha = Math.random() < .75 ? rint(0, ITENS_RESG.length - 1) : -1;
+  EXT.msg = ''; EXT.msgTipo = '';
+}
+function erroExt(m, grave){ EXT.errosPasso++; D.errosExt++; T.erros++; if(grave) T.graves++; addPts(-(grave ? CONFIG.pontos.penalGrave : CONFIG.pontos.penalErro)); EXT.msg = m; EXT.msgTipo = 'erro'; EXT.flash = 1; Som.erro(); }
+function passoExtOk(){
+  addPts(Math.max(30, 100 - EXT.errosPasso * 25)); Som.ok(); EXT.i++;
+  if(EXT.i >= EXT.def.passos.length){ T.extracoes = (T.extracoes || 0) + 1; addPts(200); iniciaRecebimento({ ext: EXT.tipo, t0: 5.4 }); return; }
+  iniciaPassoExt(); toast('✔ Etapa concluída', 'ok', 1.6);
+}
+function atualizaExt(dt){
+  const E = EXT, d = E.d, p = E.def.passos[E.i]; E.t += dt; if(fade > 0) fade = Math.max(0, fade - dt / 1.2); if(E.flash > 0) E.flash = Math.max(0, E.flash - dt * 1.6);
+  if(p.tipo === 'radio' && d.f === 1){ d.espera -= dt; if(d.espera <= 0){ d.f = 2; Som.radio(); EXT.msg = ''; setTimeout(() => { if(EXT && EXT.def.passos[EXT.i] === p) passoExtOk(); }, 900); } }
+  if(p.tipo === 'puxar'){ E.sc.prog = Math.max(0, E.sc.prog - dt * .08); E.sc[p.campo] = E.sc.prog; if(p.campo === 'cli') E.sc.pul = 1 - E.sc.prog * 0; }
+}
+const viaTxt = s => s.replace('{via}', D.via);
+function cenaExt(){
+  if(V3){ if(EXT.tipo === 'simples') V3.extSimples({ E: EXT, D }); else V3.extModerada({ E: EXT, D }); ventoLinhas(EXT.tipo === 'simples' ? .55 : .9); return; }
+  if(EXT.tipo === 'simples') cenaExtSimples(); else cenaExtModerada();
+}
+function ventoLinhas(k){
+  c.save(); c.strokeStyle = 'rgba(255,255,255,' + (.14 + k * .3) + ')'; c.lineWidth = 2; c.lineCap = 'round';
+  for(let i = 0; i < 26; i++){ const v = (i * 97) % 720, x = (((i * 331) % (W + 400)) - tCena * (500 + 1200 * k) * (.5 + (i % 5) / 6)) % (W + 400); const xx = (x + W + 400) % (W + 400) - 200; c.beginPath(); c.moveTo(xx, v + 40); c.lineTo(xx + 40 + 150 * k, v + 40); c.stroke(); }
+  c.restore();
+}
+function cenaExtSimples(){
+  const G = geoRec(), E = EXT, sc = E.sc, ch = D.cli, esc = ch.escala, xFar = G.xContact - 380, xStop = G.xContact + G.L0 * .32;
+  const bx = lerp(xFar, xStop, sc.cli); deckBase(G, G.xContact);
+  const cy = G.cabY(bx), fh = cy + 20 + 241 * esc;
+  /* medida de 30 m */
+  if(sc.cli < .02){ c.strokeStyle = '#ffd26a'; c.lineWidth = 2; c.setLineDash([6, 6]); c.beginPath(); c.moveTo(bx, cy - 50); c.lineTo(G.xContact, cy - 50); c.stroke(); c.setLineDash([]); txt('30 m até as molas', (bx + G.xContact) / 2, cy - 58, 14, '#ffd26a', 'center', '800'); }
+  /* polia de extração com corda, vinda do deck */
+  const xDeck = xStop - 30; if(sc.pul0){ const px = lerp(xDeck, bx - 6, sc.cli > 0 ? 1 : sc.pul), py = G.cabY(px); c.strokeStyle = '#7fe0ff'; c.lineWidth = 3; c.beginPath(); c.moveTo(xDeck + 10, G.ch - 120); c.quadraticCurveTo((xDeck + px) / 2, Math.max(py, G.ch - 150) + 18, px, py); c.stroke();
+    [-8, 8].forEach(dx => { c.beginPath(); c.arc(px + dx, py, 8, 0, 7); c.fillStyle = '#9aa4be'; c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 2; c.stroke(); }); }
+  /* cliente suspenso */
+  [-14, 14].forEach(dx => { c.beginPath(); c.arc(bx + dx, cy, 11, 0, 7); c.fillStyle = '#7e89a3'; c.fill(); c.strokeStyle = '#eef2fb'; c.lineWidth = 2.4; c.stroke(); });
+  c.strokeStyle = '#ff9c3a'; c.lineWidth = 3; c.beginPath(); c.moveTo(bx - 10, cy + 12); c.lineTo(bx - 6, fh - 103 * esc); c.moveTo(bx + 10, cy + 12); c.lineTo(bx + 6, fh - 103 * esc); c.stroke();
+  pessoa(bx, fh, 1.2 * esc, 1, { pose: 'pendurado', t: tCena, capacete: ch.capaceteCor, touca: true, oculos: true, harness: true, colete: true, cinta: true, seat: true });
+  /* equipe numerada: resgatista 8 puxando, operadores 6 e 7 ajudando, líder 3 coordenando */
+  const trab = E.def.passos[E.i] && E.def.passos[E.i].tipo === 'puxar';
+  pessoa(xStop + 4, G.ch, 1.2, 1, { pose: trab ? 'trabalho' : 'idle', t: tCena, capacete: COR_EQ(), glow: true, harness: true, papel: 'resg' });
+  pessoa(xStop - 80, G.ch, 1.2, 1, { pose: trab && E.sc.cli > 0 ? 'trabalho' : 'idle', t: tCena + 1, capacete: COR_EQ(), glow: true, harness: true, papel: 'op3' });
+  pessoa(xStop - 150, G.ch, 1.2, 1, { pose: trab && E.sc.cli > 0 ? 'trabalho' : 'radio', t: tCena + 2, capacete: COR_EQ(), glow: true, harness: true, papel: 'op4' });
+  pessoa(G.recX + G.recW + 40, G.ch, 1.2, -1, { pose: 'radio', t: tCena + 3, capacete: COR_EQ(), glow: true, harness: true, papel: 'lider2' });
+  ventoLinhas(.55);
+}
+function cenaExtModerada(){
+  const E = EXT, sc = E.sc, ch = D.cli, esc = ch.escala, pal = PAL.dia, back = sc.back, off = 2600 + back * 1800;
+  ceu(pal, -OY, 720); c.save(); c.translate(W / 2, 330); c.scale(.62, .62); c.translate(-W / 2, -330); camadas(pal, tCena, off, { dy: 40 });
+  [-1, 1].forEach(sg => { const g = c.createLinearGradient(sg < 0 ? -200 : W + 200, 0, W / 2, 0); g.addColorStop(0, 'rgba(14,20,40,.92)'); g.addColorStop(1, 'rgba(14,20,40,0)'); c.fillStyle = g; c.beginPath(); c.moveTo(sg < 0 ? -W : W * 2, -900); c.lineTo(sg < 0 ? W * .3 : W * .7, 160); c.lineTo(sg < 0 ? W * .2 : W * .8, 760); c.lineTo(sg < 0 ? -W : W * 2, 1600); c.closePath(); c.fill(); });
+  const ab = c.createLinearGradient(0, 520, 0, 900); ab.addColorStop(0, 'rgba(10,18,34,0)'); ab.addColorStop(1, 'rgba(10,18,34,.85)'); c.fillStyle = ab; c.fillRect(-W, 520, W * 3, 900); c.restore();
+  /* deck de chegada à esquerda; o cliente fica parado sobre o vão */
+  const deckX = W * .12, cx = lerp(W * .6, W * .24, back), cyy = 300 + (cx - W * .24) * .0, cab = x => 300 + (x - W * .5) * .02;
+  c.fillStyle = '#2d2018'; c.fillRect(-100, 560, deckX + 80, 200); c.fillStyle = '#4a3527'; c.fillRect(-100, 556, deckX + 80, 8);
+  c.strokeStyle = '#d6deef'; c.lineWidth = 3.2; c.beginPath(); c.moveTo(-100, cab(-100)); c.lineTo(W + 100, cab(W + 100)); c.stroke();
+  c.strokeStyle = 'rgba(214,222,239,.8)'; c.lineWidth = 3; c.beginPath(); c.moveTo(-100, cab(-100) + 58); c.lineTo(W + 100, cab(W + 100) + 58); c.stroke();
+  txt('Via ' + (E.via || '2 / 4') + ' (intermediária)', W * .85, cab(W * .85) + 84, 12, '#cfe3ff', 'center', '700');
+  [-14, 14].forEach(dx => { c.beginPath(); c.arc(cx + dx, cab(cx), 11, 0, 7); c.fillStyle = '#7e89a3'; c.fill(); c.strokeStyle = '#eef2fb'; c.lineWidth = 2.4; c.stroke(); });
+  c.strokeStyle = '#ff9c3a'; c.lineWidth = 3; const fh = cab(cx) + 20 + 241 * esc * .9; c.beginPath(); c.moveTo(cx - 10, cab(cx) + 12); c.lineTo(cx - 6, fh - 93 * esc); c.moveTo(cx + 10, cab(cx) + 12); c.lineTo(cx + 6, fh - 93 * esc); c.stroke();
+  pessoa(cx, fh, 1.08 * esc, 1, { pose: 'pendurado', t: tCena, capacete: ch.capaceteCor, touca: true, oculos: true, harness: true, colete: true, cinta: true, seat: true });
+  const eq = sc.eq, rx = sc.res0 ? lerp(deckX, cx - 74, sc.res) : deckX;
+  const rxx = back > 0 ? lerp(cx - 74, cx - 74, 1) : rx; const noCabo = sc.res0 && (sc.res > 0 || back > 0);
+  const rY = noCabo ? cab(rxx) + 58 + 190 : 560;
+  if(noCabo){ [-10, 10].forEach(dx => { c.beginPath(); c.arc(rxx + dx, cab(rxx) + 58, 8, 0, 7); c.fillStyle = '#9aa4be'; c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 2; c.stroke(); }); c.strokeStyle = '#7fe0ff'; c.lineWidth = 2.4; c.beginPath(); c.moveTo(rxx, cab(rxx) + 62); c.lineTo(rxx + 2, rY - 112); c.stroke();
+    if(sc.res >= .98){ c.strokeStyle = '#ffd26a'; c.lineWidth = 3; c.beginPath(); c.moveTo(rxx + 10, cab(rxx) + 58); c.lineTo(cx - 8, cab(cx)); c.stroke(); } }
+  pessoa(noCabo ? rxx : deckX, noCabo ? rY : 556, 1.05, 1, { pose: noCabo ? 'suspenso' : 'idle', t: tCena + 1, capacete: COR_EQ(), glow: true, papel: 'resg', num: true });
+  /* equipe no deck */
+  pessoa(deckX - 70, 556, 1.1, 1, { pose: 'radio', t: tCena + 2, capacete: COR_EQ(), glow: true, harness: true, papel: 'coord' });
+  pessoa(deckX + 90, 556, 1.1, 1, { pose: 'idle', t: tCena + 3, capacete: COR_EQ(), glow: true, harness: true, papel: 'op3' });
+  ventoLinhas(.9);
+}
+function telaExt(){
+  hud(); const E = EXT, p = E.def.passos[E.i], d = E.d;
+  rr(W / 2 - 330, 66, 660, 52, 12); c.fillStyle = 'rgba(40,10,10,.82)'; c.fill(); c.strokeStyle = '#ff6b5e'; c.lineWidth = 2; c.stroke(); txt(E.def.titulo, W / 2, 90, 20, '#ff9a8f', 'center', '900'); txt(E.def.sub, W / 2, 109, 12.5, '#ffd0c8', 'center', '600');
+  const pw = Math.min(980, W - 40), ph = 252, px = (W - pw) / 2, py = 462;
+  c.save(); c.shadowColor = 'rgba(0,0,0,.7)'; c.shadowBlur = 24; rr(px, py, pw, ph, 18); c.fillStyle = 'rgba(12,15,26,.95)'; c.fill(); c.restore(); rr(px, py, pw, ph, 18); c.strokeStyle = E.flash > 0 ? '#ff4a3d' : '#FF7A00'; c.lineWidth = 2.5; c.stroke(); bloqueia(px, py, pw, ph);
+  txt('Etapa ' + (E.i + 1) + ' de ' + E.def.passos.length + ' · ' + p.nome, px + 24, py + 36, 22, '#fff', 'left', '800');
+  if(!semLeg && !(E.msg && !(semLeg && E.msgTipo !== 'erro'))) par(viaTxt(p.txt), px + 24, py + 62, pw - 48, 15.5, '#cfd6ea', 'left', '500', 20);
+  const x0 = px + 24, y0 = py + 98, w0 = pw - 48;
+  if(p.tipo === 'radio'){
+    btn('chama', x0, y0, 560, 56, viaTxt(p.chama), { fs: 15, en: d.f === 0, pulso: d.f === 0 }, () => { d.f = 1; d.espera = rnd(1.4, 2.4); Som.radio(); });
+    if(d.f >= 1) txt(d.f === 1 ? 'Aguardando resposta…' : viaTxt(p.resp), x0, y0 + 90, 17, d.f === 2 ? '#9fd0ff' : '#ffd26a', 'left', '700');
+  } else if(p.tipo === 'bloqueio'){
+    [1, 3, 5].forEach((v, i) => { const on = E.sc.bloq[v]; btn('bl' + v, x0 + i * 220, y0, 200, 56, (on ? '⛔ Via ' + v + ' bloqueada' : 'Bloquear Via ' + v), { cor: on ? '#2e9a55' : '#d62d2d', texto: '#fff', fs: 17, en: !on }, () => { E.sc.bloq[v] = true; if([1, 3, 5].every(k => E.sc.bloq[k])) passoExtOk(); }); });
+  } else if(p.tipo === 'itens'){
+    const n = p.itens.length, cols = Math.min(4, n), bw = (w0 - (cols - 1) * 10) / cols;
+    p.itens.forEach((it, i) => { const col = i % cols, row = Math.floor(i / cols), feito = d.feitos.includes(i);
+      btn('it' + i, x0 + col * (bw + 10), y0 + row * 62, bw, 52, (feito ? '✔ ' : '') + it[0], { cor: feito ? '#2e9a55' : '#4a78c2', solido: feito, texto: '#fff', fs: 14.5, en: !feito }, () => {
+        if(!it[1]){ erroExt(it[2] || 'Esse item não faz parte desta manobra.', false); return; } d.feitos.push(i); Som.clique();
+        if(p.equa || p.equipa){ E.sc.eq = { cinto: d.feitos.length > 0 }; }
+        if(p.itens.filter(q => q[1]).every((q, k) => d.feitos.includes(p.itens.indexOf(q)))) passoExtOk(); }); });
+  } else if(p.tipo === 'toque'){
+    btn('toque', x0, y0, 420, 60, p.btn, { fs: 19, pulso: true }, () => { E.sc[p.alvo] = true; passoExtOk(); });
+  } else if(p.tipo === 'escolha'){
+    const n = p.ops.length, cols = n > 3 ? n : 1, bw = n > 3 ? (w0 - (n - 1) * 8) / n : w0;
+    p.ops.forEach((o, i) => { const feito = d.marc.includes(i); btn('op' + i, n > 3 ? x0 + i * (bw + 8) : x0, n > 3 ? y0 : y0 + i * 46, bw, 40, o[0], { cor: '#4a78c2', solido: false, en: !feito, fs: n > 3 ? 14 : 15 }, () => {
+      if(!o[1]){ d.marc.push(i); erroExt(o[2] || 'Opção incorreta.', !!o[3]); return; } if(p.nome === 'Escolher a via de acesso') EXT.via = o[0].replace(' (intermediária)', '').replace('Via ', ''); passoExtOk(); }); });
+  } else if(p.tipo === 'puxar'){
+    const bw = Math.min(520, w0), pr = E.sc.prog;
+    rr(x0, y0, bw, 24, 12); c.fillStyle = '#1c2236'; c.fill(); rr(x0, y0, Math.max(10, bw * pr), 24, 12); c.fillStyle = '#FF7A00'; c.fill(); txt(Math.round(pr * 100) + '%', x0 + bw / 2, y0 + 17, 14, '#fff', 'center', '800');
+    btn('puxa', x0, y0 + 40, 260, 66, p.btn, { fs: 22, pulso: true }, () => { E.sc.prog = Math.min(1, E.sc.prog + 1 / p.n); E.sc[p.campo] = E.sc.prog; Som.clique(); if(p.campo === 'pul' && E.sc.pul > 0) E.sc.pul0 = true; if(E.sc.prog >= 1){ E.sc[p.campo] = 1; passoExtOk(); } });
+    txt('toque várias vezes (o progresso escorrega se você parar)', x0 + 280, y0 + 80, 14, '#9aa6c4', 'left', '600');
+  } else if(p.tipo === 'dupla'){
+    const cwid = (w0 - 20) / 3, chh = 46;
+    ITENS_RESG.forEach((it, i) => { const col = i % 3, row = Math.floor(i / 3), ix = x0 + col * (cwid + 10), iy = y0 - 8 + row * (chh + 6), marc = d.marc.includes(i), ruim = d.falha === i && !d.corrigido;
+      rr(ix, iy, cwid, chh, 10); c.fillStyle = marc ? 'rgba(255,90,70,.22)' : d.corrigido && d.falha === i ? 'rgba(50,200,100,.2)' : 'rgba(255,255,255,.05)'; c.fill(); c.strokeStyle = marc ? '#ff6b5e' : 'rgba(255,255,255,.2)'; c.lineWidth = 1.6; c.stroke();
+      txt(it.n, ix + 10, iy + 19, 14, '#fff', 'left', '800'); txt(ruim ? it.ruim : it.ok, ix + 10, iy + 37, 12.5, ruim ? '#ffd0c8' : '#b9c4de', 'left', '600');
+      area('ri' + i, ix, iy, cwid, chh, () => { if(d.corrigido) return; const k = d.marc.indexOf(i); if(k >= 0) d.marc.splice(k, 1); else d.marc.push(i); }); });
+    const by = y0 + 2 * (chh + 6) - 8;
+    btn('rok', x0, by, (w0 - 10) / 2, 40, '✔ Tudo conforme', { cor: '#2e9a55', texto: '#fff', fs: 16 }, () => { if(d.falha >= 0 && !d.corrigido){ erroExt('Você ia sair com falha: "' + ITENS_RESG[d.falha].n + ' — ' + ITENS_RESG[d.falha].ruim + '". ' + ITENS_RESG[d.falha].e, true); d.marc = []; return; } if(d.marc.length){ erroExt('Há itens marcados como errados.', false); return; } passoExtOk(); });
+    btn('rrep', x0 + (w0 - 10) / 2 + 10, by, (w0 - 10) / 2, 40, '⚠ Reportar e corrigir', { fs: 16, en: !d.corrigido }, () => {
+      if(!d.marc.length){ toast('Toque no item que você acha errado.', 'aviso', 2); return; }
+      if(d.falha >= 0 && d.marc.length === 1 && d.marc[0] === d.falha){ d.corrigido = true; d.marc = []; Som.ok(); addPts(60); E.msg = '✔ Falha corrigida e conferida de novo. Confirme que está tudo conforme.'; E.msgTipo = 'ok'; }
+      else { erroExt(d.falha >= 0 ? 'Marque só o item com falha.' : 'Não havia falha: releia os cartões.', false); d.marc = []; } });
+  }
+  if(E.msg && !(semLeg && E.msgTipo !== 'erro')){ const y = py + 46, cor = E.msgTipo === 'erro' ? '#ff6b5e' : '#6fe08c'; rr(px + 16, y, pw - 32, 44, 10); c.fillStyle = E.msgTipo === 'erro' ? 'rgba(90,16,16,.55)' : 'rgba(14,50,26,.5)'; c.fill(); c.strokeStyle = cor; c.lineWidth = 1.5; c.stroke(); const ls = quebra((E.msgTipo === 'erro' ? '⚠ ' : '') + E.msg, pw - 64, 14, '600'); ls.slice(0, 2).forEach((l, i) => txt(l, px + 30, y + 19 + i * 16, 14, '#fff', 'left', '600')); }
+}
+
+/* =====================================================================
+   FIM DO TURNO, MENU E COMO JOGAR
+   ===================================================================== */
+function fimDoTurno(){
+  Som.roldanaFim(); const n = Math.max(1, T.lancados + T.recusasOk + T.recusasErradas);
+  const nota = clamp(Math.round(100 - T.erros * 3 - T.graves * 10 - T.recusasErradas * 4 - T.premat * 6), 0, 100);
+  const perfeito = T.graves === 0 && T.erros === 0 && T.recusasErradas === 0;
+  let medalha = 'Bronze'; if(nota >= 85) medalha = 'Ouro'; else if(nota >= 70) medalha = 'Prata'; if(perfeito && nota >= 97) medalha = 'Operador Exemplar';
+  const media = T.tempos.length ? T.tempos.reduce((a, b) => a + b, 0) / T.tempos.length : 0;
+  T.res = { nota, medalha, media }; estado = ST.FIM; Som.festa();
+  const r = recorde(); const novo = !r || T.pts > r.pts; if(novo) guarda(CONFIG.chave, JSON.stringify({ pts: T.pts, medalha, nota, dif: T.d.nome })); T.novoRecorde = novo;
+}
+function telaFim(){
+  if(V3) V3.fim(tCena); else cenario(PAL.fim, tCena, tCena * 4, {}); c.fillStyle = 'rgba(5,7,14,.62)'; c.fillRect(-300, -OY, W + 600, H);
+  const w = Math.min(760, W - 50), h = 560, x = W / 2 - w / 2, y = 80, R = T.res; c.save(); c.shadowColor = '#FF7A00'; c.shadowBlur = 30; rr(x, y, w, h, 22); c.fillStyle = 'rgba(10,12,22,.94)'; c.fill(); c.restore(); rr(x, y, w, h, 22); c.strokeStyle = '#FF7A00'; c.lineWidth = 3; c.stroke();
+  txt('FIM DO TURNO', W / 2, y + 52, 34, '#FF7A00', 'center', '900'); txt(T.d.nome, W / 2, y + 80, 16, '#9aa6c4', 'center', '700');
+  const cor = { 'Bronze': '#cd7f32', 'Prata': '#d6dbe6', 'Ouro': '#ffd24a', 'Operador Exemplar': '#7dffb1' }[R.medalha];
+  c.save(); c.shadowColor = cor; c.shadowBlur = 24; c.beginPath(); c.arc(W / 2, y + 160, 50, 0, 7); c.fillStyle = cor; c.fill(); c.restore(); txt('🏅', W / 2, y + 178, 50, '#fff', 'center', '400'); txt(R.medalha, W / 2, y + 240, 28, cor, 'center', '900');
+  const L = [['Clientes lançados', T.lancados], ['Recusas corretas', T.recusasOk], ['Erros cometidos', T.erros + (T.graves ? ' (' + T.graves + ' graves)' : '')], ['Tempo médio por cliente', Math.round(R.media) + ' s'], ['Extrações realizadas', T.extracoes || 0], ['Fotos do cânion', T.fotos], ['Nota de segurança', R.nota + '%'], ['PONTUAÇÃO', T.pts + (T.novoRecorde ? '  ★ NOVO RECORDE' : '')]];
+  L.forEach((l, i) => { const yy = y + 290 + i * 31; txt(l[0], x + 70, yy, 18, i === 6 ? '#ffd26a' : '#aab4cc', 'left', i === 6 ? '800' : '600'); txt(String(l[1]), x + w - 70, yy, 19, i === 6 ? '#ffd26a' : '#fff', 'right', '800'); });
+  btn('de novo', W / 2 - 250, y + h - 66, 240, 52, '↺ Novo turno', { fs: 19 }, iniciarTurno); btn('menu', W / 2 + 10, y + h - 66, 240, 52, 'Menu', { fs: 19, cor: '#5a6178' }, () => { estado = ST.MENU; });
+}
+function telaMenu(){
+  if(V3) V3.menu(tCena); else cenario(PAL.tarde, tCena, tCena * 7, {}); c.fillStyle = 'rgba(4,6,12,.38)'; c.fillRect(-300, -OY, W + 600, H);
+  if(!V3){ /* cabos e equipe de silhueta ao fundo */
+  const vp = { x: W / 2, y: 340 }; c.strokeStyle = 'rgba(210,220,240,.55)'; c.lineWidth = 2.5; viasGeom().forEach(g => g.xs.forEach(x => { c.beginPath(); c.moveTo(x, 760); c.lineTo(vp.x + (x - vp.x) * .05, vp.y); c.stroke(); }));
+  desenhaDeck(); pessoa(W * .14, 650, 1.35, 1, { pose: 'idle', t: tCena, capacete: COR_EQ(), glow: true, harness: true, papel: 'coord' }); pessoa(W * .22, 650, 1.35, 1, { pose: 'trabalho', t: tCena + 2, capacete: COR_EQ(), glow: true, harness: true, papel: 'lider2' }); pessoa(W * .86, 650, 1.35, -1, { pose: 'radio', t: tCena + 1, capacete: COR_EQ(), glow: true, harness: true, papel: 'resg' }); pessoa(W * .78, 650, 1.35, -1, { pose: 'idle', t: tCena + 3, capacete: COR_EQ(), glow: true, harness: true, papel: 'op1' }); }
+  /* título */
+  c.save(); c.shadowColor = 'rgba(255,122,0,.8)'; c.shadowBlur = 24; txt(CONFIG.titulo, W / 2, 132, Math.min(54, W / 20), '#fff', 'center', '900'); c.restore();
+  txt(CONFIG.subtitulo, W / 2, 168, 22, '#FFB070', 'center', '700');
+  btn('iniciar', W / 2 - 170, 220, 340, 72, 'INICIAR TURNO', { fs: 28, pulso: true }, iniciarTurno);
+  /* dificuldade */
+  const ks = Object.keys(CONFIG.dificuldades), bw = 176, gx = W / 2 - (bw * 3 + 24) / 2;
+  txt('Dificuldade', W / 2, 330, 15, '#9aa6c4', 'center', '700');
+  ks.forEach((k, i) => { const on = k === dif; btn('dif' + k, gx + i * (bw + 12), 342, bw, 48, CONFIG.dificuldades[k].nome, { solido: on, cor: on ? '#FF7A00' : '#4a78c2', fs: 18 }, () => { dif = k; guarda(CONFIG.chave + ':dif', k); }); });
+  const dd = CONFIG.dificuldades[dif]; txt(dd.clientes + ' clientes · ' + (dd.tempoCliente ? dd.tempoCliente + ' s por cliente' : 'sem limite de tempo') + ' · vento ' + dd.vento[0] + '–' + dd.vento[1] + ' km/h' + (dd.dicas ? ' · com dicas' : ''), W / 2, 414, 14, '#cfd6ea', 'center', '600');
+  btn('como', W / 2 - 170, 440, 166, 48, 'Como jogar', { cor: '#5a6178', fs: 17 }, () => { comoJogar = true; });
+  btn('somm', W / 2 + 4, 440, 166, 48, Som.mudo ? '🔇 Som desligado' : '🔊 Som ligado', { cor: '#5a6178', fs: 16 }, () => Som.alterna());
+  btn('legm', W / 2 - 170, 494, 166, 40, semLeg ? 'Legendas: não' : 'Legendas: sim', { cor: '#5a6178', fs: 15 }, alternaLeg);
+  btn('tcm', W / 2 + 4, 494, 166, 40, '⛶ Tela cheia', { cor: '#5a6178', fs: 15 }, telaCheia);
+  const r = recorde(); txt(r ? 'Recorde: ' + r.pts + ' pts · ' + r.medalha + ' (' + r.dif + ')' : 'Sem recorde ainda — faça o primeiro turno!', W / 2, 566, 17, '#ffd26a', 'center', '800');
+  txt('Segurança em primeiro lugar. Nenhum cliente desce sem todos os procedimentos concluídos.', W / 2, 594, 15, '#fff', 'center', '700');
+  txt('Jogo em edição e atualização constante.', W / 2, 700, 11, 'rgba(255,255,255,.5)', 'center', '600');
+}
+function telaComoJogar(){
+  c.fillStyle = 'rgba(4,6,12,.9)'; c.fillRect(-300, -OY, W + 600, H); const w = Math.min(960, W - 30), h = 690, x = W / 2 - w / 2, y = 15; rr(x, y, w, h, 20); c.fillStyle = 'rgba(14,17,30,.98)'; c.fill(); c.strokeStyle = '#FF7A00'; c.lineWidth = 2.5; c.stroke(); bloqueia(x, y, w, h);
+  txt('COMO JOGAR', W / 2, y + 40, 28, '#FF7A00', 'center', '900');
+  const L = [
+    '1. Você é o Operador 4 da Equipe de Lançamento. Escolha uma via livre para cada cliente: Via 5 | Via 3 | Via 1, vistas do deck. Via 1 = cabos 1 e 2 · Via 3 = cabos 3 e 4 · Via 5 = cabos 5 e 6. Equilibre o uso das vias.',
+    '2. Cumpra as 8 etapas na ordem: pesagem (40–110 kg; 60–110 kg com vento acima de 40 km/h), briefing, EPI (touca, óculos, capacete, cinto paraquedista e cadeirinha; o que o cliente trouxe você deixa), roldana, mosquetões, dupla checagem, rádio e contagem.',
+    '3. O cliente só se aproxima dos cabos totalmente equipado. Peso fora do limite: recuse com educação (também vale pontos). Lançar com falha ou sem a resposta do rádio é erro grave.',
+    '4. Na descida, toque em 📷 no momento UAU. No Recebimento você confirma a dupla checagem dos 2 pontos da cadeirinha.',
+    '5. Fase 2 (3º cliente): rajadas param o cliente a 30 m das molas: extração simples. Fase 3 (6º cliente): rajadas de 90 km/h param o cliente sobre o vão: extração moderada, com o Resgatista 8. Leia o PAE.',
+    '6. Botões do topo: 💬 sem legenda (só clicar nos itens, as regras seguem valendo) · ⛶ tela cheia · som · pausa. Atalhos: P/Esc = pausa, M = som.'
+  ];
+  let yy = y + 78; L.forEach(l => { yy += par(l, x + 34, yy, w - 68, 15.5, '#dbe2f4', 'left', '500', 20) + 8; });
+  txt('EQUIPE · operadores laranja, líderes verde, coordenador laranja e verde · cinto só para resgatistas (Resgatista 8 e Líder de Operações)', W / 2, yy + 6, 14, '#ffd9a8', 'center', '800');
+  const ord = ['coord', 'lider', 'lider2', 'op1', 'resg']; const gw = (w - 60) / ord.length;
+  ord.forEach((k, i) => { const P = PAPEIS[k], cx = x + 30 + gw * (i + .5); pessoa(cx, yy + 205, .78, 1, { pose: 'idle', t: tCena + i, capacete: COR_EQ(), glow: true, harness: true, papel: k });
+    txt(k === 'op1' ? 'Operadores 4 a 7' : P.nome, cx, yy + 228, 12, '#fff', 'center', '800'); txt(k === 'resg' ? 'braçadeira vermelha · capacete vermelho' : 'braçadeira ' + (P.faixa === VERMELHO ? 'vermelha' : 'laranja'), cx, yy + 244, 11, '#aab4cc', 'center', '600'); });
+  btn('fechacomo', W / 2 - 110, y + h - 58, 220, 44, 'Entendi', { fs: 19 }, () => { comoJogar = false; });
+}
+function telaPausa(){
+  c.fillStyle = 'rgba(4,6,12,.78)'; c.fillRect(-300, -OY, W + 600, H); txt('PAUSADO', W / 2, 250, 54, '#FF7A00', 'center', '900');
+  bloqueia(-300, -OY, W + 600, H);
+  btn('retomar', W / 2 - 150, 290, 300, 58, '▶ Retomar', { fs: 22, pulso: true }, () => { pausado = false; });
+  btn('p-como', W / 2 - 150, 360, 300, 52, 'Como jogar', { fs: 18, cor: '#4a78c2' }, () => { comoJogar = true; });
+  btn('p-novo', W / 2 - 150, 424, 300, 52, '↺ Reiniciar turno', { fs: 18, cor: '#5a6178' }, () => { pausado = false; iniciarTurno(); });
+  btn('p-menu', W / 2 - 150, 488, 300, 52, 'Menu principal', { fs: 18, cor: '#5a6178' }, () => { pausado = false; estado = ST.MENU; Som.roldanaFim(); });
+}
+
+/* =====================================================================
+   LOOP PRINCIPAL
+   ===================================================================== */
+let ultimo = 0;
+function quadro(ts){
+  requestAnimationFrame(quadro);
+  if(cv.offsetParent === null && !document.fullscreenElement && CW === 0) return;
+  if(window.innerWidth < 2 || window.innerHeight < 2) return;
+  const dt = Math.min(.05, (ts - ultimo) / 1000 || 0); ultimo = ts;
+  if(document.hidden && !pausado && estado !== ST.MENU) pausado = true;
+  if(!pausado && !comoJogar){ tCena += dt; T0 = tCena; update(dt); }
+  hits = []; drags = [];
+  c.setTransform(DPR * S, 0, 0, DPR * S, 0, DPR * S * OY); c.imageSmoothingEnabled = true;
+  if(V3){ c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height); c.restore(); } else { c.fillStyle = '#05060a'; c.fillRect(-100, -OY - 100, W + 200, H + 200); }
+  desenha(dt);
+  if(aviso){ aviso.t -= dt; if(aviso.t <= 0) aviso = null; else { const w = Math.min(760, W - 60), cor = aviso.tipo === 'ok' ? '#6fe08c' : aviso.tipo === 'aviso' ? '#ffb347' : '#9fe0ff'; c.globalAlpha = clamp(aviso.t * 2, 0, 1); const ls = quebra(aviso.m, w - 40, 16, '700'); const hh = 20 + ls.length * 21; const ty = estado === ST.CHK ? 718 - hh : estado === ST.PLAT ? 200 : 100; rr(W / 2 - w / 2, ty, w, hh, 12); c.fillStyle = 'rgba(8,10,18,.92)'; c.fill(); c.strokeStyle = cor; c.lineWidth = 2; c.stroke(); ls.forEach((l, i) => txt(l, W / 2, ty + 27 + i * 21, 16, '#fff', 'center', '700')); c.globalAlpha = 1; } }
+  if(fade > 0){ c.fillStyle = 'rgba(0,0,0,' + fade + ')'; c.fillRect(-300, -OY - 10, W + 600, H + 20); }
+  if(comoJogar) telaComoJogar();
+  else if(pausado) telaPausa();
+}
+function update(dt){
+  if(estado === ST.PLAT){ atualizaPlataforma(dt); }
+  else if(estado === ST.CHK){ atualizaPlataforma(dt); atualizaChk(dt); }
+  else if(estado === ST.DESC || estado === ST.FADE){ atualizaDescida(dt); }
+  else if(estado === ST.REC){ atualizaRec(dt); }
+  else if(estado === ST.EXT){ atualizaExt(dt); }
+}
+function desenha(dt){
+  switch(estado){
+    case ST.MENU: telaMenu(); break;
+    case ST.PLAT: cenaPlataforma(dt); telaPlataforma(); break;
+    case ST.CHK: cenaPlataforma(dt); telaChk(); break;
+    case ST.DESC: case ST.FADE: cenaDescida(); telaDescida(); break;
+    case ST.REC: cenaRecebimento(); telaRecebimento(); break;
+    case ST.EXT: cenaExt(); telaExt(); break;
+    case ST.FIM: telaFim(); break;
+  }
+}
+requestAnimationFrame(quadro);
+
+/* ganchos de teste (não afetam o jogo) */
+window.__sim = { EXT: () => EXT, estado: () => estado, hits: () => hits.map(h => ({ id: h.id, x: h.x, y: h.y, w: h.w, h: h.h, en: h.en })), drags: () => drags.map(d => ({ id: d.id, x: d.x, y: d.y, w: d.w, h: d.h })), chk: () => chk, T: () => T, D: () => D, REC: () => REC, S: () => S, OY: () => OY, setT: (f) => { if(REC) REC.t = f; }, lancar: () => lancar(), recebe: () => iniciaRecebimento(), pular: () => { if(D){ D.t = .85; } } };
+})();
+</script>
+</body>
+</html>
