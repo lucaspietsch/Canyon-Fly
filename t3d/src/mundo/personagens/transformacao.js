@@ -1,4 +1,4 @@
-import { PointLight, Mesh, SphereGeometry, MeshBasicMaterial, AdditiveBlending } from "three";
+import { PointLight, Mesh, SphereGeometry, MeshBasicMaterial, AdditiveBlending, CanvasTexture, RepeatWrapping, SRGBColorSpace } from "three";
 import { sessao } from "../seguranca/senha.js";
 import { U } from "../config.js";
 
@@ -11,7 +11,16 @@ import { U } from "../config.js";
      As cores originais ficam guardadas em userData para a volta.
    • Velocidade: `transformacao.velocidade` (ex.: 2 = 100% mais rápido) entra no modo andar por cen.extraChao.velMult().
    ============================================================================================================ */
-const CAMISA0 = 0x56642d, CALCA0 = 0x4a5729;                                                        // uniforme da tirolesa (constroiOperador / Pit)
+const CAMISA0 = 0x56642d, CALCA0 = 0x4a5729;
+/* texturas de roupa de poder (geradas uma vez): "camo" = camuflagem de manchas em 4 tons (sem bandeiras nem insígnias) */
+const TEXTURAS = {};
+function textura(nome){
+  if(TEXTURAS[nome]) return TEXTURAS[nome];
+  const c = document.createElement("canvas"); c.width = c.height = 256; const x = c.getContext("2d");
+  if(nome === "camo"){ x.fillStyle = "#6b6a45"; x.fillRect(0, 0, 256, 256); const tons = ["#3f4a2a", "#8a7d55", "#2a3020", "#5c6b3a"]; let sd = 7; const r = () => { sd = (sd * 16807) % 2147483647; return sd / 2147483647; };
+    for(let k = 0; k < 140; k++){ x.fillStyle = tons[k % 4]; x.beginPath(); const cx = r() * 256, cy = r() * 256; x.moveTo(cx, cy); for(let q = 0; q < 7; q++){ const a = q / 7 * Math.PI * 2, rr = 14 + r() * 26; x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * .7); } x.closePath(); x.fill(); } }
+  const t = new CanvasTexture(c); t.wrapS = t.wrapT = RepeatWrapping; t.repeat.set(3, 3); t.colorSpace = SRGBColorSpace; TEXTURAS[nome] = t; return t;
+}                                                        // uniforme da tirolesa (constroiOperador / Pit)
 export function criarTransformacao(M){
   const S = { ativa: false, id: null, luz: null, bolha: null, t: 0, cor: 0xffffff, alt: 0, alvoAlt: 0 };
   const def = (id) => M.personagens && M.personagens.def(id);
@@ -21,12 +30,12 @@ export function criarTransformacao(M){
   function tecidos(av){ const L = []; av.traverse(o => { if(o.isMesh && o.material && o.material.map && Math.abs(o.material.roughness - .92) < .01 && !L.includes(o.material)) L.push(o.material); }); return L; }
   function capacetes(av){ const L = []; av.traverse(o => { if(o.isMesh && o.material && !o.material.map && o.material.color && o.material.color.getHex() === 0xe8731a && !L.includes(o.material)) L.push(o.material); }); return L; }
   function veste(av, T, d0){
-    tecidos(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); const c0 = m.userData.cor0; const cor = c0 === CALCA0 ? T.calca : T.camisa; m.color.setHex(cor); if(T.brilho && m.emissive){ m.emissive.setHex(cor); m.emissiveIntensity = T.brilho * .5; } });      // brilho na própria cor do tecido (o clarão é que leva a cor do operador)
+    tecidos(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); const c0 = m.userData.cor0; const cor = c0 === CALCA0 ? T.calca : T.camisa; m.color.setHex(cor); if(T.textura){ if(m.userData.map0 === undefined) m.userData.map0 = m.map; m.map = textura(T.textura); m.color.setHex(0xffffff); m.needsUpdate = true; } if(T.brilho && m.emissive){ m.emissive.setHex(cor); m.emissiveIntensity = T.brilho * .5; } });      // brilho na própria cor do tecido (o clarão é que leva a cor do operador)
     capacetes(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); m.color.setHex(T.capacete !== undefined ? T.capacete : T.cor); });
     if(T.cabelo !== undefined){ const d = d0 || def(S.id), c0 = (d && d.modelo && d.modelo.cabelo) || 0x1e140d;                                  // cabelo: material sem trama, roughness 1, na cor original do cabelo
       av.traverse(o => { if(o.isMesh && o.material && !o.material.map && o.material.roughness === 1 && o.material.color && (o.material.userData.cor0 === c0 || o.material.color.getHex() === c0)){ const m = o.material; if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); m.color.setHex(T.cabelo); if(T.brilhoCabelo && m.emissive){ m.emissive.setHex(T.cabelo); m.emissiveIntensity = T.brilhoCabelo; } } }); }
   }
-  function despe(av){ av.traverse(o => { if(o.isMesh && o.material && o.material.userData && o.material.userData.cor0 !== undefined){ o.material.color.setHex(o.material.userData.cor0); if(o.material.emissive) { o.material.emissive.setHex(0); o.material.emissiveIntensity = 0; } } }); }
+  function despe(av){ av.traverse(o => { if(o.isMesh && o.material && o.material.userData && o.material.userData.cor0 !== undefined){ o.material.color.setHex(o.material.userData.cor0); if(o.material.userData.map0 !== undefined){ o.material.map = o.material.userData.map0; o.material.needsUpdate = true; } if(o.material.emissive) { o.material.emissive.setHex(0); o.material.emissiveIntensity = 0; } } }); }
   function clarao(av, cor){
     limpaFx(); S.luz = new PointLight(cor, 0, 40, 1.6); S.luz.position.set(0, 3, 0); av.add(S.luz);
     S.bolha = new Mesh(new SphereGeometry(2.2, 20, 14), new MeshBasicMaterial({ color: cor, transparent: true, opacity: .0, blending: AdditiveBlending, depthWrite: false })); S.bolha.position.set(0, 2.4, 0); av.add(S.bolha); S.t = 0;

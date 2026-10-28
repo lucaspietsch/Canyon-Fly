@@ -44,7 +44,7 @@ export async function confere(id, senha){
 /* ---------- operadores: login + senha ---------- */
 const LOGIN_ID = "login";                                                                                    // as tentativas de login contam juntas, seja qual for o nome digitado
 const normaliza = (t) => (t || "").trim().toLowerCase();
-export const temLogin = (idPersonagem) => { const e = OPERADORES[idPersonagem]; return !!(e && e.login && e.salt && e.hash) || (modoDebug() && LOGIN_TESTE && LOGIN_TESTE.como === idPersonagem); };
+export const temLogin = (idPersonagem) => { const e = OPERADORES[idPersonagem]; return !!(e && e.login && e.salt && e.hash) || (modoDebug() && !!LOGIN_TESTE); };      // debug: todas as vagas aceitam o login de teste (teste → como; teste.<id> → esse operador)
 export const algumLogin = () => Object.keys(OPERADORES).some(temLogin) || (modoDebug() && !!LOGIN_TESTE);
 /** confere login + senha: devolve { ok, id?, espera, restam }. A mensagem de erro é sempre a mesma. */
 export async function confereLogin(login, senha){
@@ -53,6 +53,7 @@ export async function confereLogin(login, senha){
   let id = null;
   for(const [k, e] of Object.entries(OPERADORES)){ if(e && e.login && normaliza(e.login) === l && e.salt && e.hash && await confereHash(senha, e)){ id = k; break; } }
   if(!id && modoDebug() && LOGIN_TESTE && normaliza(LOGIN_TESTE.login) === l && await confereHash(senha, LOGIN_TESTE)) id = LOGIN_TESTE.como;
+  if(!id && modoDebug() && LOGIN_TESTE){ const mt = /^([a-z]+)\.([a-z0-9-]+)$/.exec(l); if(mt && mt[1] === normaliza(LOGIN_TESTE.login) && await confereHash(senha, LOGIN_TESTE)) id = mt[2]; }      // debug: "teste.jackao" entra como o Jackão
   if(!id && !l){ await hashSenha(senha || "", "x"); }                                                        // custo parecido mesmo com login vazio (não revela nada pelo tempo)
   if(id){ gravaEstado(LOGIN_ID, {}); return { ok: true, id, espera: 0, restam: SENHA_CFG.erros }; }
   return registraErro(LOGIN_ID);

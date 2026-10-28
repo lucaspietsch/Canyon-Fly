@@ -7,6 +7,10 @@ export const PODERES = {
   /* Krig (só transformado, no tempo antigo): V = investida em chamas · teclas.golpe = golpe no chão (empurra) · teclas.voo = liga/desliga o voo (vooM de altura, velocidadeVoo × a corrida) · teclas.rugido = rugido que atordoa animais e sombras sem ferir.
      (E, Q e F já são interagir, câmera e foto no jogo; por isso Y / U / I — troque aqui.) */
   krig:   { id: "investida", nome: "Fúria de Krig", texto: "Investida em chamas; Y golpe no chão, U voo, I rugido.", recarga: 1.2, alcanceM: 12, cone: 30, empurraM: 6, danoInimigo: 1, vooM: 5, velocidadeVoo: 2, rugidoM: 25, rugidoSeg: 4, teclas: { golpe: "KeyY", voo: "KeyU", rugido: "KeyI" } },
+  /* Jackão (só transformado): V = tiro do fuzil (balas infinitas; recarga só animação a cada `pente` tiros) · botão direito do mouse = mirar (zoom) ·
+     teclas.granada = granada (granadasPorZona por zona; recarregam ao trocar de zona; fumaça + empurrão, sem dano à mata) · teclas.oculos = óculos de RA
+     (contorno e distância de inimigos escondidos até oculosM, através de mata e névoa) · teclas.choque = alterna munição de choque (atordoa animais e sombras sem ferir). */
+  jackao: { id: "tiro", nome: "Fuzil do Jackão", texto: "Tiro (balas infinitas); botão direito mira; Y granada, U óculos de RA, I munição de choque.", recarga: .18, alcanceM: 140, cone: 5, coneMira: 2.5, pente: 30, recargaSeg: 1.6, danoInimigo: 1, granadasPorZona: 3, granadaM: 14, granadaRaioM: 7, granadaSeg: 1.6, oculosM: 150, choqueSeg: 4, teclas: { granada: "KeyY", oculos: "KeyU", choque: "KeyI" } },
   atiara: { id: "olhos", nome: "Encantamento dos olhos", texto: "Seus olhos luminosos prendem quem os encara.", recarga: 6, alcanceM: 45, cone: 35, duracaoS: 8 }
 };
 export const PODERES_CFG = { tecla: "KeyV", espantalhosDebug: 3 };
