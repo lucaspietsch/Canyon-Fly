@@ -145,7 +145,20 @@ export function constroiAtiara(H, def){
 }
 
 /* OPERADOR (vaga genérica, aparência padrão da equipe até a pessoa autorizar e enviar os dados): farda verde-oliva, capacete laranja, sem barba. */
+/* duas tranças caindo pela frente dos ombros até o peito (Mary): tubo ao longo de uma curva + "gomos" (esferas) + elástico colorido na ponta.
+   Fica no grupo do boneco (não acompanha o giro da cabeça); a cor é a do cabelo (modelo.cabelo), e a transformação recolore junto com o cabelo. */
+function trancasFrontais(av, cor){
+  const mat = new MeshStandardMaterial({ color: cor, roughness: 1 }), elast = new MeshStandardMaterial({ color: 0xc0392b, roughness: .8 });
+  [-1, 1].forEach(sx => {
+    const pts = [[.48, 4.45, .05], [.72, 4.05, .32], [.78, 3.6, .6], [.62, 3.1, .78], [.5, 2.55, .82]].map(([x, y, z]) => new Vector3(sx * x, y, z));
+    const curva = new CatmullRomCurve3(pts), tubo = new Mesh(new TubeGeometry(curva, 24, .12, 10, false), mat); tubo.name = "tranca"; av.add(tubo);
+    for(let k = 1; k <= 7; k++){ const p = curva.getPoint(k / 8), g = new Mesh(new SphereGeometry(.15, 12, 10), mat); g.position.copy(p); g.scale.set(1, .8, 1); g.name = "tranca"; av.add(g); }
+    const fim = curva.getPoint(1), e = new Mesh(new TorusGeometry(.12, .035, 8, 16), elast); e.position.copy(fim); e.rotation.x = Math.PI / 2; e.name = "tranca"; av.add(e);
+    const ponta = new Mesh(new SphereGeometry(.1, 10, 8), mat); ponta.position.set(fim.x, fim.y - .18, fim.z); ponta.scale.set(.8, 1.4, .8); ponta.name = "tranca"; av.add(ponta);
+  });
+}
 export function constroiOperador(H, def){
   const M = H.M, rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: M(0x56642d), manga: M(0x56642d), calca: M(0x4a5729), pele: H.pele.media, capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: (def.modelo && def.modelo.cabelo) || 0x1e140d, barba: !!(def.modelo && def.modelo.barba), pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });      // barba por operador (dados/personagens.js → modelo.barba)
+  if(def.modelo && def.modelo.trancas) trancasFrontais(rig.av, (def.modelo && def.modelo.cabelo) || 0x1e140d);
   return { id: def.id, nome: def.nome, p: rig, tick(){ } };
 }
