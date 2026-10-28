@@ -27,7 +27,7 @@ Cada lugar só é construído quando o jogador chega perto (`LUGARES.cargaU` em 
 
 | Vila Santana (1950) | polígono `vila santana` | pórtico de pedra no ponto onde a estrada entra no polígono, portão de duas folhas trancado, área fechada a pé enquanto trancada, passagem de época (tom sépia, `M.lugares.epoca()` = `"1950"` dentro, `"2026"` fora) |
 
-**Senha do portão da Vila Santana** (e dos operadores): só o hash SHA-256 com salt fica no jogo (`data/seguranca/senhas.js`, id `vila-santana`). Gere a linha com `tools/gerar-hash.html` (abra no seu computador) ou `node tools/gerar_hash.mjs vila-santana` e cole no arquivo. Sem hash cadastrado o portão mostra "em breve". 3 erros = 30 s de espera, crescente. Por ser um site estático, isto protege o JOGO e não substitui segurança de servidor.
+**Senha do portão da Vila Santana** e **login dos operadores**: só salt + hash **PBKDF2** (SHA-256, 100.000 iterações) em `data/seguranca/senhas.js` (`SENHAS` para o portão, `OPERADORES` para login + senha). Gere com `tools/gerar-hash.html` ou `node tools/gerar_hash.mjs vila-santana` / `node tools/gerar_hash.mjs krig <login>`. Sem hash cadastrado o portão mostra "em breve". **Operador logado abre o portão sem a senha da vila** (o login já autoriza), tem viagem rápida para Vila Santana, Olaria e área industrial, e se transforma ao cruzar o pórtico. 3 erros = 30 s de espera, crescente. Site estático: proteção do JOGO, não autenticação de servidor.
 
 Constantes ajustáveis: `LUGARES` em `config.js` (calçada, caminhos, bancos, NPCs por hora, altura da Sequoia, espera/intervalo/repetição do raio, duração da abertura da Urna, muro/portão/chaminé da fábrica, casas da vila).
 
