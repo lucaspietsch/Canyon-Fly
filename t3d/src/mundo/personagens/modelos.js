@@ -150,7 +150,7 @@ export function constroiAtiara(H, def){
 function trancasFrontais(av, cor){
   const mat = new MeshStandardMaterial({ color: cor, roughness: 1 }), elast = new MeshStandardMaterial({ color: 0xc0392b, roughness: .8 });
   [-1, 1].forEach(sx => {
-    const pts = [[.48, 4.45, .05], [.72, 4.05, .32], [.78, 3.6, .6], [.62, 3.1, .78], [.5, 2.55, .82]].map(([x, y, z]) => new Vector3(sx * x, y, z));
+    const pts = [[.55, 4.45, .1], [.92, 4.05, .45], [1.0, 3.6, .8], [.9, 3.1, 1.0], [.8, 2.55, 1.02]].map(([x, y, z]) => new Vector3(sx * x, y, z));
     const curva = new CatmullRomCurve3(pts), tubo = new Mesh(new TubeGeometry(curva, 24, .12, 10, false), mat); tubo.name = "tranca"; av.add(tubo);
     for(let k = 1; k <= 7; k++){ const p = curva.getPoint(k / 8), g = new Mesh(new SphereGeometry(.15, 12, 10), mat); g.position.copy(p); g.scale.set(1, .8, 1); g.name = "tranca"; av.add(g); }
     const fim = curva.getPoint(1), e = new Mesh(new TorusGeometry(.12, .035, 8, 16), elast); e.position.copy(fim); e.rotation.x = Math.PI / 2; e.name = "tranca"; av.add(e);

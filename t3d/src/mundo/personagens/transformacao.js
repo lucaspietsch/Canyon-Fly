@@ -19,10 +19,10 @@ export function criarTransformacao(M){
 
   function tecidos(av){ const L = []; av.traverse(o => { if(o.isMesh && o.material && o.material.map && Math.abs(o.material.roughness - .92) < .01 && !L.includes(o.material)) L.push(o.material); }); return L; }
   function capacetes(av){ const L = []; av.traverse(o => { if(o.isMesh && o.material && !o.material.map && o.material.color && o.material.color.getHex() === 0xe8731a && !L.includes(o.material)) L.push(o.material); }); return L; }
-  function veste(av, T){
-    tecidos(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); const c0 = m.userData.cor0; m.color.setHex(c0 === CALCA0 ? T.calca : T.camisa); if(T.brilho){ m.emissive.setHex(T.cor); m.emissiveIntensity = T.brilho; } });
+  function veste(av, T, d0){
+    tecidos(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); const c0 = m.userData.cor0; const cor = c0 === CALCA0 ? T.calca : T.camisa; m.color.setHex(cor); if(T.brilho && m.emissive){ m.emissive.setHex(cor); m.emissiveIntensity = T.brilho * .5; } });      // brilho na própria cor do tecido (o clarão é que leva a cor do operador)
     capacetes(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); m.color.setHex(T.capacete !== undefined ? T.capacete : T.cor); });
-    if(T.cabelo !== undefined){ const d = def(S.id), c0 = (d && d.modelo && d.modelo.cabelo) || 0x1e140d;                                  // cabelo: material sem trama, roughness 1, na cor original do cabelo
+    if(T.cabelo !== undefined){ const d = d0 || def(S.id), c0 = (d && d.modelo && d.modelo.cabelo) || 0x1e140d;                                  // cabelo: material sem trama, roughness 1, na cor original do cabelo
       av.traverse(o => { if(o.isMesh && o.material && !o.material.map && o.material.roughness === 1 && o.material.color && (o.material.userData.cor0 === c0 || o.material.color.getHex() === c0)){ const m = o.material; if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); m.color.setHex(T.cabelo); if(T.brilhoCabelo && m.emissive){ m.emissive.setHex(T.cabelo); m.emissiveIntensity = T.brilhoCabelo; } } }); }
   }
   function despe(av){ av.traverse(o => { if(o.isMesh && o.material && o.material.userData && o.material.userData.cor0 !== undefined){ o.material.color.setHex(o.material.userData.cor0); if(o.material.emissive) { o.material.emissive.setHex(0); o.material.emissiveIntensity = 0; } } }); }
@@ -56,5 +56,7 @@ export function criarTransformacao(M){
   }
   const velMult = () => { const d = S.ativa && def(S.id); return d && d.transformacao && d.transformacao.velocidade ? d.transformacao.velocidade : 1; };
   const info = () => (S.ativa ? "Transformado: " + (def(S.id) || {}).nome + " (" + def(S.id).transformacao.nome + ")" : (sessao.logado() ? "Operador logado: " + sessao.operador() : ""));
-  return { S, liga, desliga, aoEpoca, tick, velMult, info, ativa: () => S.ativa, desligaTudo: () => { desliga(); } };
+  /* para retratos: veste/despe um boneco qualquer com a roupa de poder de `id`, sem mexer no estado da transformação */
+  const vesteEm = (av, id) => { const d = def(id); if(d && d.transformacao && av) veste(av, d.transformacao, d); };
+  return { S, liga, desliga, aoEpoca, tick, velMult, info, ativa: () => S.ativa, desligaTudo: () => { desliga(); }, vesteEm, despeEm: (av) => av && despe(av) };
 }

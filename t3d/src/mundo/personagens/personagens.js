@@ -1,4 +1,5 @@
 import { PERSONAGENS } from "../dados/personagens.js";
+import { Scene, Color, HemisphereLight, DirectionalLight, PerspectiveCamera, Vector2 } from "three";
 import { constroiSepe, constroiTupa, constroiAtiara, constroiOperador } from "./modelos.js";
 import { temLogin, pedeLogin, sessao } from "../seguranca/senha.js";
 
@@ -57,11 +58,27 @@ export function criarPersonagens(M){
       grade.appendChild(c); });
     el.appendChild(cx); M.ui.appendChild(el); S.tela = el; el.addEventListener("pointerdown", e => e.stopPropagation());
   }
+  /* RETRATO para aprovação (depuração): desenha o boneco de `id` numa cena neutra e devolve um PNG (dataURL). graus: 0 = frente, 90 = perfil.
+     opc.transformado = com a roupa de poder. Uso no console: M.personagens.retrato("mary", 90, { transformado: true }). O boneco volta ao lugar depois. */
+  function retrato(id, graus = 0, opc = {}){
+    const am = H.andarMod, r = id === "pit" ? (am && am.avatar ? { p: am.avatar() } : null) : rig(id); if(!r || !r.p || !r.p.av) return null;
+    const av = r.p.av, pai = av.parent, pos = av.position.clone(), rot = av.rotation.y, vis = av.visible, px = opc.px || 420;
+    const cena = new Scene(); cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
+    const luz = new DirectionalLight(0xffffff, 1.7); luz.position.set(3, 8, 6); cena.add(luz); const luz2 = new DirectionalLight(0xffe0b0, .6); luz2.position.set(-4, 3, -3); cena.add(luz2);
+    cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true;
+    if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id);
+    const cam = new PerspectiveCamera(26, 1, .1, 100); cam.position.set(0, 2.5, 12.5); cam.lookAt(0, 2.45, 0);
+    const R = M.renderer, tam = new Vector2(); R.getSize(tam); const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(px, px, false); R.render(cena, cam);
+    const url = R.domElement.toDataURL("image/png");
+    R.setPixelRatio(pr); R.setSize(tam.x, tam.y, false);
+    if(opc.transformado && M.transformacao && !(M.transformacao.ativa() && M.transformacao.S.id === id && S.ativo === id)) M.transformacao.despeEm(av);
+    cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; return url;
+  }
   function fechaTela(){ if(S.tela){ S.tela.remove(); S.tela = null; } }
   function tecla(e){ if(S.tela){ if(e.code === "Escape"){ fechaTela(); } e.preventDefault(); return true; } return false; }
   function tick(dt){ const r = S.rigs[S.ativo]; if(r && r.tick) r.tick(dt); }
   /* encerra a sessão do operador: volta ao Pit (ou ao primeiro desbloqueado) e desfaz a transformação */
   function sai(){ const id = sessao.operador(); sessao.sai(); if(M.transformacao) M.transformacao.desliga(); if(S.ativo === id) escolhe("pit"); if(M.terminal) M.terminal.msg("info", "Sessão do operador encerrada."); if(M.ctx) M.ctx.mostraAviso("Você saiu"); }
   const operadorLogado = () => sessao.operador();
-  return { lista, desbloqueado, desbloqueia, escolhe, abreTela, fechaTela, tecla, tick, rig, def, pertenceAoOutroTempo, sai, operadorLogado, S, get ativo(){ return S.ativo; }, info: () => "Personagem: " + S.ativo, desliga: fechaTela };
+  return { lista, desbloqueado, desbloqueia, escolhe, abreTela, fechaTela, tecla, tick, rig, def, pertenceAoOutroTempo, sai, operadorLogado, retrato, S, get ativo(){ return S.ativo; }, info: () => "Personagem: " + S.ativo, desliga: fechaTela };
 }
