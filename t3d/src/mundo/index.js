@@ -97,7 +97,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
     M.horizonte = criarHorizonte(M, luzes); M.registra({ tick: (dt, J, E) => M.horizonte.tick(dt, J, E), info: () => M.horizonte.info() });
   M.mapa = criarMinimapa(M); M.registra(M.mapa);
   M.personagens = criarPersonagens(M); M.registra({ tick: (dt) => M.personagens.tick(dt), tecla: (e) => M.personagens.tecla(e), info: () => M.personagens.info(), desliga: () => M.personagens.desliga() });
-  M.transformacao = criarTransformacao(M); M.registra({ tick: (dt) => M.transformacao.tick(dt), info: () => M.transformacao.info(), desliga: () => M.transformacao.desligaTudo() }); M.cen.extraChao.velMult = () => M.transformacao.velMult();
+  M.transformacao = criarTransformacao(M); M.registra({ tick: (dt) => M.transformacao.tick(dt), info: () => M.transformacao.info(), desliga: () => M.transformacao.desligaTudo() }); M.cen.extraChao.velMult = () => M.transformacao.velMult(); M.cen.extraChao.alturaExtra = () => M.transformacao.alturaExtra();
   M.login = { sessao, confereLogin, modoDebug };                                                                       // depuração no console: M.login.confereLogin("login", "senha")
   M.terminal = criarTerminal(M);
   M.missoes = criarMissoes(M); M.registra({ tick: (dt) => M.missoes.tick(dt), tecla: (e) => M.missoes.tecla(e), liga: (ui) => M.missoes.liga(ui), info: () => M.missoes.info(), desliga: () => M.missoes.desliga() }); M.operacao = criarOperacao(M); M.registra({ tick: (dt) => M.operacao.tick(dt), desliga: () => M.operacao.desliga() });

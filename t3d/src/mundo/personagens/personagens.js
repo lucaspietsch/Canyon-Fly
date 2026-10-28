@@ -1,6 +1,6 @@
 import { PERSONAGENS } from "../dados/personagens.js";
 import { Scene, Color, HemisphereLight, DirectionalLight, PerspectiveCamera, Vector2 } from "three";
-import { constroiSepe, constroiTupa, constroiAtiara, constroiOperador } from "./modelos.js";
+import { constroiSepe, constroiTupa, constroiAtiara, constroiOperador, constroiOperadora } from "./modelos.js";
 import { temLogin, pedeLogin, sessao } from "../seguranca/senha.js";
 
 /* ============================================================================================================
@@ -25,7 +25,7 @@ export function criarPersonagens(M){
   /* rigs (bonecos) dos desbloqueados que não são do jogo base: criados na primeira vez que o jogador os escolhe */
   function rig(id){
     if(S.rigs[id]) return S.rigs[id]; const d = def(id); if(!d || d.hub) return null;
-    try{ const r = id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? constroiOperador(H, d) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
+    try{ const r = id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
   }
   /* o modo andar pergunta quem existe (ver trolley3d.js → H.personagens): os desbloqueados com boneco entram na lista */
   H.extraPersonagens = () => PERSONAGENS.filter(p => !p.hub && desbloqueado(p.id)).map(p => rig(p.id)).filter(Boolean).map(r => ({ id: r.id, nome: r.nome, p: r.p }));
@@ -66,12 +66,12 @@ export function criarPersonagens(M){
     const cena = new Scene(); cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
     const luz = new DirectionalLight(0xffffff, 1.7); luz.position.set(3, 8, 6); cena.add(luz); const luz2 = new DirectionalLight(0xffe0b0, .6); luz2.position.set(-4, 3, -3); cena.add(luz2);
     cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true;
-    if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id);
-    const cam = new PerspectiveCamera(26, 1, .1, 100); cam.position.set(0, 2.5, 12.5); cam.lookAt(0, 2.45, 0);
+    if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id); if(opc.transformado && r.fx){ r.fx.liga(); r.fx.tick(.4); r.fx.tick(.4); }
+    const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, 2.5, 12.5); cam.lookAt(0, 2.45, 0); }
     const R = M.renderer, tam = new Vector2(); R.getSize(tam); const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(px, px, false); R.render(cena, cam);
     const url = R.domElement.toDataURL("image/png");
     R.setPixelRatio(pr); R.setSize(tam.x, tam.y, false);
-    if(opc.transformado && M.transformacao && !(M.transformacao.ativa() && M.transformacao.S.id === id && S.ativo === id)) M.transformacao.despeEm(av);
+    if(opc.transformado && M.transformacao && !(M.transformacao.ativa() && M.transformacao.S.id === id && S.ativo === id)) M.transformacao.despeEm(av); if(opc.transformado && r.fx && !(M.transformacao && M.transformacao.ativa() && M.transformacao.S.id === id)) r.fx.desliga();
     cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; return url;
   }
   function fechaTela(){ if(S.tela){ S.tela.remove(); S.tela = null; } }

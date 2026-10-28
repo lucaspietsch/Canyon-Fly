@@ -395,7 +395,7 @@ export function criarAndar(c){
   function colocaNoLugar(){
     INI = spawnDe(lugar); const off = nomeP === "Krig" ? 2.4 : 0;
     Object.assign(W, { x: INI.x + off, z: INI.z, y: cen.chao(INI.x + off, INI.z), yaw: INI.yaw, vy: 0, noChao: true, vel: 0, camOff: 0, manual: 0, snap: true });
-    AV.av.position.set(W.x, W.y, W.z); AV.av.rotation.y = W.yaw;
+    AV.av.position.set(W.x, W.y + (cen.extraChao && cen.extraChao.alturaExtra ? cen.extraChao.alturaExtra() : 0), W.z); AV.av.rotation.y = W.yaw;      // alturaExtra: flutuação da transformação
   }
   function trocaPersonagem(){
     if(H.abreTrocaPersonagem && H.abreTrocaPersonagem()) return;                                   // CanyonFly: tela de escolha de personagem

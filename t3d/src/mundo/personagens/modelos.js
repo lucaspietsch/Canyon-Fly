@@ -1,4 +1,4 @@
-import { Group, Mesh, Points, PointsMaterial, TubeGeometry, CatmullRomCurve3, Vector3, RepeatWrapping, CylinderGeometry, TorusGeometry, SphereGeometry, BoxGeometry, MeshStandardMaterial, MeshBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, PointLight, AdditiveBlending, DoubleSide, Color } from "three";
+import { Group, Mesh, Points, PointsMaterial, TubeGeometry, CatmullRomCurve3, Vector3, RepeatWrapping, CylinderGeometry, TorusGeometry, SphereGeometry, BoxGeometry, MeshStandardMaterial, MeshBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, PointLight, AdditiveBlending, DoubleSide, Color, BufferAttribute, OctahedronGeometry, PlaneGeometry, CanvasTexture, SRGBColorSpace } from "three";
 import { canvasTex } from "../../lib.js";
 
 /* ============================================================================================================
@@ -161,4 +161,77 @@ export function constroiOperador(H, def){
   const M = H.M, rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: M(0x56642d), manga: M(0x56642d), calca: M(0x4a5729), pele: H.pele.media, capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: (def.modelo && def.modelo.cabelo) || 0x1e140d, barba: !!(def.modelo && def.modelo.barba), pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });      // barba por operador (dados/personagens.js → modelo.barba)
   if(def.modelo && def.modelo.trancas) trancasFrontais(rig.av, (def.modelo && def.modelo.cabelo) || 0x1e140d);
   return { id: def.id, nome: def.nome, p: rig, tick(){ } };
+}
+
+/* ============================================================================================================
+   OPERADORAS (Diully, Mary): base feminina por cima do pessoa3d — rosto suave (sem barba/óculos), olhos com íris, pupila, reflexo, cílios e
+   sobrancelhas finas, blush, batom, cabelo volumoso (mechas sólidas + cards translúcidos com fios), brincos, colar, pulseira; piscar e balanço
+   do cabelo no tick. Efeitos da forma de poder em rig.fx (partículas douradas / fogo e gelo nas mãos), ligados pela transformação.
+   Cores e opções em dados/personagens.js → modelo: { feminina, cabelo, olhos, labios, pele, rabo, trancas, coque, brincos, colar } e transformacao.
+   ============================================================================================================ */
+const texFios = (cor) => { const c = document.createElement("canvas"); c.width = 64; c.height = 256; const x = c.getContext("2d"); x.clearRect(0, 0, 64, 256);
+  const hex = "#" + cor.toString(16).padStart(6, "0"); for(let k = 0; k < 26; k++){ const px = 2 + (k * 2.4 + (k % 3) * 1.3) % 60, a = .35 + ((k * 7) % 5) * .13; x.strokeStyle = hex; x.globalAlpha = a; x.lineWidth = 1.2 + (k % 2) * .8; x.beginPath(); x.moveTo(px, 0); x.quadraticCurveTo(px + (k % 2 ? 4 : -4), 128, px + (k % 3 - 1) * 5, 256); x.stroke(); }
+  const tx = new CanvasTexture(c); tx.colorSpace = SRGBColorSpace; return tx; };
+function particulas(n, cor, tam){ const g = new BufferGeometry(), pos = new Float32Array(n * 3); g.setAttribute("position", new BufferAttribute(pos, 3));
+  const p = new Points(g, new PointsMaterial({ color: cor, size: tam, transparent: true, opacity: .9, depthWrite: false, blending: AdditiveBlending })); p.frustumCulled = false; p.visible = false; return { p, pos, n, vida: new Float32Array(n), seed: new Float32Array(n).map(() => Math.random()) }; }
+export function constroiOperadora(H, def){
+  const M = H.M, mo = def.modelo || {}, corCab = mo.cabelo || 0x3a2416, T = def.transformacao || {};
+  const rabo = mo.rabo === "dia" ? (new Date().getDate() % 2 === 0) : !!mo.rabo;                                                      // "dia": rabo de cavalo em dias pares, solto nos ímpares
+  const rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: M(0x56642d), manga: M(0x56642d), calca: M(0x4a5729), pele: mo.pele ? M(mo.pele, { roughness: .55 }) : H.pele.clara,
+    capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: corCab, barba: false, oculos: false, olhos: mo.olhos || 0x5a3d26, labios: mo.labios || 0xc0506a, rabo, pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });
+  const av = rig.av, cab = rig.cab, mk = (g, mat, x, y, z, pai) => { const o = new Mesh(g, mat); o.position.set(x, y, z); (pai || cab).add(o); return o; };
+  /* rosto mais suave: mandíbula e nariz menores, bochechas viram blush */
+  const esf = cab.children.filter(o => o.isMesh && o.geometry.type === "SphereGeometry");
+  if(esf[1]) esf[1].scale.set(.92, .86, .9); if(esf[4]) esf[4].scale.set(.8, .95, .9);
+  [esf[2], esf[3]].forEach(b => { if(b){ b.material = M(0xe8a090, { roughness: .7, transparent: true, opacity: .38 }); b.scale.set(.7, .5, .4); b.position.y -= .06; b.position.z += .08; } });
+  /* olhos: pupila, reflexo, cílios, delineado, sobrancelha fina */
+  const pele = M(0xf1cdb8), lash = M(0x1a1010, { roughness: .8 });
+  [-1, 1].forEach(sx => { mk(new SphereGeometry(.035, 8, 6), M(0x0a0806), sx * .33, .08, .955); mk(new SphereGeometry(.02, 6, 5), new MeshBasicMaterial({ color: 0xffffff }), sx * .31, .11, .965);
+    const c = mk(new TorusGeometry(.165, .018, 6, 14, Math.PI), lash, sx * .33, .09, .93); c.rotation.z = 0; c.scale.set(1.1, .7, 1);                                    // cílios/delineado superior
+    for(let k = 0; k < 4; k++){ const f = mk(new BoxGeometry(.012, .07, .012), lash, sx * (.2 + k * .085), .19, .92); f.rotation.z = sx * (-.2 - k * .12); }           // cílios soltos
+    const sb = cab.children.find(o => o.isMesh && o.geometry.type === "BoxGeometry" && Math.abs(o.position.x - sx * .33) < .01 && Math.abs(o.position.y - .27) < .01); if(sb){ sb.scale.set(.95, .55, .6); sb.material = M(corCab, { roughness: .9 }); } });
+  /* boca menor e fechada num sorriso suave: encolhe a boca aberta e os dentes do boneco base */
+  cab.children.filter(o => o.isMesh && (o.geometry.type === "CircleGeometry" || (o.geometry.type === "PlaneGeometry" && Math.abs(o.position.y + .455) < .01))).forEach(o => { o.scale.multiplyScalar(.55); o.position.y += .03; });
+  /* lábios: batom em dois tons (lábio superior + inferior) */
+  const batom = M(mo.labios || 0xc0506a, { roughness: .35 }); mk(new TorusGeometry(.19, .04, 8, 16, Math.PI), batom, 0, -.46, .935).rotation.z = Math.PI; const li = mk(new SphereGeometry(.12, 12, 8), batom, 0, -.57, .93); li.scale.set(1.7, .5, .5);
+  /* cabelo volumoso: mechas sólidas atrás e dos lados + cards translúcidos com fios; fica guardado para balançar */
+  const matCab = M(corCab, { roughness: .5, metalness: .08 }), fios = new MeshStandardMaterial({ map: texFios(corCab), transparent: true, alphaTest: .15, side: DoubleSide, roughness: .5, depthWrite: false });
+  const cabG = new Group(); cab.add(cabG); const mechas = [];
+  const solto = !rabo && !mo.coque && !mo.trancas;
+  if(solto){ for(let k = 0; k < 9; k++){ const a = -Math.PI * .72 + k * (Math.PI * 1.44 / 8), r = .78, comp = 2.0 + Math.abs(Math.sin(a)) * .5, me = mk(new CylinderGeometry(.11, .17, comp, 10), matCab, Math.sin(a) * r, -.25 - comp / 2, Math.cos(a) * r - .35, cabG); me.rotation.z = -Math.sin(a) * .12; me.rotation.x = -.08; mechas.push(me); }
+    for(let k = 0; k < 10; k++){ const a = -Math.PI * .8 + k * (Math.PI * 1.6 / 9), r = .92, card = mk(new PlaneGeometry(.55, 2.4), fios, Math.sin(a) * r, -1.25, Math.cos(a) * r - .35, cabG); card.rotation.y = a + Math.PI; card.rotation.x = .05; mechas.push(card); } }
+  else if(mo.coque){ const coque = mk(new SphereGeometry(.42, 16, 12), matCab, 0, -.35, -.95, cabG); coque.scale.set(1.1, .9, .9); mk(new TorusGeometry(.26, .05, 8, 16), M(mo.laco || 0xd14b7a, { roughness: .6 }), 0, -.35, -.95, cabG).rotation.y = .3;
+    for(let k = 0; k < 6; k++){ const a = -Math.PI * .6 + k * (Math.PI * 1.2 / 5), card = mk(new PlaneGeometry(.4, 1.1), fios, Math.sin(a) * .9, -.75, Math.cos(a) * .9 - .4, cabG); card.rotation.y = a + Math.PI; mechas.push(card); } }
+  if(rabo){ for(let k = 0; k < 5; k++){ const card = mk(new PlaneGeometry(.35, 1.6), fios, (k - 2) * .12, -1.15, -1.15 - Math.abs(k - 2) * .04, cabG); card.rotation.y = (k - 2) * .35; mechas.push(card); } }
+  for(let k = 0; k < 4; k++){ const sx = k < 2 ? -1 : 1, f = mk(new PlaneGeometry(.3, .9), fios, sx * (.85 + (k % 2) * .08), -.55, .35 - (k % 2) * .3, cabG); f.rotation.y = sx * (Math.PI / 2 + .2); mechas.push(f); }   // fios que escapam do capacete nas laterais
+  if(mo.trancas) trancasFrontais(av, corCab);
+  /* acessórios: brincos, colar com pingente, pulseira/relógio */
+  const ouro = M(0xd4af37, { roughness: .25, metalness: .9 }), prata = M(0xd8dde6, { roughness: .25, metalness: .9 }), metalA = mo.colar === "prata" ? prata : ouro;
+  [-1, 1].forEach(sx => { if(mo.brincos === "argola"){ const b = mk(new TorusGeometry(.13, .018, 8, 20), metalA, sx * .92, -.3, -.04); b.rotation.y = Math.PI / 2; } else { mk(new SphereGeometry(.045, 10, 8), metalA, sx * .93, -.2, -.02); } });
+  const colar = mk(new TorusGeometry(.44, .014, 8, 36), metalA, 0, 4.0, .05, av); colar.rotation.x = Math.PI / 2 + .25; mk(new SphereGeometry(.06, 10, 8), metalA, 0, 3.72, .5, av);
+  if(rig.bE && rig.bE.mao){ const pul = mk(new TorusGeometry(.2, .025, 8, 20), metalA, 0, .12, 0, rig.bE.mao); pul.rotation.x = 0; if(mo.relogio !== false){ const rl = mk(new BoxGeometry(.14, .05, .12), M(0x202228, { roughness: .4, metalness: .6 }), 0, .12, .2, rig.bE.mao); rl.rotation.x = .2; } }
+  if(rig.bD && rig.bD.mao) [0, 1].forEach(k => mk(new TorusGeometry(.045, .012, 6, 12), metalA, .08 - k * .1, -.05, .12, rig.bD.mao));                                   // anéis delicados
+  /* ---- efeitos da forma de poder ---- */
+  const fx = { on: false, t: 0, itens: [] };
+  const maoD = rig.bD && rig.bD.mao, maoE = rig.bE && rig.bE.mao;
+  if(T.particulas === "ouro"){ const P = particulas(90, 0xffd66a, .13); av.add(P.p); fx.itens.push({ P, tipo: "ouro" }); const l = new PointLight(0xffc860, 0, 9); l.position.set(0, 3, .6); l.visible = false; av.add(l); fx.luz = l; }
+  if(T.maos){ if(T.maos.direita === "fogo" && maoD){ const P = particulas(70, 0xff7a1a, .16); maoD.add(P.p); fx.itens.push({ P, tipo: "fogo" }); const l = new PointLight(0xff8a30, 0, 6); l.visible = false; maoD.add(l); fx.luzD = l; }
+    if(T.maos.esquerda === "gelo" && maoE){ const P = particulas(50, 0xbfe9ff, .1); maoE.add(P.p); fx.itens.push({ P, tipo: "gelo" }); const cr = new Group(); cr.visible = false; maoE.add(cr); fx.cristais = cr;
+      for(let k = 0; k < 6; k++){ const c = new Mesh(new OctahedronGeometry(.07 + (k % 3) * .03, 0), new MeshStandardMaterial({ color: 0xd8f3ff, emissive: 0x7fd0ff, emissiveIntensity: .8, roughness: .1, metalness: .2, transparent: true, opacity: .85 })); const a = k / 6 * Math.PI * 2; c.position.set(Math.cos(a) * .28, -.1 + (k % 2) * .18, Math.sin(a) * .28); c.rotation.set(a, a * .7, 0); cr.add(c); }
+      const l = new PointLight(0x9fd8ff, 0, 6); l.visible = false; maoE.add(l); fx.luzE = l; } }
+  fx.liga = () => { fx.on = true; fx.itens.forEach(i => { i.P.p.visible = true; i.P.vida.fill(0); }); [fx.luz, fx.luzD, fx.luzE].forEach(l => { if(l){ l.visible = true; l.intensity = 0; } }); if(fx.cristais) fx.cristais.visible = true; };
+  fx.desliga = () => { fx.on = false; fx.itens.forEach(i => { i.P.p.visible = false; }); [fx.luz, fx.luzD, fx.luzE].forEach(l => { if(l) l.visible = false; }); if(fx.cristais) fx.cristais.visible = false; };
+  fx.tick = (dt) => { if(!fx.on) return; fx.t += dt; const pulso = .75 + .25 * Math.sin(fx.t * 3);
+    if(fx.luz) fx.luz.intensity = 14 * pulso; if(fx.luzD) fx.luzD.intensity = 9 * (.7 + .3 * Math.sin(fx.t * 9)); if(fx.luzE) fx.luzE.intensity = 6 * pulso; if(fx.cristais) fx.cristais.rotation.y += dt * .8;
+    fx.itens.forEach(({ P, tipo }) => { const a = P.pos; for(let k = 0; k < P.n; k++){ P.vida[k] -= dt; if(P.vida[k] <= 0){ P.vida[k] = .6 + P.seed[k] * 1.2; const r = tipo === "ouro" ? 1.1 + P.seed[k] * 1.1 : .22, ang = P.seed[k] * Math.PI * 2 + fx.t;
+          a[k * 3] = Math.cos(ang) * r; a[k * 3 + 1] = tipo === "ouro" ? .3 + P.seed[k] * 4.6 : 0; a[k * 3 + 2] = Math.sin(ang) * r; }
+        a[k * 3 + 1] += dt * (tipo === "fogo" ? 1.6 : tipo === "ouro" ? .5 : .35); if(tipo === "gelo"){ a[k * 3] += Math.sin(fx.t * 2 + k) * dt * .15; } }
+      P.p.geometry.attributes.position.needsUpdate = true; P.p.material.opacity = .6 + .3 * Math.sin(fx.t * 5); }); };
+  /* ---- piscar e balanço do cabelo ---- */
+  const olhos = cab.children.filter(o => o.isMesh && o.geometry.type === "SphereGeometry" && Math.abs(Math.abs(o.position.x) - .33) < .02 && Math.abs(o.position.y - .08) < .02);
+  let tPisca = 2 + Math.random() * 3, piscando = 0, tt = 0;
+  function tick(dt){ tt += dt; tPisca -= dt; if(tPisca <= 0){ piscando = .13; tPisca = 2.5 + Math.random() * 3.5; } if(piscando > 0){ piscando -= dt; const s = piscando > 0 ? .15 : 1; olhos.forEach(o => { o.scale.y = s * (o.scale.x > 1 ? .8 : 1); }); }
+    const v = .025 + (H.M && M.vento ? 0 : 0); mechas.forEach((me, k) => { me.rotation.z = (me.userData.rz0 === undefined ? (me.userData.rz0 = me.rotation.z) : me.userData.rz0) + Math.sin(tt * 1.7 + k * .9) * v; });
+    fx.tick(dt); }
+  return { id: def.id, nome: def.nome, p: rig, tick, fx, mechas };
 }
