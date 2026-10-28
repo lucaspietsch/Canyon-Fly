@@ -22,6 +22,8 @@ export function criarTransformacao(M){
   function veste(av, T){
     tecidos(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); const c0 = m.userData.cor0; m.color.setHex(c0 === CALCA0 ? T.calca : T.camisa); if(T.brilho){ m.emissive.setHex(T.cor); m.emissiveIntensity = T.brilho; } });
     capacetes(av).forEach(m => { if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); m.color.setHex(T.capacete !== undefined ? T.capacete : T.cor); });
+    if(T.cabelo !== undefined){ const d = def(S.id), c0 = (d && d.modelo && d.modelo.cabelo) || 0x1e140d;                                  // cabelo: material sem trama, roughness 1, na cor original do cabelo
+      av.traverse(o => { if(o.isMesh && o.material && !o.material.map && o.material.roughness === 1 && o.material.color && (o.material.userData.cor0 === c0 || o.material.color.getHex() === c0)){ const m = o.material; if(m.userData.cor0 === undefined) m.userData.cor0 = m.color.getHex(); m.color.setHex(T.cabelo); if(T.brilhoCabelo && m.emissive){ m.emissive.setHex(T.cabelo); m.emissiveIntensity = T.brilhoCabelo; } } }); }
   }
   function despe(av){ av.traverse(o => { if(o.isMesh && o.material && o.material.userData && o.material.userData.cor0 !== undefined){ o.material.color.setHex(o.material.userData.cor0); if(o.material.emissive) { o.material.emissive.setHex(0); o.material.emissiveIntensity = 0; } } }); }
   function clarao(av, cor){

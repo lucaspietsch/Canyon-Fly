@@ -146,6 +146,6 @@ export function constroiAtiara(H, def){
 
 /* OPERADOR (vaga genérica, aparência padrão da equipe até a pessoa autorizar e enviar os dados): farda verde-oliva, capacete laranja, sem barba. */
 export function constroiOperador(H, def){
-  const M = H.M, rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: M(0x56642d), manga: M(0x56642d), calca: M(0x4a5729), pele: H.pele.media, capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: 0x1e140d, barba: !!(def.modelo && def.modelo.barba), pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });      // barba por operador (dados/personagens.js → modelo.barba)
+  const M = H.M, rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: M(0x56642d), manga: M(0x56642d), calca: M(0x4a5729), pele: H.pele.media, capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: (def.modelo && def.modelo.cabelo) || 0x1e140d, barba: !!(def.modelo && def.modelo.barba), pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });      // barba por operador (dados/personagens.js → modelo.barba)
   return { id: def.id, nome: def.nome, p: rig, tick(){ } };
 }
