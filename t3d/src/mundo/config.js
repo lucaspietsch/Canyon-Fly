@@ -343,7 +343,11 @@ export const VIAGEM = {
     { id: "recebimento", nome: "Recebimento (início da tirolesa)", ref: "recebimento", ilus: "recebimento" },
     { id: "lancamento", nome: "Mirante / Lançamento da tirolesa", ref: "lancamento", ilus: "lancamento" },
     { id: "cidade", nome: "Cambará do Sul (cidade)", ref: "cidade", ilus: "cidade" },
-    { id: "vila", nome: "Vila Oswaldo Kroeff (em construção)", ref: "vila", ilus: "vila" }
+    { id: "vila", nome: "Vila Oswaldo Kroeff (em construção)", ref: "vila", ilus: "vila" },
+    /* tempo antigo: só aparecem para operador LOGADO (soOperador). `kmlPoli` = centro do polígono do KML com esse nome */
+    { id: "santana", nome: "Vila Santana, 1950 (operadores)", ref: { kmlPoli: "vila santana" }, ilus: "vila", soOperador: true },
+    { id: "olaria", nome: "Antiga Floresta da Olaria (operadores)", ref: { kmlPoli: "AREA A ANTIGA FLORESTA DA OLARIA" }, ilus: "vila", soOperador: true },
+    { id: "industrial", nome: "Área industrial — Cambará S/A (operadores)", ref: { kmlPoli: "área Parque Industrial Celulose Cambará" }, ilus: "vila", soOperador: true }
   ]
 };
 

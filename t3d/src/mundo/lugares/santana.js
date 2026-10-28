@@ -1,7 +1,7 @@
 import { Group, Mesh, InstancedMesh, BoxGeometry, CylinderGeometry, SphereGeometry, MeshStandardMaterial, Matrix4, Vector3, Quaternion, Euler } from "three";
 import { placaLegivel, texPlacaHD } from "../../lib.js";
 import { U, LUGARES as C } from "../config.js";
-import { pedeSenha, temSenha } from "../seguranca/senha.js";
+import { pedeSenha, temSenha, sessao } from "../seguranca/senha.js";
 import { aberto, dentroPoli, inset, mat } from "./util.js";
 
 /* ============================================================================================================
@@ -45,7 +45,7 @@ export function criarSantana(M, { poli }){
   const gate = []; for(let k = -meia; k <= meia; k += 3.2 * U){ const cx = px + nx * k, cz = pz + nz * k; gate.push({ x0: cx - 2, x1: cx + 2, z0: cz - 2, z1: cz + 2, ativo: () => !S.aberta }); }
   S.colisores.push(...gate);
   /* época por quem está dentro da vila (aberto) */
-  const hot = { id: "portao-santana", x: px, z: pz, r: 9 * U, rotulo: () => (S.aberta ? "Pórtico da Vila Santana" : temSenha(ID_SENHA) ? "Portão trancado — [E] digitar a senha" : "Portão trancado (em breve)"), acao: () => interage() };
+  const hot = { id: "portao-santana", x: px, z: pz, r: 9 * U, rotulo: () => (S.aberta ? "Pórtico da Vila Santana" : sessao.logado() ? "Portão trancado — [E] abrir (operador autorizado)" : temSenha(ID_SENHA) ? "Portão trancado — [E] digitar a senha" : "Portão trancado (em breve)"), acao: () => interage() };
   S.hotspots.push(hot);
   const motivo = "Vila Santana: o portão está trancado";
   const bloq = { f: (x, z) => !S.aberta && !(M.lugares && M.lugares.S.antigo) && dentroPoli(grande, x, z), motivo };
@@ -53,6 +53,7 @@ export function criarSantana(M, { poli }){
 
   async function interage(){
     if(S.aberta){ M.ctx.mostraAviso("O portão está aberto"); return; }
+    if(sessao.logado()){ if(M.terminal) M.terminal.msg("info", "Portão da Vila Santana: aberto pelo login do operador."); abre(); return; }           // operador logado: o login dele já autoriza
     if(M.terminal) M.terminal.msg("info", temSenha(ID_SENHA) ? "Portão da Vila Santana: trancado." : "Portão da Vila Santana: trancado. Ainda não há senha cadastrada (em breve).");
     M.ctx.soltaTeclas && M.ctx.soltaTeclas();
     const ok = await pedeSenha(M.ui, ID_SENHA, { titulo: "Portão da Vila Santana", texto: "Digite a senha para abrir o portão." });
@@ -63,7 +64,7 @@ export function criarSantana(M, { poli }){
 
   /* transição de época: cortina escura + tom sépia */
   const cortina = document.createElement("div"); cortina.style.cssText = "position:absolute;inset:0;z-index:60;background:#d8c9a0;opacity:0;pointer-events:none;transition:opacity .9s;";
-  function mudaEpoca(e){ S.epoca = e; if(M.ui && !cortina.parentNode) M.ui.appendChild(cortina); cortina.style.opacity = ".92"; setTimeout(() => { const el = M.renderer && M.renderer.domElement; if(el) el.style.filter = e === "1950" ? "sepia(.65) contrast(.95) saturate(.8)" : ""; cortina.style.opacity = "0"; }, 700);
+  function mudaEpoca(e){ S.epoca = e; if(M.transformacao) M.transformacao.aoEpoca(e); if(M.ui && !cortina.parentNode) M.ui.appendChild(cortina); cortina.style.opacity = ".92"; setTimeout(() => { const el = M.renderer && M.renderer.domElement; if(el) el.style.filter = e === "1950" ? "sepia(.65) contrast(.95) saturate(.8)" : ""; cortina.style.opacity = "0"; }, 700);
     if(M.terminal) M.terminal.msg("sobrenatural", e === "1950" ? "Você cruza o pórtico: Vila Santana, 1950." : "Você volta ao presente."); if(M.missoes && M.missoes.emite) M.missoes.emite("epoca", { epoca: e }); }
 
   function tick(dt, J){
@@ -71,6 +72,7 @@ export function criarSantana(M, { poli }){
     if(S.lampadas){ const h = M.ciclo.hora(), noite = h < 5.8 || h >= 18 || S.epoca === "1950" && h < 6.2; S.lampadas.forEach(m => { m.emissiveIntensity += ((noite ? 2 : .1) - m.emissiveIntensity) * Math.min(1, dt * 1.5); }); }
     if(!J) return; const dentro = dentroPoli(P, J.x, J.z);
     if(M.lugares && M.lugares.S.antigo){ if(S.epoca !== "1950") mudaEpoca("1950"); S.ultDentro = dentro; return; }                    // veio pelo portal violeta: tudo é 1950
+    if(!S.aberta && dentro && sessao.logado()) abre();                                                                      // chegou por viagem rápida com login: abre sozinho
     if(dentro !== S.ultDentro || (S.epoca === "1950" && !S.aberta && !dentro)){ S.ultDentro = dentro; if(S.aberta || !dentro) mudaEpoca(dentro ? "1950" : "2026"); }
   }
   const dispose = () => { S.colisores.forEach(k => { const i = cen.colisores.indexOf(k); if(i >= 0) cen.colisores.splice(i, 1); }); S.hotspots.forEach(h => { const i = cen.hotspots.indexOf(h); if(i >= 0) cen.hotspots.splice(i, 1); });

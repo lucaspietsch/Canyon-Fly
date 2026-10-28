@@ -1,4 +1,5 @@
 import { Group, Mesh, BoxGeometry, CylinderGeometry, MeshStandardMaterial, TorusGeometry } from "three";
+import { sessao } from "./seguranca/senha.js";
 import { canvasTex, placaLegivel, texPlacaHD } from "../lib.js";
 import { U, VIAGEM as C, GAME_TIME_CONFIG } from "./config.js";
 
@@ -35,11 +36,12 @@ export function criarViagem(M){
     const r = d.ref;
     if(typeof r === "string") return resolvedores[r] ? resolvedores[r]() : null;
     if(r && r.kml){ const q = M.kml.S.pontos.find(p => p.nome === r.kml); if(q){ const p = M.zonas.mundoPt(q); return { x: p[0], z: p[1], yaw: 0 }; } return null; }
+    if(r && r.kmlPoli){ const q = M.kml.S.poligonos.find(p => p.nome.trim().toLowerCase() === r.kmlPoli.toLowerCase()); if(q){ const P = M.zonas.mundoPts(q) || q.pts, c = P.reduce((a, p) => [a[0] + p[0] / P.length, a[1] + p[1] / P.length], [0, 0]); return { x: c[0], z: c[1], yaw: 0 }; } return null; }
     if(r && isFinite(r.x)) return { x: r.x, z: r.z, yaw: r.yaw || 0 };
     return null;
   }
   const todos = () => C.destinos.map(d => ({ ...d, pos: resolve(d) })).filter(d => d.pos);
-  const destinos = () => todos().filter(d => !M.missoes || M.missoes.viagemPermitida(d.id));                  // as missões decidem quais destinos já estão liberados
+  const destinos = () => todos().filter(d => d.soOperador ? sessao.logado() : (!M.missoes || M.missoes.viagemPermitida(d.id)));      // tempo antigo: só para operador logado                  // as missões decidem quais destinos já estão liberados
   /* ---------- distância (km de percurso) e tempo ---------- */
   function eixo(x, z){                                                                         // posição (m) ao longo da estrada: parque (antes do começo) → estrada → cidade → complexo da Vila Oswaldo Kroeff
     const Z = M.zonas, zona = Z.zonaDe(x, z), Es = M.estrada, p0 = Es.pts[0];
