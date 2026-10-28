@@ -1,4 +1,4 @@
-import { Group, Mesh, Points, PointsMaterial, TubeGeometry, CatmullRomCurve3, Vector3, RepeatWrapping, CylinderGeometry, TorusGeometry, SphereGeometry, BoxGeometry, MeshStandardMaterial, MeshBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, PointLight, AdditiveBlending, DoubleSide, Color, BufferAttribute, OctahedronGeometry, PlaneGeometry, CanvasTexture, SRGBColorSpace } from "three";
+import { Group, Mesh, Points, PointsMaterial, TubeGeometry, CatmullRomCurve3, Vector3, RepeatWrapping, CylinderGeometry, TorusGeometry, SphereGeometry, BoxGeometry, MeshStandardMaterial, MeshBasicMaterial, LineSegments, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, PointLight, AdditiveBlending, DoubleSide, Color, BufferAttribute, OctahedronGeometry, PlaneGeometry, CanvasTexture, SRGBColorSpace, ConeGeometry } from "three";
 import { canvasTex } from "../../lib.js";
 
 /* ============================================================================================================
@@ -160,7 +160,8 @@ function trancasFrontais(av, cor){
 export function constroiOperador(H, def){
   const M = H.M, rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: M(0x56642d), manga: M(0x56642d), calca: M(0x4a5729), pele: H.pele.media, capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: (def.modelo && def.modelo.cabelo) || 0x1e140d, barba: !!(def.modelo && def.modelo.barba), pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });      // barba por operador (dados/personagens.js → modelo.barba)
   if(def.modelo && def.modelo.trancas) trancasFrontais(rig.av, (def.modelo && def.modelo.cabelo) || 0x1e140d);
-  return { id: def.id, nome: def.nome, p: rig, tick(){ } };
+  const ex = adornosOperador(H, rig, def);
+  return { id: def.id, nome: def.nome, p: rig, tick: ex.tick, fx: ex.fx };
 }
 
 /* ============================================================================================================
@@ -234,4 +235,36 @@ export function constroiOperadora(H, def){
     const v = .025 + (H.M && M.vento ? 0 : 0); mechas.forEach((me, k) => { me.rotation.z = (me.userData.rz0 === undefined ? (me.userData.rz0 = me.rotation.z) : me.userData.rz0) + Math.sin(tt * 1.7 + k * .9) * v; });
     fx.tick(dt); }
   return { id: def.id, nome: def.nome, p: rig, tick, fx, mechas };
+}
+
+/* ADORNOS por operador (dados/personagens.js → modelo): barbaCor (tinge a barba), oculosClaros (lentes transparentes = óculos de grau),
+   cracha (texto legível no peito e nas costas, nunca espelhado), viking (capacete com chifres, peles, ombreiras, braceletes — escondidos até a transformação).
+   fx: aura de fogo (transformacao.aura = "fogo") com partículas e luz; a barba "ergue" na fúria. */
+const texTexto = (txt, cor, fundo) => { const c = document.createElement("canvas"); c.width = 256; c.height = 64; const x = c.getContext("2d"); x.fillStyle = fundo; x.fillRect(0, 0, 256, 64); x.strokeStyle = cor; x.lineWidth = 4; x.strokeRect(3, 3, 250, 58); x.fillStyle = cor; x.font = "bold 30px system-ui, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(txt, 128, 34); const tx = new CanvasTexture(c); tx.colorSpace = SRGBColorSpace; return tx; };
+function adornosOperador(H, rig, def){
+  const M = H.M, mo = def.modelo || {}, T = def.transformacao || {}, cab = rig.cab, tronco = rig.tronco, av = rig.av;
+  const mk = (g, mat, x, y, z, pai) => { const o = new Mesh(g, mat); o.position.set(x, y, z); pai.add(o); return o; };
+  const barbas = []; cab.traverse(o => { if(o.isMesh && o.material && o.material.map && o.material.roughness === 1 && o.material.map.repeat && o.material.map.repeat.x === 4) barbas.push(o); });
+  if(mo.barbaCor !== undefined && barbas.length){ const mat = barbas[0].material.clone(); mat.map = null; mat.color.setHex(mo.barbaCor); mat.roughness = .95; barbas.forEach(o => { o.material = mat; }); }      // barba ruiva: cor sólida (a textura escura apagaria o tom)
+  if(mo.oculosClaros && rig.ocG){ rig.ocG.traverse(o => { if(o.isMesh && o.material && o.material.metalness === .7){ const l = o.material.clone(); l.map = null; l.color.setHex(0xcfe3ff); l.transparent = true; l.opacity = .22; l.roughness = .05; o.material = l; } }); }
+  if(mo.cracha){ const mat = new MeshStandardMaterial({ map: texTexto(mo.cracha, "#111111", "#ffb347"), roughness: .7 }); mk(new PlaneGeometry(.72, .2), mat, -.12, 1.5, .96, tronco); const atras = mk(new PlaneGeometry(1.3, .34), mat, 0, 1.25, -.86, tronco); atras.rotation.y = Math.PI; }
+  const vik = new Group(); vik.visible = false; av.add(vik);
+  if(mo.viking){
+    const ferro = M(0x5a5e66, { roughness: .35, metalness: .85 }), pele = M(0x8a6a4a, { roughness: 1 }), couro = M(0x4a2e1a, { roughness: .9 }), chifre = M(0xe8dcc0, { roughness: .6 });
+    const chifres = new Group(); chifres.position.copy(cab.position); vik.add(chifres);
+    [-1, 1].forEach(sx => { const c = mk(new ConeGeometry(.24, 1.7, 12), chifre, sx * 1.25, .55, -.05, chifres); c.rotation.z = sx * -1.35; c.rotation.x = -.2; mk(new TorusGeometry(.26, .06, 8, 16), ferro, sx * .98, .3, -.05, chifres).rotation.z = sx * -1.35; });      // chifres grandes, para os lados
+    mk(new SphereGeometry(1.04, 28, 16, 0, Math.PI * 2, 0, Math.PI * .4), ferro, 0, .14, 0, chifres); mk(new BoxGeometry(.16, .5, .12), ferro, 0, .05, 1.0, chifres);                           // casco de ferro e protetor de nariz
+    [-1, 1].forEach(sx => { const p = mk(new SphereGeometry(.62, 16, 12), pele, sx * 1.0, 1.9 + 2.2, 0, vik); p.scale.set(1.15, .55, 1.0); const o = mk(new SphereGeometry(.44, 16, 12), ferro, sx * 1.1, 1.72 + 2.2, 0, vik); o.scale.set(1, .8, 1); });
+    mk(new BoxGeometry(2.0, .9, .3), pele, 0, 1.55 + 2.2, -.75, vik).rotation.x = .15;
+    mk(new TorusGeometry(.5, .07, 10, 24), couro, 0, .1 + 2.2, 0, vik).rotation.x = Math.PI / 2; [-1, 1].forEach(sx => mk(new BoxGeometry(.25, .55, .08), ferro, sx * .3, .05 + 2.2, .9, vik));
+    vik.userData.bracs = []; [rig.bD, rig.bE].forEach(b => { if(b && b.co){ const br = mk(new TorusGeometry(.31, .06, 8, 18), ferro, 0, -.55, 0, b.co); br.visible = false; vik.userData.bracs.push(br); } });
+  }
+  const fx = { on: false, t: 0, P: null, luz: null };
+  if(T.aura === "fogo"){ fx.P = particulas(140, 0xff4a1a, .18); av.add(fx.P.p); fx.luz = new PointLight(0xff3b1f, 0, 12); fx.luz.position.set(0, 3, 0); fx.luz.visible = false; av.add(fx.luz); }
+  fx.liga = () => { if(fx.on) return; fx.on = true; vik.visible = true; (vik.userData.bracs || []).forEach(b => { b.visible = true; }); if(fx.P){ fx.P.p.visible = true; fx.P.vida.fill(0); } if(fx.luz) fx.luz.visible = true; barbas.forEach(o => { o.scale.multiplyScalar(1.25); }); if(mo.viking && rig.capG) rig.capG.visible = false; };
+  fx.desliga = () => { if(!fx.on) return; fx.on = false; vik.visible = false; (vik.userData.bracs || []).forEach(b => { b.visible = false; }); if(fx.P) fx.P.p.visible = false; if(fx.luz) fx.luz.visible = false; barbas.forEach(o => { o.scale.multiplyScalar(1 / 1.25); }); if(rig.capG) rig.capG.visible = true; };
+  fx.tick = (dt) => { if(!fx.on) return; fx.t += dt; if(fx.luz) fx.luz.intensity = 16 * (.7 + .3 * Math.sin(fx.t * 11)); if(!fx.P) return; const P = fx.P, a = P.pos;
+    for(let k = 0; k < P.n; k++){ P.vida[k] -= dt; if(P.vida[k] <= 0){ P.vida[k] = .4 + P.seed[k] * .9; const ang = P.seed[k] * Math.PI * 2 + fx.t * 2, r = .9 + P.seed[k] * .6; a[k * 3] = Math.cos(ang) * r; a[k * 3 + 1] = .2 + P.seed[k] * 4.4; a[k * 3 + 2] = Math.sin(ang) * r; } a[k * 3 + 1] += dt * 2.4; }
+    P.p.geometry.attributes.position.needsUpdate = true; P.p.material.opacity = .55 + .35 * Math.sin(fx.t * 7); };
+  return { fx, tick: (dt) => fx.tick(dt) };
 }

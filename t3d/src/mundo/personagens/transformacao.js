@@ -36,7 +36,7 @@ export function criarTransformacao(M){
   function liga(id){
     const d = def(id), T = d && d.transformacao, av = avatarDe(); if(!T || !av) return false;
     S.ativa = true; S.id = id; S.cor = T.cor; veste(av, T); clarao(av, T.cor);
-    const r = M.personagens.rig(id); if(r && r.fx) r.fx.liga(T); S.alvoAlt = (T.flutuaM || 0) * U;                                 // partículas/luzes do rig e flutuação (Diully: 2 m)
+    const r = M.personagens.rig(id); if(r && r.fx) r.fx.liga(T); S.alvoAlt = (T.flutuaM || 0) * U; S.velMultExtra = 1;                                 // partículas/luzes do rig e flutuação (Diully: 2 m)
     if(M.terminal) M.terminal.msg("sobrenatural", d.nome + " se transforma: " + T.nome + ". " + (T.texto || ""));
     if(M.ctx) M.ctx.mostraAviso(T.nome + " — poderes ativos");
     if(M.poderes && M.poderes.aoTransformar) M.poderes.aoTransformar(id, true);
@@ -59,7 +59,7 @@ export function criarTransformacao(M){
     const ep = M.lugares && M.lugares.epoca ? M.lugares.epoca() : "2026"; if(ep !== "1950") desliga();
   }
   const alturaExtra = () => S.alt;                                                                        // u acima do chão (flutuação), lido pelo modo andar
-  const velMult = () => { const d = S.ativa && def(S.id); return d && d.transformacao && d.transformacao.velocidade ? d.transformacao.velocidade : 1; };
+  const velMult = () => { const d = S.ativa && def(S.id); return (d && d.transformacao && d.transformacao.velocidade ? d.transformacao.velocidade : 1) * (S.ativa && S.velMultExtra ? S.velMultExtra : 1); };   // velMultExtra: voo do Krig
   const info = () => (S.ativa ? "Transformado: " + (def(S.id) || {}).nome + " (" + def(S.id).transformacao.nome + ")" : (sessao.logado() ? "Operador logado: " + sessao.operador() : ""));
   /* para retratos: veste/despe um boneco qualquer com a roupa de poder de `id`, sem mexer no estado da transformação */
   const vesteEm = (av, id) => { const d = def(id); if(d && d.transformacao && av) veste(av, d.transformacao, d); };

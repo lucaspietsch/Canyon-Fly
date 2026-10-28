@@ -45,6 +45,7 @@ export class Animal {
 
   /* ---------- movimento ---------- */
   caminha(dt, c, alvo, vAlvo, giro = 3){
+    if(this.atordoado > 0){ this.atordoado -= dt; this.vel = 0; return; }                                                   // rugido do Krig: parado, sem ferir
     const dx = alvo[0] - this.x, dz = alvo[1] - this.z, d = Math.hypot(dx, dz);
     const yawAlvo = Math.atan2(dx, dz); this.yaw += angDif(this.yaw, yawAlvo) * Math.min(1, dt * giro);
     const quase = d < 3 * U; this.vel += ((quase ? 0 : vAlvo) - this.vel) * Math.min(1, dt * 3);
