@@ -40,6 +40,21 @@ Testado headless (sem erros): login errado ×3 → espera 30 s (até a senha cer
 
 **Como testar no seu PC**: Live Server em `localhost` → ▶ CanyonFly → botão 👤 → clique em **Krig** → login `teste` + a senha combinada → marco de viagem rápida ([E] no estacionamento) → "Vila Santana, 1950" → veja o clarão e a roupa viking; volte por viagem rápida ou a pé pelo pórtico → uniforme de volta. Erre a senha 3 vezes para ver a espera. Tela 👤 → **Sair**.
 
+## RECONSTRUÇÃO — Diully e Mary (28/10)
+| Item | Estado |
+|---|---|
+| Base feminina (rosto suave, olhos com íris/pupila/reflexo/cílios, sobrancelhas finas, blush, batom, cabelo volumoso com fios, brincos, colar, pulseira, anéis, piscar, balanço do cabelo) | ✅ `constroiOperadora` em `modelos.js` |
+| Diully: loira, rabo de cavalo (dias pares) / solto (ímpares); Sombra Dourada = preto, cabelo reluzente, partículas douradas, flutua a 2 m | ✅ |
+| Mary: castanho escuro, coque com laço + duas tranças, argolas, prata; Violeta = jaqueta violeta, calça escura, fogo na mão direita e gelo na esquerda (efeitos visuais) | ✅ |
+| Lábia | ✅ passou do Pit para a Diully |
+| Telecinese (Diully), fogo/gelo jogáveis (Mary), animações de personalidade (ajeitar cabelo, selfie, acenar), expressões nas falas, LOD de rosto/cabelo, luz de recorte | 🔲 a definir / próximo passo — o boneco base continua o `pessoa3d` (o rosto ainda é estilizado) |
+| Retratos | `M.personagens.retrato(id, graus, { transformado, rosto })`; folhas enviadas no chat |
+
+## FILA (ordem combinada)
+1. **Pit** — visual próprio, login, poderes (armadura preta com luzes azul/violeta, CardPuter, parar o tempo, hologramas, hackear). Registrado; não iniciado.
+2. **OSM (8 arquivos)** — bloqueado: nenhum .osm chegou ao servidor. Coloque-os em `data/osm/` no repositório e dê push.
+3. Fotos restantes (Krig, Jackão, Mohr, Carlão transformado) e P1 em diante.
+
 ## Pendências que dependem do Lucas
 - **Cadastrar os logins reais** dos 8 operadores e a senha da Vila Santana (`tools/gerar-hash.html` → colar em `senhas.js`). Nunca me mande as senhas.
 - **Descrever os poderes** de cada operador no tempo antigo (o que fazem, alcance, recarga) para eu implementar em `data/poderes.js`.
