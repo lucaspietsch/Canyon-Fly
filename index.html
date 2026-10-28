@@ -4,16 +4,63 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>CanyonFly</title>
-<style>html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden}#palco{position:fixed;inset:0}</style>
+<style>
+html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+#palco{position:fixed;inset:0}
+/* tela inicial: nada do jogo é baixado antes do clique em "CanyonFly" */
+#inicio{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#e9efc0;text-align:center;padding:24px;
+  background:radial-gradient(ellipse at 50% 70%,#1e2a16 0%,#0b0e08 70%)}
+#inicio h1{margin:0;font-size:clamp(28px,6vw,54px);letter-spacing:2px;color:#ffd166}
+#inicio p{margin:0;max-width:520px;opacity:.85;line-height:1.5}
+#jogar{font:700 20px/1 inherit;color:#1b1f12;background:#ffd166;border:0;border-radius:12px;padding:16px 38px;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.45)}
+#jogar:hover{background:#ffe08a}
+#jogar:disabled{opacity:.6;cursor:default}
+#barra{width:min(420px,80vw);height:10px;border-radius:6px;background:#2a3320;overflow:hidden;display:none}
+#barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8bc34a,#ffd166);transition:width .15s}
+#status{font-size:14px;opacity:.75;min-height:1.4em}
+</style>
 </head>
 <body>
 <div id="palco"></div>
-<script src="t3d/dist/trolley3d.min.js"></script>
+<div id="inicio">
+  <h1>CanyonFly</h1>
+  <p>Mundo aberto do Cânion Fortaleza e de Cambará do Sul. O jogo (≈1,5 MB + mapa e elevação) só é baixado quando você clicar.</p>
+  <button id="jogar">▶ CanyonFly</button>
+  <div id="barra"><i></i></div>
+  <div id="status"></div>
+</div>
 <script>
-  /* CanyonFly: mundo aberto do Cânion Fortaleza e arredores. Abra por um servidor estático (ex.: Live Server do VS Code, ou `npx serve .`). */
-  const ctl = Trolley3D.montar(document.getElementById("palco"), { avatar: true });
-  window.ctl = ctl;                                                         // depuração: ctl.mundo (M), ctl.andarMod
-  let n = 0; const t = setInterval(() => { if(ctl.podeAndar || ++n > 40){ clearInterval(t); try{ ctl.andar(true); }catch(e){ console.warn(e); } } }, 250);
+  /* CanyonFly: mundo aberto do Cânion Fortaleza e arredores. Abra por um servidor estático (ex.: Live Server do VS Code, ou `npx serve .`).
+     O pacote t3d/dist/trolley3d.min.js só é baixado depois do clique, com barra de progresso; o tamanho e o tempo saem no console. */
+  const BUNDLE = "t3d/dist/trolley3d.min.js";
+  const $ = (id) => document.getElementById(id), btn = $("jogar"), barra = $("barra"), fill = barra.firstElementChild, status = $("status");
+  const mb = (n) => (n / 1048576).toFixed(2) + " MB";
+  async function baixa(url, aoProgresso){
+    const r = await fetch(url, { cache: "force-cache" }); if(!r.ok) throw new Error("HTTP " + r.status + " em " + url);
+    const total = +r.headers.get("content-length") || 0;
+    if(!r.body || !r.body.getReader){ const t = await r.text(); aoProgresso(t.length, t.length); return t; }
+    const rd = r.body.getReader(), partes = []; let lidos = 0;
+    for(;;){ const { done, value } = await rd.read(); if(done) break; partes.push(value); lidos += value.length; aoProgresso(lidos, total || lidos); }
+    const buf = new Uint8Array(lidos); let o = 0; partes.forEach(p => { buf.set(p, o); o += p.length; });
+    return new TextDecoder().decode(buf);
+  }
+  function inicia(){
+    const ctl = Trolley3D.montar($("palco"), { avatar: true });
+    window.ctl = ctl;                                                       // depuração: ctl.mundo (M), ctl.andarMod
+    let n = 0; const t = setInterval(() => { if(ctl.podeAndar || ++n > 40){ clearInterval(t); try{ ctl.andar(true); }catch(e){ console.warn(e); } } }, 250);
+  }
+  btn.addEventListener("click", async () => {
+    btn.disabled = true; barra.style.display = "block"; status.textContent = "Baixando o jogo…";
+    const t0 = performance.now();
+    try{
+      const js = await baixa(BUNDLE, (lidos, total) => { fill.style.width = Math.round(100 * lidos / total) + "%"; status.textContent = "Baixando o jogo… " + mb(lidos) + (total ? " de " + mb(total) : ""); });
+      status.textContent = "Montando o mundo…"; fill.style.width = "100%";
+      const s = document.createElement("script"); s.textContent = js + "\n//# sourceURL=" + BUNDLE; document.head.appendChild(s);
+      console.info("CanyonFly: pacote de " + mb(js.length) + " baixado e carregado em " + ((performance.now() - t0) / 1000).toFixed(1) + " s (mapa KML e elevação chegam em seguida, em segundo plano)");
+      inicia();
+      requestAnimationFrame(() => { $("inicio").remove(); console.info("CanyonFly: tela inicial fechada em " + ((performance.now() - t0) / 1000).toFixed(1) + " s"); });
+    }catch(e){ console.error(e); status.textContent = "Não foi possível carregar o jogo: " + e.message + " — abra por um servidor (Live Server / npx serve), não direto do arquivo."; btn.disabled = false; }
+  });
 </script>
 </body>
 </html>
