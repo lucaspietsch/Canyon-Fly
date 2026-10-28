@@ -269,11 +269,16 @@ function adornosOperador(H, rig, def){
     mk(new TorusGeometry(.5, .07, 10, 24), couro, 0, .1 + 2.2, 0, vik).rotation.x = Math.PI / 2; [-1, 1].forEach(sx => mk(new BoxGeometry(.25, .55, .08), ferro, sx * .3, .05 + 2.2, .9, vik));
     vik.userData.bracs = []; [rig.bD, rig.bE].forEach(b => { if(b && b.co){ const br = mk(new TorusGeometry(.31, .06, 8, 18), ferro, 0, -.55, 0, b.co); br.visible = false; vik.userData.bracs.push(br); } });
   }
-  const fx = { on: false, t: 0, P: null, luz: null };
+  /* linhas da roupa que brilham ao usar poder (Mohr): tiras finas emissivas, escondidas até a transformação; fx.pulsa() acende e o tick apaga */
+  const linhas = []; let pulso = 0;
+  if(T.linhas !== undefined){ const lm = new MeshStandardMaterial({ color: T.linhas, emissive: T.linhas, emissiveIntensity: .35, roughness: .4 });
+    [[-.55, 1.3, .83, .05, 1.5], [.55, 1.3, .83, .05, 1.5], [0, .55, .84, 1.3, .05], [-.95, 1.0, 0, .05, 1.2], [.95, 1.0, 0, .05, 1.2]].forEach(([x, y, z, w, h]) => { const o = mk(new BoxGeometry(w, h, .04), lm, x, y + 2.2, z, vik); if(Math.abs(x) > .9) o.rotation.y = Math.PI / 2; linhas.push(o); });
+    [-1, 1].forEach(sx => { const o = mk(new BoxGeometry(.05, 1.6, .05), lm, sx * .42, 1.1, .36, vik); linhas.push(o); }); }
+  const fx = { on: false, t: 0, P: null, luz: null, pulsa: () => { pulso = 1; } };
   if(T.aura === "fogo"){ fx.P = particulas(140, 0xff4a1a, .18); av.add(fx.P.p); fx.luz = new PointLight(0xff3b1f, 0, 12); fx.luz.position.set(0, 3, 0); fx.luz.visible = false; av.add(fx.luz); }
   fx.liga = () => { if(fx.on) return; fx.on = true; vik.visible = true; (vik.userData.bracs || []).forEach(b => { b.visible = true; }); if(vik.userData.fuzil) vik.userData.fuzil.visible = true; if(fx.P){ fx.P.p.visible = true; fx.P.vida.fill(0); } if(fx.luz) fx.luz.visible = true; barbas.forEach(o => { o.scale.multiplyScalar(1.25); }); if(mo.viking && rig.capG) rig.capG.visible = false; };
   fx.desliga = () => { if(!fx.on) return; fx.on = false; vik.visible = false; (vik.userData.bracs || []).forEach(b => { b.visible = false; }); if(vik.userData.fuzil) vik.userData.fuzil.visible = false; if(fx.P) fx.P.p.visible = false; if(fx.luz) fx.luz.visible = false; barbas.forEach(o => { o.scale.multiplyScalar(1 / 1.25); }); if(rig.capG) rig.capG.visible = true; };
-  fx.tick = (dt) => { if(!fx.on) return; fx.t += dt; if(fx.luz) fx.luz.intensity = 16 * (.7 + .3 * Math.sin(fx.t * 11)); if(!fx.P) return; const P = fx.P, a = P.pos;
+  fx.tick = (dt) => { if(!fx.on) return; fx.t += dt; if(linhas.length){ pulso = Math.max(0, pulso - dt * 1.2); linhas.forEach(o => { o.material.emissiveIntensity = .35 + pulso * 2.2; }); } if(fx.luz) fx.luz.intensity = 16 * (.7 + .3 * Math.sin(fx.t * 11)); if(!fx.P) return; const P = fx.P, a = P.pos;
     for(let k = 0; k < P.n; k++){ P.vida[k] -= dt; if(P.vida[k] <= 0){ P.vida[k] = .4 + P.seed[k] * .9; const ang = P.seed[k] * Math.PI * 2 + fx.t * 2, r = .9 + P.seed[k] * .6; a[k * 3] = Math.cos(ang) * r; a[k * 3 + 1] = .2 + P.seed[k] * 4.4; a[k * 3 + 2] = Math.sin(ang) * r; } a[k * 3 + 1] += dt * 2.4; }
     P.p.geometry.attributes.position.needsUpdate = true; P.p.material.opacity = .55 + .35 * Math.sin(fx.t * 7); };
   return { fx, tick: (dt) => fx.tick(dt) };

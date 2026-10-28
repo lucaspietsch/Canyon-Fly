@@ -11,6 +11,9 @@ export const PODERES = {
      teclas.granada = granada (granadasPorZona por zona; recarregam ao trocar de zona; fumaça + empurrão, sem dano à mata) · teclas.oculos = óculos de RA
      (contorno e distância de inimigos escondidos até oculosM, através de mata e névoa) · teclas.choque = alterna munição de choque (atordoa animais e sombras sem ferir). */
   jackao: { id: "tiro", nome: "Fuzil do Jackão", texto: "Tiro (balas infinitas); botão direito mira; Y granada, U óculos de RA, I munição de choque.", recarga: .18, alcanceM: 140, cone: 5, coneMira: 2.5, pente: 30, recargaSeg: 1.6, danoInimigo: 1, granadasPorZona: 3, granadaM: 14, granadaRaioM: 7, granadaSeg: 1.6, oculosM: 150, choqueSeg: 4, teclas: { granada: "KeyY", oculos: "KeyU", choque: "KeyI" } },
+  /* Mohr (só transformado): V = onda (puxa água de rio/arroio/poça num raio aguaPertoM — 1,6× mais forte — ou do chão úmido; empurra e derruba) ·
+     teclas.avalanche = pedras e terra descem a encosta à frente (só com declive ≥ declivMin, senão avisa) · teclas.lama = lama prende os pés (imobiliza sombras e animais sem ferir). */
+  mohr:   { id: "onda", nome: "Onda de Mohr", texto: "Onda d'água que empurra; Y avalanche na encosta, I lama que prende.", recarga: 3, alcanceM: 16, cone: 45, empurraM: 12, danoInimigo: 1, aguaPertoM: 25, fatorAgua: 1.6, avalancheM: 18, declivMin: .12, pedras: 16, lamaM: 10, lamaSeg: 4, teclas: { avalanche: "KeyY", lama: "KeyI" } },
   atiara: { id: "olhos", nome: "Encantamento dos olhos", texto: "Seus olhos luminosos prendem quem os encara.", recarga: 6, alcanceM: 45, cone: 35, duracaoS: 8 }
 };
 export const PODERES_CFG = { tecla: "KeyV", espantalhosDebug: 3 };
