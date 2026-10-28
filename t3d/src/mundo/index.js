@@ -16,7 +16,8 @@ import { EVENTOS } from "./eventos/config.js";
 import { criarAeronaves } from "./eventos/aviao.js";
 import { criarMeteoros } from "./eventos/meteoros.js";
 import { criarHorizonte } from "./horizonte/horizonte.js";
-import { criarKML } from "./resgate/kml.js";
+import { criarKML, mundoParaLatLon } from "./resgate/kml.js";
+import { PORT, cabY } from "../portico.js";
 import { criarEstrada } from "./resgate/estrada.js";
 import { criarZonas } from "./zonas.js";
 import { criarCidade } from "./cidade/cidade.js";
@@ -116,8 +117,22 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.anhanga = criarAnhangaMundo(M); registraCenasTupa(M); M.registra({ tick: (dt) => M.anhanga.tick(dt), desliga: () => M.anhanga.some() });
   M.lugares = criarLugares(M); M.zonas.aoMudar(() => M.lugares.monta()); M.registra({ tick: (dt, J) => M.lugares.tick(dt, J), tecla: (e) => M.lugares.tecla(e), info: () => M.lugares.info(), desliga: () => M.lugares.desliga() });
   M.kml.aoCarregar(() => M.zonas.carregaKML());
+  /* relatório da tirolesa no console (P0): âncoras do KML × posição no jogo, comprimento do cabo, desnível real pelo DEM */
+  function relatorioTirolesa(){
+    const K = M.kml.S, centro = (P) => P.reduce((a, p) => [a[0] + p[0] / P.length, a[1] + p[1] / P.length], [0, 0]);
+    const emPoli = (P, x, z) => { let c = false; for(let i = 0, j = P.length - 1; i < P.length; j = i++){ const [xi, zi] = P[i], [xj, zj] = P[j]; if((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; };
+    const L = K.poligonos.find(p => p.tipo === "lancamento" && /deck/i.test(p.nome)) || K.poligonos.find(p => p.tipo === "lancamento"), R = K.poligonos.find(p => p.tipo === "recebimento");
+    if(!L || !R) return;
+    const rp = K.pontos.find(q => q.tipo === "marcador" && emPoli(R.pts, q.pt[0], q.pt[1])), l = centro(L.pts), r = rp ? rp.pt : centro(R.pts);
+    const horizM = Math.hypot(l[0] - r[0], l[1] - r[1]) / KMLCFG.escala, jogoM = Math.hypot(PORT.lanca - PORT.x, cabY(0, PORT.lanca) - cabY(0, 0)) / U, D = M.dem && M.dem.pronto ? M.dem : null;
+    const aL = D ? D.altReal(l[0], l[1]) : null, aR = D ? D.altReal(r[0], r[1]) : null, desn = D ? aL - aR : null;
+    console.info("Tirolesa (KML × jogo): lançamento KML x=" + l[0].toFixed(0) + " z=" + l[1].toFixed(0) + " u · no jogo x=" + (PORT.lanca + 6) + " z≈25 u · recebimento KML x=" + r[0].toFixed(0) + " z=" + r[1].toFixed(0) + " u · no jogo x≈0 z≈8 u"
+      + "\n  distância horizontal real " + horizM.toFixed(0) + " m" + (D ? " · altitudes (DEM) lançamento " + aL.toFixed(0) + " m, recebimento " + aR.toFixed(0) + " m → desnível " + desn.toFixed(0) + " m · cabo reto esperado ≈ " + Math.hypot(horizM, desn).toFixed(0) + " m" : " · DEM ainda não carregado")
+      + "\n  cabo no jogo: " + jogoM.toFixed(0) + " m (desnível de só " + Math.abs(cabY(0, PORT.lanca) - cabY(0, 0)) / U + " m: o desnível real ainda não foi aplicado ao cabo)");
+  }
+  M.kml.aoCarregar(relatorioTirolesa);                                                              // (o DEM, criado logo abaixo, chama de novo quando a elevação chega)
   M.viagem = criarViagem(M); M.registra({ tecla: (e) => M.viagem.tecla(e), info: () => M.viagem.info(), desliga: () => M.viagem.desliga() });
-  M.dem = criarDEM(M); M.dem.aoCarregar(() => { M.cidade.refaz(); M.estrada.aplicaDEM(); M.cidade.refaz(); M.lugares.refaz(); });                  // (a cidade zera o cache dos platôs antes de a pista ser refeita)
+  M.dem = criarDEM(M); M.dem.aoCarregar(() => { M.cidade.refaz(); M.estrada.aplicaDEM(); M.cidade.refaz(); M.lugares.refaz(); }); M.dem.aoCarregar(relatorioTirolesa);                  // (a cidade zera o cache dos platôs antes de a pista ser refeita)
   try{ M.kml.carrega([KML_VEGETACAO, KML_DETALHES]); }catch(e){ console.warn("KML padrão:", e); }
   M.dem.carrega();                                                                                    // elevação real (data/terrain): chega em segundo plano e refaz a estrada/cidade
   /* o arquivo data/kml/parque.kml (se o servidor entregar) tem prioridade sobre a cópia embutida: troque o arquivo e recarregue a página */
@@ -192,14 +207,26 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
       "Neblina: " + nevoa.nome()
     ];
     M.partes.forEach(p => { const t = p.info && p.info(); if(t) linhas.push(t); });
-    linhas.push("", ", .  ±1 h    - =  velocidade    0  pausa    1-5  horas", "N  neblina   J  sem névoa atmosférica   K  3:00 lua nova   F6 lobo  F7 leão-baio  F8 graxaim  Shift+F6 veado/quati/gambá/lontra  (Ctrl = ir à zona)", "F4  camionetes   Shift+F4  equipe da trilha   F2  capivaras   Shift+F7  capivaras × leão-baio", "F9 monomotor   Shift+F9 voo baixo   F10 jato   F11 meteoros   (ou U / Shift+U / I / O)", "Y jararaca   P urutu   V coral   (Shift = na frente de um grupo com guia)", ";  polígonos do KML   '  teleporta (turfeira · nascentes · arroio)   \  dia úmido (sapinhos)", "`  revoada de andorinhas   Shift+`  vão embora   6  fim da estrada   7  estrada 1× / 0,5×   8  altitudes do DEM   ;  mostra o KML (cores por tipo)", "[  conflito leão-baio × lobo-guará   Shift+[  graxaim cede ao lobo   ]  gralhas × gavião   Shift+]  quero-quero e ninho   /  mirante da cascata   Shift+/  revoada de papagaios   Shift+\\  qualidade baixa/média/alta", "T  vento: brisa → vento → rajada   F12 / B  emergência das 10h   Shift+B  comboio de descida   Ctrl+B  ir até o resgate   9  serpente na frente do comboio   L  carregar KML");
+    linhas.push("", ", .  ±1 h    - =  velocidade    0  pausa    1-5  horas", "N  neblina   J  sem névoa atmosférica   K  3:00 lua nova   F6 lobo  F7 leão-baio  F8 graxaim  Shift+F6 veado/quati/gambá/lontra  (Ctrl = ir à zona)", "F4  camionetes   Shift+F4  equipe da trilha   F2  capivaras   Shift+F7  capivaras × leão-baio", "F9 monomotor   Shift+F9 voo baixo   F10 jato   F11 meteoros   (ou U / Shift+U / I / O)", "Y jararaca   Ctrl+Y urutu   V coral   (Shift = na frente de um grupo com guia)   P  copia posição + lat/long + rumo", ";  polígonos do KML   '  teleporta (turfeira · nascentes · arroio)   \  dia úmido (sapinhos)", "`  revoada de andorinhas   Shift+`  vão embora   6  fim da estrada   7  estrada 1× / 0,5×   8  altitudes do DEM   ;  mostra o KML (cores por tipo)", "[  conflito leão-baio × lobo-guará   Shift+[  graxaim cede ao lobo   ]  gralhas × gavião   Shift+]  quero-quero e ninho   /  mirante da cascata   Shift+/  revoada de papagaios   Shift+\\  qualidade baixa/média/alta", "T  vento: brisa → vento → rajada   F12 / B  emergência das 10h   Shift+B  comboio de descida   Ctrl+B  ir até o resgate   9  serpente na frente do comboio   L  carregar KML");
     painel.textContent = linhas.join("\n");
+  }
+  /* tecla P: copia a posição do jogador (u do jogo, lat/long reais, rumo, hora e zona) para colar numa mensagem de bug. Também sai no console. */
+  function copiaPosicao(){
+    const J = M.jogador(); if(!J){ M.ctx && M.ctx.mostraAviso("Posição: só no modo andar"); return; }
+    const [la, lo] = mundoParaLatLon(J.x, J.z), rumo = ((Math.PI / 2 - J.yaw + KMLCFG.rotacao) * 180 / Math.PI % 360 + 360) % 360;
+    const alt = M.dem && M.dem.pronto ? " · terreno real ≈ " + M.dem.altReal(J.x, J.z).toFixed(0) + " m" : "";
+    const txt = "pos x=" + J.x.toFixed(1) + " y=" + J.y.toFixed(1) + " z=" + J.z.toFixed(1) + " u · lat " + la.toFixed(6) + " lon " + lo.toFixed(6) + " · rumo " + rumo.toFixed(0) + "°" + alt + " · " + ciclo.horaTexto() + " · " + (M.zonas && M.zonas.S ? M.zonas.S.nome : "");
+    console.info("Posição (P): " + txt);
+    const avisa = (ok) => M.ctx && M.ctx.mostraAviso((ok ? "Posição copiada: " : "Posição (copie do console): ") + txt);
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(() => avisa(true), () => avisa(false)); return; } }catch(_){ /* sem clipboard */ }
+    avisa(false);
   }
   function tecla(e){
     if(M.gente && M.gente.dialogoAberto()){ if(e.code === "Escape" || e.code === "KeyE"){ M.gente.fechaDialogo(); } e.preventDefault(); return true; }
     if(pr && e.code === "Escape"){ e.preventDefault(); fechaRelogio(); return true; }
-    if(e.code === "F3"){ e.preventDefault(); depurar = !depurar; M.depurando = depurar; if(painel) painel.style.display = depurar ? "block" : "none"; M.resgate.liga(depurar); return true; }
+    if(e.code === "F3"){ e.preventDefault(); depurar = !depurar; if(painel) painel.style.display = depurar ? "block" : "none"; M.resgate.liga(depurar); return true; }      // M.depurando continua função (os módulos chamam M.depurando())
     if(e.code === "F12"){ e.preventDefault(); const ok = M.resgate.inicia({ origem: "debug" }); M.ctx.mostraAviso(ok ? "Emergência das 10h forçada" : "Já há uma emergência em andamento"); return true; }
+    if(e.code === "KeyP" && !e.ctrlKey && !e.altKey && !e.metaKey && !(M.ctx && M.ctx.construindo && M.ctx.construindo())){ e.preventDefault(); copiaPosicao(); return true; }
     if(M.partes.some(p => p.tecla && p.tecla(e))) return true;
     const evK = e.code === "F9" ? (e.shiftKey ? "baixo" : "mono") : e.code === "F10" ? "jato" : e.code === "F11" ? "met" : depurar && e.code === "KeyU" ? (e.shiftKey ? "baixo" : "mono") : depurar && e.code === "KeyI" ? "jato" : depurar && e.code === "KeyO" ? "met" : null;
     if(evK){ e.preventDefault(); if(evK === "mono" || evK === "baixo"){ M.aeronaves.voos.filter(v => v.tipo === "monomotor").forEach(v => { v.t = 1; }); M.aeronaves.iniciaMonomotor(evK === "baixo", { origem: "debug" }); M.ctx.mostraAviso(evK === "baixo" ? "Monomotor em voo baixo (debug)" : "Monomotor, altitude normal (debug)"); }
@@ -236,7 +263,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
       case "Slash": { e.preventDefault(); const C = M.cen.cascata; if(e.shiftKey){ M.fauna.aves.revoada(M.jogador()); M.ctx.mostraAviso("Revoada de papagaios (depuração)"); } else { const px = C.x - 52, pz = C.z + 24; M.H.andarMod.colocar(px, pz, Math.atan2(C.x - px, C.z - pz) + Math.PI); M.ctx.mostraAviso("Mirante da cascata Gravatá do Noivo"); } break; }
       case "Backslash": { if(e.shiftKey){ const L = ["baixa", "media", "alta"], q = (() => { try{ return localStorage.getItem("sgv:qualidade") || "media"; }catch(_){ return "media"; } })(), n = L[(L.indexOf(q) + 1) % 3]; try{ localStorage.setItem("sgv:qualidade", n); }catch(_){ /* sem armazenamento */ } M.ctx.mostraAviso("Qualidade: " + n + " (vale ao recarregar a página — ou use ?q=" + n + ")"); break; } const on = M.fauna.sapinhos.forcaUmido(); M.ctx.mostraAviso(on ? "Dia úmido forçado: mais sapinhos ativos" : "Umidade normal"); break; }
       case "KeyT": { const o = ["brisa", "vento", "rajada"], i = (M._vt = ((M._vt === undefined ? -1 : M._vt) + 1) % 3); M.vento.forca(o[i]); M.ctx.mostraAviso("Vento: " + o[i]); break; }
-      case "KeyY": case "KeyP": case "KeyV": { const id = { KeyY: "jararaca", KeyP: "urutu", KeyV: "coral" }[e.code], s = M.fauna.serp.frente(id, M.jogador(), e.shiftKey); if(s && s.grupoRef){ const g = s.grupoRef; M.ctx.teleporta(g.x - Math.sin(g.yaw) * 16 * U, g.z - Math.cos(g.yaw) * 16 * U); } M.ctx.mostraAviso(s ? s.nome + (e.shiftKey ? (s.grupoRef ? " cruzando na frente de um grupo (debug)" : " cruzando (nenhum grupo com guia andando agora)") : " cruzando a trilha (debug)") : "Sem trecho de trilha adequado por perto"); break; }
+      case "KeyY": case "KeyV": { const id = e.code === "KeyV" ? "coral" : e.ctrlKey ? "urutu" : "jararaca", s = M.fauna.serp.frente(id, M.jogador(), e.shiftKey); /* P passou a copiar a posição; urutu = Ctrl+Y */ if(s && s.grupoRef){ const g = s.grupoRef; M.ctx.teleporta(g.x - Math.sin(g.yaw) * 16 * U, g.z - Math.cos(g.yaw) * 16 * U); } M.ctx.mostraAviso(s ? s.nome + (e.shiftKey ? (s.grupoRef ? " cruzando na frente de um grupo (debug)" : " cruzando (nenhum grupo com guia andando agora)") : " cruzando a trilha (debug)") : "Sem trecho de trilha adequado por perto"); break; }
       case "KeyJ": { const on = M.horizonte.alternaAtmos(); M.ctx.mostraAviso(on ? "Perspectiva atmosférica ligada" : "Paisagem distante SEM névoa atmosférica (geometria)"); break; }
       case "KeyK": if(e.shiftKey){ ciclo.luaNova(false); ciclo.ajustaHora(ciclo.hora()); } else { ciclo.luaNova(true); ciclo.ajustaHora(3); ciclo.relogio.pausa = true; M.ctx.mostraAviso("3:00 com lua nova (Shift+K desfaz)"); } break;
       default: return false;

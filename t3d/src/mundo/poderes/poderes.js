@@ -149,8 +149,9 @@ export function criarPoderes(M){
   }
   function tecla(e){
     if(e.code === PODERES_CFG.tecla && !e.repeat && !e.ctrlKey && !e.altKey){
-      if(e.shiftKey){ if(M.depurando){ e.preventDefault(); const J = M.jogador(); if(J) treino(J); return true; } return false; }
-      if(M.depurando) return false;                                       // com F3 aberto a tecla V é de depuração das serpentes
+      const dep = typeof M.depurando === "function" ? M.depurando() : !!M.depurando;
+      if(e.shiftKey){ if(dep){ e.preventDefault(); const J = M.jogador(); if(J) treino(J); return true; } return false; }
+      if(dep) return false;                                               // com F3 aberto a tecla V é de depuração das serpentes
       e.preventDefault(); usa(); return true; }
     return false;
   }
