@@ -1,6 +1,6 @@
 # PROGRESSO — CanyonFly (prompt mestre em `docs/PROMPT-MESTRE.md`)
 
-Atualizado em 28/10/2026 · bloco atual: **P0 — Estabilidade e carregamento** (entregue, aguardando teste do Lucas).
+Atualizado em 28/10/2026 · entregues: **P0** e o **AJUSTE (login, tempo antigo, transformação, Krig)** — aguardando teste do Lucas.
 
 ## Como foi testado nesta sessão
 Sessão em nuvem sem GPU: o jogo rodou headless (Chromium + SwiftShader) servido por `python3 -m http.server`, capturando `pageerror`, `console.error/warn`, requisições falhas e exercitando as teclas F3, P, 1–5/`.` (horas), F6/F7/F8 (fauna), F9/F10 (aviões), F11 (meteoros), F12 (emergência), M, J, N, `;`, V. **Nada visual (colisão, paredes, FPS real) pôde ser conferido aqui** — está marcado abaixo como "testar no seu PC".
@@ -26,7 +26,23 @@ Sessão em nuvem sem GPU: o jogo rodou headless (Chromium + SwiftShader) servido
 4. No console, procure `Tirolesa (KML × jogo)` (aparece 2×: antes e depois do DEM chegar).
 5. Anote o FPS do F3 nos 6 lugares e me mande junto com qualquer posição de bug (P).
 
+## AJUSTE (28/10) — Login dos operadores, tempo antigo, transformação automática, Krig coordenador
+| Item | Estado | Observação |
+|---|---|---|
+| Login + senha por operador (PBKDF2) | ✅ feito | `data/seguranca/senhas.js` → `OPERADORES` (login + salt + iter + hash PBKDF2-SHA-256, mín. 100.000 iterações; a Vila Santana usa o mesmo método em `SENHAS`). Tela de login com 2 campos; erro único "Login ou senha incorretos"; 3 erros = 30 s, 60, 120… (contagem única para qualquer login); sessão em `sessionStorage` (fecha com a aba) com botão **Sair** na tela 👤. `tools/gerar-hash.html` e `tools/gerar_hash.mjs` pedem id + login + senha e devolvem a linha pronta. **Nenhuma senha real cadastrada**: todas as vagas aparecem "em breve" até você colar as linhas. |
+| Login de teste (debug) | ✅ feito | `LOGIN_TESTE` em senhas.js: login `teste` (senha a que você pediu, só o hash está no arquivo), entra como **Krig**; só funciona em `localhost`/`127.0.0.1` ou com `?debug` na URL — no site publicado não vale. |
+| Acesso ao tempo antigo | ✅ feito | Operador logado: pórtico da Vila Santana abre com [E] sem senha (e abre sozinho ao chegar por viagem rápida); destinos **Vila Santana 1950 / Antiga Floresta da Olaria / Área industrial (Cambará S/A)** aparecem na viagem rápida só com login. Sepé/Tupã/Atiara seguem as regras anteriores. |
+| Transformação automática | ✅ feito (visual + velocidade) · ⚠️ poderes a definir | `personagens/transformacao.js`: ao entrar em 1950 com operador logado em uso → clarão da cor dele + roupa de poder (recolore camisa/manga, calça e capacete; cores em `dados/personagens.js` → `transformacao`) + velocidade (Krig 2×). Ao voltar a 2026 (ou sair/trocar de personagem) → uniforme de volta, efeitos desligados. **Poderes específicos (fúria com fogo, voo, aura, cabelo reluzente) não existem neste repositório** — o sistema de poderes atual só tem Lábia (Pit), Raio (Tupã), Arco (Sepé) e Olhos (Atiara). Ficam "a definir"; quando você descrever cada poder eu implemento em `data/poderes.js`. Tecla de transformação (H / L3+R3) e controle de PS3 **não existem aqui** (nada foi removido). |
+| Krig coordenador | ✅ já era assim | Neste repositório o Krig já é o coordenador NPC do lançamento (`jogo3d.js`, `trolley3d.js`) e o bombeiro civil é um NPC separado (`resgate/quadriciclo.js`). Feito: Krig virou a 1ª vaga de operador com login (função "Coordenador da equipe", barba). Falas de rádio/cobrança de horário nas missões: pendente (P5). |
+| Kauling | ✅ dados | Normal (foto): capacete laranja da equipe, óculos, fleece verde com zíper laranja, barba (ligada no boneco). Transformação (foto do palco): chapéu preto de aba larga, roupa escura, clarão azul/magenta. Modelos 3D específicos (chapéu, óculos) ficam para o P2. |
+
+Testado headless (sem erros): login errado ×3 → espera 30 s (até a senha certa é bloqueada durante a espera); login de teste → Krig; viagem rápida → Vila Santana → época 1950 → transformado (velocidade 2×); viagem → estacionamento → 2026, uniforme de volta; Sair → volta ao Pit e os destinos do tempo antigo somem.
+
+**Como testar no seu PC**: Live Server em `localhost` → ▶ CanyonFly → botão 👤 → clique em **Krig** → login `teste` + a senha combinada → marco de viagem rápida ([E] no estacionamento) → "Vila Santana, 1950" → veja o clarão e a roupa viking; volte por viagem rápida ou a pé pelo pórtico → uniforme de volta. Erre a senha 3 vezes para ver a espera. Tela 👤 → **Sair**.
+
 ## Pendências que dependem do Lucas
+- **Cadastrar os logins reais** dos 8 operadores e a senha da Vila Santana (`tools/gerar-hash.html` → colar em `senhas.js`). Nunca me mande as senhas.
+- **Descrever os poderes** de cada operador no tempo antigo (o que fazem, alcance, recarga) para eu implementar em `data/poderes.js`.
 - Decidir sobre o **desnível real do cabo** (55–63 m): aplicar agora (grande) ou manter o cabo plano.
 - Repositório **gest-otirolesa** na próxima sessão (vídeo da tela inicial e menu do Gestão de Operações).
 - Fotos de referência só quando o item correspondente for feito (P2/P3/P6).
