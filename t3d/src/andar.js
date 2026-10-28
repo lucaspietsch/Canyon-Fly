@@ -301,7 +301,8 @@ export function criarAndar(c){
     W.yaw += -ix * (corre ? 2.6 : 2.2) * dt;
     const fv = cen.extraChao && cen.extraChao.fatorVel ? cen.extraChao.fatorVel(W.x, W.z, W.y) : 1;                         // turfeira: lento e encharcado
     const fa = cen.extraChao && cen.extraChao.fatorAgua ? cen.extraChao.fatorAgua(W.x, W.z, W.y) : 1;                         // água rasa: lento (canela/joelho)
-    const alvoV = (iy > 0 ? (corre ? 17 : 6.3) * iy : iy < 0 ? 3 * iy : 0) * fv * fa;
+    const fm = cen.extraChao && cen.extraChao.velMult ? cen.extraChao.velMult() : 1;                                           // transformação do operador (ex.: Krig 2×)
+    const alvoV = (iy > 0 ? (corre ? 17 : 6.3) * iy : iy < 0 ? 3 * iy : 0) * fv * fa * fm;
     W.vel += (alvoV - W.vel) * Math.min(1, dt * 9);
     if(Math.abs(W.vel) > .05){
       const mx = Math.sin(W.yaw), mz = Math.cos(W.yaw);
