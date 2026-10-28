@@ -1,0 +1,14 @@
+{
+ "lat0": -28.92041490084171,
+ "lon0": -50.176944200225016,
+ "dlat": 0.00026949335249730504,
+ "dlon": 0.00030815985951129646,
+ "nx": 832,
+ "nz": 676,
+ "escala": 10,
+ "min": 110.4,
+ "max": 1194.8,
+ "fonte": "tiles SRTM 30 m",
+ "gerado": "2026-10-28T21:06:42",
+ "nota": "linha 0 = norte (lat0), coluna 0 = oeste (lon0); altitude = valor / escala (m)"
+}
