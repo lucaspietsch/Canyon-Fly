@@ -2,6 +2,7 @@ import { criarKrig } from "./krig.js";
 import { criarJackao } from "./jackao.js";
 import { criarMohr } from "./mohr.js";
 import { criarMary } from "./mary.js";
+import { criarDiully } from "./diully.js";
 import { Group, Mesh, SphereGeometry, CylinderGeometry, BoxGeometry, CircleGeometry, TubeGeometry, CatmullRomCurve3, Vector3, MeshStandardMaterial, MeshBasicMaterial, PointLight, AdditiveBlending, DoubleSide, TorusGeometry } from "three";
 import { U } from "../config.js";
 import { PODERES, PODERES_CFG, FALAS_LABIA } from "../../../../data/poderes.js";
@@ -66,7 +67,7 @@ export function criarPoderes(M){
   }
   function labia(J, d){
     const a = naMira(J, d, ["pessoa", "inimigo", "guardiao"]), fala = FALAS_LABIA[Math.floor(rnd() * FALAS_LABIA.length)];
-    msg("info", "Pit: " + fala);
+    msg("info", ((M.personagens && M.personagens.def(M.personagens.ativo) || {}).nome || "Pit") + ": " + fala);
     if(!a){ msg("info", "Não há ninguém ao alcance para convencer (chegue mais perto e olhe de frente)."); M.ctx && M.ctx.mostraAviso("Ninguém para convencer"); return; }
     const p = a.pos(); brilho(p.x, (p.y || chao(p.x, p.z)) + 5 * U, p.z, 0xffd36a, 12, 1.2);
     const ok = a.aoLabia ? a.aoLabia(d) : false; if(ok === false) msg("info", a.nome + " não se deixa levar pela conversa.");
@@ -87,6 +88,7 @@ export function criarPoderes(M){
   const JK = criarJackao(M, { S, naMira, luzFx, msg, G, chao }); USOS.tiro = (J, d) => JK.tiro(J, d);
   const MH = criarMohr(M, { S, naMira, luzFx, msg, G, chao }); USOS.onda = (J, d) => MH.onda(J, d);
   const MY = criarMary(M, { S, naMira, luzFx, msg, G, chao }); USOS.fogo = (J, d) => MY.fogo(J, d);
+  const DY = criarDiully(M, { S, naMira, luzFx, msg, G, chao }); USOS.telecinese = (J, d) => DY.acao(J, d);
   function usa(){
     const d = def(), J = M.jogador(); if(!d || !J || !M.andando() || S.cd > 0 || (M.personagens.S.tela)) return false;
     S.cd = d.recarga; S.cdMax = d.recarga; USOS[d.id](J, d); return true;
@@ -135,7 +137,7 @@ export function criarPoderes(M){
   }
 
   function tick(dt, J){
-    KR.tick(dt); JK.tick(dt); MH.tick(dt); MY.tick(dt);
+    KR.tick(dt); JK.tick(dt); MH.tick(dt); MY.tick(dt); DY.tick(dt);
     if(S.cd > 0) S.cd -= dt; tickHud();
     for(let i = S.fx.length - 1; i >= 0; i--){ const f = S.fx[i]; f.t += dt; if(f.t < 0) continue; const k = Math.min(1, f.t / f.vida);
       if(f.l){ f.l.intensity = f.i0 * (1 - k); }
@@ -157,7 +159,7 @@ export function criarPoderes(M){
       if(a.tick) a.tick(dt, J); }
   }
   function tecla(e){
-    if(KR.tecla(e) || JK.tecla(e) || MH.tecla(e) || MY.tecla(e)) return true;
+    if(KR.tecla(e) || JK.tecla(e) || MH.tecla(e) || MY.tecla(e) || DY.tecla(e)) return true;
     if(e.code === PODERES_CFG.tecla && !e.repeat && !e.ctrlKey && !e.altKey){
       const dep = typeof M.depurando === "function" ? M.depurando() : !!M.depurando;
       if(e.shiftKey){ if(dep){ e.preventDefault(); const J = M.jogador(); if(J) treino(J); return true; } return false; }
@@ -166,5 +168,5 @@ export function criarPoderes(M){
     return false;
   }
   const dispose = () => { limpaTreino(); S.fx.forEach(f => f.g && G.remove(f.g)); S.fx.length = 0; S.flechas.forEach(f => G.remove(f.g)); S.flechas.length = 0; if(S.chip) S.chip.remove(); if(S.flash) S.flash.remove(); };
-  return { registra, remove, usa, tick, tecla, treino, limpaTreino, espantalho, visitante, relampago, naMira, def, S, alvos: S.alvos, krig: KR, jackao: JK, mohr: MH, mary: MY, aoTransformar: (id, on) => { KR.aoTransformar(id, on); JK.aoTransformar(id, on); MH.aoTransformar(id, on); MY.aoTransformar(id, on); }, info: () => { const s = [KR.info(), JK.info(), MH.info(), MY.info(), (def() ? "Poder: " + def().nome + (S.cd > 0 ? " (" + S.cd.toFixed(1) + " s)" : " pronto") : null)].filter(Boolean).join(" · "); return s || null; }, desliga: dispose };
+  return { registra, remove, usa, tick, tecla, treino, limpaTreino, espantalho, visitante, relampago, naMira, def, S, alvos: S.alvos, krig: KR, jackao: JK, mohr: MH, mary: MY, diully: DY, aoTransformar: (id, on) => { KR.aoTransformar(id, on); JK.aoTransformar(id, on); MH.aoTransformar(id, on); MY.aoTransformar(id, on); DY.aoTransformar(id, on); }, info: () => { const s = [KR.info(), JK.info(), MH.info(), MY.info(), DY.info(), (def() ? "Poder: " + def().nome + (S.cd > 0 ? " (" + S.cd.toFixed(1) + " s)" : " pronto") : null)].filter(Boolean).join(" · "); return s || null; }, desliga: dispose };
 }

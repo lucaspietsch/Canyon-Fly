@@ -50,6 +50,20 @@ Testado headless (sem erros): login errado ×3 → espera 30 s (até a senha cer
 | Telecinese (Diully), fogo/gelo jogáveis (Mary), animações de personalidade (ajeitar cabelo, selfie, acenar), expressões nas falas, LOD de rosto/cabelo, luz de recorte | 🔲 a definir / próximo passo — o boneco base continua o `pessoa3d` (o rosto ainda é estilizado) |
 | Retratos | `M.personagens.retrato(id, graus, { transformado, rosto })`; folhas enviadas no chat |
 
+## PODERES DOS OPERADORES (29/10) — todos só na forma de poder, no tempo antigo
+| Operador | Forma | V (poder) | Y | U | I | Outros |
+|---|---|---|---|---|---|---|
+| Krig | Viking (aura de fogo) | investida em chamas | golpe no chão | voo 5 m, 2× | rugido (atordoa sem ferir) | — |
+| Jackão | Camuflado (óculos RA, fuzil) | tiro (balas infinitas, pente 30) | granada (3/zona) | óculos de RA | munição de choque | botão direito = mirar |
+| Mohr | Rubro (linhas vermelhas) | onda (1,6× perto de água) | avalanche (só em declive) | — | lama (prende sem ferir) | som grave, tremor |
+| Mary | Violeta | bola de fogo (apaga na mata) | vapor (só em alvo congelado) | gelo (congela 5 s) | — | — |
+| Diully | Sombra Dourada (flutua 2 m) | ergue / arremessa | bate no chão | Lábia (chance 65%) | — | botão direito = erguer e segurar |
+| Pit | — | **pendente** (armadura, CardPuter, parar o tempo, hologramas, hackear) | | | | |
+| Carlão, Kauling | — | **pendente** (sem spec de poderes) | | | | |
+
+Teclas E/Q/F não foram usadas: já são interagir, câmera e foto. Tudo configurável em `data/poderes.js` → `teclas`. Controle de PS3 não existe neste repositório.
+Testado headless em cada um (login `teste.<id>` em localhost, viagem rápida → Vila Santana → transformação → poderes contra espantalhos). Em headless o relógio roda devagar: recargas parecem longas; no navegador real é normal.
+
 ## FILA (ordem combinada)
 1. **Pit** — visual próprio, login, poderes (armadura preta com luzes azul/violeta, CardPuter, parar o tempo, hologramas, hackear). Registrado; não iniciado.
 2. **OSM (8 arquivos)** — bloqueado: nenhum .osm chegou ao servidor. Coloque-os em `data/osm/` no repositório e dê push.
