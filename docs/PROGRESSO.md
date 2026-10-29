@@ -58,15 +58,17 @@ Testado headless (sem erros): login errado ×3 → espera 30 s (até a senha cer
 | Mohr | Rubro (linhas vermelhas) | onda (1,6× perto de água) | avalanche (só em declive) | — | lama (prende sem ferir) | som grave, tremor |
 | Mary | Violeta | bola de fogo (apaga na mata) | vapor (só em alvo congelado) | gelo (congela 5 s) | — | — |
 | Diully | Sombra Dourada (flutua 2 m) | ergue / arremessa | bate no chão | Lábia (chance 65%) | — | botão direito = erguer e segurar |
-| Pit | — | **pendente** (armadura, CardPuter, parar o tempo, hologramas, hackear) | | | | |
+| Pit | Armadura (preta, linhas azul/violeta pulsando, visor, CardPuter) | holograma (lobo-guará azul fraco / assombração violeta forte; seguem e atacam sozinhos; 3 no máx.; energia) | troca tipo fraco/forte | hackear (portão trancado; máquinas e luzes da fábrica/vila por 25 s) | parar o tempo 5 s (mundo congela, tela dessaturada com glitch) | Lábia saiu; rosto próprio pendente (é o boneco base) |
 | Kauling | Peão gaúcho (chapéu, lenço, guaiaca) | grito em anéis (arremessa, rajada de vento) | — | crescer 2,5× / encolher | grito curto (atordoa sem ferir) | passos tremem a câmera; encolhe na mata |
 | Carlão | Reggae (camisa 4 cores, chuteiras douradas, bola dourada) | chute: toque = bola volta e encadeia · segurar = explode e nasce outra | capoeira (ginga → meia-lua → martelo → armada) | — | rasteira (derruba 4 s sem ferir) | falas no campo de futebol: pendente (campo vem com o OSM) |
 
 Teclas E/Q/F não foram usadas: já são interagir, câmera e foto. Tudo configurável em `data/poderes.js` → `teclas`. Controle de PS3 não existe neste repositório.
 Testado headless em cada um (login `teste.<id>` em localhost, viagem rápida → Vila Santana → transformação → poderes contra espantalhos). Em headless o relógio roda devagar: recargas parecem longas; no navegador real é normal.
 
+Época 1950 agora vale em toda a área antiga (Vila Santana, Olaria, área industrial, Cambará S/A, Vila Ouro Verde): a Vila Santana fica sempre viva dentro desses polígonos e controla a época/transformação.
+
 ## FILA (ordem combinada)
-1. **Pit** — visual próprio, login, poderes (armadura preta com luzes azul/violeta, CardPuter, parar o tempo, hologramas, hackear). Registrado; não iniciado.
+1. ~~Pit~~ ✅ (29/10) — falta só o rosto próprio (P2).
 2. **OSM (8 arquivos)** — bloqueado: nenhum .osm chegou ao servidor. Coloque-os em `data/osm/` no repositório e dê push.
 3. Fotos restantes (Krig, Jackão, Mohr, Carlão transformado) e P1 em diante.
 

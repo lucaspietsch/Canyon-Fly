@@ -29,6 +29,10 @@ export const PODERES = {
      outra nasce no pé na hora (infinito) · teclas.capoeira = golpes encadeados (ginga → meia-lua de compasso → martelo → armada) · teclas.rasteira = derruba e deixa no chão por rasteiraSeg (imobiliza animais sem ferir). */
   carlao: { id: "chute", nome: "Bola Dourada do Carlão", texto: "Chute: toque = bola volta, segurar = explode; Y capoeira; I rasteira.", recarga: .4, alcanceM: 40, cone: 25, bolaMS: 32, segurarSeg: .35, explosaoRaioM: 4.5, danoInimigo: 1, danoExplosao: 2, capoeiraM: 4, capoeiraDano: 1, rasteiraM: 5, rasteiraSeg: 4, teclas: { capoeira: "KeyY", rasteira: "KeyI" },
     golpes: ["ginga", "meia-lua de compasso", "martelo", "armada"] },
+  /* Pit (só transformado — armadura): V = HOLOGRAMA à frente (tipo atual: "lobo" azul = fraco · "assombracao" violeta = forte); eles seguem o Pit e atacam sozinhos quando
+     um inimigo chega perto; somem após holoSeg ou quando a energia acaba (cada um custa holoCusto; recarrega holoRecarga/s) · teclas.tipo alterna fraco/forte ·
+     teclas.hack = HACKEAR (portão trancado perto abre; máquinas/luzes da fábrica e da vila apagam por hackSeg) · teclas.tempo = PARAR O TEMPO por pararSeg (tudo congela; só o Pit se move). */
+  pit:    { id: "holograma", nome: "CardPuter do Pit", texto: "Hologramas (Y troca fraco/forte), U hackear, I parar o tempo.", recarga: 1.0, alcanceM: 30, cone: 30, maxHolos: 3, holoSeg: 30, holoCusto: 30, holoRecarga: 4, holoDano: { lobo: .5, assombracao: 1.5 }, holoVelMS: 6, holoAlcanceM: 18, pararSeg: 5, pararRecarga: 20, hackM: 35, hackSeg: 25, teclas: { tipo: "KeyY", hack: "KeyU", tempo: "KeyI" } },
   atiara: { id: "olhos", nome: "Encantamento dos olhos", texto: "Seus olhos luminosos prendem quem os encara.", recarga: 6, alcanceM: 45, cone: 35, duracaoS: 8 }
 };
 export const PODERES_CFG = { tecla: "KeyV", espantalhosDebug: 3 };

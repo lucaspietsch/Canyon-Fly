@@ -55,9 +55,12 @@ export function criarLugares(M){
 
   /* ---------- carga por proximidade ---------- */
   function distBB(it, J){ const b = it.bb, dx = Math.max(b[0] - J.x, 0, J.x - b[1]), dz = Math.max(b[2] - J.z, 0, J.z - b[3]); return Math.hypot(dx, dz); }
+  /* polígonos do tempo antigo (Olaria, área industrial, Cambará S/A, Vila Ouro Verde): a época é decidida pelo lugar vila-santana (santana.js → dentroAntigo) */
+  const emPoli = (P, x, z) => { let c = false; for(let i = 0, j = P.length - 1; i < P.length; j = i++){ const [xi, zi] = P[i], [xj, zj] = P[j]; if((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; };
+  function dentroAntigo(x, z){ const K = M.kml && M.kml.S; if(!K) return false; return K.poligonos.some(e => (e.tipo === "olaria" || e.tipo === "industrial" || e.tipo === "fabrica" || (e.tipo === "vila" && /ouro/i.test(e.nome))) && emPoli(e.mundoPts || e.pts, x, z)); }
   function tick(dt, J){
     if(!J) return; S.t += dt;
-    if(S.t > .5){ S.t = 0; S.itens.forEach(it => { const d = distBB(it, J), v = S.vivos.get(it.id);
+    if(S.t > .5){ S.t = 0; const emAntigo = dentroAntigo(J.x, J.z); S.itens.forEach(it => { const d = (it.id === "vila-santana" && emAntigo) ? 0 : distBB(it, J), v = S.vivos.get(it.id);      // dentro da área antiga a Vila Santana fica sempre viva: é ela que controla a época 1950
       if(S.antigo && (it.tipo === "vila" || it.tipo === "fabrica")){ if(v){ v.o.dispose && v.o.dispose(); grupo.remove(v.o.g); descarta(v.o.g); S.vivos.delete(it.id); } return; }                       // no passado a vila e a fábrica nem existem: é só mata
       if(!v && d < it.raio){ try{ const o = it.constroi(); grupo.add(o.g); S.vivos.set(it.id, { o, it }); if(M.terminal && it.id !== "praca-sequoia") console.info("Lugares: " + it.nome + " construído"); }catch(e){ console.warn("lugares:", it.id, e); } }
       else if(v && d > it.raio * C.descargaFator){ v.o.dispose && v.o.dispose(); grupo.remove(v.o.g); descarta(v.o.g); S.vivos.delete(it.id); } }); }

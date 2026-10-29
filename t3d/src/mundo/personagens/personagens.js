@@ -61,17 +61,18 @@ export function criarPersonagens(M){
   /* RETRATO para aprovação (depuração): desenha o boneco de `id` numa cena neutra e devolve um PNG (dataURL). graus: 0 = frente, 90 = perfil.
      opc.transformado = com a roupa de poder. Uso no console: M.personagens.retrato("mary", 90, { transformado: true }). O boneco volta ao lugar depois. */
   function retrato(id, graus = 0, opc = {}){
-    const am = H.andarMod, r = id === "pit" ? (am && am.avatar ? { p: am.avatar() } : null) : rig(id); if(!r || !r.p || !r.p.av) return null;
+    const am = H.andarMod, r = opc.objeto ? { p: { av: opc.objeto } } : id === "pit" ? (am && am.avatar ? { p: am.avatar() } : (M.ctx && M.ctx.avatar ? { p: M.ctx.avatar() } : null)) : rig(id); if(!r || !r.p || !r.p.av) return null;
     const av = r.p.av, pai = av.parent, pos = av.position.clone(), rot = av.rotation.y, vis = av.visible, px = opc.px || 420;
     const cena = new Scene(); cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
     const luz = new DirectionalLight(0xffffff, 1.7); luz.position.set(3, 8, 6); cena.add(luz); const luz2 = new DirectionalLight(0xffe0b0, .6); luz2.position.set(-4, 3, -3); cena.add(luz2);
     const esc0 = av.scale.x, esc = opc.escala || 1; cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true; if(esc !== 1) av.scale.setScalar(esc0 * esc);
-    if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id); if(opc.transformado && r.fx){ r.fx.liga(); r.fx.tick(.4); r.fx.tick(.4); }
+    if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id); if(opc.transformado && id === "pit" && M.poderes && M.poderes.pit) M.poderes.pit.vesteEm(av); if(opc.transformado && r.fx){ r.fx.liga(); r.fx.tick(.4); r.fx.tick(.4); }
     const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, 2.5 * esc, 12.5 * esc); cam.lookAt(0, 2.45 * esc, 0); }
     const R = M.renderer, tam = new Vector2(); R.getSize(tam); const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(px, px, false); R.render(cena, cam);
     const url = R.domElement.toDataURL("image/png");
     R.setPixelRatio(pr); R.setSize(tam.x, tam.y, false);
     if(opc.transformado && M.transformacao && !(M.transformacao.ativa() && M.transformacao.S.id === id && S.ativo === id)) M.transformacao.despeEm(av); if(opc.transformado && r.fx && !(M.transformacao && M.transformacao.ativa() && M.transformacao.S.id === id)) r.fx.desliga();
+    if(opc.transformado && id === "pit" && M.poderes && M.poderes.pit && !(M.transformacao && M.transformacao.ativa())) M.poderes.pit.despeEm(av);
     cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; if(esc !== 1) av.scale.setScalar(esc0); return url;
   }
   function fechaTela(){ if(S.tela){ S.tela.remove(); S.tela = null; } }
