@@ -60,7 +60,7 @@ Testado headless (sem erros): login errado ×3 → espera 30 s (até a senha cer
 | Diully | Sombra Dourada (flutua 2 m) | ergue / arremessa | bate no chão | Lábia (chance 65%) | — | botão direito = erguer e segurar |
 | Pit | — | **pendente** (armadura, CardPuter, parar o tempo, hologramas, hackear) | | | | |
 | Kauling | Peão gaúcho (chapéu, lenço, guaiaca) | grito em anéis (arremessa, rajada de vento) | — | crescer 2,5× / encolher | grito curto (atordoa sem ferir) | passos tremem a câmera; encolhe na mata |
-| Carlão | — | **pendente** (sem spec de poderes) | | | | |
+| Carlão | Reggae (camisa 4 cores, chuteiras douradas, bola dourada) | chute: toque = bola volta e encadeia · segurar = explode e nasce outra | capoeira (ginga → meia-lua → martelo → armada) | — | rasteira (derruba 4 s sem ferir) | falas no campo de futebol: pendente (campo vem com o OSM) |
 
 Teclas E/Q/F não foram usadas: já são interagir, câmera e foto. Tudo configurável em `data/poderes.js` → `teclas`. Controle de PS3 não existe neste repositório.
 Testado headless em cada um (login `teste.<id>` em localhost, viagem rápida → Vila Santana → transformação → poderes contra espantalhos). Em headless o relógio roda devagar: recargas parecem longas; no navegador real é normal.

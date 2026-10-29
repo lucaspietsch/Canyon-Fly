@@ -25,6 +25,10 @@ export const PODERES = {
      teclas.curto = grito curto que atordoa animais enfeitiçados e sombras sem ferir. Falas gaúchas ao usar. */
   kauling: { id: "grito", nome: "Grito do Kauling", texto: "Grito que arremessa; U cresce 2,5×; I grito curto que atordoa.", recarga: 2.5, alcanceM: 22, cone: 60, empurraM: 16, danoInimigo: 1, crescerX: 2.5, crescerSeg: 20, gritoCurtoM: 18, atordoaSeg: 4, teclas: { crescer: "KeyU", curto: "KeyI" },
     falas: ["Bah, tchê!", "Se aprochega!", "Mas que barbaridade!", "Capaz, índio velho!", "Tri legal, bah!"] },
+  /* Carlão (só transformado): V = CHUTE da bola dourada — toque rápido: a bola acerta e VOLTA para o pé (encadeia chutes); segurar ≥ segurarSeg: a bola EXPLODE no impacto e
+     outra nasce no pé na hora (infinito) · teclas.capoeira = golpes encadeados (ginga → meia-lua de compasso → martelo → armada) · teclas.rasteira = derruba e deixa no chão por rasteiraSeg (imobiliza animais sem ferir). */
+  carlao: { id: "chute", nome: "Bola Dourada do Carlão", texto: "Chute: toque = bola volta, segurar = explode; Y capoeira; I rasteira.", recarga: .4, alcanceM: 40, cone: 25, bolaMS: 32, segurarSeg: .35, explosaoRaioM: 4.5, danoInimigo: 1, danoExplosao: 2, capoeiraM: 4, capoeiraDano: 1, rasteiraM: 5, rasteiraSeg: 4, teclas: { capoeira: "KeyY", rasteira: "KeyI" },
+    golpes: ["ginga", "meia-lua de compasso", "martelo", "armada"] },
   atiara: { id: "olhos", nome: "Encantamento dos olhos", texto: "Seus olhos luminosos prendem quem os encara.", recarga: 6, alcanceM: 45, cone: 35, duracaoS: 8 }
 };
 export const PODERES_CFG = { tecla: "KeyV", espantalhosDebug: 3 };
