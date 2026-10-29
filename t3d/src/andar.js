@@ -359,7 +359,8 @@ export function criarAndar(c){
     }
     if(cam.fov !== 50){ cam.fov = 50; cam.updateProjectionMatrix(); }
     const dentro = naCasa();
-    const dist = dentro ? Math.min(W.dist, 10) : W.dist, pit = dentro ? Math.max(W.camPitch, .62) : W.camPitch;
+    const escJ = cen.extraChao && cen.extraChao.escalaJogador ? cen.extraChao.escalaJogador() : 1;                               // gigante (Kauling): câmera se afasta
+    const dist = (dentro ? Math.min(W.dist, 10) : W.dist) * escJ, pit = dentro ? Math.max(W.camPitch, .62) : W.camPitch;
     const dx = Math.sin(W.camYaw) * Math.cos(pit), dy = Math.sin(pit), dz = Math.cos(W.camYaw) * Math.cos(pit);
     lookAt.set(W.x, W.y + 3.5, W.z);
     let d = dist;

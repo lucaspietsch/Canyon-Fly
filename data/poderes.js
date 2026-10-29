@@ -20,6 +20,11 @@ export const PODERES = {
   /* Mary (só transformada): V = bola de FOGO (mão direita) que explode em área — some ao tocar a mata (regra do Boitatá) · teclas.gelo = rajada de GELO (mão esquerda)
      que congela o alvo em cristais por geloSeg (imobiliza animais e sombras sem ferir) · teclas.combo = só em alvo congelado: explosão de VAPOR com dano e empurrão extras. */
   mary:   { id: "fogo", nome: "Fogo e Gelo de Mary", texto: "Bola de fogo que explode; U rajada de gelo que congela; Y vapor (só em alvo congelado).", recarga: 1.4, alcanceM: 45, cone: 22, fogoRaioM: 5, danoInimigo: 1, geloM: 40, coneGelo: 18, geloSeg: 5, vaporRaioM: 8, vaporDano: 3, teclas: { gelo: "KeyU", combo: "KeyY" } },
+  /* Kauling (só transformado): V = GRITO forte — anéis de som visíveis que ARREMESSAM os inimigos no cone e balançam a vegetação (rajada de vento) ·
+     teclas.crescer = CRESCER crescerX vezes por crescerSeg s (câmera se afasta, passos pesados tremem a câmera, golpes mais fortes; encolhe sozinho dentro da mata = copas baixas) ·
+     teclas.curto = grito curto que atordoa animais enfeitiçados e sombras sem ferir. Falas gaúchas ao usar. */
+  kauling: { id: "grito", nome: "Grito do Kauling", texto: "Grito que arremessa; U cresce 2,5×; I grito curto que atordoa.", recarga: 2.5, alcanceM: 22, cone: 60, empurraM: 16, danoInimigo: 1, crescerX: 2.5, crescerSeg: 20, gritoCurtoM: 18, atordoaSeg: 4, teclas: { crescer: "KeyU", curto: "KeyI" },
+    falas: ["Bah, tchê!", "Se aprochega!", "Mas que barbaridade!", "Capaz, índio velho!", "Tri legal, bah!"] },
   atiara: { id: "olhos", nome: "Encantamento dos olhos", texto: "Seus olhos luminosos prendem quem os encara.", recarga: 6, alcanceM: 45, cone: 35, duracaoS: 8 }
 };
 export const PODERES_CFG = { tecla: "KeyV", espantalhosDebug: 3 };

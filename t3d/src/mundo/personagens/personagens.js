@@ -65,14 +65,14 @@ export function criarPersonagens(M){
     const av = r.p.av, pai = av.parent, pos = av.position.clone(), rot = av.rotation.y, vis = av.visible, px = opc.px || 420;
     const cena = new Scene(); cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
     const luz = new DirectionalLight(0xffffff, 1.7); luz.position.set(3, 8, 6); cena.add(luz); const luz2 = new DirectionalLight(0xffe0b0, .6); luz2.position.set(-4, 3, -3); cena.add(luz2);
-    cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true;
+    const esc0 = av.scale.x, esc = opc.escala || 1; cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true; if(esc !== 1) av.scale.setScalar(esc0 * esc);
     if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id); if(opc.transformado && r.fx){ r.fx.liga(); r.fx.tick(.4); r.fx.tick(.4); }
-    const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, 2.5, 12.5); cam.lookAt(0, 2.45, 0); }
+    const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, 2.5 * esc, 12.5 * esc); cam.lookAt(0, 2.45 * esc, 0); }
     const R = M.renderer, tam = new Vector2(); R.getSize(tam); const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(px, px, false); R.render(cena, cam);
     const url = R.domElement.toDataURL("image/png");
     R.setPixelRatio(pr); R.setSize(tam.x, tam.y, false);
     if(opc.transformado && M.transformacao && !(M.transformacao.ativa() && M.transformacao.S.id === id && S.ativo === id)) M.transformacao.despeEm(av); if(opc.transformado && r.fx && !(M.transformacao && M.transformacao.ativa() && M.transformacao.S.id === id)) r.fx.desliga();
-    cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; return url;
+    cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; if(esc !== 1) av.scale.setScalar(esc0); return url;
   }
   function fechaTela(){ if(S.tela){ S.tela.remove(); S.tela = null; } }
   function tecla(e){ if(S.tela){ if(e.code === "Escape"){ fechaTela(); } e.preventDefault(); return true; } return false; }
