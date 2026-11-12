@@ -127,10 +127,11 @@ export function criarMinimapa(M){
     const barra = document.createElement("div"); barra.dataset.hud = "extra"; barra.style.cssText = "display:flex;gap:5px;align-items:center;";
     S.relogio = document.createElement("div"); S.relogio.style.cssText = "background:rgba(18,19,14,.78);border:1.5px solid #3a3f27;border-radius:9px;padding:3px 8px;color:#e9efc0;" + FONTE;
     S.btnN = bt("N", "", () => { S.norteFixo = !S.norteFixo; atualizaN(); }, "Travar o norte"); const atualizaN = () => { S.btnN.style.background = S.norteFixo ? "rgba(224,136,58,.9)" : "rgba(18,19,14,.78)"; S.btnN.style.color = S.norteFixo ? "#1a1408" : "#e9efc0"; }; atualizaN();
-    barra.appendChild(S.relogio); barra.appendChild(bt("−", "", () => zoom(-1), "Menos zoom")); barra.appendChild(bt("+", "", () => zoom(1), "Mais zoom")); barra.appendChild(S.btnN); barra.appendChild(bt("🗺", "", () => abreGrande(), "Mapa grande (M)"));
+    barra.appendChild(S.relogio); barra.appendChild(bt("−", "", () => zoom(-1), "Menos zoom")); barra.appendChild(bt("+", "", () => zoom(1), "Mais zoom")); barra.appendChild(S.btnN);
     el.appendChild(caixa); el.appendChild(barra); ui.appendChild(el);
-    { let ini = null; caixa.addEventListener("pointerdown", e => { e.stopPropagation(); ini = [e.clientX, e.clientY]; });             // tocar no minimapa abre o mapa grande
-      caixa.addEventListener("pointerup", e => { if(ini && Math.hypot(e.clientX - ini[0], e.clientY - ini[1]) < 12) abreGrande(); ini = null; }); }
+    caixa.style.cursor = "pointer"; caixa.title = "Abrir o mapa"; caixa.setAttribute("role", "button"); caixa.setAttribute("aria-label", "Abrir o mapa");
+    caixa.addEventListener("pointerdown", e => e.stopPropagation());                                   // não vira arrasto da câmera
+    caixa.addEventListener("click", e => { e.stopPropagation(); abreGrande(); });                       // toque/clique no minimapa abre o mapa (click nativo: robusto mesmo se a tela mudar de tamanho no toque)
     caixa.addEventListener("wheel", e => { e.preventDefault(); e.stopPropagation(); zoom(e.deltaY < 0 ? 1 : -1); }, { passive: false });
     S.el = el; S.caixa = caixa; S.cv = cv; S.ctx = cv.getContext("2d"); redimensiona(); S.resize = () => redimensiona(); window.addEventListener("resize", S.resize);
   }
@@ -146,16 +147,36 @@ export function criarMinimapa(M){
     const el = document.createElement("div"); el.style.cssText = "position:absolute;inset:0;z-index:47;background:rgba(5,6,3,.88);display:flex;align-items:center;justify-content:center;pointer-events:auto;"; el.addEventListener("pointerdown", e => e.stopPropagation());
     const box = document.createElement("div"); box.style.cssText = "position:relative;width:min(94%,1100px);height:min(90%,760px);border:2px solid #e0883a;border-radius:16px;overflow:hidden;background:#1c3042;"; el.appendChild(box);
     const cv = document.createElement("canvas"); cv.style.cssText = "width:100%;height:100%;display:block;cursor:crosshair;"; box.appendChild(cv);
-    const info = document.createElement("div"); info.style.cssText = "position:absolute;left:12px;top:10px;color:#fff;background:rgba(0,0,0,.55);border-radius:10px;padding:6px 10px;" + FONTE + "font-size:12px;line-height:1.5;"; info.textContent = "MAPA · toque/clique para marcar o destino (o caminho aparece em amarelo) ou num ⇄ para viajar · M ou Esc fecha"; box.appendChild(info);
+    const info = document.createElement("div"); info.style.cssText = "position:absolute;left:12px;top:10px;color:#fff;background:rgba(0,0,0,.55);border-radius:10px;padding:6px 10px;" + FONTE + "font-size:12px;line-height:1.5;"; info.textContent = "Toque: marca destino · Arraste: move · Pinça/rodinha: zoom"; box.appendChild(info);
     const leg = document.createElement("div"); leg.style.cssText = "position:absolute;left:12px;bottom:10px;color:#e9efc0;background:rgba(0,0,0,.6);border-radius:10px;padding:8px 10px;" + FONTE + "font-size:11px;line-height:1.55;"; leg.innerHTML = '<span style="color:#e0883a">R</span> Recebimento · <span style="color:#5aa0e0">P</span> Estacionamento · <span style="color:#e8c32a">L</span> Largada · <span style="color:#e0883a">C</span> Chegada · <span style="color:#c8e86a">M</span> Mirante<br><span style="color:#d7b57a">━</span> trilhas · <span style="color:#5aa9e0">━</span> rios · <span style="color:#c9b98a">━</span> borda do cânion · <span style="color:#ff4a3a">▲</span> você · <span style="color:#ffd700">⚑</span> destino · <span style="color:#2f8a40">●</span> ICMBio'; box.appendChild(leg);
-    const x = document.createElement("div"); x.textContent = "✕"; x.style.cssText = "position:absolute;right:10px;top:10px;cursor:pointer;border:1.5px solid #8a9a3b;background:rgba(18,19,14,.85);color:#e9efc0;border-radius:10px;padding:6px 12px;" + FONTE; x.addEventListener("pointerdown", e => { e.preventDefault(); fechaGrande(); }); box.appendChild(x);
-    const md = document.createElement("div"); md.textContent = (S.bigModo === "mundo" ? "ver o parque" : "ver o mundo todo"); md.style.cssText = x.style.cssText.replace("right:10px", "right:64px"); md.addEventListener("pointerdown", e => { e.preventDefault(); S.bigModo = S.bigModo === "mundo" ? "parque" : "mundo"; md.textContent = S.bigModo === "mundo" ? "ver o parque" : "ver o mundo todo"; calcExt(); desenhaGrande(); }); box.appendChild(md);
+    const x = document.createElement("div"); x.textContent = "▾ Minimizar"; x.setAttribute("role", "button"); x.setAttribute("aria-label", "Minimizar o mapa"); x.style.cssText = "position:absolute;right:10px;top:10px;cursor:pointer;border:1.5px solid #8a9a3b;background:rgba(18,19,14,.85);color:#e9efc0;border-radius:10px;padding:6px 12px;" + FONTE; x.addEventListener("pointerdown", e => { e.preventDefault(); fechaGrande(); }); box.appendChild(x);
+    const md = document.createElement("div"); md.textContent = (S.bigModo === "mundo" ? "ver o parque" : "ver o mundo todo"); md.style.cssText = x.style.cssText; md.style.right = "138px"; /* (o navegador reescreve o cssText com espaços: trocar "right:10px" no texto não funcionava e os dois botões ficavam um em cima do outro) */ md.addEventListener("pointerdown", e => { e.preventDefault(); S.bigModo = S.bigModo === "mundo" ? "parque" : "mundo"; md.textContent = S.bigModo === "mundo" ? "ver o parque" : "ver o mundo todo"; calcExt(); desenhaGrande(); }); box.appendChild(md);
     const lim = document.createElement("div"); lim.textContent = "limpar destino"; lim.style.cssText = "position:absolute;right:10px;bottom:10px;cursor:pointer;border:1.5px solid #8a9a3b;background:rgba(18,19,14,.85);color:#e9efc0;border-radius:10px;padding:6px 12px;" + FONTE; lim.addEventListener("pointerdown", e => { e.preventDefault(); limpaDestino(); }); box.appendChild(lim);
     S.ui.appendChild(el); S.big = el; S.bigCv = cv; S.bigInfo = info;
     const dim = () => { const r = box.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); S.bigDpr = dpr; }; dim(); S.bigDim = dim;
     /* extensão: pontos principais girados para o norte para cima */
     S.bigModo = S.bigModo || "parque"; calcExt();
-    cv.addEventListener("pointerdown", e => { e.preventDefault(); const r = cv.getBoundingClientRect(), W = cv.width, Hh = cv.height, esc = S.bigEsc, px = (e.clientX - r.left) / r.width * W, py = (e.clientY - r.top) / r.height * Hh; const hit = (S.hitsViagem || []).find(h => Math.hypot(h.x - px, h.y - py) < h.r * (W / r.width)); if(hit){ fechaGrande(); M.viagem.viajar(hit.id); return; } const B2 = base(); const o = S.bigOrig; const w = inv(px, py, W / 2, Hh / 2, esc, o[0], o[1], B2); marcaDestino(w[0], w[1]); });
+    cv.style.cursor = "grab"; cv.style.touchAction = "none";
+    const dedos = new Map(); let gesto = null;
+    const emCanvas = (e) => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * cv.width, (e.clientY - r.top) / r.height * cv.height]; };
+    const mundoEm = (px, py) => inv(px, py, cv.width / 2, cv.height / 2, S.bigEsc, S.bigOrig[0], S.bigOrig[1], base());
+    const zoomEm = (px, py, z) => { const antes = mundoEm(px, py); S.bigZoom = Math.max(1, Math.min(14, z)); desenhaGrande(); const depois = mundoEm(px, py);       // o ponto sob o dedo/cursor fica parado
+      S.bigCentro = [S.bigOrig[0] + antes[0] - depois[0], S.bigOrig[1] + antes[1] - depois[1]]; desenhaGrande(); };
+    cv.addEventListener("pointerdown", e => { e.preventDefault(); try{ cv.setPointerCapture(e.pointerId); }catch(_){ /* sem captura */ } dedos.set(e.pointerId, emCanvas(e));
+      if(dedos.size === 1){ const p = emCanvas(e); gesto = { tipo: "toque", p0: p, c0: S.bigOrig.slice(), esc: S.bigEsc }; cv.style.cursor = "grabbing"; }
+      else if(dedos.size === 2){ const [a, b] = [...dedos.values()]; gesto = { tipo: "pinca", d0: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, z0: S.bigZoom }; } });
+    cv.addEventListener("pointermove", e => { if(!dedos.has(e.pointerId) || !gesto) return; dedos.set(e.pointerId, emCanvas(e));
+      if(gesto.tipo === "pinca" && dedos.size >= 2){ const [a, b] = [...dedos.values()]; zoomEm((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, gesto.z0 * Math.hypot(a[0] - b[0], a[1] - b[1]) / gesto.d0); return; }
+      const p = emCanvas(e), dx = p[0] - gesto.p0[0], dy = p[1] - gesto.p0[1];
+      if(gesto.tipo === "toque" && Math.hypot(dx, dy) > 10 * (S.bigDpr || 1)) gesto.tipo = "arrasto";
+      if(gesto.tipo === "arrasto"){ const w = inv(cv.width / 2 - dx, cv.height / 2 - dy, cv.width / 2, cv.height / 2, gesto.esc, gesto.c0[0], gesto.c0[1], base()); S.bigCentro = w; desenhaGrande(); } });
+    const solta = (e) => { if(!dedos.has(e.pointerId)) return; dedos.delete(e.pointerId); cv.style.cursor = "grab";
+      if(gesto && gesto.tipo === "toque" && dedos.size === 0 && e.type === "pointerup"){ const [px, py] = gesto.p0, Wc = cv.width / cv.getBoundingClientRect().width;
+        const hit = (S.hitsViagem || []).find(h => Math.hypot(h.x - px, h.y - py) < h.r * Wc); if(hit){ fechaGrande(); M.viagem.viajar(hit.id); return; }
+        const w = mundoEm(px, py); marcaDestino(w[0], w[1]); }
+      if(dedos.size === 0) gesto = null; else if(gesto && gesto.tipo === "pinca"){ const p = [...dedos.values()][0]; gesto = { tipo: "arrasto", p0: p, c0: S.bigOrig.slice(), esc: S.bigEsc }; } };
+    cv.addEventListener("pointerup", solta); cv.addEventListener("pointercancel", solta);
+    cv.addEventListener("wheel", e => { e.preventDefault(); e.stopPropagation(); const [px, py] = emCanvas(e); zoomEm(px, py, S.bigZoom * (e.deltaY < 0 ? 1.25 : 0.8)); }, { passive: false });
     desenhaGrande(); S.bigT = setInterval(desenhaGrande, 200);
   }
   /* extensão do mapa grande: "parque" (como antes) ou "mundo" (parque + estrada + cidade/vila) */
@@ -163,15 +184,15 @@ export function criarMinimapa(M){
     const B = base(); let pts = [...BORDA_PTS.filter(p => Math.abs(p[0]) < 3500 && Math.abs(p[1]) < 3500), ...locais().map(p => [p.x, p.z]), ...TR.TM, ...TR.TB, [launch.x + 40, 28]];
     if(S.bigModo === "mundo"){ pts = [...pts, ...(M.estrada ? M.estrada.pts : []), ...(M.zonas ? M.zonas.urbano.flatMap(u => u.poli) : [])]; }
     let a = 1e9, b2 = -1e9, c2 = 1e9, d2 = -1e9; pts.forEach(p => { const sx = p[0] * B.r[0] + p[1] * B.r[1], sy = p[0] * B.f[0] + p[1] * B.f[1]; a = Math.min(a, sx); b2 = Math.max(b2, sx); c2 = Math.min(c2, sy); d2 = Math.max(d2, sy); });
-    S.bigExt = { cx: (a + b2) / 2, cy: (c2 + d2) / 2, w: b2 - a, h: d2 - c2 };
+    S.bigExt = { cx: (a + b2) / 2, cy: (c2 + d2) / 2, w: b2 - a, h: d2 - c2 }; S.bigZoom = 1; S.bigCentro = null;
   }
   function desenhaGrande(){
     if(!S.bigCv) return; const cv = S.bigCv, c = cv.getContext("2d"), W = cv.width, Hh = cv.height, B = base(), ext = S.bigExt;
-    const esc = Math.min(W / (ext.w * 1.12), Hh / (ext.h * 1.12)); S.bigEsc = esc;
+    const esc = Math.min(W / (ext.w * 1.12), Hh / (ext.h * 1.12)) * (S.bigZoom || 1); S.bigEsc = esc;
     /* origem do mapa: o centro da extensão em coordenadas do mundo */
-    const ox = ext.cx * B.r[0] + ext.cy * B.f[0], oz = ext.cx * B.r[1] + ext.cy * B.f[1]; S.bigOrig = [ox, oz];
+    const ox = S.bigCentro ? S.bigCentro[0] : ext.cx * B.r[0] + ext.cy * B.f[0], oz = S.bigCentro ? S.bigCentro[1] : ext.cx * B.r[1] + ext.cy * B.f[1]; S.bigOrig = [ox, oz];
     desenha(c, W, Hh, esc, ox, oz, true);
-    if(S.bigInfo){ const d = S.destino && S.J ? Math.hypot(S.destino.x - S.J.x, S.destino.z - S.J.z) / U : null; S.bigInfo.textContent = "MAPA · toque/clique para marcar o destino · o caminho aparece em amarelo · M ou Esc fecha" + (d !== null ? "   |   destino a " + d.toFixed(0) + " m" : ""); }
+    if(S.bigInfo){ const d = S.destino && S.J ? Math.hypot(S.destino.x - S.J.x, S.destino.z - S.J.z) / U : null; S.bigInfo.textContent = "Toque: marca destino · Arraste: move · Pinça/rodinha: zoom" + (d !== null ? "   |   destino a " + d.toFixed(0) + " m" : ""); }
   }
   function fechaGrande(){ if(!S.big) return; clearInterval(S.bigT); S.big.remove(); S.big = S.bigCv = S.bigInfo = null; S.grande = false; }
 
@@ -219,5 +240,5 @@ export function criarMinimapa(M){
     return false;
   }
   void Color; void FAUNA;
-  return { liga, desliga, tick, tecla, marcaDestino, limpaDestino, rota: () => S.rota, rotaInfo: ROTA.info, coluna: () => S.el, marcaObjetivo: (o) => { S.objetivo = o; },  info: () => "Mapa: zoom " + S.zoom + (S.norteFixo ? " · norte fixo" : "") + (S.destino ? " · destino" : "") };
+  return { liga, desliga, tick, tecla, marcaDestino, limpaDestino, rota: () => S.rota, rotaInfo: ROTA.info, vistaGrande: () => (S.grande ? { zoom: +(S.bigZoom || 1).toFixed(2), centro: S.bigOrig.map(v => Math.round(v)) } : null), coluna: () => S.el, marcaObjetivo: (o) => { S.objetivo = o; },  info: () => "Mapa: zoom " + S.zoom + (S.norteFixo ? " · norte fixo" : "") + (S.destino ? " · destino" : "") };
 }
