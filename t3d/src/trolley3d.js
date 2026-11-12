@@ -72,9 +72,14 @@ export const POS = {
 
 export function montar(el, opts = {}){
   let renderer;
-  try{ renderer = new WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: false }); }
+  /* leveza: no celular, resolução de no máximo 1,5× e sem antialias (caros e pouco visíveis em tela pequena); em todos, GPU de alto desempenho
+     e resolução adaptativa (ver RES em quadro(): cai em degraus abaixo de ~28 FPS e volta a subir quando sobra folga) */
+  const TOQUE = (typeof matchMedia === "function" && matchMedia("(pointer:coarse)").matches) || "ontouchstart" in window;
+  try{ renderer = new WebGLRenderer({ antialias: !TOQUE, alpha: true, preserveDrawingBuffer: false, powerPreference: "high-performance" }); }
   catch(e){ return null; }
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  const RES = { max: Math.min(TOQUE ? 1.5 : 2, window.devicePixelRatio || 1), min: .75, soma: 0, n: 0, t: 0, espera: 5, pular: false };
+  document.addEventListener("visibilitychange", () => { RES.pular = true; });                  // a volta de uma aba escondida não é lentidão
+  RES.pr = RES.max; renderer.setPixelRatio(RES.pr);
   renderer.outputColorSpace = SRGBColorSpace;
   el.appendChild(renderer.domElement);
   renderer.domElement.style.cssText = "display:block;width:100%;height:100%;touch-action:none;outline:none";
@@ -754,6 +759,7 @@ export function montar(el, opts = {}){
     const hit = ray.intersectObjects(alvos, false)[0]; renderer.domElement.style.cursor = hit ? "pointer" : "grab"; });
   el.addEventListener("click", e => { const m = e.target.closest(".mk"); if(m){ e.stopPropagation(); foco(m.dataset.id); } });
 
+  H.resolucao = () => ({ pixelRatio: RES.pr, max: RES.max, min: RES.min });
   function ajustar(){ const w = el.clientWidth || 600, h = el.clientHeight || 400; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
   new ResizeObserver(ajustar).observe(el); ajustar();
 
@@ -976,7 +982,11 @@ export function montar(el, opts = {}){
   function quadro(){
     if(!vivo) return; requestAnimationFrame(quadro);
     if(el.clientWidth === 0 || el.clientHeight === 0) return;      // (offsetParent seria nulo em tela cheia)
-    const agora = performance.now(), dtq = Math.min(0.05, (agora - ult) / 1000); ult = agora; if(J) J.tick(dtq);
+    const agora = performance.now(), dtReal = (agora - ult) / 1000, dtq = Math.min(0.05, dtReal); ult = agora; if(J) J.tick(dtq);
+    if(RES.pular || document.hidden) RES.pular = false; else { RES.soma += dtReal; RES.n++; RES.t += dtReal; RES.espera -= dtReal;                 // resolução adaptativa (o primeiro quadro após a aba voltar não conta)
+      if(RES.t >= 2){ const fps = RES.n / RES.soma; RES.t = RES.soma = 0; RES.n = 0;
+        if(RES.espera <= 0){ const novo = fps < 28 ? Math.max(RES.min, RES.pr - .25) : fps > 52 ? Math.min(RES.max, RES.pr + .25) : RES.pr;
+          if(novo !== RES.pr){ RES.pr = novo; renderer.setPixelRatio(novo); ajustar(); RES.espera = 4; } } } }
     if(H.neonPinta){ H.neonT = (H.neonT || 0) + dtq; H.neonC = (H.neonC || 0) + 1; if(H.neonC % 3 === 0) H.neonPinta(H.neonT); }
     [avatar, avatar2].forEach(AVT => { if(!AVT) return; AVT.t += dtq; const t = AVT.t; AVT.tronco.scale.y = 1 + .012 * Math.sin(t * 2.1); AVT.cab.rotation.set(0.03 * Math.sin(t * 1.3), .22 + .16 * Math.sin(t * .7), .05 * Math.sin(t * 1.1)); if(AVT.lider) AVT.lider(dtq); else AVT.bD.co.rotation.z = -2.3 + .07 * Math.sin(t * 3.2); });
     if(tween){ const k = Math.min(1, (performance.now() - tween.t0) / tween.ms), e = tempo(k);

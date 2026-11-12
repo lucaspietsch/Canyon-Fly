@@ -116,7 +116,7 @@ export function criarMinimapa(M){
   /* ---- minimapa ---- */
   function monta(ui){
     S.ui = ui;
-    const el = document.createElement("div"); el.style.cssText = "position:absolute;right:10px;top:56px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;pointer-events:none;z-index:29;";
+    const el = document.createElement("div"); el.dataset.hud = "extra"; el.style.cssText = "position:absolute;right:10px;top:56px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;pointer-events:none;z-index:29;";
     const caixa = document.createElement("div"); caixa.style.cssText = "position:relative;border-radius:50%;overflow:hidden;border:2px solid #8a9a3b;background:#1c3042;box-shadow:0 2px 12px rgba(0,0,0,.5);opacity:.9;pointer-events:auto;touch-action:none;";
     const cv = document.createElement("canvas"); cv.style.cssText = "display:block;width:100%;height:100%;"; caixa.appendChild(cv);
     const bt = (t, css, fn, rot) => { const b = document.createElement("div"); b.textContent = t; b.setAttribute("role", "button"); b.setAttribute("aria-label", rot); b.style.cssText = "pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;text-align:center;border:1.5px solid #8a9a3b;background:rgba(18,19,14,.78);color:#e9efc0;border-radius:9px;padding:3px 8px;min-width:22px;" + FONTE + css; b.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); fn(); }); return b; };

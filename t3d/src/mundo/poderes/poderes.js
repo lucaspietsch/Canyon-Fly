@@ -131,7 +131,7 @@ export function criarPoderes(M){
 
   /* ---------- botão na tela ---------- */
   function hud(){
-    if(!M.ui) return; if(!S.chip){ const c = document.createElement("div"); c.style.cssText = "position:absolute;left:50%;bottom:78px;transform:translateX(-50%);z-index:30;min-width:210px;padding:7px 14px 9px;border-radius:14px;border:2px solid #8a9a3b;background:rgba(14,18,10,.86);color:#ecebdd;font:700 13px ui-monospace,Consolas,monospace;text-align:center;cursor:pointer;pointer-events:auto;user-select:none;-webkit-user-select:none;touch-action:manipulation;";
+    if(!M.ui) return; if(!S.chip){ const c = document.createElement("div"); c.dataset.hud = "extra"; c.style.cssText = "position:absolute;left:50%;bottom:78px;transform:translateX(-50%);z-index:30;min-width:210px;padding:7px 14px 9px;border-radius:14px;border:2px solid #8a9a3b;background:rgba(14,18,10,.86);color:#ecebdd;font:700 13px ui-monospace,Consolas,monospace;text-align:center;cursor:pointer;pointer-events:auto;user-select:none;-webkit-user-select:none;touch-action:manipulation;";
       const t = document.createElement("div"); const b = document.createElement("div"); b.style.cssText = "height:5px;border-radius:3px;background:#2a3016;margin-top:6px;overflow:hidden;"; const bb = document.createElement("div"); bb.style.cssText = "height:100%;width:100%;background:#ffd36a;"; b.appendChild(bb); c.appendChild(t); c.appendChild(b); c.addEventListener("pointerdown", e => { e.stopPropagation(); e.preventDefault(); usa(); }); S.chip = c; S.txt = t; S.barra = bb; }
     if(!S.chip.parentNode) M.ui.appendChild(S.chip);
   }

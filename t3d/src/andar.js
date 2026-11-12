@@ -175,7 +175,8 @@ export function criarAndar(c){
   let ui = null, joyBase = null, joyKnob = null, dica = null, ajuda = null, btnCorrer = null, btnInter = null;
   function montaUI(){
     ui = mk("position:absolute;inset:0;pointer-events:none;z-index:30;" + FONTE, undefined, el);
-    const topo = mk("position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;align-items:center;pointer-events:none;", undefined, ui);
+    estiloHud();
+    const topo = mk("position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;align-items:center;pointer-events:none;", undefined, ui); topo.dataset.hud = "extra";
     titulo = mk("pointer-events:none;background:rgba(18,19,14,.72);border:1.5px solid #8a9a3b;border-radius:12px;padding:7px 12px;color:#e0883a;letter-spacing:.6px;text-transform:uppercase;", "Andando com " + nomeP, topo);
     mk("flex:1", undefined, topo);
     const b = (t, fn, rot) => { const x = mk(BTN + "padding:9px 13px;min-width:44px;", t, topo); x.setAttribute("role", "button"); x.setAttribute("aria-label", rot); x.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); fn(); }); return x; };
@@ -188,24 +189,79 @@ export function criarAndar(c){
     aviso = mk("position:absolute;left:50%;top:64px;transform:translateX(-50%);max-width:86%;text-align:center;pointer-events:none;background:rgba(18,19,14,.86);border:1.5px solid #8a9a3b;border-radius:12px;padding:9px 16px;opacity:0;transition:opacity .25s;", "", ui);
     ajuda = mk("position:absolute;left:12px;bottom:12px;pointer-events:none;background:rgba(18,19,14,.82);border:1.5px solid #3a3f27;border-radius:12px;padding:10px 14px;line-height:1.7;display:" + (toque ? "none" : "block") + ";", undefined, ui);
     ["↑ ↓   andar · ← →   girar (a câmera acompanha)", "Espaço    pular", "Shift / R   correr", "E   interagir", "Q   câmera 1ª / 3ª pessoa", "Z X / mouse   olhar em volta · C atrás do Pit", "B   construir (pegar/carregar peças) · F G girar · E pegar/soltar", "H   esconder esta ajuda · Esc   sair"].forEach(t => mk("white-space:pre;", t, ajuda));
+    ajuda.dataset.hud = "extra";
     if(!toque) setTimeout(() => { if(ajuda && W.on) ajuda.style.opacity = ".55"; }, 7000);
     if(toque) montaToque();
+    /* HUD limpo (padrão): só movimentação e ataques; o ☰ mostra/esconde o HUD completo (personagens, mapa, relógio, viagem, ajuda) */
+    bMenu = mk(BTN + "position:absolute;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));width:42px;height:42px;padding:0;display:grid;place-items:center;border-radius:50%;font-size:18px;opacity:.8;z-index:31;", "☰", ui);
+    bMenu.setAttribute("role", "button"); bMenu.setAttribute("aria-label", "Menu: mostrar ou esconder o painel completo");
+    bMenu.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); alternaHud(); });
+    pad = mk("position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:300px;height:250px;pointer-events:none;", undefined, ui); padSig = "";
+    try{ hudCompleto = localStorage.getItem(HUD_CHAVE) === "1"; }catch(_){ hudCompleto = false; }
+    aplicaHud(); atualizaPad();
+    if(!toque) setTimeout(() => { if(W.on) mostraAviso("Setas/WASD andam · Espaço pula · V Y U I = poderes · ☰ menu"); }, 1200);
+  }
+
+  /* ---- HUD limpo: botões de ataque estilo MOBA (principal grande + especiais em arco), simulando as teclas V/Y/U/I ---- */
+  const HUD_CHAVE = "canyonfly:hudCompleto";
+  const NOME_ESPECIAL = { tipo: "Alternar", hack: "Hackear", tempo: "Parar tempo", chao: "Bater no chão", labia: "Lábia", golpe: "Golpe", voo: "Voo", rugido: "Rugido", granada: "Granada", oculos: "Óculos", choque: "Choque", avalanche: "Avalanche", lama: "Lama", gelo: "Gelo", combo: "Vapor", crescer: "Crescer", curto: "Grito", capoeira: "Capoeira", rasteira: "Rasteira" };
+  const ARCO = [[-118, -4], [-96, 84], [-14, 122]];                         // posições (dx, dy acima) dos especiais em volta do botão principal
+  let hudCompleto = false, bMenu = null, pad = null, padSig = "", bPrincipal = null, recarga = null;
+  function estiloHud(){
+    if(document.getElementById("cf-hud-css")) return;
+    const s = document.createElement("style"); s.id = "cf-hud-css";
+    s.textContent = "[data-cf-limpo] [data-hud=extra]{display:none!important}" +
+      ".cf-b{position:absolute;border-radius:50%;display:grid;place-items:center;text-align:center;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer;" +
+      "background:radial-gradient(circle at 50% 35%,rgba(60,66,40,.92),rgba(14,16,10,.88));border:2px solid #8a9a3b;color:#f1eccd;box-shadow:0 4px 14px rgba(0,0,0,.45);font:700 11px system-ui,sans-serif;line-height:1.1;-webkit-tap-highlight-color:transparent}" +
+      ".cf-b:active,.cf-b.on{transform:scale(.93);border-color:#ffd166;background:radial-gradient(circle at 50% 35%,rgba(224,136,58,.95),rgba(80,40,10,.9))}" +
+      ".cf-b .k{position:absolute;top:-6px;right:-4px;font:800 10px ui-monospace,monospace;background:#ffd166;color:#1b1f12;border-radius:6px;padding:1px 5px}" +
+      ".cf-b .cd{position:absolute;inset:0;border-radius:50%;pointer-events:none}";
+    document.head.appendChild(s);
+  }
+  function aplicaHud(){ if(!ui) return; if(hudCompleto) ui.removeAttribute("data-cf-limpo"); else ui.setAttribute("data-cf-limpo", ""); if(bMenu) bMenu.textContent = hudCompleto ? "✕" : "☰"; }
+  function alternaHud(){ hudCompleto = !hudCompleto; try{ localStorage.setItem(HUD_CHAVE, hudCompleto ? "1" : "0"); }catch(_){ /* sem armazenamento */ } aplicaHud(); }
+  function tecla(code, tipo){ const key = code.startsWith("Key") ? code.slice(3).toLowerCase() : code === "Space" ? " " : code; window.dispatchEvent(new KeyboardEvent(tipo, { code, key, bubbles: true, cancelable: true })); }
+  function botaoTecla(rot, code, css, letra){
+    const b = mk("", undefined, pad); b.className = "cf-b"; b.style.cssText = css; b.setAttribute("role", "button"); b.setAttribute("aria-label", rot);
+    const t = mk("", rot, b); t.style.cssText = "max-width:86%;"; if(letra && !toque){ const k = mk("", letra, b); k.className = "k"; }
+    let pid = null;
+    b.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); if(pid !== null) return; pid = e.pointerId; try{ b.setPointerCapture(pid); }catch(_){ /* sem captura */ } b.classList.add("on"); tecla(code, "keydown"); });
+    const solta = e => { if(e.pointerId !== pid) return; pid = null; b.classList.remove("on"); tecla(code, "keyup"); };
+    b.addEventListener("pointerup", solta); b.addEventListener("pointercancel", solta);
+    return b;
+  }
+  function atualizaPad(){
+    if(!pad) return;
+    const P = H.mundo && H.mundo.poderes, d = P && P.def ? P.def() : null;
+    const esp = d && d.teclas ? Object.entries(d.teclas).slice(0, 3) : [];
+    const sig = nomeP + "|" + (d ? d.id : "-") + "|" + esp.map(e => e[1]).join(",");
+    if(sig !== padSig){
+      padSig = sig; pad.textContent = ""; bPrincipal = recarga = null;
+      const ox = 300 - 104, oy = 250 - 104;                                                // canto do botão principal (100px) dentro do painel
+      if(d){
+        const rotP = d.nome.replace(/ d[eo] .*$| do .*$/, ""); bPrincipal = botaoTecla(rotP, "KeyV", `left:${ox}px;top:${oy}px;width:100px;height:100px;font-size:${rotP.length > 8 ? 11 : 13}px;`, "V");
+        recarga = mk("", undefined, bPrincipal); recarga.className = "cd";
+        esp.forEach(([nome, code], i) => { const [dx, dy] = ARCO[i]; botaoTecla(NOME_ESPECIAL[nome] || nome, code, `left:${ox + 20 + dx}px;top:${oy + 20 - dy}px;width:62px;height:62px;`, code.slice(3)); });
+        const [jx, jy] = ARCO[esp.length] || [-60, 190];                                      // pular: próxima vaga livre do arco (nunca em cima do joystick)
+        botaoTecla("Pular", "Space", `left:${ox + 22 + jx}px;top:${oy + 22 - jy}px;width:56px;height:56px;font-size:10px;opacity:.88;`, "␣");
+      } else botaoTecla("Pular", "Space", `left:${ox + 14}px;top:${oy + 14}px;width:76px;height:76px;font-size:12px;`, "␣");
+    }
+    const esc = Math.min(1, innerWidth / 560, innerHeight / 400);                               // celular na vertical / telas pequenas: o painel encolhe
+    const tf = esc < 1 ? `scale(${esc.toFixed(3)})` : ""; if(pad.style.transform !== tf){ pad.style.transform = tf; pad.style.transformOrigin = "100% 100%"; }
+    if(recarga && P && P.S){ const k = P.S.cd > 0 ? Math.min(1, P.S.cd / (P.S.cdMax || 1)) : 0; const v = k > 0 ? `conic-gradient(rgba(0,0,0,.62) ${Math.round(k * 360)}deg,transparent 0)` : "none"; if(recarga.style.background !== v) recarga.style.background = v; }
   }
   function montaToque(){
     joyBase = mk("position:absolute;left:22px;bottom:26px;width:132px;height:132px;border-radius:50%;border:2px solid rgba(138,154,59,.8);background:rgba(18,19,14,.45);pointer-events:auto;touch-action:none;", undefined, ui);
     joyKnob = mk("position:absolute;left:41px;top:41px;width:50px;height:50px;border-radius:50%;background:rgba(224,136,58,.85);border:2px solid #ffd7a8;pointer-events:none;", undefined, joyBase);
     let pid = null;
-    const mover = (e) => { const r = joyBase.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2; let dx = (e.clientX - cx) / 50, dy = (e.clientY - cy) / 50; const n = Math.hypot(dx, dy); if(n > 1){ dx /= n; dy /= n; }
+    const mover = (e) => { const r = joyBase.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2; let dx = (e.clientX - cx) / 50, dy = (e.clientY - cy) / 50; const n = Math.hypot(dx, dy); W.joyCorre = n > 1.12; if(n > 1){ dx /= n; dy /= n; }      // empurrar até a borda = correr
       joyKnob.style.transform = `translate(${dx * 41}px,${dy * 41}px)`; W.joy.x = Math.abs(dx) < .12 ? 0 : dx; W.joy.y = Math.abs(dy) < .12 ? 0 : -dy; };
     joyBase.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); pid = e.pointerId; try{ joyBase.setPointerCapture(pid); }catch(_){ /* sem captura */ } mover(e); });
     joyBase.addEventListener("pointermove", e => { if(e.pointerId === pid) mover(e); });
-    const fim = (e) => { if(e.pointerId !== pid) return; pid = null; joyKnob.style.transform = ""; W.joy.x = W.joy.y = 0; };
+    const fim = (e) => { if(e.pointerId !== pid) return; pid = null; joyKnob.style.transform = ""; W.joy.x = W.joy.y = 0; W.joyCorre = false; };
     joyBase.addEventListener("pointerup", fim); joyBase.addEventListener("pointercancel", fim);
-    const grande = (t, css, fn) => { const x = mk(BTN + "position:absolute;display:grid;place-items:center;" + css, t, ui); x.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); fn(x); }); return x; };
-    grande("PULAR", "right:24px;bottom:34px;width:92px;height:92px;border-radius:50%;font-size:14px;", () => pular());
-    btnCorrer = grande("CORRER", "right:132px;bottom:26px;width:76px;height:76px;border-radius:50%;font-size:12px;", () => { W.correr = !W.correr; atualizaBotoes(); });
-    btnInter = grande("INTERAGIR", "right:34px;bottom:140px;width:100px;height:62px;font-size:12px;", () => interagir());
-    atualizaBotoes();
+    joyBase.style.left = "max(22px,env(safe-area-inset-left))"; joyBase.style.bottom = "max(26px,env(safe-area-inset-bottom))";
+    /* pular, correr e interagir saíram daqui: pular fica no painel de ataques, correr é o joystick na borda e interagir é a dica tocável que aparece perto do alvo */
   }
   function atualizaBotoes(){ if(btnCorrer) btnCorrer.style.background = W.correr ? "rgba(224,136,58,.85)" : "rgba(18,19,14,.72)"; }
   function alternaAjuda(){ if(!ajuda) return; ajuda.style.display = ajuda.style.display === "none" ? "block" : "none"; ajuda.style.opacity = "1"; }
@@ -267,10 +323,11 @@ export function criarAndar(c){
   function aoPonteiroCima(e){ if(arrasta && e.pointerId === arrasta.id) arrasta = null; }
   function aoRoda(e){ if(!W.on) return; e.preventDefault(); W.dist = clamp(W.dist + e.deltaY * .01, 7, 30); }
   let usouFs = false, estiloAntes = null;
-  function aoTelaCheia(){ if(W.on && usouFs && !document.fullscreenElement){ usouFs = false; desligar(); } }
+  function aoTelaCheia(){ if(!document.fullscreenElement) usouFs = false; }                       // sair da tela cheia não tira mais o jogador do jogo (no celular o próximo toque volta para ela)
 
   /* ---- tela cheia (com plano B para navegadores que não deixam, como o iPhone) ---- */
   function entraTelaCheia(){
+    if(document.fullscreenElement || document.webkitFullscreenElement) return;                     // a página já entrou em tela cheia no "▶ CanyonFly" (index.html)
     const f = el.requestFullscreen || el.webkitRequestFullscreen;
     const plano = () => { if(estiloAntes === null){ estiloAntes = el.style.cssText; el.style.cssText += ";position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:2147483000;background:#0b0c08;"; try{ if(parent !== window) parent.postMessage({ sgv: "tela-cheia", on: true }, "*"); }catch(_){ /* sem página-mãe */ } } };
     if(!f){ plano(); return; }
@@ -293,7 +350,7 @@ export function criarAndar(c){
     const n = Math.hypot(ix, iy); if(n > 1){ ix /= n; iy /= n; }
     if(k.has("KeyZ")){ W.camOff += .03; W.manual = 1.2; }
     if(k.has("KeyX")){ W.camOff -= .03; W.manual = 1.2; }
-    return { ix, iy, mag: Math.min(1, Math.hypot(ix, iy)), corre: W.correr || k.has("ShiftLeft") || k.has("ShiftRight") };
+    return { ix, iy, mag: Math.min(1, Math.hypot(ix, iy)), corre: W.correr || W.joyCorre || k.has("ShiftLeft") || k.has("ShiftRight") };
   }
   function passo(dt){
     /* estilo 3ª pessoa de jogo: ← → giram o Pit (a câmera acompanha por trás), ↑ anda para a frente, ↓ dá ré. Sem precisar do mouse. */
@@ -368,7 +425,8 @@ export function criarAndar(c){
       tmp.set(dx, dy, dz).normalize(); ray.set(lookAt, tmp); ray.far = dist;
       const h = ray.intersectObjects(cen.paredes, false)[0]; if(h) d = Math.max(3, h.distance - .5);
     }
-    tmp.set(lookAt.x + dx * d, Math.max(cen.chaoNivel + .8, lookAt.y + dy * d), lookAt.z + dz * d);
+    /* piso da câmera: o nível do parque só vale onde o relevo não é mais baixo que ele (Vila Santana e outros vales ficam abaixo: lá o piso é o próprio relevo) */
+    { const cx = lookAt.x + dx * d, cz = lookAt.z + dz * d; tmp.set(cx, Math.max(Math.min(cen.chaoNivel, cen.relevo(cx, cz)) + .8, lookAt.y + dy * d), cz); }
     /* a câmera não atravessa o relevo: se a linha até o Pit passa por dentro do terreno, ela se aproxima (e nunca fica abaixo do chão) */
     { let fr = 1; for(let i = 1; i <= 10; i++){ const t = i / 10, px = lookAt.x + (tmp.x - lookAt.x) * t, pz = lookAt.z + (tmp.z - lookAt.z) * t, py = lookAt.y + (tmp.y - lookAt.y) * t; if(py < cen.relevo(px, pz) + 1.4){ fr = Math.max(.1, (i - 1) / 10); break; } }
       if(fr < 1) tmp.set(lookAt.x + (tmp.x - lookAt.x) * fr, lookAt.y + (tmp.y - lookAt.y) * fr, lookAt.z + (tmp.z - lookAt.z) * fr);
@@ -438,7 +496,7 @@ export function criarAndar(c){
     cv.removeEventListener("wheel", aoRoda); document.removeEventListener("fullscreenchange", aoTelaCheia);
     if(H.mundo) H.mundo.desliga();
     if(ui){ ui.remove(); ui = null; }
-    joyBase = joyKnob = btnCorrer = btnInter = dica = aviso = ajuda = null;
+    joyBase = joyKnob = btnCorrer = btnInter = dica = aviso = ajuda = null; pad = bMenu = bPrincipal = recarga = null; padSig = ""; W.joyCorre = false;
     saiTelaCheia();
     /* boneco volta à pose e ao lugar originais */
     restaura(AV); AV = AV0; nomeP = "Pit"; idxP = 0; lugar = "rec"; INI = cen.spawn;
@@ -458,7 +516,7 @@ export function criarAndar(c){
   function tick(dt){
     if(!W.on) return;
     if(W.cinema){ cen.tick(dt, W.x, W.z); if(H.cinemaQuadro) H.cinemaQuadro(dt); return; }
-    passo(dt); pose(); cen.tick(dt, W.x, W.z); camera(dt); mira(); constroiTick(dt);
+    passo(dt); pose(); cen.tick(dt, W.x, W.z); camera(dt); mira(); constroiTick(dt); atualizaPad();
   }
   return {
     ligar, desligar, tick, cinema, emCinema: () => !!W.cinema, ativo: () => W.on,

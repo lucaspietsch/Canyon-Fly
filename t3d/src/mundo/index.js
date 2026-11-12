@@ -61,7 +61,8 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   const sol = luzes.sol;
   const SH = { ligado: false, alvo: new Vector3() };
   renderer.shadowMap.enabled = true;
-  sol.shadow.mapSize.set(1536, 1536);
+  const toqueSombra = (typeof matchMedia === "function" && matchMedia("(pointer:coarse)").matches) || "ontouchstart" in window;
+  sol.shadow.mapSize.set(toqueSombra ? 1024 : 1536, toqueSombra ? 1024 : 1536);          // celular: mapa menor (mais leve), mesma área de sombra
   { const c = sol.shadow.camera; c.left = -105; c.right = 105; c.top = 105; c.bottom = -105; c.near = 20; c.far = 620; c.updateProjectionMatrix(); }
   sol.shadow.bias = -.0006; sol.shadow.normalBias = .35; sol.shadow.radius = 2.2;
   cena.add(sol.target);
@@ -190,7 +191,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   const FONTE = "font:600 12px ui-monospace,Consolas,'Courier New',monospace;color:#c9d28a;";
   function liga(ui, ctx){
     M.ui = ui; M.ctx = ctx;
-    hud = document.createElement("div"); hud.style.cssText = "position:absolute;left:10px;top:54px;pointer-events:auto;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;background:rgba(18,19,14,.62);border:1.5px solid #3a3f27;border-radius:10px;padding:5px 10px;" + FONTE + "color:#e9efc0;font-size:14px;letter-spacing:.5px;"; ui.appendChild(hud); hud.title = "Clique para escolher a hora"; hud.setAttribute("role", "button");
+    hud = document.createElement("div"); hud.dataset.hud = "extra"; hud.style.cssText = "position:absolute;left:10px;top:54px;pointer-events:auto;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;background:rgba(18,19,14,.62);border:1.5px solid #3a3f27;border-radius:10px;padding:5px 10px;" + FONTE + "color:#e9efc0;font-size:14px;letter-spacing:.5px;"; ui.appendChild(hud); hud.title = "Clique para escolher a hora"; hud.setAttribute("role", "button");
     hud.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); alternaRelogio(); });
     painel = document.createElement("pre"); painel.style.cssText = "position:absolute;left:10px;top:92px;margin:0;pointer-events:none;background:rgba(5,6,3,.78);border:1.5px solid #8a9a3b;border-radius:10px;padding:8px 11px;display:" + (depurar ? "block" : "none") + ";line-height:1.45;" + FONTE; ui.appendChild(painel);
     M.partes.forEach(p => p.liga && p.liga(ui, ctx));

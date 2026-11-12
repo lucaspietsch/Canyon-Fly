@@ -2,11 +2,18 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0e08">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CanyonFly">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icones/icone-192.png">
 <title>CanyonFly</title>
 <style>
 html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-#palco{position:fixed;inset:0}
+#palco{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;touch-action:none}
 /* tela inicial: nada do jogo é baixado antes do clique em "CanyonFly" */
 #inicio{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#e9efc0;text-align:center;padding:24px;
   background:radial-gradient(ellipse at 50% 70%,#1e2a16 0%,#0b0e08 70%)}
@@ -49,7 +56,20 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
     window.ctl = ctl;                                                       // depuração: ctl.mundo (M), ctl.andarMod
     let n = 0; const t = setInterval(() => { if(ctl.podeAndar || ++n > 40){ clearInterval(t); try{ ctl.andar(true); }catch(e){ console.warn(e); } } }, 250);
   }
+  /* tela cheia desde o início: o navegador só aceita o pedido logo após um toque/clique, então ele sai AQUI, no "▶ CanyonFly",
+     antes do download (pedir depois, com o jogo pronto, é recusado). No celular trava em paisagem; se o sistema tirar a tela cheia
+     (gesto de voltar, notificação), o próximo toque no jogo volta para ela. No iPhone não existe essa API: lá vale o modo app
+     (Compartilhar → Adicionar à Tela de Início), que abre sem barras pelo manifest.webmanifest. */
+  const toque = matchMedia("(pointer:coarse)").matches || "ontouchstart" in window;
+  let jogoAberto = false;
+  function telaCheia(){
+    const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen;
+    if(!f || document.fullscreenElement || document.webkitFullscreenElement) return;
+    try{ const p = f.call(d, { navigationUI: "hide" }); if(p && p.then) p.then(() => { if(toque && screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(() => {}); }).catch(() => {}); }catch(_){ /* navegador sem tela cheia */ }
+  }
+  if(toque) document.addEventListener("pointerdown", () => { if(jogoAberto) telaCheia(); }, true);
   btn.addEventListener("click", async () => {
+    telaCheia();
     btn.disabled = true; barra.style.display = "block"; status.textContent = "Baixando o jogo…";
     const t0 = performance.now();
     try{
@@ -57,7 +77,7 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
       status.textContent = "Montando o mundo…"; fill.style.width = "100%";
       const s = document.createElement("script"); s.textContent = js + "\n//# sourceURL=" + BUNDLE; document.head.appendChild(s);
       console.info("CanyonFly: pacote de " + mb(js.length) + " baixado e carregado em " + ((performance.now() - t0) / 1000).toFixed(1) + " s (mapa KML e elevação chegam em seguida, em segundo plano)");
-      inicia();
+      inicia(); jogoAberto = true;
       requestAnimationFrame(() => { $("inicio").remove(); console.info("CanyonFly: tela inicial fechada em " + ((performance.now() - t0) / 1000).toFixed(1) + " s"); });
     }catch(e){ console.error(e); status.textContent = "Não foi possível carregar o jogo: " + e.message + " — abra por um servidor (Live Server / npx serve), não direto do arquivo."; btn.disabled = false; }
   });
