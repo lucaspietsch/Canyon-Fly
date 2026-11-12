@@ -3,6 +3,7 @@ import {
   RingGeometry, PlaneGeometry, CircleGeometry, RepeatWrapping, BackSide, InstancedMesh, ConeGeometry, Object3D, Quaternion, Euler, SphereGeometry, MeshStandardMaterial, MeshBasicMaterial, Mesh, AmbientLight, DirectionalLight, HemisphereLight,
   Vector3, Raycaster, Vector2, CanvasTexture, AdditiveBlending, CatmullRomCurve3, TubeGeometry, Color, SRGBColorSpace, DoubleSide, MathUtils
 } from "three";
+import { ehToque } from "./modo.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { criarCasinha } from "./casinha.js";
 import { criarCenario } from "./cenario.js";
@@ -74,7 +75,7 @@ export function montar(el, opts = {}){
   let renderer;
   /* leveza: no celular, resolução de no máximo 1,5× e sem antialias (caros e pouco visíveis em tela pequena); em todos, GPU de alto desempenho
      e resolução adaptativa (ver RES em quadro(): cai em degraus abaixo de ~28 FPS e volta a subir quando sobra folga) */
-  const TOQUE = (typeof matchMedia === "function" && matchMedia("(pointer:coarse)").matches) || "ontouchstart" in window;
+  const TOQUE = ehToque();
   try{ renderer = new WebGLRenderer({ antialias: !TOQUE, alpha: true, preserveDrawingBuffer: false, powerPreference: "high-performance" }); }
   catch(e){ return null; }
   const RES = { max: Math.min(TOQUE ? 1.5 : 2, window.devicePixelRatio || 1), min: .75, soma: 0, n: 0, t: 0, espera: 5, pular: false };

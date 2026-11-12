@@ -1,3 +1,4 @@
+import { ehToque } from "../modo.js";
 import { criarAnhangaMundo } from "./lenda/mundo.js";
 import { criarPoderes } from "./poderes/poderes.js";
 import { criarPortal } from "./portal/portal.js";
@@ -61,7 +62,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   const sol = luzes.sol;
   const SH = { ligado: false, alvo: new Vector3() };
   renderer.shadowMap.enabled = true;
-  const toqueSombra = (typeof matchMedia === "function" && matchMedia("(pointer:coarse)").matches) || "ontouchstart" in window;
+  const toqueSombra = ehToque();
   sol.shadow.mapSize.set(toqueSombra ? 1024 : 1536, toqueSombra ? 1024 : 1536);          // celular: mapa menor (mais leve), mesma área de sombra
   { const c = sol.shadow.camera; c.left = -105; c.right = 105; c.top = 105; c.bottom = -105; c.near = 20; c.far = 620; c.updateProjectionMatrix(); }
   sol.shadow.bias = -.0006; sol.shadow.normalBias = .35; sol.shadow.radius = 2.2;

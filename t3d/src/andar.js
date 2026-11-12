@@ -1,3 +1,4 @@
+import { ehToque } from "./modo.js";
 import { Group, Mesh, BoxGeometry, CylinderGeometry, SphereGeometry, Vector3, Raycaster, MathUtils, Box3, BoxHelper } from "three";
 
 /* ============================================================================================================
@@ -61,7 +62,7 @@ export function criarAndar(c){
   };
   const W = { on: false, x: INI.x, z: INI.z, y: cen.chao(INI.x, INI.z), vy: 0, noChao: true, yaw: INI.yaw, camYaw: Math.PI, camOff: 0, manual: 0, camPitch: .34, dist: 15, fp: false, fpPitch: 0, correr: false, vel: 0, fase: 0, joy: { x: 0, y: 0 }, keys: new Set() };
   const lookAt = new Vector3(), camPos = new Vector3(), tmp = new Vector3(), ray = new Raycaster();
-  const toque = (typeof matchMedia === "function" && matchMedia("(pointer:coarse)").matches) || "ontouchstart" in window;
+  const toque = ehToque();                                                  // decidido na tela inicial pelo tamanho da tela (modo.js)
 
   /* ---- colisores (retângulos no plano do chão; com y1, só bloqueiam quem está abaixo dessa altura) ---- */
   const C = cen.colisores;
@@ -196,10 +197,10 @@ export function criarAndar(c){
     bMenu = mk(BTN + "position:absolute;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));width:42px;height:42px;padding:0;display:grid;place-items:center;border-radius:50%;font-size:18px;opacity:.8;z-index:31;", "☰", ui);
     bMenu.setAttribute("role", "button"); bMenu.setAttribute("aria-label", "Menu: mostrar ou esconder o painel completo");
     bMenu.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); alternaHud(); });
-    pad = mk("position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:300px;height:250px;pointer-events:none;", undefined, ui); padSig = "";
+    pad = toque ? mk("position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:300px;height:250px;pointer-events:none;", undefined, ui) : null; padSig = "";      // notebook/PC: sem botões na tela, só teclado
     try{ hudCompleto = localStorage.getItem(HUD_CHAVE) === "1"; }catch(_){ hudCompleto = false; }
     aplicaHud(); atualizaPad();
-    if(!toque) setTimeout(() => { if(W.on) mostraAviso("Setas/WASD andam · Espaço pula · V Y U I = poderes · ☰ menu"); }, 1200);
+    if(!toque) setTimeout(() => { if(W.on) mostraAviso("Setas andam · Shift corre · Espaço pula · E interage · V Y U I = poderes · ☰ menu"); }, 1200);
   }
 
   /* ---- HUD limpo: botões de ataque estilo MOBA (principal grande + especiais em arco), simulando as teclas V/Y/U/I ---- */
@@ -211,6 +212,7 @@ export function criarAndar(c){
     if(document.getElementById("cf-hud-css")) return;
     const s = document.createElement("style"); s.id = "cf-hud-css";
     s.textContent = "[data-cf-limpo] [data-hud=extra]{display:none!important}" +
+      "[data-cf-limpo] [data-hud=mapa]{left:max(10px,env(safe-area-inset-left))!important;right:auto!important;top:max(10px,env(safe-area-inset-top))!important;align-items:flex-start!important}" +
       ".cf-b{position:absolute;border-radius:50%;display:grid;place-items:center;text-align:center;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer;" +
       "background:radial-gradient(circle at 50% 35%,rgba(60,66,40,.92),rgba(14,16,10,.88));border:2px solid #8a9a3b;color:#f1eccd;box-shadow:0 4px 14px rgba(0,0,0,.45);font:700 11px system-ui,sans-serif;line-height:1.1;-webkit-tap-highlight-color:transparent}" +
       ".cf-b:active,.cf-b.on{transform:scale(.93);border-color:#ffd166;background:radial-gradient(circle at 50% 35%,rgba(224,136,58,.95),rgba(80,40,10,.9))}" +

@@ -25,6 +25,9 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
 #barra{width:min(420px,80vw);height:10px;border-radius:6px;background:#2a3320;overflow:hidden;display:none}
 #barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8bc34a,#ffd166);transition:width .15s}
 #status{font-size:14px;opacity:.75;min-height:1.4em}
+#aparelho{font-size:14px;line-height:1.5;max-width:560px;background:rgba(0,0,0,.28);border:1px solid #3a4a26;border-radius:12px;padding:10px 14px}
+#aparelho b{color:#ffd166}
+#trocaModo{background:none;border:0;color:#8bc34a;text-decoration:underline;font:inherit;cursor:pointer;padding:0 2px}
 </style>
 </head>
 <body>
@@ -32,6 +35,7 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
 <div id="inicio">
   <h1>CanyonFly</h1>
   <p>Mundo aberto do Cânion Fortaleza e de Cambará do Sul. O jogo (≈1,5 MB + mapa e elevação) só é baixado quando você clicar.</p>
+  <div id="aparelho">Reconhecendo o aparelho…</div>
   <button id="jogar">▶ CanyonFly</button>
   <div id="barra"><i></i></div>
   <div id="status"></div>
@@ -60,15 +64,34 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
      antes do download (pedir depois, com o jogo pronto, é recusado). No celular trava em paisagem; se o sistema tirar a tela cheia
      (gesto de voltar, notificação), o próximo toque no jogo volta para ela. No iPhone não existe essa API: lá vale o modo app
      (Compartilhar → Adicionar à Tela de Início), que abre sem barras pelo manifest.webmanifest. */
-  const toque = matchMedia("(pointer:coarse)").matches || "ontouchstart" in window;
+  /* reconhecimento do aparelho ANTES de abrir o jogo: celular/tablet (dedo como ponteiro principal, sem mouse, ou tela pequena) usa
+     joystick e botões na tela; notebook/PC (mouse/touchpad como ponteiro principal, mesmo com tela de toque) usa só o teclado.
+     A escolha pode ser trocada no link (fica salva) ou forçada por ?modo=toque / ?modo=teclado. O jogo lê window.CANYONFLY_MODO. */
+  function detecta(){
+    const w = screen.width, h = screen.height, menor = Math.min(w, h);
+    const dedo = matchMedia("(pointer:coarse)").matches, mouse = matchMedia("(any-pointer:fine)").matches;
+    return { modo: (dedo || !mouse || menor < 600) ? "toque" : "teclado", menor, w, h };
+  }
+  const DET = detecta();
+  let modo = (new URLSearchParams(location.search).get("modo") || (() => { try{ return localStorage.getItem("canyonfly:modo"); }catch(_){ return null; } })() || DET.modo);
+  if(modo !== "toque" && modo !== "teclado") modo = DET.modo;
+  function mostraModo(){
+    const tela = DET.w + "×" + DET.h, tipo = modo === "toque" ? (DET.menor >= 600 ? "📱 Tablet" : "📱 Celular") : "💻 Notebook / PC";
+    $("aparelho").innerHTML = "<b>" + tipo + "</b> · tela " + tela + "<br>" + (modo === "toque" ? "Controles na tela: joystick à esquerda e botões de ataque à direita." : "Controle pelo teclado: setas andam · Shift corre · Espaço pula · E interage · V Y U I poderes.")
+      + (modo !== DET.modo ? " <i>(escolhido por você)</i>" : "") + "<br><button id=\"trocaModo\" type=\"button\">" + (modo === "toque" ? "Estou num notebook/PC" : "Estou num celular/tablet") + "</button>";
+    $("trocaModo").onclick = () => { modo = modo === "toque" ? "teclado" : "toque"; try{ localStorage.setItem("canyonfly:modo", modo); }catch(_){ /* sem armazenamento */ } mostraModo(); };
+  }
+  mostraModo();
   let jogoAberto = false;
+  const toque = () => modo === "toque";
   function telaCheia(){
     const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen;
     if(!f || document.fullscreenElement || document.webkitFullscreenElement) return;
-    try{ const p = f.call(d, { navigationUI: "hide" }); if(p && p.then) p.then(() => { if(toque && screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(() => {}); }).catch(() => {}); }catch(_){ /* navegador sem tela cheia */ }
+    try{ const p = f.call(d, { navigationUI: "hide" }); if(p && p.then) p.then(() => { if(toque() && screen.orientation && screen.orientation.lock) screen.orientation.lock("landscape").catch(() => {}); }).catch(() => {}); }catch(_){ /* navegador sem tela cheia */ }
   }
-  if(toque) document.addEventListener("pointerdown", () => { if(jogoAberto) telaCheia(); }, true);
+  document.addEventListener("pointerdown", () => { if(jogoAberto && toque()) telaCheia(); }, true);
   btn.addEventListener("click", async () => {
+    window.CANYONFLY_MODO = modo; $("aparelho").style.display = "none";
     telaCheia();
     btn.disabled = true; barra.style.display = "block"; status.textContent = "Baixando o jogo…";
     const t0 = performance.now();

@@ -30,7 +30,7 @@ export function criarTerminal(M){
   }
   function monta(){
     const pai = M.mapa && M.mapa.coluna && M.mapa.coluna(); if(!pai || S.el) return;
-    const el = document.createElement("div"); el.style.cssText = "pointer-events:auto;width:min(260px,44vw);background:rgba(10,12,8,.72);border:1.5px solid #3a4222;border-radius:10px;padding:5px 8px 6px;font:600 10.5px ui-monospace,Consolas,monospace;color:#d4d4c8;position:relative;";
+    const el = document.createElement("div"); el.dataset.hud = "extra"; el.style.cssText = "pointer-events:auto;width:min(260px,44vw);background:rgba(10,12,8,.72);border:1.5px solid #3a4222;border-radius:10px;padding:5px 8px 6px;font:600 10.5px ui-monospace,Consolas,monospace;color:#d4d4c8;position:relative;";
     const topo = document.createElement("div"); topo.style.cssText = "display:flex;justify-content:space-between;opacity:.55;font-size:9.5px;margin-bottom:2px;letter-spacing:.4px;"; topo.innerHTML = "<span>TERMINAL</span>"; const bt = document.createElement("span"); bt.textContent = "▲ histórico (T)"; bt.style.cursor = "pointer"; bt.onpointerdown = (e) => { e.preventDefault(); alterna(); }; topo.appendChild(bt);
     S.caixa = document.createElement("div"); S.caixa.style.cssText = "height:" + (VISIVEIS * 14.5) + "px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;";
     el.append(topo, S.caixa); pai.appendChild(el); S.el = el;

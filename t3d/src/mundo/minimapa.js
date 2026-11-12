@@ -1,4 +1,5 @@
-import { Mesh, CylinderGeometry, ConeGeometry, RingGeometry, MeshBasicMaterial, Group, AdditiveBlending, DoubleSide, Color } from "three";
+import { Mesh, CylinderGeometry, ConeGeometry, RingGeometry, CircleGeometry, InstancedMesh, Object3D, MeshBasicMaterial, Group, AdditiveBlending, DoubleSide, Color } from "three";
+import { criarRota } from "./rota.js";
 import { U, MAPA, FAUNA } from "./config.js";
 
 /* ============================================================================================================
@@ -14,6 +15,7 @@ const NORTE = [Math.cos(-TH), Math.sin(-TH)];                          // direç
 export function criarMinimapa(M){
   const { cen, ciclo } = M;
   const S = { zoom: MAPA.zoomInicial, norteFixo: false, tAcc: 0, grande: false, destino: null, el: null, cv: null, ctx: null, big: null, bigCv: null, tam: MAPA.tamanho, J: null, ui: null, escala: 1, bigInfo: null, chegou: false };
+  const ROTA = criarRota(M);                                              // caminho a pé até o destino (trilhas, estrada, ruas)
   const PX = [.1, .17, .28, .45, .75];                                    // px por unidade (zoom)
   const FONTE = "font:700 11px ui-monospace,Consolas,'Courier New',monospace;";
   const { terraPoli, BORDA_PTS } = cen.campo, TR = cen.trilhas, A = cen.rios.ARROIO, AREA = cen.area, E = cen.estac;
@@ -101,7 +103,9 @@ export function criarMinimapa(M){
     /* destino */
     if(S.destino){ const q = proj(S.destino.x, S.destino.z, cx, cy, esc, ox, oz, B); const dx = q[0] - cx, dy = q[1] - cy, d = Math.hypot(dx, dy), r = Math.min(W, Hh) / 2 - 10;
       const alvo = d > r && !grande ? [cx + dx / d * r, cy + dy / d * r] : q;
-      if(S.J && !grande){ c.strokeStyle = "rgba(255,215,0,.85)"; c.lineWidth = 2; c.setLineDash([5, 4]); c.beginPath(); c.moveTo(cx, cy); c.lineTo(alvo[0], alvo[1]); c.stroke(); c.setLineDash([]); }
+      if(S.rota && S.rota.length > 1){ c.save(); c.lineJoin = c.lineCap = "round"; c.strokeStyle = "rgba(0,0,0,.7)"; c.lineWidth = grande ? 9 : 5.5; caminho(c, S.rota, cx, cy, esc, ox, oz, B, false); c.stroke();
+        c.strokeStyle = "#ffd34a"; c.lineWidth = grande ? 4.5 : 2.8; c.setLineDash(grande ? [12, 8] : [7, 5]); c.lineDashOffset = -(performance.now() / 45) % 200; caminho(c, S.rota, cx, cy, esc, ox, oz, B, false); c.stroke(); c.restore(); }
+      else if(S.J && !grande){ c.strokeStyle = "rgba(255,215,0,.85)"; c.lineWidth = 2; c.setLineDash([5, 4]); c.beginPath(); c.moveTo(cx, cy); c.lineTo(alvo[0], alvo[1]); c.stroke(); c.setLineDash([]); }
       c.fillStyle = "#ffd700"; c.beginPath(); c.moveTo(alvo[0], alvo[1] - 12); c.lineTo(alvo[0] + 8, alvo[1] - 5); c.lineTo(alvo[0], alvo[1]); c.closePath(); c.fill(); c.strokeStyle = "#000"; c.lineWidth = 1.5; c.beginPath(); c.moveTo(alvo[0], alvo[1]); c.lineTo(alvo[0], alvo[1] - 14); c.stroke(); }
     /* jogador (seta na direção em que ele anda/olha) */
     if(S.J){ const q = proj(S.J.x, S.J.z, cx, cy, esc, ox, oz, B), f = [Math.sin(S.J.yaw), Math.cos(S.J.yaw)]; const fx = f[0] * B.r[0] + f[1] * B.r[1], fy = -(f[0] * B.f[0] + f[1] * B.f[1]); const a = Math.atan2(fy, fx);
@@ -116,15 +120,17 @@ export function criarMinimapa(M){
   /* ---- minimapa ---- */
   function monta(ui){
     S.ui = ui;
-    const el = document.createElement("div"); el.dataset.hud = "extra"; el.style.cssText = "position:absolute;right:10px;top:56px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;pointer-events:none;z-index:29;";
+    const el = document.createElement("div"); el.dataset.hud = "mapa"; el.style.cssText = "position:absolute;right:10px;top:56px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;pointer-events:none;z-index:29;";
     const caixa = document.createElement("div"); caixa.style.cssText = "position:relative;border-radius:50%;overflow:hidden;border:2px solid #8a9a3b;background:#1c3042;box-shadow:0 2px 12px rgba(0,0,0,.5);opacity:.9;pointer-events:auto;touch-action:none;";
     const cv = document.createElement("canvas"); cv.style.cssText = "display:block;width:100%;height:100%;"; caixa.appendChild(cv);
     const bt = (t, css, fn, rot) => { const b = document.createElement("div"); b.textContent = t; b.setAttribute("role", "button"); b.setAttribute("aria-label", rot); b.style.cssText = "pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;text-align:center;border:1.5px solid #8a9a3b;background:rgba(18,19,14,.78);color:#e9efc0;border-radius:9px;padding:3px 8px;min-width:22px;" + FONTE + css; b.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); fn(); }); return b; };
-    const barra = document.createElement("div"); barra.style.cssText = "display:flex;gap:5px;align-items:center;";
+    const barra = document.createElement("div"); barra.dataset.hud = "extra"; barra.style.cssText = "display:flex;gap:5px;align-items:center;";
     S.relogio = document.createElement("div"); S.relogio.style.cssText = "background:rgba(18,19,14,.78);border:1.5px solid #3a3f27;border-radius:9px;padding:3px 8px;color:#e9efc0;" + FONTE;
     S.btnN = bt("N", "", () => { S.norteFixo = !S.norteFixo; atualizaN(); }, "Travar o norte"); const atualizaN = () => { S.btnN.style.background = S.norteFixo ? "rgba(224,136,58,.9)" : "rgba(18,19,14,.78)"; S.btnN.style.color = S.norteFixo ? "#1a1408" : "#e9efc0"; }; atualizaN();
     barra.appendChild(S.relogio); barra.appendChild(bt("−", "", () => zoom(-1), "Menos zoom")); barra.appendChild(bt("+", "", () => zoom(1), "Mais zoom")); barra.appendChild(S.btnN); barra.appendChild(bt("🗺", "", () => abreGrande(), "Mapa grande (M)"));
     el.appendChild(caixa); el.appendChild(barra); ui.appendChild(el);
+    { let ini = null; caixa.addEventListener("pointerdown", e => { e.stopPropagation(); ini = [e.clientX, e.clientY]; });             // tocar no minimapa abre o mapa grande
+      caixa.addEventListener("pointerup", e => { if(ini && Math.hypot(e.clientX - ini[0], e.clientY - ini[1]) < 12) abreGrande(); ini = null; }); }
     caixa.addEventListener("wheel", e => { e.preventDefault(); e.stopPropagation(); zoom(e.deltaY < 0 ? 1 : -1); }, { passive: false });
     S.el = el; S.caixa = caixa; S.cv = cv; S.ctx = cv.getContext("2d"); redimensiona(); S.resize = () => redimensiona(); window.addEventListener("resize", S.resize);
   }
@@ -140,7 +146,7 @@ export function criarMinimapa(M){
     const el = document.createElement("div"); el.style.cssText = "position:absolute;inset:0;z-index:47;background:rgba(5,6,3,.88);display:flex;align-items:center;justify-content:center;pointer-events:auto;"; el.addEventListener("pointerdown", e => e.stopPropagation());
     const box = document.createElement("div"); box.style.cssText = "position:relative;width:min(94%,1100px);height:min(90%,760px);border:2px solid #e0883a;border-radius:16px;overflow:hidden;background:#1c3042;"; el.appendChild(box);
     const cv = document.createElement("canvas"); cv.style.cssText = "width:100%;height:100%;display:block;cursor:crosshair;"; box.appendChild(cv);
-    const info = document.createElement("div"); info.style.cssText = "position:absolute;left:12px;top:10px;color:#fff;background:rgba(0,0,0,.55);border-radius:10px;padding:6px 10px;" + FONTE + "font-size:12px;line-height:1.5;"; info.textContent = "MAPA · clique para marcar um destino ou num ⇄ para viajar · M ou Esc fecha"; box.appendChild(info);
+    const info = document.createElement("div"); info.style.cssText = "position:absolute;left:12px;top:10px;color:#fff;background:rgba(0,0,0,.55);border-radius:10px;padding:6px 10px;" + FONTE + "font-size:12px;line-height:1.5;"; info.textContent = "MAPA · toque/clique para marcar o destino (o caminho aparece em amarelo) ou num ⇄ para viajar · M ou Esc fecha"; box.appendChild(info);
     const leg = document.createElement("div"); leg.style.cssText = "position:absolute;left:12px;bottom:10px;color:#e9efc0;background:rgba(0,0,0,.6);border-radius:10px;padding:8px 10px;" + FONTE + "font-size:11px;line-height:1.55;"; leg.innerHTML = '<span style="color:#e0883a">R</span> Recebimento · <span style="color:#5aa0e0">P</span> Estacionamento · <span style="color:#e8c32a">L</span> Largada · <span style="color:#e0883a">C</span> Chegada · <span style="color:#c8e86a">M</span> Mirante<br><span style="color:#d7b57a">━</span> trilhas · <span style="color:#5aa9e0">━</span> rios · <span style="color:#c9b98a">━</span> borda do cânion · <span style="color:#ff4a3a">▲</span> você · <span style="color:#ffd700">⚑</span> destino · <span style="color:#2f8a40">●</span> ICMBio'; box.appendChild(leg);
     const x = document.createElement("div"); x.textContent = "✕"; x.style.cssText = "position:absolute;right:10px;top:10px;cursor:pointer;border:1.5px solid #8a9a3b;background:rgba(18,19,14,.85);color:#e9efc0;border-radius:10px;padding:6px 12px;" + FONTE; x.addEventListener("pointerdown", e => { e.preventDefault(); fechaGrande(); }); box.appendChild(x);
     const md = document.createElement("div"); md.textContent = (S.bigModo === "mundo" ? "ver o parque" : "ver o mundo todo"); md.style.cssText = x.style.cssText.replace("right:10px", "right:64px"); md.addEventListener("pointerdown", e => { e.preventDefault(); S.bigModo = S.bigModo === "mundo" ? "parque" : "mundo"; md.textContent = S.bigModo === "mundo" ? "ver o parque" : "ver o mundo todo"; calcExt(); desenhaGrande(); }); box.appendChild(md);
@@ -165,7 +171,7 @@ export function criarMinimapa(M){
     /* origem do mapa: o centro da extensão em coordenadas do mundo */
     const ox = ext.cx * B.r[0] + ext.cy * B.f[0], oz = ext.cx * B.r[1] + ext.cy * B.f[1]; S.bigOrig = [ox, oz];
     desenha(c, W, Hh, esc, ox, oz, true);
-    if(S.bigInfo){ const d = S.destino && S.J ? Math.hypot(S.destino.x - S.J.x, S.destino.z - S.J.z) / U : null; S.bigInfo.textContent = "MAPA · clique para marcar um destino · M ou Esc fecha" + (d !== null ? "   |   destino a " + d.toFixed(0) + " m" : ""); }
+    if(S.bigInfo){ const d = S.destino && S.J ? Math.hypot(S.destino.x - S.J.x, S.destino.z - S.J.z) / U : null; S.bigInfo.textContent = "MAPA · toque/clique para marcar o destino · o caminho aparece em amarelo · M ou Esc fecha" + (d !== null ? "   |   destino a " + d.toFixed(0) + " m" : ""); }
   }
   function fechaGrande(){ if(!S.big) return; clearInterval(S.bigT); S.big.remove(); S.big = S.bigCv = S.bigInfo = null; S.grande = false; }
 
@@ -174,13 +180,31 @@ export function criarMinimapa(M){
   const feixe = new Mesh(new CylinderGeometry(1.1, 1.1, 120, 14, 1, true), new MeshBasicMaterial({ color: 0xffd34a, transparent: true, opacity: .38, depthWrite: false, blending: AdditiveBlending, side: DoubleSide })); feixe.position.y = 60; mundoDest.add(feixe);
   const anel = new Mesh(new RingGeometry(3.2, 4.2, 28), new MeshBasicMaterial({ color: 0xffd34a, transparent: true, opacity: .8, depthWrite: false, side: DoubleSide })); anel.rotation.x = -Math.PI / 2; anel.position.y = .4; mundoDest.add(anel);
   const seta = new Mesh(new ConeGeometry(1.5, 4.5, 4), new MeshBasicMaterial({ color: 0xffd34a })); seta.visible = false; cen.grupo.add(seta);
-  function marcaDestino(x, z){ S.destino = { x, z }; S.chegou = false; mundoDest.position.set(x, cen.chao(x, z, 1e9), z); mundoDest.visible = true; if(M.ctx) M.ctx.mostraAviso("Destino marcado: siga a seta e o feixe amarelo"); fechaGrande(); }
-  function limpaDestino(){ S.destino = null; mundoDest.visible = false; seta.visible = false; }
+  /* o caminho no mundo: marcas luminosas no chão ao longo da rota, à frente do jogador */
+  const NM = 36, ESP = 2.3 * U, marcas = new InstancedMesh(new CircleGeometry(1.5, 14), new MeshBasicMaterial({ color: 0xffd34a, transparent: true, opacity: .85, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }), NM);
+  marcas.frustumCulled = false; marcas.count = 0; marcas.visible = false; cen.grupo.add(marcas); const _o = new Object3D();
+  function refazRota(J){ if(!S.destino || !J) return; S.rota = ROTA.calcula(J.x, J.z, S.destino.x, S.destino.z); S.rotaDe = [J.x, J.z]; S.rotaT = 0; }
+  function proximoPonto(J){ const R = S.rota; if(!R) return null; for(let i = 1; i < R.length; i++) if(Math.hypot(R[i][0] - J.x, R[i][1] - J.z) > 8 * U) return R[i]; return R[R.length - 1]; }
+  function poeMarcas(J){                                                // a partir do ponto da rota mais perto do jogador, uma marca a cada ESP
+    const R = S.rota; if(!R || R.length < 2){ marcas.visible = false; return; }
+    /* ponto do caminho mais perto do jogador (projeção no trecho) — as marcas começam um pouco À FRENTE dele, nunca atrás/colado na câmera */
+    let i0 = 0, t0 = 0, md = Infinity; for(let i = 0; i < R.length - 1; i++){ const a = R[i], b = R[i + 1], vx = b[0] - a[0], vz = b[1] - a[1], L2 = vx * vx + vz * vz || 1;
+      const t = Math.max(0, Math.min(1, ((J.x - a[0]) * vx + (J.z - a[1]) * vz) / L2)), d = Math.hypot(a[0] + vx * t - J.x, a[1] + vz * t - J.z); if(d < md){ md = d; i0 = i; t0 = t; } }
+    let n = 0, t = performance.now() / 1000, sobra = Math.hypot(R[i0 + 1][0] - R[i0][0], R[i0 + 1][1] - R[i0][1]) * t0 + 3.5 * U;
+    for(let i = i0; i < R.length - 1 && n < NM; i++){ const a = R[i], b = R[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); let s = sobra;
+      while(s <= L && n < NM){ const x = a[0] + (b[0] - a[0]) * s / L, z = a[1] + (b[1] - a[1]) * s / L; _o.position.set(x, cen.chao(x, z, 1e9) + .25, z); _o.rotation.set(-Math.PI / 2, 0, 0);
+        _o.scale.setScalar(1 + .25 * Math.sin(t * 4 - n * .55)); _o.updateMatrix(); marcas.setMatrixAt(n++, _o.matrix); s += ESP; }
+      sobra = s - L; }
+    marcas.count = n; marcas.instanceMatrix.needsUpdate = true; marcas.visible = n > 0;
+  }
+  function marcaDestino(x, z){ S.destino = { x, z }; S.chegou = false; mundoDest.position.set(x, cen.chao(x, z, 1e9), z); mundoDest.visible = true; refazRota(S.J); if(M.ctx) M.ctx.mostraAviso("Destino marcado: siga o caminho amarelo no chão e no mapa"); fechaGrande(); }
+  function limpaDestino(){ S.destino = null; S.rota = null; mundoDest.visible = false; seta.visible = false; marcas.visible = false; }
 
   function tick(dt, J){
     S.J = J; if(S.destino && J){ const d = Math.hypot(S.destino.x - J.x, S.destino.z - J.z);
       if(d < 12 * U * .5 && !S.chegou){ S.chegou = true; if(M.ctx) M.ctx.mostraAviso("Você chegou ao destino"); limpaDestino(); }
-      else if(S.destino){ const a = Math.atan2(S.destino.x - J.x, S.destino.z - J.z); seta.visible = true; seta.position.set(J.x + Math.sin(a) * 9, J.y + 1.6, J.z + Math.cos(a) * 9); seta.rotation.set(Math.PI / 2, 0, -a + Math.PI); seta.rotation.order = "YXZ"; seta.rotation.y = a; seta.rotation.x = Math.PI / 2; anel.scale.setScalar(1 + Math.sin(performance.now() / 300) * .12); } }
+      else if(S.destino){ S.rotaT = (S.rotaT || 0) + dt; if(!S.rota || (S.rotaT > 1.5 && Math.hypot(J.x - S.rotaDe[0], J.z - S.rotaDe[1]) > 4 * U)) refazRota(J); poeMarcas(J);
+        const alvoR = proximoPonto(J) || [S.destino.x, S.destino.z]; const a = Math.atan2(alvoR[0] - J.x, alvoR[1] - J.z); seta.visible = true; seta.position.set(J.x + Math.sin(a) * 9, J.y + 1.6, J.z + Math.cos(a) * 9); seta.rotation.set(Math.PI / 2, 0, -a + Math.PI); seta.rotation.order = "YXZ"; seta.rotation.y = a; seta.rotation.x = Math.PI / 2; anel.scale.setScalar(1 + Math.sin(performance.now() / 300) * .12); } }
     S.tAcc += dt; if(S.tAcc < 1 / MAPA.hz || !S.cv) return; S.tAcc = 0;
     const c = S.ctx, W = S.cv.width; const esc = PX[S.zoom] * (W / MAPA.tamanho);
     if(!J){ c.clearRect(0, 0, W, W); return; }
@@ -195,5 +219,5 @@ export function criarMinimapa(M){
     return false;
   }
   void Color; void FAUNA;
-  return { liga, desliga, tick, tecla, marcaDestino, limpaDestino, coluna: () => S.el, marcaObjetivo: (o) => { S.objetivo = o; },  info: () => "Mapa: zoom " + S.zoom + (S.norteFixo ? " · norte fixo" : "") + (S.destino ? " · destino" : "") };
+  return { liga, desliga, tick, tecla, marcaDestino, limpaDestino, rota: () => S.rota, rotaInfo: ROTA.info, coluna: () => S.el, marcaObjetivo: (o) => { S.objetivo = o; },  info: () => "Mapa: zoom " + S.zoom + (S.norteFixo ? " · norte fixo" : "") + (S.destino ? " · destino" : "") };
 }
