@@ -55,7 +55,7 @@ export function constroiTupa(H, def){
     for(const b of [rig.bD, rig.bE]){ for(let i = 0; i < 4; i++) faixas(b.pv, -.2 - i * .24, .31 - i * .012, .09); for(let i = 0; i < 3; i++) faixas(b.co, -.25 - i * .27, .25 - i * .01, .09); } }
   /* olhos brilhantes branco-azulados */
   const brilho = new MeshBasicMaterial({ color: 0xe6f4ff }), halos = [];
-  for(const sx of [-1, 1]){ const o = new Mesh(new SphereGeometry(.12, 12, 8), brilho); o.position.set(sx * .33, .1, .9); o.scale.set(1.3, .8, .5); cab.add(o);
+  for(const sx of [-1, 1]){ const o = new Mesh(new SphereGeometry(.12, 12, 8), brilho); o.position.set(sx * .33, .08, .76); o.scale.set(1.3, .8, .5); cab.add(o);
     const h = new Mesh(new SphereGeometry(.26, 12, 8), new MeshBasicMaterial({ color: 0x8fc4ff, transparent: true, opacity: .35, blending: AdditiveBlending, depthWrite: false })); h.position.copy(o.position); h.position.z += .03; cab.add(h); halos.push(h); }
   /* grande cocar: leque de penas douradas e brancas atrás e acima da cabeça + faixa dourada na testa */
   const ouro = new MeshStandardMaterial({ color: 0xe0b02e, roughness: .55, metalness: .25 }), branco = new MeshStandardMaterial({ color: 0xf5f0e2, roughness: .8 }), ponta = new MeshStandardMaterial({ color: 0x8a1c1c, roughness: .8 });
@@ -150,7 +150,7 @@ export function constroiAtiara(H, def){
 function trancasFrontais(av, cor){
   const mat = new MeshStandardMaterial({ color: cor, roughness: 1 }), elast = new MeshStandardMaterial({ color: 0xc0392b, roughness: .8 });
   [-1, 1].forEach(sx => {
-    const pts = [[.55, 4.45, .1], [.92, 4.05, .45], [1.0, 3.6, .8], [.9, 3.1, 1.0], [.8, 2.55, 1.02]].map(([x, y, z]) => new Vector3(sx * x, y, z));
+    const pts = [[.31, 4.83, .06], [.52, 4.41, .27], [.68, 3.75, .48], [.65, 3.4, .68], [.60, 3.0, .72]].map(([x, y, z]) => new Vector3(sx * x, y, z));
     const curva = new CatmullRomCurve3(pts), tubo = new Mesh(new TubeGeometry(curva, 24, .12, 10, false), mat); tubo.name = "tranca"; av.add(tubo);
     for(let k = 1; k <= 7; k++){ const p = curva.getPoint(k / 8), g = new Mesh(new SphereGeometry(.15, 12, 10), mat); g.position.copy(p); g.scale.set(1, .8, 1); g.name = "tranca"; av.add(g); }
     const fim = curva.getPoint(1), e = new Mesh(new TorusGeometry(.12, .035, 8, 16), elast); e.position.copy(fim); e.rotation.x = Math.PI / 2; e.name = "tranca"; av.add(e);
@@ -179,30 +179,18 @@ export function constroiOperadora(H, def){
   const M = H.M, mo = def.modelo || {}, corCab = mo.cabelo || 0x3a2416, T = def.transformacao || {};
   const rabo = mo.rabo === "dia" ? (new Date().getDate() % 2 === 0) : !!mo.rabo;                                                      // "dia": rabo de cavalo em dias pares, solto nos ímpares
   const rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: M(0x56642d), manga: M(0x56642d), calca: M(0x4a5729), pele: mo.pele ? M(mo.pele, { roughness: .55 }) : H.pele.clara,
-    capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: corCab, barba: false, oculos: false, olhos: mo.olhos || 0x5a3d26, labios: mo.labios || 0xc0506a, rabo, pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });
+    capacete: M(0xe8731a, { roughness: .45, metalness: .1 }), cabelo: corCab, barba: false, oculos: false, feminina: true, olhos: mo.olhos || 0x5a3d26, labios: mo.labios || 0xc0506a, rabo, pin: { barra: "#0a0a0a", pil: 1, mosq: "#ece3cf" } });
   const av = rig.av, cab = rig.cab, mk = (g, mat, x, y, z, pai) => { const o = new Mesh(g, mat); o.position.set(x, y, z); (pai || cab).add(o); return o; };
-  /* rosto mais suave: mandíbula e nariz menores, bochechas viram blush */
-  const esf = cab.children.filter(o => o.isMesh && o.geometry.type === "SphereGeometry");
-  if(esf[1]) esf[1].scale.set(.92, .86, .9); if(esf[4]) esf[4].scale.set(.8, .95, .9);
-  [esf[2], esf[3]].forEach(b => { if(b){ b.material = M(0xe8a090, { roughness: .7, transparent: true, opacity: .38 }); b.scale.set(.7, .5, .4); b.position.y -= .06; b.position.z += .08; } });
-  /* olhos: pupila, reflexo, cílios, delineado, sobrancelha fina */
-  const pele = M(0xf1cdb8), lash = M(0x1a1010, { roughness: .8 });
-  [-1, 1].forEach(sx => { mk(new SphereGeometry(.035, 8, 6), M(0x0a0806), sx * .33, .08, .955); mk(new SphereGeometry(.02, 6, 5), new MeshBasicMaterial({ color: 0xffffff }), sx * .31, .11, .965);
-    const c = mk(new TorusGeometry(.165, .018, 6, 14, Math.PI), lash, sx * .33, .09, .93); c.rotation.z = 0; c.scale.set(1.1, .7, 1);                                    // cílios/delineado superior
-    for(let k = 0; k < 4; k++){ const f = mk(new BoxGeometry(.012, .07, .012), lash, sx * (.2 + k * .085), .19, .92); f.rotation.z = sx * (-.2 - k * .12); }           // cílios soltos
-    const sb = cab.children.find(o => o.isMesh && o.geometry.type === "BoxGeometry" && Math.abs(o.position.x - sx * .33) < .01 && Math.abs(o.position.y - .27) < .01); if(sb){ sb.scale.set(.95, .55, .6); sb.material = M(corCab, { roughness: .9 }); } });
-  /* boca menor e fechada num sorriso suave: encolhe a boca aberta e os dentes do boneco base */
-  cab.children.filter(o => o.isMesh && (o.geometry.type === "CircleGeometry" || (o.geometry.type === "PlaneGeometry" && Math.abs(o.position.y + .455) < .01))).forEach(o => { o.scale.multiplyScalar(.55); o.position.y += .03; });
-  /* lábios: batom em dois tons (lábio superior + inferior) */
-  const batom = M(mo.labios || 0xc0506a, { roughness: .35 }); mk(new TorusGeometry(.19, .04, 8, 16, Math.PI), batom, 0, -.46, .935).rotation.z = Math.PI; const li = mk(new SphereGeometry(.12, 12, 8), batom, 0, -.57, .93); li.scale.set(1.7, .5, .5);
+  // Rosto e maquiagem discreta vêm da base comum; referências explícitas evitam
+  // depender da ordem das malhas ou acrescentar olhos e lábios duplicados.
   /* cabelo volumoso: mechas sólidas atrás e dos lados + cards translúcidos com fios; fica guardado para balançar */
   const matCab = M(corCab, { roughness: .5, metalness: .08 }), fios = new MeshStandardMaterial({ map: texFios(corCab), transparent: true, alphaTest: .15, side: DoubleSide, roughness: .5, depthWrite: false });
   const cabG = new Group(); cab.add(cabG); const mechas = [];
   const solto = !rabo && !mo.coque && !mo.trancas;
-  if(solto){ for(let k = 0; k < 9; k++){ const a = -Math.PI * .72 + k * (Math.PI * 1.44 / 8), r = .78, comp = 2.0 + Math.abs(Math.sin(a)) * .5, me = mk(new CylinderGeometry(.11, .17, comp, 10), matCab, Math.sin(a) * r, -.25 - comp / 2, Math.cos(a) * r - .35, cabG); me.rotation.z = -Math.sin(a) * .12; me.rotation.x = -.08; mechas.push(me); }
-    for(let k = 0; k < 10; k++){ const a = -Math.PI * .8 + k * (Math.PI * 1.6 / 9), r = .92, card = mk(new PlaneGeometry(.55, 2.4), fios, Math.sin(a) * r, -1.25, Math.cos(a) * r - .35, cabG); card.rotation.y = a + Math.PI; card.rotation.x = .05; mechas.push(card); } }
+  if(solto){ for(let k = 0; k < 9; k++){ const a = -Math.PI * .72 + k * (Math.PI * 1.44 / 8), r = .78, comp = 2.0 + Math.abs(Math.sin(a)) * .5, me = mk(new CylinderGeometry(.11, .17, comp, 10), matCab, Math.sin(a) * r, -.25 - comp / 2, -Math.cos(a) * r - .35, cabG); me.rotation.z = -Math.sin(a) * .12; me.rotation.x = -.08; mechas.push(me); }
+    for(let k = 0; k < 10; k++){ const a = -Math.PI * .8 + k * (Math.PI * 1.6 / 9), r = .92, card = mk(new PlaneGeometry(.55, 2.4), fios, Math.sin(a) * r, -1.25, -Math.cos(a) * r - .35, cabG); card.rotation.y = a + Math.PI; card.rotation.x = .05; mechas.push(card); } }
   else if(mo.coque){ const coque = mk(new SphereGeometry(.42, 16, 12), matCab, 0, -.35, -.95, cabG); coque.scale.set(1.1, .9, .9); mk(new TorusGeometry(.26, .05, 8, 16), M(mo.laco || 0xd14b7a, { roughness: .6 }), 0, -.35, -.95, cabG).rotation.y = .3;
-    for(let k = 0; k < 6; k++){ const a = -Math.PI * .6 + k * (Math.PI * 1.2 / 5), card = mk(new PlaneGeometry(.4, 1.1), fios, Math.sin(a) * .9, -.75, Math.cos(a) * .9 - .4, cabG); card.rotation.y = a + Math.PI; mechas.push(card); } }
+    for(let k = 0; k < 6; k++){ const a = -Math.PI * .6 + k * (Math.PI * 1.2 / 5), card = mk(new PlaneGeometry(.4, 1.1), fios, Math.sin(a) * .9, -.75, -Math.cos(a) * .9 - .4, cabG); card.rotation.y = a + Math.PI; mechas.push(card); } }
   if(rabo){ for(let k = 0; k < 5; k++){ const card = mk(new PlaneGeometry(.35, 1.6), fios, (k - 2) * .12, -1.15, -1.15 - Math.abs(k - 2) * .04, cabG); card.rotation.y = (k - 2) * .35; mechas.push(card); } }
   for(let k = 0; k < 4; k++){ const sx = k < 2 ? -1 : 1, f = mk(new PlaneGeometry(.3, .9), fios, sx * (.85 + (k % 2) * .08), -.55, .35 - (k % 2) * .3, cabG); f.rotation.y = sx * (Math.PI / 2 + .2); mechas.push(f); }   // fios que escapam do capacete nas laterais
   if(mo.trancas) trancasFrontais(av, corCab);
@@ -229,9 +217,9 @@ export function constroiOperadora(H, def){
         a[k * 3 + 1] += dt * (tipo === "fogo" ? 1.6 : tipo === "ouro" ? .5 : .35); if(tipo === "gelo"){ a[k * 3] += Math.sin(fx.t * 2 + k) * dt * .15; } }
       P.p.geometry.attributes.position.needsUpdate = true; P.p.material.opacity = .6 + .3 * Math.sin(fx.t * 5); }); };
   /* ---- piscar e balanço do cabelo ---- */
-  const olhos = cab.children.filter(o => o.isMesh && o.geometry.type === "SphereGeometry" && Math.abs(Math.abs(o.position.x) - .33) < .02 && Math.abs(o.position.y - .08) < .02);
+  const olhos = rig.rosto.olhos;
   let tPisca = 2 + Math.random() * 3, piscando = 0, tt = 0;
-  function tick(dt){ tt += dt; tPisca -= dt; if(tPisca <= 0){ piscando = .13; tPisca = 2.5 + Math.random() * 3.5; } if(piscando > 0){ piscando -= dt; const s = piscando > 0 ? .15 : 1; olhos.forEach(o => { o.scale.y = s * (o.scale.x > 1 ? .8 : 1); }); }
+  function tick(dt){ tt += dt; tPisca -= dt; if(tPisca <= 0){ piscando = .13; tPisca = 2.5 + Math.random() * 3.5; } if(piscando > 0){ piscando -= dt; const s = piscando > 0 ? .15 : 1; olhos.forEach(o => { o.scale.y = s; }); }
     const v = .025 + (H.M && M.vento ? 0 : 0); mechas.forEach((me, k) => { me.rotation.z = (me.userData.rz0 === undefined ? (me.userData.rz0 = me.rotation.z) : me.userData.rz0) + Math.sin(tt * 1.7 + k * .9) * v; });
     fx.tick(dt); }
   return { id: def.id, nome: def.nome, p: rig, tick, fx, mechas };
@@ -256,12 +244,12 @@ function adornosOperador(H, rig, def){
     const tat = M(0x3b3f2e, { roughness: .95 }), plac = M(0x2a2d22, { roughness: .9 }), vis = new MeshStandardMaterial({ color: 0x9fe8ff, emissive: 0x3fc8ff, emissiveIntensity: .9, transparent: true, opacity: .75, roughness: .1 }), arma = M(0x15161a, { roughness: .5, metalness: .6 });
     mk(new BoxGeometry(1.55, 1.35, .32), tat, 0, 1.1 + 2.2, .78, vik); mk(new BoxGeometry(1.55, 1.3, .25), tat, 0, 1.1 + 2.2, -.72, vik); [-1, 1].forEach(sx => { mk(new BoxGeometry(.5, .35, .18), plac, sx * .4, .7 + 2.2, .98, vik); mk(new BoxGeometry(.3, .55, .36), plac, sx * .95, 1.2 + 2.2, .2, vik); });
     [-1, 1].forEach(sx => { const j = mk(new SphereGeometry(.3, 12, 10), plac, sx * .42, 1.25, .35, vik); j.scale.set(1, .8, .7); });                                                                      // joelheiras
-    const oc = new Group(); oc.position.copy(cab.position); vik.add(oc); const v = mk(new BoxGeometry(1.25, .22, .12), vis, 0, .1, .92, oc); void v; mk(new BoxGeometry(1.3, .26, .08), M(0x1a1c20, { roughness: .4, metalness: .5 }), 0, .1, .86, oc); [-1, 1].forEach(sx => mk(new BoxGeometry(.06, .08, .9), M(0x1a1c20), sx * .9, .1, .4, oc)); mk(new BoxGeometry(.3, .08, .06), new MeshBasicMaterial({ color: 0x4fd8ff }), .55, .22, .9, oc);
+    const oc = new Group(); oc.position.copy(cab.position); oc.scale.copy(cab.scale); vik.add(oc); const v = mk(new BoxGeometry(1.25, .22, .12), vis, 0, .1, .92, oc); void v; mk(new BoxGeometry(1.3, .26, .08), M(0x1a1c20, { roughness: .4, metalness: .5 }), 0, .1, .86, oc); [-1, 1].forEach(sx => mk(new BoxGeometry(.06, .08, .9), M(0x1a1c20), sx * .9, .1, .4, oc)); mk(new BoxGeometry(.3, .08, .06), new MeshBasicMaterial({ color: 0x4fd8ff }), .55, .22, .9, oc);
     if(rig.bD && rig.bD.mao){ const f = new Group(); f.position.set(0, -.1, .35); f.rotation.x = -Math.PI / 2 + .15; rig.bD.mao.add(f); mk(new BoxGeometry(.16, .22, 1.9), arma, 0, 0, .3, f); mk(new CylinderGeometry(.045, .045, 1.3, 10), arma, 0, .06, 1.5, f).rotation.x = Math.PI / 2; mk(new BoxGeometry(.12, .5, .22), arma, 0, -.3, .1, f); mk(new BoxGeometry(.14, .35, .5), M(0x3b3f2e), 0, .18, -.2, f); mk(new BoxGeometry(.1, .14, .5), arma, 0, .2, .55, f); vik.userData.fuzil = f; f.visible = false; }
   }
   if(mo.viking){
     const ferro = M(0x5a5e66, { roughness: .35, metalness: .85 }), pele = M(0x8a6a4a, { roughness: 1 }), couro = M(0x4a2e1a, { roughness: .9 }), chifre = M(0xe8dcc0, { roughness: .6 });
-    const chifres = new Group(); chifres.position.copy(cab.position); vik.add(chifres);
+    const chifres = new Group(); chifres.position.copy(cab.position); chifres.scale.copy(cab.scale); vik.add(chifres);
     [-1, 1].forEach(sx => { const c = mk(new ConeGeometry(.24, 1.7, 12), chifre, sx * 1.25, .55, -.05, chifres); c.rotation.z = sx * -1.35; c.rotation.x = -.2; mk(new TorusGeometry(.26, .06, 8, 16), ferro, sx * .98, .3, -.05, chifres).rotation.z = sx * -1.35; });      // chifres grandes, para os lados
     mk(new SphereGeometry(1.04, 28, 16, 0, Math.PI * 2, 0, Math.PI * .4), ferro, 0, .14, 0, chifres); mk(new BoxGeometry(.16, .5, .12), ferro, 0, .05, 1.0, chifres);                           // casco de ferro e protetor de nariz
     [-1, 1].forEach(sx => { const p = mk(new SphereGeometry(.62, 16, 12), pele, sx * 1.0, 1.9 + 2.2, 0, vik); p.scale.set(1.15, .55, 1.0); const o = mk(new SphereGeometry(.44, 16, 12), ferro, sx * 1.1, 1.72 + 2.2, 0, vik); o.scale.set(1, .8, 1); });
@@ -277,7 +265,7 @@ function adornosOperador(H, rig, def){
   /* forma Peão gaúcho (Kauling): chapéu de aba larga, lenço no pescoço, guaiaca com fivela — escondidos até a transformação (o capacete some) */
   if(mo.gaucho){
     const feltro = M(0x8a7a58, { roughness: .95 }), lencoM = M(0x7a4a2a, { roughness: .9 }), couro = M(0x6b4a2a, { roughness: .85 }), fivela = M(0xc0c4cc, { roughness: .3, metalness: .9 });
-    const ch = new Group(); ch.position.copy(cab.position); vik.add(ch); mk(new CylinderGeometry(.95, .98, .62, 28), feltro, 0, .55, 0, ch); const aba = mk(new CylinderGeometry(1.95, 1.95, .06, 36), feltro, 0, .26, 0, ch); aba.rotation.x = .06; mk(new TorusGeometry(.96, .05, 8, 28), couro, 0, .3, 0, ch).rotation.x = Math.PI / 2;
+    const ch = new Group(); ch.position.copy(cab.position); ch.scale.copy(cab.scale); vik.add(ch); mk(new CylinderGeometry(.95, .98, .62, 28), feltro, 0, .55, 0, ch); const aba = mk(new CylinderGeometry(1.95, 1.95, .06, 36), feltro, 0, .26, 0, ch); aba.rotation.x = .06; mk(new TorusGeometry(.96, .05, 8, 28), couro, 0, .3, 0, ch).rotation.x = Math.PI / 2;
     const le = mk(new SphereGeometry(.5, 16, 12), lencoM, 0, -.72, .25, ch); le.scale.set(1.3, .55, .9); const no = mk(new SphereGeometry(.17, 10, 8), lencoM, .25, -.95, .62, ch); void no; const ponta = mk(new BoxGeometry(.3, .55, .06), lencoM, .35, -1.25, .66, ch); ponta.rotation.z = .3;
     mk(new TorusGeometry(.56, .09, 10, 26), couro, 0, .1 + 2.2, 0, vik).rotation.x = Math.PI / 2; mk(new BoxGeometry(.34, .26, .1), fivela, 0, .1 + 2.2, .62, vik);
   }
