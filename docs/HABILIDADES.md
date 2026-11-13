@@ -43,3 +43,13 @@ npm run build
 `npm test` inclui as regras de combate, geometria dos personagens e NPCs. O teste de navegador executa os controladores reais contra alvos e terreno controlados: cobre os 11 personagens, combinações elementais, duração dos efeitos, recargas, bloqueios de uso, restauração após troca e clique curto/longo no botão de poder. A fixture usa um servidor local temporário e não modifica os salvamentos do jogo.
 
 Também foi executado um smoke test no jogo completo: carregamento dos 11 rigs, troca de personagens, caminhada/corrida, tela de seleção com as descrições atualizadas e uso de Sepé, Tupã e Atiara, sem erros de JavaScript. Os testes de combate no navegador incluem 15 cenários e verificações de clique curto e longo.
+
+## Prints dos poderes
+
+Capturas reais dos modelos e dos controladores de habilidades da versão atual, em uma cena de demonstração com alvos de treino.
+
+![Tupã, Sepé, Atiara e Pit em ação](media/poderes-1.png)
+
+![Mary, Mohr, Diully e Jackão em ação](media/poderes-2.png)
+
+![Krig, Carlão e Kauling em ação](media/poderes-3.png)
