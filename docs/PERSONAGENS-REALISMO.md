@@ -22,3 +22,17 @@ Execute `npm ci`, `npm test` e `npm run build` dentro de `t3d/`. O bundle em `t3
 Os testes verificam superfícies e normais da cabeça/barba, preservação dos tons de pele e isolamento dos materiais. A revisão no Chromium inclui retratos de frente e perfil dos 11 personagens e ativação/desativação dos efeitos das formas de poder.
 
 No jogo completo, foram verificadas a troca entre Pit, Sepé, Tupã e Atiara, caminhada/corrida, matrizes das articulações sem valores inválidos e restauração das cores após a transformação dos operadores. Não houve erros de JavaScript nesse percurso.
+
+## NPCs das multidões e da praça
+
+Visitantes, guias, professores, alunos/crianças, idosos, agentes do ICMBio, bombeiros, resgatistas, enfermagem, vítimas/acompanhantes e pedestres da praça compartilham agora uma segunda base anatômica instanciada. Tronco, colete, coxas, canelas, braços e antebraços usam perfis elípticos suaves; botas e mochilas têm bordas arredondadas. Os rostos têm mandíbula, nariz, orelhas, olhos e boca. As crianças recebem uma cabeça proporcionalmente maior.
+
+![NPCs antes e depois](media/npcs-comparacao.png)
+
+![Oito exemplos da base atualizada](media/npcs-atualizados.png)
+
+A base fica em `t3d/src/mundo/gente/geometrias.js`, e as matrizes das articulações e dos acessórios são montadas em `gente/pessoas.js`. O pool e o desenho por `InstancedMesh` continuam compartilhados; a geometria não é criada por pessoa ou por quadro. Mesmo à distância, braços e pernas continuam visíveis; detalhes pequenos do rosto são omitidos. As peças adicionais continuam recebendo as cores e os uniformes de cada função.
+
+Verificação adicional: testes de geometria, normais, altura das botas e atributos de cor; Chromium com oito perfis de NPC, poses de repouso, caminhada, sentado, deitado, foto e prancheta, além da versão distante sem detalhes faciais.
+
+No teste integrado do jogo completo, foram verificados 32 NPCs ativos, incluindo nove pessoas de serviço no cenário de descida do resgate. As matrizes das instâncias permaneceram válidas e dentro da capacidade dos lotes, com canelas, antebraços e rostos presentes e sem erros de JavaScript.
