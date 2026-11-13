@@ -25,6 +25,7 @@ Abra `index.html` por um servidor (não direto do arquivo): o jogo lê `data/kml
 
 ## Teclas principais
 Mover: WASD/setas · correr: Shift · interagir: E · missões: J · mapa: M · poder do personagem: V · personagens: botão 👤 · F3: painel de depuração.
+Habilidades, combos e controles de cada personagem: [guia de habilidades](docs/HABILIDADES.md).
 Depuração completa (horas, fauna, lugares, Anhangá, treino de poderes…): veja `docs/`.
 
 ## Segurança

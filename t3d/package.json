@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/trolley3d.js --bundle --format=iife --global-name=Trolley3D --minify --outfile=dist/trolley3d.min.js",
-    "start": "npx serve .."
+    "start": "npx serve ..",
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "node test/browser/poderes.cjs"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +15,8 @@
   "dependencies": {
     "esbuild": "^0.28.2",
     "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.0"
   }
 }

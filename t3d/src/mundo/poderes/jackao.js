@@ -1,3 +1,4 @@
+import { encadeia } from "./combate.js";
 import { Group, Mesh, Sprite, SpriteMaterial, CanvasTexture, SphereGeometry, MeshBasicMaterial, Points, PointsMaterial, BufferGeometry, BufferAttribute, SRGBColorSpace } from "three";
 import { U } from "../config.js";
 import { PODERES } from "../../../../data/poderes.js";
@@ -9,7 +10,7 @@ import { PODERES } from "../../../../data/poderes.js";
    Sem sangue: os alvos só piscam e recuam.
    ============================================================================================================ */
 export function criarJackao(M, X){
-  const S = { ativo: false, mirando: false, choque: false, oculos: false, balas: 0, recarregando: 0, granadas: 0, zona: null, fov0: null, marcas: new Map(), fumacas: [], tremor: 0, g: new Group() };
+  const S = { ativo: false, mirando: false, foco: 0, choque: false, oculos: false, balas: 0, recarregando: 0, granadas: 0, zona: null, fov0: null, marcas: new Map(), fumacas: [], tremor: 0, g: new Group() };
   M.cen.grupo.add(S.g);
   const d = () => PODERES.jackao, T = () => M.transformacao;
   const ativo = () => S.ativo && M.personagens && M.personagens.ativo === "jackao" && T() && T().ativa();
@@ -17,18 +18,19 @@ export function criarJackao(M, X){
   function aoTransformar(id, on){ if(id !== "jackao") return; S.ativo = on; if(on){ S.balas = d().pente; S.granadas = d().granadasPorZona; S.zona = M.zonas && M.zonas.atual; } else { mira(false); oculos(false); } }
   if(M.zonas && M.zonas.aoMudar) M.zonas.aoMudar(() => { if(S.ativo){ S.granadas = d().granadasPorZona; X.msg("info", "Granadas recarregadas ao trocar de zona (" + S.granadas + ")."); } });
   /* ---- mira (botão direito) ---- */
-  function mira(on){ const cam = M.cam; if(!cam) return; if(on && !S.mirando){ S.fov0 = cam.fov; cam.fov = Math.max(18, cam.fov * .5); cam.updateProjectionMatrix(); } else if(!on && S.mirando && S.fov0){ cam.fov = S.fov0; cam.updateProjectionMatrix(); } S.mirando = on; }
+  function mira(on){ const cam = M.cam; if(!cam) return; if(on && !S.mirando){ S.fov0 = cam.fov; cam.fov = Math.max(18, cam.fov * .5); cam.updateProjectionMatrix(); } else if(!on && S.mirando && S.fov0){ cam.fov = S.fov0; cam.updateProjectionMatrix(); } S.mirando = on; if(!on) S.foco=0; }
   const el = M.renderer && M.renderer.domElement;
   if(el){ el.addEventListener("contextmenu", e => { if(ativo()) e.preventDefault(); }); el.addEventListener("pointerdown", e => { if(ativo() && e.button === 2){ e.preventDefault(); mira(true); } }); window.addEventListener("pointerup", e => { if(e.button === 2) mira(false); }); }
   /* ---- tiro (tecla do poder) ---- */
   function animaisNaMira(J, coneG, alcM){ const f = [Math.sin(J.yaw), Math.cos(J.yaw)], cos = Math.cos(coneG * Math.PI / 180), L = []; ((M.fauna && M.fauna.animais) || []).forEach(a => { const dx = a.x - J.x, dz = a.z - J.z, dist = Math.hypot(dx, dz); if(dist < alcM * U && dist > .1 && (dx * f[0] + dz * f[1]) / dist > cos) L.push(a); }); return L; }
   function tiro(J, dd){
-    if(S.recarregando > 0) return; if(S.balas <= 0){ S.recarregando = dd.recargaSeg; X.msg("info", "Recarregando o fuzil…"); if(M.ctx) M.ctx.mostraAviso("Recarregando"); return; }
+    if(S.recarregando > 0) return false; if(S.balas <= 0){ S.recarregando = dd.recargaSeg; X.msg("info", "Recarregando o fuzil…"); if(M.ctx) M.ctx.mostraAviso("Recarregando"); return false; }
     S.balas--; const cone = S.mirando ? dd.coneMira : dd.cone, f = [Math.sin(J.yaw), Math.cos(J.yaw)];
     X.luzFx(J.x + f[0] * 2.2, J.y + 4, J.z + f[1] * 2.2, 0xffd27a, 7, 9 * U, .08); S.tremor = S.mirando ? .08 : .16;      // clarão do cano e recuo
     const a = X.naMira(J, { cone, alcanceM: dd.alcanceM }, ["inimigo", "guardiao"]);
-    if(S.choque){ const L = animaisNaMira(J, cone, dd.alcanceM); L.slice(0, 1).forEach(an => { an.atordoado = dd.choqueSeg; }); if(a) a.encantado = Math.max(a.encantado || 0, dd.choqueSeg); if(L.length || a) X.msg("sobrenatural", "Munição de choque: " + (L.length ? "animal imobilizado sem ferir" : "sombra atordoada") + "."); }
-    else if(a && a.dano){ a.dano(dd.danoInimigo); }
+    if(S.choque){ const L = animaisNaMira(J, cone, dd.alcanceM); L.slice(0, 1).forEach(an => { an.atordoado = dd.choqueSeg; }); for(const q of encadeia(X.S.alvos,a,dd.choqueSaltoM*U,dd.choqueSaltos)){q.encantado=Math.max(q.encantado||0,dd.choqueSeg);const p=q.pos();X.pulso(p.x,p.z,0x7ee5ff,2);} if(L.length || a) X.msg("sobrenatural", "Munição de choque: " + (L.length ? "animal imobilizado sem ferir" : "sombra atordoada") + "."); }
+    else if(a && a.dano){ const preciso=S.mirando&&S.foco>=dd.focoSeg; a.dano(dd.danoInimigo*(preciso?dd.danoPrecisao:1)); if(preciso){const p=a.pos();X.pulso(p.x,p.z,0x4fd8ff,2.5);M.ctx?.mostraAviso("Tiro preciso!");} }
+    S.foco=0;
     if(S.balas === 0){ S.recarregando = dd.recargaSeg; X.msg("info", "Pente vazio: recarregando…"); }
   }
   /* ---- granada ---- */
@@ -51,10 +53,10 @@ export function criarJackao(M, X){
   function tecla(e){ if(!ativo() || e.repeat || e.ctrlKey || e.altKey || e.metaKey || (typeof M.depurando === "function" && M.depurando())) return false; const J = M.jogador(), k = d().teclas; if(!J) return false;
     if(e.code === k.granada){ e.preventDefault(); granada(J); return true; } if(e.code === k.oculos){ e.preventDefault(); oculos(!S.oculos); return true; }
     if(e.code === k.choque){ e.preventDefault(); S.choque = !S.choque; X.msg("info", S.choque ? "Munição de choque: atordoa sem ferir." : "Munição comum."); if(M.ctx) M.ctx.mostraAviso(S.choque ? "Munição de choque" : "Munição comum"); return true; } return false; }
-  function tick(dt){ if(S.recarregando > 0){ S.recarregando -= dt; if(S.recarregando <= 0){ S.balas = d().pente; X.msg("info", "Fuzil recarregado."); } }
+  function tick(dt){ S.foco=ativo()&&S.mirando?Math.min(d().focoSeg,S.foco+dt):0; if(S.recarregando > 0){ S.recarregando -= dt; if(S.recarregando <= 0){ S.balas = d().pente; X.msg("info", "Fuzil recarregado."); } }
     if(S.tremor > 0){ S.tremor -= dt; const c = M.cam; if(c){ c.position.x += (Math.random() - .5) * S.tremor * .4; c.position.y += (Math.random() - .5) * S.tremor * .4; } }
     S.fumacas = S.fumacas.filter(f => { f.t += dt; const a = f.pos; for(let k = 0; k < a.length; k += 3){ a[k + 1] += dt * .9 * U; a[k] += (Math.random() - .5) * dt * U; } f.p.geometry.attributes.position.needsUpdate = true; f.p.material.opacity = .55 * Math.max(0, 1 - f.t / f.vida); if(f.t > f.vida){ S.g.remove(f.p); f.p.geometry.dispose(); return false; } return true; });
     if(S.oculos){ const J = M.jogador(); if(J && ativo()) atualizaMarcas(J); else oculos(false); } }
-  const info = () => (ativo() ? "Jackão: " + (S.recarregando > 0 ? "recarregando" : S.balas + " balas") + (S.mirando ? " · mirando" : "") + (S.choque ? " · CHOQUE" : "") + " · granadas " + S.granadas + " · óculos RA " + (S.oculos ? "ON (" + S.marcas.size + " marcado(s))" : "off") : "");
+  const info = () => (ativo() ? "Jackão: " + (S.recarregando > 0 ? "recarregando" : S.balas + " balas") + (S.mirando ? (S.foco>=d().focoSeg?" · PRECISÃO PRONTA":" · estabilizando mira") : "") + (S.choque ? " · CHOQUE" : "") + " · granadas " + S.granadas + " · óculos RA " + (S.oculos ? "ON (" + S.marcas.size + " marcado(s))" : "off") : "");
   return { tiro, granada, oculos, mira, tecla, tick, aoTransformar, info, S };
 }

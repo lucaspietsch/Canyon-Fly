@@ -12,6 +12,7 @@ import { criarJogo3D } from "./jogo3d.js";
 import { criarEditor } from "./editor.js";
 import { criarMundo } from "./mundo/index.js";
 import { cabY } from "./portico.js";
+import { criarRosto, geometriaCabeca } from "./mundo/personagens/rosto.js";
 
 /* Medidas em "unidades" (largura do trolley = 10). Frente = +Z (lado da tirolesa / operador); costas = -Z. */
 const W = 10, H = 7.6, D = 3.6, CABO_Y = 1.35;
@@ -427,9 +428,9 @@ export function montar(el, opts = {}){
       const oliva = cfg.camisa, manga = cfg.manga || cfg.camisa, calca = cfg.calca;
       const P = cfg.pele || piel, CAP = cfg.capacete || capac, cabelo = M(cfg.cabelo || 0x1e140d, { roughness: 1 });
     /* corpo — tecido com trama, botas com sola e cadarço, joelhos, bolsos cargo, alças de perna */
-    const trama = tex(128, 128, (x, w, h) => { x.fillStyle = "#ffffff"; x.fillRect(0, 0, w, h); for(let k = 0; k < w; k += 4){ x.fillStyle = "rgba(0,0,0,.09)"; x.fillRect(k, 0, 1.4, h); x.fillRect(0, k, w, 1.4); } for(let q = 0; q < 700; q++){ x.fillStyle = "rgba(0,0,0," + (.02 + (q % 5) * .01) + ")"; x.fillRect((q * 53) % w, (q * 29) % h, 2, 2); } });
-    trama.wrapS = trama.wrapT = RepeatWrapping; trama.repeat.set(5, 5);
-    const tec = (m) => { const c = m.clone(); c.map = trama; c.roughness = .92; return c; };
+    const trama = tex(128, 128, (x, w, h) => { x.fillStyle = "#ffffff"; x.fillRect(0, 0, w, h); for(let k = 0; k < w; k += 4){ x.fillStyle = "rgba(0,0,0,.045)"; x.fillRect(k, 0, 1.4, h); x.fillRect(0, k, w, 1.4); } for(let q = 0; q < 700; q++){ x.fillStyle = "rgba(0,0,0," + (.02 + (q % 5) * .01) + ")"; x.fillRect((q * 53) % w, (q * 29) % h, 2, 2); } });
+    trama.wrapS = trama.wrapT = RepeatWrapping; trama.repeat.set(3, 3);
+    const tec = (m) => { const c = m.clone(); c.map = trama; c.roughness = .92; c.metalness = 0; c.bumpMap = trama; c.bumpScale = .012; return c; };
     const oliva2 = tec(oliva), manga2 = tec(manga), calca2 = tec(calca), solaM = M(0x16130f, { roughness: .95 }), cadM = M(0xcfc6b0, { roughness: .8 });
     const botaPe = (x, z, rot) => { const g = new Group(); g.position.set(x, 0, z); g.rotation.y = rot; av.add(g);
       mesh(new BoxGeometry(.64, .12, 1.22), solaM, 0, .06, .08, g);
@@ -445,13 +446,13 @@ export function montar(el, opts = {}){
       mesh(new BoxGeometry(.38, .05, .1), calca2, x < 0 ? -.4 : .4, 1.17, .3, g); mesh(new TorusGeometry(.45, .05, 8, 24), preto, 0, 1.45, 0, g).rotation.x = Math.PI / 2;   // alça de perna do cinto
       mesh(new CylinderGeometry(.34, .33, .1, 20), tec(manga), 0, -.17, 0, g); return g; };
     estat.push(perna(-.5, 0, .02), perna(.72, .12, -.2));
-    mesh(new SphereGeometry(.98, 24, 16), calca2, 0, 2.55, -.03, av).scale.set(1, .6, .72);
-    const tronco = new Group(); tronco.position.set(0, 2.2, 0); av.add(tronco);
+    mesh(new SphereGeometry(.98, 24, 16), calca2, 0, 2.55, -.03, av).scale.set(.86, .6, .68);
+    const tronco = new Group(); tronco.position.set(0, 2.2, 0); tronco.scale.x = .88; av.add(tronco);
     mesh(new CylinderGeometry(.9, .78, 1.7, 36), oliva2, 0, .88, 0, tronco).scale.z = .76;
     mesh(new SphereGeometry(.92, 30, 18, 0, Math.PI * 2, 0, Math.PI * .5), oliva2, 0, 1.72, 0, tronco).scale.set(1, .52, .72);                    // ombros em declive
-    mesh(new CylinderGeometry(.4, .46, .3, 20), oliva2, 0, 2.05, 0, tronco);                                                                     // gola
-    mesh(new TorusGeometry(.41, .06, 10, 22), M(0x15161a), 0, 2.1, .02, tronco).rotation.x = Math.PI / 2;                                        // camiseta preta no pescoço
-    [-1, 1].forEach(sx => { const o = mesh(new SphereGeometry(.45, 20, 14), manga2, sx * 1.0, 1.65, 0, tronco); o.scale.set(1, .95, .95); });
+    mesh(new CylinderGeometry(.27, .36, .20, 24), oliva2, 0, 2.05, 0, tronco);                                                                     // gola
+    mesh(new TorusGeometry(.27, .035, 10, 24), M(0x15161a), 0, 2.1, .02, tronco).rotation.x = Math.PI / 2;                                        // camiseta preta no pescoço
+    [-1, 1].forEach(sx => { const o = mesh(new SphereGeometry(.34, 20, 14), manga2, sx * 1.0, 1.65, 0, tronco); o.scale.set(1, 1.05, .95); });
     for(let k = 0; k < 3; k++) mesh(new BoxGeometry(.5 - k * .05, .018, .02), oliva, 0, .35 + k * .5, .66 + k * .02, tronco);                      // dobras
     /* cinto de segurança (preto, com listras vermelhas), mosquetão e corda */
     const equipN0 = tronco.children.length;
@@ -464,13 +465,18 @@ export function montar(el, opts = {}){
     /* rádio no ombro */
     mesh(new BoxGeometry(.34, .66, .2), preto, .72, 1.45, .84, tronco); mesh(new CylinderGeometry(.025, .025, .55, 6), preto, .84, 2.0, .84, tronco);
     mesh(new BoxGeometry(.2, .12, .02), new MeshBasicMaterial({ color: 0xff8a1e }), .72, 1.55, .95, tronco);
-    const equipN1 = tronco.children.length;                                                                                // cinto, mosquetão, corda e rádio: personagens especiais os escondem (rig.equip)
+    const equipN1 = tronco.children.length;
+    tronco.children.slice(equipN0, equipN1).forEach(o => { o.position.z *= .82; });                                                                                // cinto, mosquetão, corda e rádio: personagens especiais os escondem (rig.equip)
     /* braço direito (à esquerda da tela): polegar para cima; esquerdo: mão na cintura */
     const braco = (sx) => { const pv = new Group(); pv.position.set(sx * 1.05, 1.65, 0); tronco.add(pv); mesh(new CylinderGeometry(.33, .26, 1.05, 22), manga2, 0, -.52, 0, pv);
       const co = new Group(); co.position.set(0, -1.05, 0); pv.add(co); mesh(new SphereGeometry(.27, 16, 12), manga2, 0, 0, 0, co); mesh(new CylinderGeometry(.27, .22, 1.0, 22), manga2, 0, -.5, 0, co);
       mesh(new TorusGeometry(.265, .07, 10, 24), manga2, 0, -.14, 0, co).rotation.x = Math.PI / 2;                                                    // manga dobrada no cotovelo
       mesh(new CylinderGeometry(.24, .24, .22, 22), M(0x1e2024, { roughness: .5, metalness: .3 }), 0, -.96, 0, co); mesh(new BoxGeometry(.28, .06, .02), laranja, 0, -.97, .25, co);   // relógio/pulseira
-      const mao = new Group(); mao.position.set(0, -1.2, 0); co.add(mao); const palma = mesh(new SphereGeometry(.31, 20, 16), luva, 0, 0, 0, mao); return { pv, co, mao }; };
+      const mao = new Group(); mao.position.set(0, -1.2, 0); co.add(mao); const palma = mesh(new SphereGeometry(.25, 20, 16), luva, 0, 0, 0, mao); palma.scale.set(.88, 1.15, .55);
+      // Dedos levemente curvados e polegar separado, mantendo o encaixe dos equipamentos.
+      for(let k = 0; k < 4; k++){ const d = mesh(new SphereGeometry(.065, 10, 8), luva, (k - 1.5) * .10, -.19, .015, palma); d.scale.set(.8, 1.7 - Math.abs(k - 1) * .12, .85); }
+      const polegar = mesh(new SphereGeometry(.08, 12, 10), luva, sx * .2, -.025, .05, palma); polegar.scale.set(.85, 1.8, 1); polegar.rotation.z = sx * .4;
+      return { pv, co, mao }; };
     const bD = braco(-1), bE = braco(1);
     /* bottom da escala no braço (barra, pílulas e mosquetão conforme a pessoa) */
     /* bottom da escala, desenhado exatamente como nas imagens (viewBox 460x580) */
@@ -487,36 +493,30 @@ export function montar(el, opts = {}){
     };
         if(cfg.pin) { const pin = cfg.pin, tp = tex(460, 580, (x) => desenhaBottom(x, { barra: pin.barra, pil: pin.pil, mosq: pin.mosq }));
       [[bD, -1], [bE, 1]].forEach(([b, sx]) => { const pl = new Mesh(new PlaneGeometry(.56, .705), new MeshBasicMaterial({ map: tp, transparent: true, side: DoubleSide })); pl.position.set(sx * .31, -.5, .0); pl.rotation.y = sx * Math.PI / 2; b.pv.add(pl); }); }
-    bD.pv.rotation.set(-.3, 0, -.85); bD.co.rotation.set(0, 0, -2.3);
+    bD.pv.rotation.set(.08, 0, -.12); bD.co.rotation.set(-.12, 0, 0);
     /* mão do sinal de rock 🤘: palma + 5 dedos. Indicador e mindinho para cima; médio e anelar dobrados sobre a palma; polegar cruzado por cima deles. Os dedos apontam para -y (para cima na tela com o braço erguido). */
-    { const m = new Group(); bD.mao.add(m); bD.rock = m; bD.mao.children[0].scale.set(.95, .95, .62);
+    { const m = new Group(); bD.mao.add(m); bD.rock = m; m.visible = false; bD.mao.children[0].scale.set(.95, .95, .62);
       const dedo = (x, comp, r) => { const g = new Group(); g.position.set(x, -.2, 0); m.add(g); const a = mesh(new CylinderGeometry(r, r * .92, comp, 10), luva, 0, -comp / 2, 0, g); mesh(new SphereGeometry(r * .93, 10, 8), luva, 0, -comp, 0, g); return g; };
       dedo(-.185, .5, .062);                 // indicador (lado do polegar)
       dedo(.2, .42, .056);                   // mindinho
       [-.065, .075].forEach((x, i) => { const g = new Group(); g.position.set(x, -.2, .06); m.add(g); const a = mesh(new CylinderGeometry(.06, .056, .2, 10), luva, 0, -.02, .05, g); a.rotation.x = Math.PI / 2 - .35; mesh(new SphereGeometry(.065, 10, 8), luva, 0, .0, .15, g); });   // médio e anelar dobrados
       const pol = new Group(); pol.position.set(-.27, -.04, .09); m.add(pol); const pc = mesh(new CylinderGeometry(.068, .06, .34, 10), luva, 0, 0, 0, pol); pc.rotation.set(.35, 0, Math.PI / 2 - .55); mesh(new SphereGeometry(.07, 10, 8), luva, .1, -.1, .12, pol); }
-    bE.pv.rotation.set(.1, 0, .5); bE.co.rotation.set(0, 0, -1.4);
-    /* cabeça — rosto com nariz, orelhas, bochechas, barba com textura, bigode, boca sorrindo, óculos escuros e capacete detalhado */
-    const cab = new Group(); cab.position.set(0, 4.45, 0); av.add(cab);
-    const pescoco = mesh(new CylinderGeometry(.34, .4, .5, 20), P, 0, 3.85, 0);
-    mesh(new SphereGeometry(.88, 36, 28), P, 0, 0, 0, cab).scale.set(.97, 1.08, 1.0);
-    mesh(new SphereGeometry(.6, 24, 18), P, 0, -.47, .2, cab).scale.set(1.05, .95, .95);                                      // mandíbula
-    [-1, 1].forEach(sx => { mesh(new SphereGeometry(.3, 16, 12), M(0xdc9a78, { roughness: .6 }), sx * .45, -.22, .62, cab); });   // bochechas
-    mesh(new SphereGeometry(.16, 16, 12), M(0xd39673, { roughness: .6 }), 0, -.12, .9, cab).scale.set(1, 1.1, 1.05);              // nariz
-    mesh(new CylinderGeometry(.07, .1, .38, 10), P, 0, .1, .85, cab).rotation.x = .18;
-    [-1, 1].forEach(sx => { const orelha = mesh(new SphereGeometry(.19, 14, 10), M(0xcf8f6c, { roughness: .6 }), sx * .88, -.08, -.08, cab); orelha.scale.set(.5, 1, .8); mesh(new SphereGeometry(.1, 10, 8), M(0x8a5338), sx * .93, -.08, -.04, cab).scale.set(.4, 1, .7); });
+    bE.pv.rotation.set(.08, 0, .12); bE.co.rotation.set(-.12, 0, 0);
+    /* Cabeça proporcional, rosto contínuo, expressão neutra e acessórios no mesmo encaixe. */
+    const cab = new Group(); cab.name = "cabeca"; cab.position.set(0, 4.86, 0); av.add(cab);
+    const pescoco = mesh(new CylinderGeometry(.23, .29, .62, 24), P.clone(), 0, 4.43, 0);
+    pescoco.material.roughness = .82; pescoco.material.metalness = 0;
+    // A cabeça e tudo que se prende a ela compartilham a mesma escala (inclusive os capacetes).
+    cab.scale.set(.56, .54, .60);
+    const rosto = criarRosto(cab, { pele: P, cabelo, olhos: cfg.olhos, labios: cfg.labios, feminina: cfg.feminina });
     if(cfg.barba !== false){
     const stub = tex(128, 128, (x, w, h) => { x.fillStyle = "#2b1a10"; x.fillRect(0, 0, w, h); for(let q = 0; q < 900; q++){ x.fillStyle = ["#3a2417", "#1d110a", "#46301f"][q % 3]; x.fillRect((q * 47) % w, (q * 31) % h, 2, 3); } });
     stub.wrapS = stub.wrapT = RepeatWrapping; stub.repeat.set(4, 3);
     const mBarba = new MeshStandardMaterial({ map: stub, roughness: 1 });
-    const bar = mesh(new SphereGeometry(.92, 36, 18, 0, Math.PI * 2, Math.PI * .52, Math.PI * .4), mBarba, 0, -.02, .03, cab); bar.scale.set(1.0, 1.04, 1.03);   // barba cobrindo o maxilar
-    mesh(new SphereGeometry(.33, 16, 12), mBarba, 0, -.9, .62, cab).scale.set(1, 1.15, .8);                                      // cavanhaque
-    [-1, 1].forEach(sx => { const bg = mesh(new SphereGeometry(.2, 14, 10), mBarba, sx * .17, -.33, .86, cab); bg.scale.set(1.25, .55, .6); bg.rotation.z = sx * -.22; });   // bigode
-    [-1, 1].forEach(sx => mesh(new BoxGeometry(.08, .34, .14), mBarba, sx * .84, -.12, .16, cab));                                // costeletas
+    const bar = mesh(geometriaCabeca(false, -.25), mBarba, 0, 0, 0, cab); bar.scale.setScalar(1.018);
+    [-1, 1].forEach(sx => { const bg = mesh(new SphereGeometry(.2, 14, 10), mBarba, sx * .14, -.32, .71, cab); bg.scale.set(1.0, .36, .4); bg.rotation.z = sx * -.22; });   // bigode
+    [-1, 1].forEach(sx => mesh(new BoxGeometry(.08, .34, .14), mBarba, sx * .78, -.12, .08, cab));                                // costeletas
     }
-    const boca = mesh(new CircleGeometry(.27, 24, Math.PI, Math.PI), M(0x1a0a08), 0, -.5, .915, cab); boca.scale.set(1.1, .8, 1);       // sorriso aberto (meia-lua para baixo)
-    boca.rotation.z = 0; const dentes = mesh(new PlaneGeometry(.4, .09), M(0xf5f1e8, { roughness: .35 }), 0, -.455, .922, cab);
-    mesh(new TorusGeometry(.3, .028, 8, 20, Math.PI), M(0x9a5a4a, { roughness: .5 }), 0, -.5, .92, cab).rotation.z = Math.PI;
     const ocG = new Group(); cab.add(ocG);
     if(cfg.oculos !== false){
     /* óculos escuros */
@@ -525,9 +525,6 @@ export function montar(el, opts = {}){
       const aroL = mesh(new TorusGeometry(.29, .028, 8, 28), preto, sx * .33, .06, .87, ocG); aroL.scale.set(1.08, .8, 1); aroL.rotation.z = sx * -.07;
       const hastea = mesh(new BoxGeometry(.05, .08, .95), preto, sx * .87, .08, .4, ocG); hastea.rotation.y = sx * .17; });
     mesh(new BoxGeometry(.2, .05, .06), preto, 0, .1, .9, ocG);
-    } else {
-      [-1, 1].forEach(sx => { const o = mesh(new SphereGeometry(.13, 14, 10), M(0xf4f1ea, { roughness: .3 }), sx * .33, .08, .84, cab); o.scale.set(1.25, .8, .5); mesh(new SphereGeometry(.07, 10, 8), M(cfg.olhos || 0x3a2a1c, { roughness: .3 }), sx * .33, .08, .9, cab); mesh(new BoxGeometry(.34, .045, .06), cabelo, sx * .33, .27, .88, cab).rotation.z = sx * .1; });
-      mesh(new TorusGeometry(.2, .035, 8, 16, Math.PI), M(cfg.labios || 0x9a5a4a, { roughness: .4 }), 0, -.48, .93, cab).rotation.z = Math.PI;
     }
     const capG = new Group(); cab.add(capG);
     /* capacete: casca, aba frontal, ventilações, ajuste traseiro, jugular com fivela e cabelo escapando nas laterais */
@@ -547,7 +544,7 @@ export function montar(el, opts = {}){
       { const tsh = tex(128, 128, (x, w, h) => { const g = x.createRadialGradient(w / 2, h / 2, 4, w / 2, h / 2, w / 2); g.addColorStop(0, "rgba(0,0,0,.55)"); g.addColorStop(.6, "rgba(0,0,0,.25)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, w, h); });
         const sh = new Mesh(new PlaneGeometry(4.2, 3.2), new MeshBasicMaterial({ map: tsh, transparent: true, depthWrite: false })); sh.rotation.x = -Math.PI / 2; sh.position.set(.1, .03, .1); av.add(sh); }
       const pernasA = criarPernas(av, { calca: calca2, bota, sola: solaM, cad: cadM, anel: M(0x2a1c10, { roughness: .9 }) });
-      return { tronco, cab, bD, bE, t: 0, av, nome: nomeLb, estat, pernasA, capG, ocG, equip: tronco.children.slice(equipN0, equipN1) };
+      return { tronco, cab, rosto, bD, bE, t: 0, av, nome: nomeLb, estat, pernasA, capG, ocG, equip: tronco.children.slice(equipN0, equipN1) };
     };
     const criaLider = (AV, cfg) => {
       const { av, bD, bE, tronco, cab } = AV;
