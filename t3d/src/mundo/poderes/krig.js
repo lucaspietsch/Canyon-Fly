@@ -20,7 +20,20 @@ export function criarKrig(M, X){
     X.msg("sobrenatural", on ? "Krig alça voo: até " + d().vooM + " m de altura, velocidade dobrada." : "Krig pousa com um baque."); if(M.ctx) M.ctx.mostraAviso(on ? "Voo ligado (U desliga)" : "Pouso");
     if(!on){ const J = M.jogador(); if(J){ X.luzFx(J.x, J.y + 1, J.z, 0xff5a1e, 12, 20 * U, .5); empurra(J, 4, .6); } S.tremor = .4; }
   }
-  function investida(J, dd){ const f = [Math.sin(J.yaw), Math.cos(J.yaw)], dist = (S.voando ? 14 : 9) * U; M.ctx.teleporta(J.x + f[0] * dist, J.z + f[1] * dist); const J2 = M.jogador() || J; X.luzFx(J2.x, J2.y + 2, J2.z, 0xff3b1f, 10, 16 * U, .4); empurra(J2, dd.empurraM, 1); X.msg("sobrenatural", "Krig avança em chamas."); S.tremor = .25; }
+  function investida(J,dd){
+    const f=[Math.sin(J.yaw),Math.cos(J.yaw)],dist=(S.voando?14:9)*U;let livre=0;
+    // Usa os mesmos retângulos e raio de colisão do modo andar.
+    for(let s=.35*U;s<=dist;s=Math.min(dist,s+.35*U)){
+      const x=J.x+f[0]*s,z=J.z+f[1]*s,y=X.chao(x,z)+(S.voando?dd.vooM||d().vooM:0)*U;
+      if((M.cen.colisores||[]).some(c=>(!c.ativo||c.ativo())&&(c.y1===undefined||y<c.y1-.05)&&x>c.x0-.85&&x<c.x1+.85&&z>c.z0-.85&&z<c.z1+.85))break;
+      livre=s;if(s===dist)break;
+    }
+    if(livre<.5*U){M.ctx?.mostraAviso("Caminho bloqueado para a investida");return false;}
+    for(const a of X.S.alvos){if(a.morto||!["inimigo","guardiao"].includes(a.tipo))continue;const p=a.pos(),dx=p.x-J.x,dz=p.z-J.z,t=Math.max(0,Math.min(livre,dx*f[0]+dz*f[1]));
+      if(Math.hypot(dx-f[0]*t,dz-f[1]*t)<=dd.trilhaRaioM*U){a.dano?.(dd.trilhaDano);a.encantado=Math.max(a.encantado||0,.5);}}
+    M.ctx.teleporta(J.x+f[0]*livre,J.z+f[1]*livre);const J2=M.jogador()||J;
+    X.pulso(J.x,J.z,0xff6a2a,2);X.pulso(J2.x,J2.z,0xff3b1f,dd.empurraM);empurra(J2,dd.empurraM,1);S.tremor=.25;X.msg("sobrenatural","Krig deixa um rastro de impacto e avança até o último ponto livre.");return true;
+  }
   function golpe(J){ if(S.cdGolpe > 0) return; S.cdGolpe = 2.5; if(S.voando) voo(false); X.luzFx(J.x, J.y + .5, J.z, 0xff6a2a, 16, 24 * U, .6); empurra(J, d().empurraM, 1.4); S.tremor = .5; X.msg("sobrenatural", "Golpe no chão: tudo em volta é empurrado."); if(M.ctx) M.ctx.mostraAviso("Golpe no chão"); }
   function rugido(J){ if(S.cdRugido > 0) return; S.cdRugido = 8; let n = 0; const R = d().rugidoM * U;
     ((M.fauna && M.fauna.animais) || []).forEach(a => { if(Math.hypot(a.x - J.x, a.z - J.z) < R){ a.atordoado = d().rugidoSeg; n++; } });

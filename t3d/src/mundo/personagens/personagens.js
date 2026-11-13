@@ -1,3 +1,4 @@
+import { PODERES } from "../../../../data/poderes.js";
 import { PERSONAGENS } from "../dados/personagens.js";
 import { Scene, Color, HemisphereLight, DirectionalLight, PerspectiveCamera, Vector2 } from "three";
 import { constroiSepe, constroiTupa, constroiAtiara, constroiOperador, constroiOperadora } from "./modelos.js";
@@ -52,7 +53,7 @@ export function criarPersonagens(M){
     const grade = document.createElement("div"); grade.style.cssText = "display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;"; cx.appendChild(grade);
     lista().forEach(p => { const c = document.createElement("div"); const novo = opc.destaque === p.id;
       c.style.cssText = "border:2px solid " + (p.ativo ? "#ffd36a" : p.desbloqueado ? "#5a6a2b" : "#3a3a3a") + ";border-radius:12px;padding:10px 12px;opacity:" + (p.desbloqueado ? 1 : .6) + ";" + (novo ? "box-shadow:0 0 18px #9fc8ff;" : "") + (p.desbloqueado ? "cursor:pointer;" : "");
-      c.innerHTML = "<div style='font-size:15px;color:" + (p.desbloqueado ? "#e9efc0" : "#9a9a8a") + "'>" + (p.desbloqueado ? "" : "🔒 ") + p.nome + (p.ativo ? "  · em uso" : "") + "</div><div style='opacity:.75;margin:3px 0'>" + p.epoca + "</div><div style='opacity:.85;font-size:12px;line-height:1.45'>" + (p.desbloqueado ? p.aparencia : (p.emBreve ? "Em breve." : (p.desbloqueio ? p.desbloqueio.texto : "Bloqueado."))) + "</div>" + (p.habilidades.length ? "" : "<div style='opacity:.5;font-size:11px;margin-top:4px'>Habilidades: (vazio por enquanto)</div>");
+      c.innerHTML = "<div style='font-size:15px;color:" + (p.desbloqueado ? "#e9efc0" : "#9a9a8a") + "'>" + (p.desbloqueado ? "" : "🔒 ") + p.nome + (p.ativo ? "  · em uso" : "") + "</div><div style='opacity:.75;margin:3px 0'>" + p.epoca + "</div><div style='opacity:.85;font-size:12px;line-height:1.45'>" + (p.desbloqueado ? p.aparencia : (p.emBreve ? "Em breve." : (p.desbloqueio ? p.desbloqueio.texto : "Bloqueado."))) + "</div>" + (PODERES[p.id] ? "<div style='color:#ffd36a;font-size:12px;line-height:1.45;margin-top:6px'><b>" + PODERES[p.id].nome + "</b><br>" + PODERES[p.id].texto + "</div>" : "");
       if(p.desbloqueado) c.onclick = () => { fechaTela(); escolhe(p.id); };
       else if(p.operador && !p.emBreve) c.onclick = async () => { c.style.cursor = "wait"; if(M.ctx && M.ctx.soltaTeclas) M.ctx.soltaTeclas(); const id = await pedeLogin(M.ui, { titulo: "Login do operador — " + p.nome, texto: "Entre com seu nome de login e a senha. A sessão vale até fechar a aba." }); c.style.cursor = ""; if(id){ fechaTela(); if(M.terminal) M.terminal.msg("info", "Operador logado: " + (def(id) || {}).nome); escolhe(id); } };
       grade.appendChild(c); });

@@ -12,7 +12,7 @@ import { criarQuadrupede, SPEC } from "../fauna/modelos.js";
    CardPuter com tela brilhante na mão. Teclas em data/poderes.js → pit.
    ============================================================================================================ */
 export function criarPit(M, X){
-  const S = { ativo: false, tipo: "lobo", holos: [], energia: 100, cdTempo: 0, parado: 0, g: new Group(), arm: null, linhas: [], t: 0, hacks: [] };
+  const S = { ativo: false, foco: null, focoT: 0, cdHack: 0, tipo: "lobo", holos: [], energia: 100, cdTempo: 0, parado: 0, g: new Group(), arm: null, linhas: [], t: 0, hacks: [] };
   M.cen.grupo.add(S.g);
   const d = () => PODERES.pit, T = () => M.transformacao;
   const ativo = () => S.ativo && M.personagens && M.personagens.ativo === "pit" && T() && T().ativa();
@@ -26,29 +26,33 @@ export function criarPit(M, X){
     const capuz = new Mesh(new SphereGeometry(.45, 14, 10, 0, Math.PI * 2, 0, Math.PI * .6), m); capuz.position.set(0, 3.35, 0); g.add(capuz); g.scale.setScalar(U); return { root: g, mat: m, pernas: [], cauda: [], alturaM: 1.7, raioM: .6 }; }
   /* ---- hologramas ---- */
   function projeta(J, dd){ const forte = S.tipo === "assombracao", custo = dd.holoCusto * (forte ? 1.5 : 1);
-    if(S.holos.length >= dd.maxHolos){ if(M.ctx) M.ctx.mostraAviso("Limite de " + dd.maxHolos + " hologramas"); return; } if(S.energia < custo){ if(M.ctx) M.ctx.mostraAviso("Energia do CardPuter insuficiente (" + Math.round(S.energia) + "%)"); return; }
+    const foco=X.naMira(J,{cone:dd.cone,alcanceM:dd.focoM},["inimigo"]);
+    if(foco){S.foco=foco;S.focoT=dd.focoSeg;const p=foco.pos();X.pulso(p.x,p.z,0xb44cff,2);}
+    if(S.holos.length>=dd.maxHolos && foco){M.ctx?.mostraAviso("Hologramas: foco em "+foco.nome);return true;}
+    if(S.holos.length >= dd.maxHolos){ if(M.ctx) M.ctx.mostraAviso("Limite de " + dd.maxHolos + " hologramas"); return false; } if(S.energia < custo){ if(M.ctx) M.ctx.mostraAviso("Energia do CardPuter insuficiente (" + Math.round(S.energia) + "%)"); return false; }
     S.energia -= custo; const cor = forte ? 0xb44cff : 0x4fd8ff, c = forte ? corpoAssombracao(cor) : corpoLobo(cor), f = [Math.sin(J.yaw), Math.cos(J.yaw)], x = J.x + f[0] * 4 * U + f[1] * (S.holos.length - 1) * 2.5 * U, z = J.z + f[1] * 4 * U - f[0] * (S.holos.length - 1) * 2.5 * U;
     c.root.position.set(x, X.chao(x, z), z); c.root.rotation.y = J.yaw; S.g.add(c.root); const luz = new PointLight(cor, 3, 8 * U); luz.position.set(0, 2 * U, 0); c.root.add(luz);
     S.holos.push({ ...c, luz, tipo: S.tipo, t: 0, vida: dd.holoSeg, cdAtaque: 0, fase: Math.random() * 6, alvo: null, nome: forte ? "assombração holográfica" : "lobo-guará holográfico" });
-    X.luzFx(x, X.chao(x, z) + 2 * U, z, cor, 8, 12 * U, .4); X.msg("sobrenatural", "O CardPuter projeta " + (forte ? "uma assombração VIOLETA (forte)" : "um lobo-guará AZUL (fraco)") + ": linhas de varredura tremulam no ar."); if(M.ctx) M.ctx.mostraAviso("Holograma: " + (forte ? "assombração (forte)" : "lobo-guará (fraco)") + " · energia " + Math.round(S.energia) + "%"); }
+    X.luzFx(x, X.chao(x, z) + 2 * U, z, cor, 8, 12 * U, .4); X.msg("sobrenatural", "O CardPuter projeta " + (forte ? "uma assombração VIOLETA (forte)" : "um lobo-guará AZUL (fraco)") + ": linhas de varredura tremulam no ar."); if(M.ctx) M.ctx.mostraAviso("Holograma: " + (forte ? "assombração (forte)" : "lobo-guará (fraco)") + (S.foco?" · foco "+S.foco.nome:"") + " · energia " + Math.round(S.energia) + "%"); }
   function some(h, motivo){ S.g.remove(h.root); h.root.traverse(o => { if(o.isMesh && o.geometry) o.geometry.dispose(); }); if(motivo) X.msg("info", "O holograma " + h.nome.split(" ")[0] + " se desfaz (" + motivo + ")."); }
-  function tickHolos(dt, J){ const dd = d(); const hostil = X.S.alvos.some(a => !a.morto && (a.tipo === "inimigo" || a.tipo === "guardiao") && Math.hypot(a.pos().x - J.x, a.pos().z - J.z) < dd.holoAlcanceM * U);
+  function tickHolos(dt, J){ const dd = d(); const foco=S.focoT>0&&S.foco&&!S.foco.morto&&X.S.alvos.includes(S.foco)?S.foco:null; const hostil = !!foco || X.S.alvos.some(a => !a.morto && (a.tipo === "inimigo" || a.tipo === "guardiao") && Math.hypot(a.pos().x - J.x, a.pos().z - J.z) < dd.holoAlcanceM * U);
     S.holos = S.holos.filter((h, i) => { h.t += dt; h.cdAtaque -= dt; if(h.t > h.vida){ some(h, "tempo esgotado"); return false; } if(S.energia <= 0 && h.t > 2){ some(h, "energia acabou"); return false; }
       h.mat.opacity = .45 + .2 * Math.sin(h.t * 23 + h.fase) + (Math.random() < .04 ? .3 : 0); h.root.position.y = X.chao(h.root.position.x, h.root.position.z) + .15 * U + Math.sin(h.t * 3 + h.fase) * .08 * U; scan.offset.y = (scan.offset.y + dt * .6) % 1;
-      let alvo = null; if(hostil){ let md = 1e9; for(const a of X.S.alvos){ if(a.morto || !(a.tipo === "inimigo" || a.tipo === "guardiao")) continue; const p = a.pos(), dist = Math.hypot(p.x - h.root.position.x, p.z - h.root.position.z); if(dist < md && dist < dd.holoAlcanceM * 1.5 * U){ md = dist; alvo = a; } } }
+      let alvo = foco; if(hostil&&!alvo){ let md = 1e9; for(const a of X.S.alvos){ if(a.morto || !(a.tipo === "inimigo" || a.tipo === "guardiao")) continue; const p = a.pos(), dist = Math.hypot(p.x - h.root.position.x, p.z - h.root.position.z); if(dist < md && dist < dd.holoAlcanceM * 1.5 * U){ md = dist; alvo = a; } } }
       const dest = alvo ? alvo.pos() : { x: J.x + Math.sin(J.yaw + Math.PI + (i - 1) * .7) * 3.5 * U, z: J.z + Math.cos(J.yaw + Math.PI + (i - 1) * .7) * 3.5 * U };
       const dx = dest.x - h.root.position.x, dz = dest.z - h.root.position.z, dist = Math.hypot(dx, dz), parar = alvo ? 1.6 * U : 1.5 * U;
       if(dist > parar){ const v = dd.holoVelMS * U * (alvo ? 1.4 : 1) * dt, k = Math.min(1, v / dist); h.root.position.x += dx * k; h.root.position.z += dz * k; h.root.rotation.y = Math.atan2(dx, dz); h.pernas.forEach((p, q) => { if(p && p.rotation) p.rotation.x = Math.sin(h.t * 10 + q * Math.PI / 2) * .5; }); }
-      else if(alvo && h.cdAtaque <= 0){ h.cdAtaque = .8; if(alvo.dano) alvo.dano(dd.holoDano[h.tipo]); X.luzFx(alvo.pos().x, alvo.pos().y + 2 * U, alvo.pos().z, h.tipo === "lobo" ? 0x4fd8ff : 0xb44cff, 5, 8 * U, .2); }
+      else if(alvo && h.cdAtaque <= 0){ h.cdAtaque = .8; if(alvo.dano) alvo.dano(dd.holoDano[h.tipo]*(alvo===foco?dd.focoBonus:1)); X.luzFx(alvo.pos().x, alvo.pos().y + 2 * U, alvo.pos().z, h.tipo === "lobo" ? 0x4fd8ff : 0xb44cff, 5, 8 * U, .2); }
       return true; }); }
   /* ---- hackear ---- */
-  function hackeia(J){ const dd = d(), R = dd.hackM * U, V = M.lugares && M.lugares.S && M.lugares.S.vivos; let feito = [];
+  function hackeia(J){ if(S.cdHack>0){M.ctx?.mostraAviso("Hack recarregando: "+Math.ceil(S.cdHack)+" s");return false;} const dd = d(), R = dd.hackM * U, V = M.lugares && M.lugares.S && M.lugares.S.vivos; let feito = [];
     const emPoli = (P, x, z) => { let c = false; for(let i = 0, j = P.length - 1; i < P.length; j = i++){ const [xi, zi] = P[i], [xj, zj] = P[j]; if((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; };
     if(V){ V.forEach((v, id) => { const o = v.o, c = v.it && v.it.centro; if(!o) return; const perto = (c && Math.hypot(c[0] - J.x, c[1] - J.z) < R) || (v.it && v.it.pts && emPoli(v.it.pts, J.x, J.z));      // dentro do lugar (polígono do KML) ou a hackM do centro
       if(id === "vila-santana" && o.abre && !o.S.aberta && (perto || (o.entrada && Math.hypot(o.entrada[0] - J.x, o.entrada[1] - J.z) < R))){ o.abre(); feito.push("portão da Vila Santana aberto"); }
       if((id === "fabrica" || id === "vila-ouro-verde") && perto && o.g && !o.g.userData.hack){ o.g.userData.hack = true; const luzes = []; o.g.traverse(n => { if(n.isLight){ luzes.push([n, n.intensity]); n.intensity = 0; } if(n.isMesh && n.material && n.material.emissive && n.material.emissiveIntensity > 0){ luzes.push([n.material, n.material.emissiveIntensity, "em"]); n.material.emissiveIntensity = 0; } });
         S.hacks.push({ g: o.g, luzes, t: dd.hackSeg }); feito.push(id === "fabrica" ? "máquinas e luzes da fábrica desligadas" : "luzes da vila apagadas"); } }); }
     if(!feito.length){ X.msg("info", "CardPuter: nenhum sistema hackeável por perto (portões trancados, máquinas e luzes da área industrial)."); if(M.ctx) M.ctx.mostraAviso("Nada para hackear aqui"); return; }
+    S.cdHack=dd.hackRecarga;
     X.luzFx(J.x, J.y + 3 * U, J.z, 0x4fd8ff, 8, 14 * U, .5); X.msg("sobrenatural", "CardPuter: " + feito.join("; ") + "."); if(M.ctx) M.ctx.mostraAviso("Hackeado: " + feito.join(", ")); }
   /* ---- parar o tempo ---- */
   const el = () => M.renderer && M.renderer.domElement;
@@ -63,14 +67,16 @@ export function criarPit(M, X){
   const vesteEm = (av) => { if(av.userData.armRetrato) return; const A = avatar(); veste({ av, bD: A && A.av === av ? A.bD : null }); };
   const despeEm = (av) => { const g = av.userData.armRetrato; if(g){ av.remove(g); av.userData.armRetrato = null; } if(S.cardputer && !S.arm && S.cardputer.parent){ S.cardputer.parent.remove(S.cardputer); S.cardputer = null; } S.linhas = S.linhas.filter(o => o.parent && o.parent !== g); };
   const corpo = (tipo) => (tipo === "assombracao" ? corpoAssombracao(0xb44cff) : corpoLobo(0x4fd8ff));
-  function aoTransformar(id, on){ if(id !== "pit") return; S.ativo = on; if(on){ S.energia = 100; setTimeout(veste, 50); } else { despe(); S.holos.forEach(h => some(h, null)); S.holos = []; if(M.congelado) liberaTempo(); } }
+  function aoTransformar(id, on){ if(id !== "pit") return; S.ativo = on; if(on){ S.energia = 100; veste(); } else { S.foco=null;S.focoT=0;despe(); S.holos.forEach(h => some(h, null)); S.holos = []; if(M.congelado) liberaTempo(); } }
   function tecla(e){ if(!ativo() || e.repeat || e.ctrlKey || e.altKey || e.metaKey || (typeof M.depurando === "function" && M.depurando())) return false; const J = M.jogador(), k = d().teclas; if(!J) return false;
     if(e.code === k.tipo){ e.preventDefault(); S.tipo = S.tipo === "lobo" ? "assombracao" : "lobo"; if(M.ctx) M.ctx.mostraAviso("Holograma: " + (S.tipo === "lobo" ? "lobo-guará AZUL (fraco)" : "assombração VIOLETA (forte)")); return true; }
     if(e.code === k.hack){ e.preventDefault(); hackeia(J); return true; } if(e.code === k.tempo){ e.preventDefault(); paraTempo(); return true; } return false; }
-  function tick(dt){ S.t += dt; S.cdTempo = Math.max(0, S.cdTempo - dt); if(S.parado > 0){ S.parado -= dt; const e = el(); if(e) e.style.transform = Math.random() < .12 ? "translateX(" + ((Math.random() - .5) * 4).toFixed(1) + "px)" : ""; if(S.parado <= 0) liberaTempo(); }
+  function tick(dt){ S.t += dt; S.cdHack=Math.max(0,S.cdHack-dt);S.focoT=Math.max(0,S.focoT-dt);if(S.focoT===0||S.foco?.morto)S.foco=null; S.cdTempo = Math.max(0, S.cdTempo - dt); if(S.parado > 0){ S.parado -= dt; const e = el(); if(e) e.style.transform = Math.random() < .12 ? "translateX(" + ((Math.random() - .5) * 4).toFixed(1) + "px)" : ""; if(S.parado <= 0) liberaTempo(); }
+    S.hacks = S.hacks.filter(h => { h.t -= dt; if(h.t <= 0){ h.luzes.forEach(([n, v, em]) => { if(em) n.emissiveIntensity = v; else n.intensity = v; }); h.g.userData.hack = false; X.msg("info", "Os sistemas hackeados voltam a funcionar."); return false; } return true; });
     if(!S.ativo) return; S.energia = Math.min(100, S.energia + d().holoRecarga * dt); const J = M.jogador(); if(J) tickHolos(dt, J);
     if(!S.arm && ativo()) veste(); S.linhas.forEach((o, i) => { if(o.material.emissiveIntensity !== undefined) o.material.emissiveIntensity = .7 + .6 * Math.sin(S.t * 3 + i * .9); }); if(S.tela) S.tela.material.color.setHSL(.45 + .05 * Math.sin(S.t * 2), 1, .55 + .1 * Math.sin(S.t * 7));
-    S.hacks = S.hacks.filter(h => { h.t -= dt; if(h.t <= 0){ h.luzes.forEach(([n, v, em]) => { if(em) n.emissiveIntensity = v; else n.intensity = v; }); h.g.userData.hack = false; X.msg("info", "Os sistemas hackeados voltam a funcionar."); return false; } return true; }); }
-  const info = () => (ativo() ? "Pit: V holograma (" + (S.tipo === "lobo" ? "lobo azul" : "assombração violeta") + ") " + S.holos.length + "/" + d().maxHolos + " · energia " + Math.round(S.energia) + "% · " + d().teclas.tipo.replace("Key", "") + " tipo · " + d().teclas.hack.replace("Key", "") + " hackear · " + d().teclas.tempo.replace("Key", "") + " parar tempo" + (S.parado > 0 ? " (PARADO " + S.parado.toFixed(1) + ")" : S.cdTempo > 0 ? " (" + Math.ceil(S.cdTempo) + ")" : "") : "");
+  }
+
+  const info = () => (ativo() ? "Pit: V holograma (" + (S.tipo === "lobo" ? "lobo azul" : "assombração violeta") + ") " + S.holos.length + "/" + d().maxHolos + (S.foco?" · foco "+S.foco.nome:"") + " · energia " + Math.round(S.energia) + "% · " + d().teclas.tipo.replace("Key", "") + " tipo · " + d().teclas.hack.replace("Key", "") + " hackear · " + d().teclas.tempo.replace("Key", "") + " parar tempo" + (S.parado > 0 ? " (PARADO " + S.parado.toFixed(1) + ")" : S.cdTempo > 0 ? " (" + Math.ceil(S.cdTempo) + ")" : "") : "");
   return { projeta, hackeia, paraTempo, liberaTempo, tecla, tick, aoTransformar, info, S, vesteEm, despeEm, corpo };
 }
