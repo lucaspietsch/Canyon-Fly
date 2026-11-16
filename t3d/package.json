@@ -7,7 +7,9 @@
     "build": "esbuild src/trolley3d.js --bundle --format=iife --global-name=Trolley3D --minify --outfile=dist/trolley3d.min.js",
     "start": "npx serve ..",
     "test": "node --test test/*.test.mjs",
-    "test:browser": "node test/browser/poderes.cjs"
+    "test:browser": "node test/browser/poderes.cjs",
+    "test:jackao": "node test/browser/jackao.cjs",
+    "test:jackao:game": "node test/browser/jackao-game.cjs"
   },
   "keywords": [],
   "author": "",

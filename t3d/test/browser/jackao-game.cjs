@@ -1,0 +1,18 @@
+// Bundle real: executar build e servir a raiz em http://127.0.0.1:8000/.
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path');
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||undefined,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});try{
+ const page=await browser.newPage({viewport:{width:1000,height:750}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>localStorage.setItem('canyonfly:perfil',JSON.stringify({nome:'Teste Jackão',dia:1,fim:true,pulou:true})));
+ await page.goto((process.env.JACKAO_GAME_URL||'http://127.0.0.1:8000/')+'?modo=teclado&debug');await page.click('#jogar');await page.waitForFunction(()=>window.ctl?.mundo?.personagens,null,{timeout:180000});
+ const result=await page.evaluate(()=>{ctl.andar(true);const M=ctl.mundo,P=M.poderes,r=M.personagens.rig('jackao'),v=r.p.jackaoVisual,U=2.94,res={};
+  const normal=[];r.p.av.traverse(o=>{if(o.isMesh&&o.material?.map&&o.material.roughness===.92)normal.push([o.material,o.material.color.getHex(),o.material.map]);});
+  M.lugares.S.antigo=true;res.bloqueado=!M.transformacao.liga('jackao');sessionStorage.setItem('canyonfly:operador','jackao');M.personagens.escolhe('jackao');M.transformacao.aoEpoca('1950');res.auto=M.transformacao.ativa()&&v.on;
+  P.treino(M.jogador());const J=M.jogador(),yaw=J.camYaw+Math.PI;const alvo=P.espantalho(J.x+Math.sin(yaw)*14*U,J.z+Math.cos(yaw)*14*U,'Alvo de teste Jackão'),hp=alvo.hp;
+  const key=code=>M.tecla({code,preventDefault(){}});res.q=key('KeyQ')&&key('KeyQ')&&key('KeyQ')&&P.jackao.S.granadas===0;res.quarta=!P.jackao.granada(J);
+  for(let i=0;i<36;i++)P.tick(.05,J);res.granadas=P.jackao.S.fumacas.length===3&&P.jackao.S.projeteis.length===0&&alvo.hp<hp;
+  res.e=key('KeyE')&&P.jackao.S.oculos;P.tick(.1,J);res.ra=P.jackao.S.marcas.size>0&&[...P.jackao.S.marcas.values()].every(m=>!m.sp.material.fog&&!m.sp.material.depthTest);
+  res.f=key('KeyF')&&P.jackao.S.choque;const bicho={x:J.x+Math.sin(yaw)*5*U,z:J.z+Math.cos(yaw)*5*U,hp:100};M.fauna.animais.push(bicho);P.S.recargas.jackao=0;P.usa();res.choque=bicho.atordoado===4&&bicho.hp===100;M.fauna.animais.splice(M.fauna.animais.indexOf(bicho),1);
+  r.p.av.updateMatrixWorld(true);res.matrizes=true;r.p.av.traverse(o=>{if(!o.matrixWorld.elements.every(Number.isFinite))res.matrizes=false;});
+  M.lugares.S.antigo=false;M.transformacao.aoEpoca('2026');res.normal=!v.on&&!M.transformacao.ativa()&&normal.every(([m,c,t])=>m.color.getHex()===c&&m.map===t);return res;
+ });console.log(JSON.stringify({result,errors}));assert.ok(Object.values(result).every(Boolean));assert.deepEqual(errors,[]);
+ if(process.env.JACKAO_SCREENSHOTS){const shots=await page.evaluate(()=>{const M=ctl.mundo,r=M.personagens.rig('jackao'),p=r.p;const out=[];p.cab.rotation.set(0,0,0);p.bD.pv.rotation.set(.08,0,-.12);p.bD.co.rotation.set(-.12,0,0);p.bE.pv.rotation.set(.08,0,.12);p.bE.co.rotation.set(-.12,0,0);p.nome.visible=false;for(const power of [false,true])for(const angle of [0,90])out.push({power,angle,url:M.personagens.retrato('jackao',angle,{px:900,fundo:0x3b4650,transformado:power})});return out;});const dir=path.resolve(__dirname,'../../../docs/media/jackao');fs.mkdirSync(dir,{recursive:true});for(const s of shots)fs.writeFileSync(path.join(dir,`jackao-${s.power?'poder':'normal'}-${s.angle===0?'frente':'perfil'}.png`),Buffer.from(s.url.split(',')[1],'base64'));}
+ }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});
