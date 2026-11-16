@@ -44,8 +44,11 @@ Origem local (0, 0) = câmera da Ref 01.
 | 30 | −29.0487046, −50.1450913 · 1029 m | 76° | jul/2025 | **DU PERAU GASTRO PUB** de frente (lado leste da Laurindo, em frente à igreja): sobrado creme de telha, logo redondo preto "Du Perau", varanda com balaustrada branca; à dir. a casa branca com bandeirinhas |
 | 31 | −29.0486157, −50.145111 · 1028 m | 102° | jul/2025 | **ESCADA DE ENTRADA DO DU PERAU**: escada de concreto subindo pelo **lado norte** até a varanda elevada; corredor lateral calçado com grama; à esq. **loja de eletrodomésticos** de fachada vermelha/branca |
 | 32 | −29.0485252, −50.1451363 · 1028 m | 95° | jul/2025 | Mesmo ponto da Ref 04, olhando para o **leste**: **Lojas Benoit** (fachada vermelha, letreiro branco, vitrine de vidro) ao norte do Du Perau; à esq. casa com portão de garagem marrom |
+| 33 | −29.0484383, −50.1451618 · 1027 m | 70° | jul/2025 | Lado leste da Laurindo **ao norte da Benoit**: prédio comercial térreo branco com **Consultório de Psicologia**, **loja "Ivy"** (letreiro rosa/roxo) e **portão de garagem marrom** |
+| 34 | −29.0483529, −50.1451875 · 1026 m | 64° | jul/2025 | Esquina Laurindo × Dona Úrsula (nº 80), olhando para o **leste**: **Consultório de Psicologia** de perto (telhado próprio de duas águas); **sobrado de esquina** com térreo de tijolo à vista e **sacada de ferro trabalhado**; ao fundo, do outro lado da Dona Úrsula, **Secretaria de Educação** (amarela/laranja) e placa de PARE |
+| 35 | −29.0481291, −50.1450497 · 1026 m | 326° | jul/2025 | **SECRETARIA MUNICIPAL DE EDUCAÇÃO** de frente (Dona Úrsula nº 153, lado norte): casa de madeira amarela com acabamentos bordô e letreiro "SEC. DE EDUCAÇÃO"; à esq. **sobrado antigo amarelo-ocre** na esquina com a Laurindo; à dir. casa de madeira avermelhada; **araucária** atrás |
 
-Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74).
+Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35 (+14, +117).
 
 > A partir da Ref 07 começa o "ao redor" (pedido do Lucas). Praça + igreja: Refs 01–06.
 
@@ -162,7 +165,19 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
 - À esquerda: **varanda coberta** de telha com colunas e **balaustrada branca** (terraço do pub), **elevada ~1,2 m** da calçada; **balcãozinho de madeira** no 1º andar.
 - **Entrada (Ref 31):** **escada de concreto** com mureta lateral subindo pelo **lado norte** até a varanda; **corredor lateral** calçado com faixa de grama seguindo para os fundos.
 - Ao norte do pub: **Lojas Benoit** (Refs 31 e 32) — loja de eletrodomésticos, **fachada vermelha** com letreiro branco, **vitrine de vidro**, ≈ x +12 a +25, y +66 a +80 — rede: **letreiro genérico** ("LOJA") no jogo.
-- Mais ao norte: casa com **portão de garagem marrom**.
+- Mais ao norte (Ref 33), já perto da Dona Úrsula: **prédio comercial térreo branco** de platibanda reta, ≈ x +10 a +25, y +80 a +92, fachada para o oeste:
+  - **Consultório de Psicologia** (parte norte, Refs 33 e 34): **telhado próprio de duas águas** com beiral de madeira, **porta de madeira**, janela de bloco de vidro, toldo marrom; placa com o nome da psicóloga (não registrado aqui por privacidade) — no jogo: placa genérica "Consultório";
+  - **loja "Ivy"** (centro): letreiro rosa/roxo com flores, porta de vidro com degraus, janela com **grade vermelho-amarronzada**;
+  - **portão de garagem marrom** (parte sul, encostado na Benoit).
+- **Sobrado na esquina sudeste Laurindo × Dona Úrsula** (Ref 34), ≈ x +4 a +12, y +95 a +103:
+  - térreo com **tijolo à vista** e partes brancas; lojinha de moda (letreiro "…Moda…");
+  - 1º andar branco com **sacada de ferro trabalhado**, janelas de madeira; telhado de duas águas com **beiral de madeira marrom**.
+- **Lado norte da Dona Úrsula, a leste da Laurindo** (Refs 34 e 35):
+  - **Sobrado antigo amarelo-ocre** na **esquina nordeste** Laurindo × Dona Úrsula: pintura gasta, faixas vermelho-amarronzadas, **telhado de chapa cinza-azulada**, **tapume de madeira** na frente — ≈ (−3, +122).
+  - **SECRETARIA MUNICIPAL DE EDUCAÇÃO** (nº 153): **casa térrea de madeira amarela** com **acabamentos bordô** (frontão e faixas), letreiro branco **"SEC. DE EDUCAÇÃO"** numa faixa bordô no alto; **portão de garagem bordô** à esquerda; jardinzinho com **grade de ferro vermelho-amarronzada** entre pilares — ≈ (+5, +128), fachada virada para a rua (sul/sudeste).
+  - **Casa de madeira avermelhada** de telhado escuro, a leste — ≈ (+15, +130).
+  - **Araucária** grande atrás da Secretaria; **placa de PARE** na esquina.
+  - Obs.: a câmera da Ref 35 ficou em y ≈ +117 — a Dona Úrsula provavelmente sobe um pouco para o norte a leste da Laurindo (conferir).
 - **Posição:** lado **leste** da Rua Laurindo, em frente à igreja, ≈ (+22, +60); fachada virada para o **oeste** (para a rua).
 - **Requisitos do Lucas:**
   - **Entrada funcional e interior** (o jogador entra no pub);
