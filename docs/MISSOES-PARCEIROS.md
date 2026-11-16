@@ -31,6 +31,11 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - **Centro Cultural / Secretaria Municipal do Turismo** — [sugestão] missões de turismo (levar visitantes a pontos da cidade e do parque; casa histórica).
 - **Sociedade Recreativa 15 de Março** — [sugestão] evento/baile no clube.
 
+## Lugares de lenda na cidade
+- **Casa antiga mal-assombrada** (Rua Dona Úrsula, lado norte, a leste da Laurindo — Ref 45 do catálogo) — **[Lucas]** a casa é tida como mal-assombrada.
+  - **[sugestão]** missões noturnas: barulhos, luzes acendendo sozinhas, vulto na janela do bay de vidro; o holograma de assombração do Pit reage; trilha "floresta sombria"; **sem sangue**.
+  - Casa de moradores reais → no jogo como **"Casa antiga (lenda local)"**, sem o número real; idealmente com o ok dos moradores.
+
 ## Pendências (a receber do Lucas)
 - [ ] Fotos do interior do Du Perau (mesas, balcão).
 - [ ] Cardápio, fotos dos hambúrgueres e do chopp.

@@ -51,8 +51,15 @@ Origem local (0, 0) = câmera da Ref 01.
 | 37 | −29.0481291, −50.1450497 · 1026 m | 179° | jul/2025 | Mesmo ponto, olhando para o **sul**: **sobrado da esquina sudeste** visto pelo norte (creme com faixas de tijolinho); **casa térrea bege** de telha a leste dele; **caminhonete de eletricista** com escadas e cones; torre da igreja ao fundo |
 | 38 | −29.0481291, −50.1450497 · 1026 m | 118° | jul/2025 | Mesmo ponto, olhando para o **leste pela Dona Úrsula**: rua seguindo a ~74°; lado sul com a casa bege térrea e uma **casa branca de telha laranja com trapeira**; lado norte com casas de telha vermelha e caminhonete branca |
 | 39 | −29.04808, −50.1448528 · 1026 m | 164° | jul/2025 | Dona Úrsula nº 125, olhando para o **sul**: **casa branca de madeira** (tábuas verticais) com **telha laranja e trapeira triangular**, porta branca com varandinha; à esq. muro claro com placa azul de imobiliária e **construção de tijolo inacabada**; à dir. **sobrado bege** com varanda de madeira; torre da igreja no canto |
+| 40 | −29.04808, −50.1448528 · 1026 m | 331° | jul/2025 | Mesmo ponto da Ref 39, olhando para o **norte**: **sobrado bege-mostarda nº 707** com pedra filetada no térreo, **sacada de vidro** com estrutura de madeira escura, **tesoura de madeira aparente no frontão**, venezianas marrons; à esq. **casa térrea avermelhada** com portão branco; caminhonete branca |
+| 41 | −29.0480532, −50.1447548 · 1027 m | 2° | jul/2025 | Dona Úrsula nº 123, olhando para o **norte**: **galpão antigo de tábuas brancas** com telhado bordô e pilha de tábuas; **garagem coberta** de telha ondulada; **casa térrea comprida creme** com telha vermelha, **chaminé de tijolo** e **venezianas vermelhas** |
+| 42 | −29.0480532, −50.1447548 · 1027 m | 139° | jul/2025 | Mesmo ponto da Ref 41, olhando para o **sul/sudeste**: **obra com tapume de chapa metálica** e prédio de tijolo inacabado com andaime; muro claro com placa azul de imobiliária; **casa térrea rosa-salmão** com antena; sobrado com sacada e, na próxima esquina, casa branca de telha vermelha; Fiat branco e perua escura |
+| 43 | −29.0480248, −50.1446541 · 1027 m | 118° | jul/2025 | Dona Úrsula ~10 m a leste da Ref 41, olhando para o **leste**: **casa térrea rosa/vermelha** de janelas gradeadas e antenas; **sobrado com varanda de madeira escura**; na esquina da rua transversal, **casa branca de telha vermelha**; Renault Logan branco |
+| 44 | −29.0480248, −50.1446541 · 1027 m | 25° | jul/2025 | Mesmo ponto da Ref 43, olhando para o **norte**: **casa antiga comprida** de frente — reboco cinza-creme, telha vermelha, **chaminé alta**, **venezianas e porta vermelhas**, **varanda envidraçada** na ponta com terracinho em cima; garagem coberta com perua escura; cerca de madeira |
+| 45 | −29.047969, −50.1444553 · 1027 m | 340° | jul/2025 | **CASA ANTIGA E HISTÓRICA** (Dona Úrsula nº 121, lado norte): **bay de vidro** com 4 janelões, **frontão com terraço e grade de ferro decorativa**, venezianas vermelhas, telha vermelha; muro de pedra com cerquinha e portão de treliça; palmeira à dir. — **possivelmente a mesma casa da Ref 44 (confirmar)** |
+| 46 | −29.047969, −50.1444553 · 1027 m | 169° | jul/2025 | Mesmo ponto da Ref 45, olhando para o **sul**: **sobrado com varanda larga de madeira** (guarda-corpo em "X") de frente, muro branco com pilares e grade escura; casa térrea rosa de janelas gradeadas à dir.; casa de telha vermelha na esquina à esq. |
 
-Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35/36/37/38 (+14, +117) · Ref 39 (+33, +123).
+Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35/36/37/38 (+14, +117) · Ref 39/40 (+33, +123) · Ref 41/42 (+43, +126) · Ref 43/44 (+52, +129) · Ref 45/46 (+72, +135).
 
 > A partir da Ref 07 começa o "ao redor" (pedido do Lucas). Praça + igreja: Refs 01–06.
 
@@ -194,10 +201,37 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
 - **Casa térrea bege** (madeira/alvenaria) com **telhado de telha marrom**, grade baixa na frente — ≈ (+20, +106).
 - **Sobrado bege** com telhado de telha e **varanda de madeira** — ≈ (+26, +108).
 - **Casa branca de madeira** (nº 125): **tábuas verticais brancas**, **telhado de telha laranja** com **trapeira triangular** pequena na frente, janela de moldura avermelhada, **porta branca com varandinha e degraus**, portãozinho — ≈ (+32, +110).
-- Terreno a leste: **muro claro** com **placa azul de imobiliária**, **construção de tijolo inacabada** atrás — ≈ (+40, +112).
+- Terreno a leste: **muro claro** com **placa azul de imobiliária** — ≈ (+40, +112).
+- **Obra** (Ref 42): **tapume de chapa metálica cinza** na calçada; atrás, **prédio de tijolo inacabado de 2 andares** com **andaime de madeira** — ≈ (+49, +112).
+- **Casa térrea rosa/vermelha** (Refs 42 e 43): paredes rosa-avermelhadas, **frontão branco de lambri**, **janelas com grade branca**, **duas antenas parabólicas**, telhado de chapa cinza; **pilar de tijolo** com caixa/medidor na frente — ≈ (+60, +119).
+- **Sobrado com varanda de madeira escura** (Refs 43 e 46) — ≈ (+76, +121): térreo branco com porta marrom-escura e janela de madeira; 1º andar com **varanda larga de madeira**, **guarda-corpo em "X"** e pilares de madeira; **telhado baixo de beiral largo**; ar-condicionado; **muro branco com pilares e grade escura**.
+- **Esquina com a rua transversal a leste** (≈ x +88): **casa branca de telhado de telha vermelha** — ≈ (+92, +128). Depois dela a Dona Úrsula continua para o leste (~77°).
 
-### Lado norte da Dona Úrsula, a leste da Secretaria (Ref 38)
+### Lado norte da Dona Úrsula, a leste da Secretaria (Refs 38 e 40)
 - Casas térreas de **telhado de telha vermelha**; caminhonete branca estacionada.
+- **Casa térrea avermelhada** (tijolo/madeira) com **portão branco de duas folhas** e grade — ≈ (+23, +129).
+- **Sobrado bege-mostarda nº 707** — ≈ (+34, +131):
+  - térreo com canto revestido de **pedra filetada** cinza-clara, porta/janela de vidro;
+  - 1º andar com **sacadinha de guarda-corpo de vidro** sobre estrutura de **madeira escura**, **venezianas marrons**, ar-condicionado;
+  - frontão com **tesoura de madeira escura aparente**; telhado de telha;
+  - o nº 707 não combina com a numeração da Dona Úrsula ali (~120–150): pode ser de uma rua transversal — conferir com o Lucas.
+- **Galpão/casinha antiga** de **tábuas verticais brancas gastas**, alto do frontão e telhado **bordô**; arvorezinha na frente, **pilha de tábuas** no chão, cerca de tela — ≈ (+40, +138) (Ref 41).
+- **Garagem coberta** (telha ondulada sobre postes), carro escuro — ≈ (+51, +138).
+- **Casa antiga comprida** (Refs 41 e 44) — ≈ (+60, +142), fachada para a rua (sul):
+  - térrea, reboco **cinza-creme envelhecido**; **telhado de telha vermelha** de várias águas; **chaminé de tijolo alta**;
+  - **janelas com venezianas vermelhas** (abertas) e **porta vermelha**;
+  - na ponta leste, **varanda fechada com vidros** (janelas de muitos quadradinhos) e um **terracinho com guarda-corpo** em cima;
+  - **mureta baixa + cerca de madeira**, gramado na frente; portão de madeira.
+- **CASA ANTIGA E HISTÓRICA nº 121** (Ref 45; Lucas: "casa antiga e histórica") — ≈ (+65, +145), fachada para a rua (sul):
+  - **bay de vidro saliente** com **4 janelões altos** de caixilho;
+  - sobre o bay, **frontão** cercado por **terraço com grade de ferro decorativa**;
+  - reboco cinza-creme, **telhado de telha vermelha**, **venezianas vermelhas**, porta com número na fachada;
+  - **muro baixo de pedra** com **cerquinha e portão de treliça**; **palmeira** à direita;
+  - **dúvida:** pode ser a **mesma casa da Ref 44** vista do outro lado (números 123 e 121, mesmos materiais) — na Ref 44 a parte envidraçada aparece na ponta leste, aqui à esquerda (oeste). Confirmar com o Lucas.
+  - **CASA MAL-ASSOMBRADA** (Lucas): é tida como assombrada → **lugar de lenda** no jogo.
+    - [sugestão] missões noturnas: barulhos, luzes que acendem sozinhas, vulto na janela do bay de vidro, o holograma de assombração do Pit reagindo; trilha sonora "floresta sombria"; regra **sem sangue**.
+    - Cuidado: é casa de gente real → no jogo, **"Casa antiga (lenda local)"**, **sem o número real**; idealmente com o ok dos moradores.
+  - No jogo: placa **"Casa histórica"** / "Casa antiga (lenda local)".
 
 ### Objetos de cena
 - **Caminhonete branca de eletricista** com escadas no rack e **cones** em volta, na Dona Úrsula (Ref 37) — no jogo **sem logo** da concessionária.
