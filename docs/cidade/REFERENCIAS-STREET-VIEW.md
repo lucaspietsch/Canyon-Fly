@@ -506,6 +506,20 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
 - **Hoje as ruas da cidade no jogo são uma grade provisória** (quadras de 110 m, `config.ruas`), girada pelo formato do polígono. O código já aceita **ruas reais do KML** (LineStrings do tipo "rua"): quando existem, **a grade some** e as ruas reais entram — inclusive no minimapa e na rota a pé.
 - **Próximo passo possível:** traçar as ruas reais (Getúlio Vargas/RS-020, Dona Úrsula, Joaquim Pereira, João F. Riter, Nartécia Pereira, Padre João Paza, Procópio F. dos Santos, Dom Pedro II, Quinze de Março, Laurindo, Vinte de Setembro, Osvaldo Kroeff, Tradição…) como **KML de ruas**, a partir destes prints.
 
+## Regras do mapa do jogo (Lucas)
+- **[Lucas] Estradas até os cânions, vilas e outras cidades são reduzidas pela METADE** no jogo, para encurtar o caminho do jogador. A **cidade em si** (ruas, casas, praça) fica em **escala real**; só os trechos de estrada **entre** lugares são comprimidos.
+- **[Lucas] Guardar tudo** que aparecer nos prints (Street View e aéreos): **plantas, florestas, pontos de referência e detalhes**, para montar o mais original possível.
+
+## Arredores da cidade (grade de prints do Lucas, outra camada do Maps)
+Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de envio: Z0, Z1, …
+- (aguardando os prints)
+
+## Próximos envios do Lucas (anotado)
+- [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
+- [ ] **Estrada para o Itaimbezinho** (o outro cânion) — arquivo do **Google Earth** (KML/KMZ).
+- [ ] **Área do Itaimbezinho** (Earth).
+- [ ] **Print do mapa do município** — para localizar tudo.
+
 ## A receber do Lucas (praça)
 - [ ] **Foto do Termômetro** de Cambará.
 - [ ] **História da Sequoia Lunar** (e foto da **placa**).
