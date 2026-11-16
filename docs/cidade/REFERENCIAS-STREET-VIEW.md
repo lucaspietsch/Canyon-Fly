@@ -456,6 +456,24 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
   - Área cinza com muitos pontinhos claros (+704, +78) — **possível cemitério** (confirmar).
 - **Arredores:** **mata densa** a leste e ao norte; a cidade termina em x ≈ +900 a leste.
 
+### B1 — sudoeste (centro do print −29.0507478, −50.1496113 → local (-430, -172))
+- Conferência: o Du Perau cai em (+21, +62) (catálogo: (+22, +60)) ✔ — a calibração vale.
+- **Ruas:**
+  - **R. João Francisco Riter** (-593, +46) · **R. Dona Úrsula** (-604, -53) (trechos oeste, descendo para SO).
+  - **Av. Getúlio Vargas** (-206, -53) — da praça para o sudoeste, vira **RS-020** em (-583, -325) e sai da cidade em (-719, -473) (rumo SO).
+  - **R. Dom Pedro II** — norte–sul, (-112, -137).
+  - **R. Padre João Paza** — (-39, -121) a leste e diagonal SO (-342, -199) → (-468, -251).
+  - **R. Procópio Freire dos Santos** — (+65, -199) → (+243, -147) (sudeste).
+  - **R. Alberto Brentano** — norte–sul, (-546, -184).
+  - **R. Osvaldo Kroeff** — (+253, +83).
+- **Lugares (Maps):**
+  - **Igreja Pentecostal Deus É Amor** (-616, -140) · **Fundação Hospitalar São José** (hospital) (-267, -146).
+  - **Rádio Fidelidade 104.9 FM** (-146, -279) — [sugestão] rádio da cidade no jogo (avisos, música).
+  - **Pousada Vereda do Sol** (-535, -337) · **Refúgio Fortal** (-345, -363) · **Caiamba Auto Center** (oficina) (-380, -388).
+  - **Hostel Cape Town** (+206, -65) · **Crepe Mania** (-29, +15) · café (-292, -86) · hospedagem (-308, +12).
+  - **Pousada Fazenda Pindorama** (-863, +29) · **Posto de Saúde** (-475, +76) · **lagoinha urbana** (-447, +41).
+- **Arredores:** a **oeste**, campo úmido/banhado grande com valetas; ao **sul**, **plantação de pinus** (fileiras escuras) (-593, -460); **açude** a sudeste (+248, -288) e outro (-39, -450); a cidade termina em y ≈ −450 ao sul.
+
 ## A receber do Lucas (praça)
 - [ ] **Foto do Termômetro** de Cambará.
 - [ ] **História da Sequoia Lunar** (e foto da **placa**).
