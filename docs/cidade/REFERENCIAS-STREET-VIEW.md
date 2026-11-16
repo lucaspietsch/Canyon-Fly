@@ -489,7 +489,7 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
   - **Du Perau** (+22, +60) · **Crepe Mania** (-31, +11) · café (+276, +64) · **Sabores da Querência** (+329, +36).
   - **Hostel Cape Town** (+205, -65) · **Pousada Bem Estar** (+417, -68) · **Pizza Retrô** (+381, -132) · **Pousada Aparados** (+473, -211).
   - Área com muitos pontinhos claros ao sul da avenida (**não é o cemitério** — o Cemitério Municipal fica ao norte, na RS-020, ver Z2) (+678, +71) — **provável cemitério** (confirmar).
-  - **Pista de terra em curvas** (+657, -222) — parece **pista de motocross/velocross** (confirmar).
+  - **Pista de terra em curvas** (+657, -222) — **pista de motocross** (confirmada no A3 dos arredores).
 - **Arredores:** a leste e sudeste, **morro com mata** e manchas escuras, cortado por **estradas de terra** (+793, -117); a cidade termina em x ≈ +500 a +700 a sudeste.
 
 ### Resumo do mapa geral (A1 + A2 + B1 + B2)
@@ -555,7 +555,17 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Campo a oeste:** pastagens com **valetas de drenagem** e **banhados em faixas** (linhas escuras sinuosas) (-1010, -192); **capões de mato** redondos (-1083, -281) (-1167, +1); **trilha de terra clara** em diagonal (-1188, -35); pequenas **estruturas/tanques retangulares** (-1136, -98); **lavoura** de terra vermelha no sudoeste (-1533, -380); mata ciliar escura acompanhando os banhados (-1156, -380).
   - **Sul:** **plantação de pinus** em quadra densa (-571, -443) e **açudes** (-451, -485) (-655, -485).
 - **A1, A2, B1, B2** dos arredores = os **4 quadrantes da cidade** já registrados acima (o miolo da grade).
-- (aguardando: **A3, B0, B3, C0, C1, C2, C3**)
+- **A3 — leste/sudeste, satélite ampliado** (centro −29.0488646, −50.1263017 → local (+1838, +36); vista de 1299 m → escala ≈ **2,07 m/px**, calibrada pela Madeireira (+946, +634) e pela Costaneira (+489, +409) ✔):
+  - **Estrada leste** (= "estrada até a cidade" do jogo): sai da cidade (+1045, +241), passa o **entroncamento** (+1884, +438) (ramal norte (+2039, +645)), segue (+2287, +541) → (+2701, +510) → (+3012, +583) e **dobra para o sul-sudeste** (+3115, +334) → (+3252, +86) (rumo ao parque/cânion).
+  - A **Av. Getúlio Vargas** continua para o leste depois da **Igreja Assembleia de Deus** e vira essa estrada; um ramal de terra desce para o sudeste até uma construção isolada.
+  - **Grandes plantações de pinus/eucalipto** (blocos escuros e uniformes, com aceiros retos) a leste da cidade (+2287, +334); **talhões cortados/queimados** (manchas marrom-arroxeadas) (+2080, +65) (+2701, -18); **mata nativa** mais irregular ao sul (+1666, -204); **campos** a sudeste (+2494, -328).
+  - **Saibreira/cascalheira** (terra laranja exposta) com **laguinho** ao lado (+1542, +189).
+  - **Pista de motocross** (curvas de terra) (+694, -266) — confirma a "pista de terra" do B2.
+  - **RS-427** (+549, -312) — rodovia saindo para o **sul** perto da R. …Raupp (provável rumo do Itaimbezinho — confirmar com o arquivo do Earth).
+  - **Cambará Eco Hotel** (+1050, -405) · hospedagem (+631, -403) · **"…Lago Imbuia"** (hospedagem) (+1443, -444) e **lagos** escuros entre eles (+1190, -421).
+  - Ruas na borda da cidade: **R. João Pereira da Silva** (+714, +220) · **Av. Getúlio Vargas** (+694, +148) · **R. Ouro Verde** (+549, +624) · **Pizza Retrô** (+497, -129).
+- **A3 em camada de trânsito** (mais perto, centro −29.046969, −50.1331109): mostra a **Igreja Assembleia de Deus** na Getúlio Vargas, a **R. das Indústrias** descendo até a estrada leste, a **borda da cidade** (área verde a leste) e o **ramal de terra para o sudeste** com uma construção no fim.
+- (aguardando: **B0, B3, C0, C1, C2, C3**)
 
 ## Próximos envios do Lucas (anotado)
 - [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
