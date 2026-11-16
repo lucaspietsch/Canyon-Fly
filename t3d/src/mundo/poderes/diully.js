@@ -1,55 +1,63 @@
-import { hostil, descarta } from "./combate.js";
+import { hostil, descarta, alvosEmCone } from "./combate.js";
 import { Group, Mesh, TorusGeometry, MeshBasicMaterial, PointLight, Points, PointsMaterial, BufferGeometry, BufferAttribute, AdditiveBlending } from "three";
 import { U } from "../config.js";
 import { PODERES } from "../../../../data/poderes.js";
 
-/* ============================================================================================================
-   PODERES DA DIULLY (forma Sombra Dourada, só no tempo antigo): TELECINESE — V ergue o inimigo/objeto mirado (brilho dourado nas mãos e
-   em volta dele) e o segura flutuando à frente; V de novo ARREMESSA longe (dano ao cair); Y BATE no chão (dano maior, poeira e tremor);
-   botão direito do mouse = erguer e segurar enquanto pressionado (solta devagar ao largar, sem dano). U = LÁBIA no alvo mirado: pessoas
-   (capangas, trabalhadores) entram num diálogo de convencimento com chance de sucesso. Teclas em data/poderes.js → diully.
-   ============================================================================================================ */
+// Diully: direito/L2 segura, clique/R2 arremessa, Q/R1 bate, E/L1 abre Lábia.
+// V mantém a alternativa acessível de erguer/arremessar. Efeitos usam o relógio da simulação.
 export function criarDiully(M, X){
-  const S = { ativo: false, seg: null, voando: [], anel: null, luz: null, cdChao: 0, cdLabia: 0, t: 0, g: new Group(), poeira: [] };
+  const S = { ativo: false, seg: null, voando: [], anel: null, luz: null, cdChao: 0, cdLabia: 0, t: 0, g: new Group(), poeira: [], objetos: new Set(), dialogo: null, ultimaLabia: null };
   M.cen.grupo.add(S.g);
   const d = () => PODERES.diully, T = () => M.transformacao;
   const ativo = () => S.ativo && M.personagens && M.personagens.ativo === "diully" && T() && T().ativa();
-  function aoTransformar(id, on){ if(id !== "diully") return; S.ativo = on; if(!on) solta(true); }
+  function aoTransformar(id, on){ if(id !== "diully") return; S.ativo = on; if(!on){solta(true);limpaVoos();fechaDialogo();} }
   const anelDourado = () => { const a = new Mesh(new TorusGeometry(1.6 * U, .08 * U, 8, 32), new MeshBasicMaterial({ color: 0xffd36a, transparent: true, opacity: .8, blending: AdditiveBlending, depthWrite: false })); a.rotation.x = Math.PI / 2; return a; };
   /* ---- erguer / segurar ---- */
-  function ergue(J){ if(S.seg) return false; const dd = d(), a = X.naMira(J, { cone: dd.cone, alcanceM: dd.alcanceM }, ["inimigo", "guardiao", "pessoa"]); if(!a || !a.g){ if(M.ctx) M.ctx.mostraAviso("Nada para erguer na mira"); return false; }
-    S.seg = { a, t: 0, y0: a.g.position.y, enc0: a.encantado || 0 }; a.encantado = 999; S.anel = anelDourado(); S.g.add(S.anel); S.luz = new PointLight(0xffc860, 10, 14 * U); S.g.add(S.luz);
-    X.msg("sobrenatural", "Diully ergue " + (a.nome || "o alvo") + " no ar com um brilho dourado."); if(M.ctx) M.ctx.mostraAviso("Erguido (V arremessa · Y bate no chão)"); return true; }
-  function solta(suave){ if(!S.seg) return; const { a, enc0 } = S.seg; a.encantado = enc0; if(suave && a.g){ a.g.position.y = X.chao(a.g.position.x, a.g.position.z); } S.seg = null; if(S.anel){ descarta(S.anel); S.anel = null; } if(S.luz){ S.g.remove(S.luz); S.luz = null; } }
-  function arremessa(J, dd){ const { a, t } = S.seg, forca=1+dd.cargaBonus*Math.min(1,t/dd.cargaSeg), f = [Math.sin(J.yaw), Math.cos(J.yaw)]; solta(false); S.voando.push({ a, vx: f[0] * dd.arremessoMS * U * forca, vy: 9 * U, vz: f[1] * dd.arremessoMS * U * forca, dano:dd.danoArremesso*forca, t: 0 }); X.luzFx(a.g.position.x, a.g.position.y + 2 * U, a.g.position.z, 0xffd36a, 8, 16 * U, .4); X.msg("sobrenatural", "Diully arremessa " + (a.nome || "o alvo") + " para longe."); if(M.ctx) M.ctx.mostraAviso("Arremesso!"); }
-  function bateChao(J){ if(!S.seg || S.cdChao > 0) return; const dd = d(), { a,t } = S.seg, forca=1+dd.cargaBonus*Math.min(1,t/dd.cargaSeg); solta(false); const p = a.g.position; p.y = X.chao(p.x, p.z); a.g.rotation.z = (Math.random() - .5) * .6; if(a.dano) a.dano(dd.danoChao*forca); impacto(a,forca);
+  function ergue(J){ if(!ativo() || S.dialogo)return false; if(S.seg) return false; const dd=d(),a=alvosEmCone([...X.S.alvos,...S.objetos].filter(a=>a.g),mira(J),dd.alcanceM*U,dd.cone,["inimigo","guardiao","pessoa","objeto"])[0]; if(!a || !a.g){ if(M.ctx) M.ctx.mostraAviso("Nada para erguer na mira"); return false; }
+    S.seg = { a, t: 0, y0: a.g.position.y, enc0: a.encantado || 0, rot: a.g.rotation.clone() }; a.encantado = 999; S.anel = anelDourado(); S.g.add(S.anel); S.luz = new PointLight(0xffc860, 10, 14 * U); S.g.add(S.luz);
+    X.msg("sobrenatural", "Diully ergue " + (a.nome || "o alvo") + " no ar com um brilho dourado."); if(M.ctx) M.ctx.mostraAviso("Erguido (clique/R2 arremessa · Q/R1 bate no chão)"); return true; }
+  function solta(suave){ if(!S.seg) return; const { a, enc0, rot } = S.seg; a.g.rotation.copy(rot); a.encantado = enc0; if(suave && a.g){ a.g.position.y = X.chao(a.g.position.x, a.g.position.z); } S.seg = null; if(S.anel){ descarta(S.anel); S.anel = null; } if(S.luz){ S.g.remove(S.luz); S.luz = null; } }
+  function arremessa(J, dd=d()){ if(!ativo()||!S.seg)return false; const { a, t, enc0, rot } = S.seg, forca=1+dd.cargaBonus*Math.min(1,t/dd.cargaSeg), f = [Math.sin(mira(J).yaw), Math.cos(mira(J).yaw)]; solta(false); a.encantado=999; S.voando.push({ a, enc0, rot, vx: f[0] * dd.arremessoMS * U * forca, vy: 9 * U, vz: f[1] * dd.arremessoMS * U * forca, dano:dd.danoArremesso*forca, t: 0 }); X.luzFx(a.g.position.x, a.g.position.y + 2 * U, a.g.position.z, 0xffd36a, 8, 16 * U, .4); X.msg("sobrenatural", "Diully arremessa " + (a.nome || "o alvo") + " para longe."); if(M.ctx) M.ctx.mostraAviso("Arremesso!"); }
+  function bateChao(J){ if(!ativo()||!S.seg || S.cdChao > 0) return false; const dd = d(), { a,t } = S.seg, forca=1+dd.cargaBonus*Math.min(1,t/dd.cargaSeg); solta(false); const p = a.g.position; p.y = X.chao(p.x, p.z); a.g.rotation.z = (Math.random() - .5) * .6; if(hostil(a)&&a.dano) a.dano(dd.danoChao*forca); impacto(a,forca);
     S.cdChao = 1.2; X.luzFx(p.x, p.y + U, p.z, 0xffd36a, 14, 20 * U, .4); poeira(p.x, p.y, p.z); M.poderes.krig && (M.poderes.krig.S.tremor = .45); X.msg("sobrenatural", "Diully bate " + (a.nome || "o alvo") + " contra o chão."); if(M.ctx) M.ctx.mostraAviso("Batida no chão!"); }
   function impacto(alvo,forca=1){const p=alvo.pos(),dd=d();X.pulso(p.x,p.z,0xffd36a,dd.impactoM);for(const b of X.S.alvos){if(b===alvo||!hostil(b))continue;const q=b.pos();if(Math.hypot(q.x-p.x,q.z-p.z)<=dd.impactoM*U){b.dano?.(dd.danoArea*forca);b.encantado=Math.max(b.encantado||0,.8);}}}
   function poeira(x, y, z){ const n = 60, g = new BufferGeometry(), pos = new Float32Array(n * 3), vel = new Float32Array(n * 3); for(let k = 0; k < n; k++){ const a = Math.random() * Math.PI * 2, r = Math.random() * 2 * U; pos[k * 3] = x + Math.cos(a) * r; pos[k * 3 + 1] = y + .3 * U; pos[k * 3 + 2] = z + Math.sin(a) * r; vel[k * 3] = Math.cos(a) * 3 * U; vel[k * 3 + 1] = (1 + Math.random()) * U; vel[k * 3 + 2] = Math.sin(a) * 3 * U; }
     g.setAttribute("position", new BufferAttribute(pos, 3)); const p = new Points(g, new PointsMaterial({ color: 0xb8a98a, size: .9 * U, transparent: true, opacity: .6, depthWrite: false })); p.frustumCulled = false; S.g.add(p); S.poeira.push({ p, pos, vel, t: 0, vida: 1.6 }); }
   /* ---- ação da tecla do poder (V): ergue se não tem nada; arremessa se já segura ---- */
-  function acao(J, dd){ if(S.seg){arremessa(J,dd);return true;} return ergue(J); }
-  /* ---- Lábia com chance de sucesso ---- */
-  function labia(J){ if(S.cdLabia > 0) return; const L = d().labia; const a = X.naMira(J, L, ["pessoa", "inimigo", "guardiao"]);
-    if(!a){ X.msg("info", "Não há ninguém ao alcance para convencer."); if(M.ctx) M.ctx.mostraAviso("Ninguém para convencer"); return; }
-    const p = a.pos(); X.luzFx(p.x, (p.y || X.chao(p.x, p.z)) + 5 * U, p.z, 0xffd36a, 10, 14 * U, 1.0);
-    if(a.tipo !== "pessoa" || !a.aoLabia){ X.msg("info", "Diully: “Vamos conversar…” — " + (a.nome || "a criatura") + " não entende palavras."); if(M.ctx) M.ctx.mostraAviso("Não dá para convencer isso"); return; }
-    S.cdLabia=L.recarga;
-    const sorte = Math.random() < L.chance; X.msg("info", "Diully (sorriso confiante): “Olha, eu sei que você não quer confusão. Vamos resolver isso do nosso jeito?”");
-    if(sorte){ const ok = a.aoLabia(L); X.msg("info", ok === false ? (a.nome || "A pessoa") + " hesita, mas não cede desta vez." : (a.nome || "A pessoa") + " abaixa a guarda e desiste — convencido(a) pela Lábia."); if(M.ctx) M.ctx.mostraAviso(ok === false ? "Quase…" : "Convencido!"); if(ok !== false) a.encantado = Math.max(a.encantado || 0, 30); }
-    else { X.msg("info", (a.nome || "A pessoa") + ": “Conversa bonita não me compra.” — não convenceu (tente de novo)."); if(M.ctx) M.ctx.mostraAviso("Não convenceu"); }
-    if(M.missoes && M.missoes.emite) M.missoes.emite("poder:labia", { alvo: a.id, ok: sorte }); }
-  /* ---- botão direito: erguer e segurar ---- */
-  const el = M.renderer && M.renderer.domElement;
-  if(el){ el.addEventListener("contextmenu", e => { if(ativo()) e.preventDefault(); }); el.addEventListener("pointerdown", e => { if(ativo() && e.button === 2){ e.preventDefault(); const J = M.jogador(); if(J) ergue(J); } }); window.addEventListener("pointerup", e => { if(e.button === 2 && S.seg && ativo()) solta(true); }); }
-  function tecla(e){ if(!ativo() || e.repeat || e.ctrlKey || e.altKey || e.metaKey || (typeof M.depurando === "function" && M.depurando())) return false; const J = M.jogador(), k = d().teclas; if(!J) return false;
-    if(e.code === k.chao){ e.preventDefault(); bateChao(J); return true; } if(e.code === k.labia){ e.preventDefault(); labia(J); return true; } return false; }
-  function tick(dt){ S.t += dt; S.cdChao = Math.max(0, S.cdChao - dt); S.cdLabia = Math.max(0, S.cdLabia - dt);
+  function acao(J, dd){ if(!ativo())return false;if(S.seg){arremessa(J,dd);return true;}return ergue(J); }
+  function mira(J){return{...J,yaw:Number.isFinite(J.camYaw)?J.camYaw+Math.PI:J.yaw};}
+  function registraObjeto(g,nome='Objeto móvel',id){if(!g?.isObject3D)return null;const antigo=[...S.objetos].find(a=>a.g===g);if(antigo)return antigo;if(g.parent!==M.cen.grupo)M.cen.grupo.attach(g);const a={id:id||'objeto-'+g.uuid,nome,tipo:'objeto',g,pos:()=>g.position,raioM:.6,alturaM:1};S.objetos.add(a);return a;}
+  function removeObjeto(a){if(S.seg?.a===a)solta(true);const v=S.voando.find(v=>v.a===a);if(v){restaura(v);S.voando=S.voando.filter(v=>v!==v);}S.objetos.delete(a);}
+  function humano(a){return a&&a.tipo!=='guardiao'&&(a.tipo==='pessoa'||a.humano===true)&&!a.morto&&!a.convencido;}
+  function fechaDialogo(){S.dialogo?.el.remove();S.dialogo=null;}
+  function resolveLabia(escolha){const dialogo=S.dialogo;if(!dialogo||!ativo())return false;const a=dialogo.a,L=d().labia;fechaDialogo();S.cdLabia=L.recarga;
+    const sorte=Math.random()<L.chance;let ok=false;if(sorte){ok=a.aoLabia?a.aoLabia({...L,escolha})!==false:true;if(ok){a.convencido=true;a.desistiu=true;if(a.tipo==='inimigo')a.tipo='pessoa';a.aliado=escolha==='ajudar';a.encantado=Math.max(a.encantado||0,30);}}
+    S.ultimaLabia={alvo:a.id,ok,escolha};X.msg('info',ok?(a.nome||'A pessoa')+' desiste da luta.':(a.nome||'A pessoa')+' não se convenceu desta vez.');M.ctx?.mostraAviso(ok?'Convencido!':'Não convenceu');M.missoes?.emite?.('poder:labia',{alvo:a.id,ok,escolha});return ok;
+  }
+  function labia(J){if(!ativo()||S.cdLabia>0||S.dialogo)return false;const L=d().labia,a=alvosEmCone(X.S.alvos.filter(humano),mira(J),L.alcanceM*U,L.cone)[0];if(!a){M.ctx?.mostraAviso('Mire em uma pessoa para conversar');return false;}
+    const el=document.createElement('section');el.dataset.diullyDialogo='';el.setAttribute('role','dialog');el.setAttribute('aria-label','Lábia de Diully');el.style.cssText='position:absolute;inset:auto 12% 18%;padding:20px;background:#181712f5;border:1px solid #d4af37;border-radius:14px;color:#fff3c4;z-index:90;pointer-events:auto;font:16px system-ui';
+    const titulo=document.createElement('h3');titulo.textContent='Diully • '+(a.nome||'Conversa');el.append(titulo);const fala=document.createElement('p');fala.textContent='“Podemos resolver isso sem brigar. Você pode escolher outro caminho.”';el.append(fala);
+    S.dialogo={el,a};M.ctx?.soltaTeclas?.();for(const [label,value]of [['Convencer a desistir','desistir'],['Pedir ajuda à equipe','ajudar'],['Encerrar conversa','cancelar']]){const btn=document.createElement('button');btn.textContent=label;btn.style.cssText='padding:10px;margin:5px;border-radius:8px;cursor:pointer';btn.onclick=()=>value==='cancelar'?fechaDialogo():resolveLabia(value);el.append(btn);}el.addEventListener('pointerdown',e=>e.stopPropagation());(M.ui||document.body).append(el);el.querySelector('button').focus();return true;
+  }
+  function podeControlar(){return ativo()&&(!M.andando||M.andando())&&!S.dialogo&&!M.personagens?.S?.tela&&!M.gente?.dialogoAberto?.()&&!M.ctx?.construindo?.()&&!M.H?.andarMod?.emCinema?.()&&!/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'');}
+  function tecla(e){if(!ativo())return false;if(S.dialogo){if(e.code==='Escape'){e.preventDefault();fechaDialogo();}return true;}if(!podeControlar()||e.repeat||e.ctrlKey||e.altKey||e.metaKey||M.depurando?.())return false;const J=M.jogador();if(!J)return false;const k=d().teclas;if([k.chao,'KeyY'].includes(e.code)){e.preventDefault();bateChao(J);return true;}if([k.labia,'KeyU'].includes(e.code)){e.preventDefault();labia(J);return true;}return false;}
+  const el=M.renderer?.domElement;let inicio=null,botoes=[],ligado=false;
+  const contexto=e=>{if(ativo())e.preventDefault();};
+  const down=e=>{if(!podeControlar()||e.pointerType==='touch')return;if(e.button===2){e.preventDefault();ergue(M.jogador());}if(e.button===0)inicio={x:e.clientX,y:e.clientY,t:performance.now()};};
+  const up=e=>{const p=inicio;inicio=null;if(e.button===2&&S.seg)solta(true);if(e.button===0&&p&&podeControlar()&&Math.hypot(e.clientX-p.x,e.clientY-p.y)<6&&performance.now()-p.t<500&&S.seg)M.poderes?.usa();};
+  const blur=()=>{inicio=null;solta(true);botoes=[];};
+  function controle(){const pad=navigator.getGamepads?.()?.find(p=>p?.connected&&p.mapping==='standard'),next=pad?pad.buttons.map(b=>b.pressed):[];if(podeControlar()){if(next[6]&&!botoes[6])ergue(M.jogador());if(next[7]&&!botoes[7]&&S.seg)M.poderes?.usa();if(next[5]&&!botoes[5])bateChao(M.jogador());if(next[4]&&!botoes[4])labia(M.jogador());}if(botoes[6]&&!next[6]&&S.seg)solta(true);botoes=next;}
+  function liga(){if(ligado)return;ligado=true;el?.addEventListener('contextmenu',contexto);el?.addEventListener('pointerdown',down);window.addEventListener('pointerup',up);window.addEventListener('blur',blur);}
+  function restaura(v){v.a.encantado=v.enc0;v.a.g.rotation.copy(v.rot);v.a.g.position.y=X.chao(v.a.g.position.x,v.a.g.position.z);}
+  function limpaVoos(){S.voando.forEach(restaura);S.voando=[];}
+  function dispose(){solta(true);limpaVoos();fechaDialogo();ligado=false;el?.removeEventListener('contextmenu',contexto);el?.removeEventListener('pointerdown',down);window.removeEventListener('pointerup',up);window.removeEventListener('blur',blur);S.g.children.slice().forEach(descarta);S.poeira=[];S.objetos.clear();S.ativo=false;}
+  function tick(dt){ controle();if(S.dialogo&&(!ativo()||S.dialogo.a.morto||Math.hypot(S.dialogo.a.pos().x-(M.jogador()?.x||0),S.dialogo.a.pos().z-(M.jogador()?.z||0))>d().labia.alcanceM*U*1.3))fechaDialogo(); S.t += dt; S.cdChao = Math.max(0, S.cdChao - dt); S.cdLabia = Math.max(0, S.cdLabia - dt);
     if(S.seg){S.seg.t+=dt;if(S.seg.t>=d().segurarMaxSeg)solta(true);}
-    if(S.seg){ const J = M.jogador(); if(!J || !ativo() || S.seg.a.morto){ solta(true); } else { const { a } = S.seg, f = [Math.sin(J.yaw), Math.cos(J.yaw)], tx = J.x + f[0] * 4 * U, tz = J.z + f[1] * 4 * U, ty = X.chao(tx, tz) + d().alturaM * U + Math.sin(S.t * 2.2) * .3 * U; a.g.position.x += (tx - a.g.position.x) * Math.min(1, dt * 6); a.g.position.z += (tz - a.g.position.z) * Math.min(1, dt * 6); a.g.position.y += (ty - a.g.position.y) * Math.min(1, dt * 6); a.g.rotation.y += dt * .8; a.g.rotation.z = Math.sin(S.t * 1.7) * .25;
+    if(S.seg){ const J = M.jogador(); if(!J || !ativo() || S.seg.a.morto){ solta(true); } else { const { a } = S.seg, f = [Math.sin(mira(J).yaw), Math.cos(mira(J).yaw)], tx = J.x + f[0] * 4 * U, tz = J.z + f[1] * 4 * U, ty = X.chao(tx, tz) + d().alturaM * U + Math.sin(S.t * 2.2) * .3 * U; a.g.position.x += (tx - a.g.position.x) * Math.min(1, dt * 6); a.g.position.z += (tz - a.g.position.z) * Math.min(1, dt * 6); a.g.position.y += (ty - a.g.position.y) * Math.min(1, dt * 6); a.g.rotation.y += dt * .8; a.g.rotation.z = Math.sin(S.t * 1.7) * .25;
         if(S.anel){ S.anel.position.set(a.g.position.x, a.g.position.y + 1.2 * U, a.g.position.z); S.anel.rotation.z += dt * 2; S.anel.material.opacity = .6 + .3 * Math.sin(S.t * 6); } if(S.luz){ S.luz.position.set(a.g.position.x, a.g.position.y + 2 * U, a.g.position.z); S.luz.intensity = 8 + 6*Math.min(1,S.seg.t/d().cargaSeg) + 3 * Math.sin(S.t * 5); } } }
-    S.voando = S.voando.filter(v => { v.t += dt; const p = v.a.g.position; v.vy -= 28 * U * dt; p.x += v.vx * dt; p.y += v.vy * dt; p.z += v.vz * dt; p.x += 0; const ch = X.chao(p.x, p.z); if(p.y <= ch){ p.y = ch; v.a.g.rotation.z = (Math.random() - .5) * 1.2; if(v.a.dano) v.a.dano(v.dano); impacto(v.a,v.dano/d().danoArremesso); X.luzFx(p.x, p.y + U, p.z, 0xffd36a, 8, 14 * U, .3); poeira(p.x, p.y, p.z); return false; } return v.t < 6; });
-    S.poeira = S.poeira.filter(q => { q.t += dt; const a = q.pos, v = q.vel; for(let k = 0; k < a.length; k += 3){ a[k] += v[k] * dt; a[k + 1] += v[k + 1] * dt; a[k + 2] += v[k + 2] * dt; } q.p.geometry.attributes.position.needsUpdate = true; q.p.material.opacity = .6 * Math.max(0, 1 - q.t / q.vida); if(q.t > q.vida){ S.g.remove(q.p); q.p.geometry.dispose(); return false; } return true; }); }
-  const info = () => (ativo() ? "Diully: " + (S.seg ? "segurando " + (S.seg.a.nome || "alvo") + " · carga " + Math.round(Math.min(1,S.seg.t/d().cargaSeg)*100) + "% (V arremessa · " + d().teclas.chao.replace("Key", "") + " bate)" : "V ergue · botão direito segura") + " · " + d().teclas.labia.replace("Key", "") + " lábia" + (S.cdLabia > 0 ? " (" + S.cdLabia.toFixed(0) + ")" : "") : "");
-  return { acao, ergue, solta, arremessa, bateChao, labia, tecla, tick, aoTransformar, info, S };
+    S.voando = S.voando.filter(v => { v.t += dt; const p = v.a.g.position; v.vy -= 28 * U * dt; p.x += v.vx * dt; p.y += v.vy * dt; p.z += v.vz * dt; p.x += 0; const ch = X.chao(p.x, p.z); if(p.y <= ch){ p.y = ch; v.a.g.rotation.z = (Math.random() - .5) * 1.2; v.a.encantado=v.enc0;v.a.g.rotation.copy(v.rot);if(hostil(v.a)&&v.a.dano) v.a.dano(v.dano); impacto(v.a,v.dano/d().danoArremesso); X.luzFx(p.x, p.y + U, p.z, 0xffd36a, 8, 14 * U, .3); poeira(p.x, p.y, p.z); return false; } if(v.t>=6){restaura(v);return false;}return true; });
+    S.poeira = S.poeira.filter(q => { q.t += dt; const a = q.pos, v = q.vel; for(let k = 0; k < a.length; k += 3){ a[k] += v[k] * dt; a[k + 1] += v[k + 1] * dt; a[k + 2] += v[k + 2] * dt; } q.p.geometry.attributes.position.needsUpdate = true; q.p.material.opacity = .6 * Math.max(0, 1 - q.t / q.vida); if(q.t > q.vida){ S.g.remove(q.p); q.p.geometry.dispose();q.p.material.dispose(); return false; } return true; }); }
+  const info = () => (ativo() ? "Diully: " + (S.seg ? "segurando " + (S.seg.a.nome || "alvo") + " · carga " + Math.round(Math.min(1,S.seg.t/d().cargaSeg)*100) + "% (clique/R2 arremessa · " + d().teclas.chao.replace("Key", "") + " bate)" : "botão direito/L2 segura · clique/R2 arremessa") + " · " + d().teclas.labia.replace("Key", "") + " lábia" + (S.cdLabia > 0 ? " (" + S.cdLabia.toFixed(0) + ")" : "") : "");
+  liga();
+  return { liga, dispose, controle, registraObjeto, removeObjeto, resolveLabia, fechaDialogo, acao, ergue, solta, arremessa, bateChao, labia, tecla, tick, aoTransformar, info, S };
 }

@@ -1,5 +1,5 @@
 // Regras compartilhadas em unidades do mundo; os dados de habilidades continuam em metros.
-export const hostil = a => !!a && !a.morto && (a.tipo === "inimigo" || a.tipo === "guardiao");
+export const hostil = a => !!a && !a.morto && !a.desistiu && (a.tipo === "inimigo" || a.tipo === "guardiao");
 export function emCone(J, p, alcance, cone){
   const dx=p.x-J.x,dz=p.z-J.z,dist=Math.hypot(dx,dz);
   return Number.isFinite(dist) && dist<=alcance && (dist<.001 || (dx*Math.sin(J.yaw)+dz*Math.cos(J.yaw))/dist>=Math.cos(cone*Math.PI/180));

@@ -15,7 +15,9 @@
     "test:mohr": "node test/browser/mohr.cjs",
     "test:mohr:game": "node test/browser/mohr-game.cjs",
     "test:mary": "node test/browser/mary.cjs",
-    "test:mary:game": "node test/browser/mary-game.cjs"
+    "test:mary:game": "node test/browser/mary-game.cjs",
+    "test:diully": "node test/browser/diully.cjs",
+    "test:diully:game": "node test/browser/diully-game.cjs"
   },
   "keywords": [],
   "author": "",

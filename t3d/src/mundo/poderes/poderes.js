@@ -132,7 +132,7 @@ export function criarPoderes(M){
   function visitante(x, z){
     const Mt = M.H.M, c = Mt(0x3a6ea5, { roughness: .9 }), rig = M.H.pessoa3d({ nome: "Visitante teimoso", x, y: chao(x, z), z, yaw: 0, camisa: c, manga: c, calca: Mt(0x2c2f3a), pele: M.H.pele.media, cabelo: 0x3a2a1c, barba: false });
     rig.capG.visible = false; rig.equip.forEach(o => { o.visible = false; }); rig.pernasA.grupo.visible = false; rig.estat.forEach(o => { o.visible = true; });
-    const a = registra({ id: "vis" + S.alvos.length, tipo: "pessoa", nome: "o visitante teimoso", raioM: 1, alturaM: 1.5, rig, convencido: false, encantado: 0, pos: () => rig.av.position,
+    const a = registra({ id: "vis" + S.alvos.length, tipo: "pessoa", nome: "o visitante teimoso", raioM: 1, alturaM: 1.5, rig, g:rig.av, humano:true, convencido: false, encantado: 0, pos: () => rig.av.position,
       aoLabia(){ if(a.convencido){ msg("info", "Visitante: “Já disse que concordo, moço!”"); return true; } a.convencido = true; a.virar = Math.PI; msg("info", "Visitante teimoso: “...Tá bom, você me convenceu. Eu volto para a trilha.”"); if(M.ctx) M.ctx.mostraAviso("Convencido!"); return true; },
       aoOlhos(d){ a.encantado = d.duracaoS; msg("sobrenatural", "O visitante fica parado, olhando fixo nos olhos dela."); } });
     return a;
@@ -140,8 +140,9 @@ export function criarPoderes(M){
   function treino(J){ const f = [Math.sin(J.yaw), Math.cos(J.yaw)], l = [f[1], -f[0]];
     for(let i = 0; i < PODERES_CFG.espantalhosDebug; i++){ const d = (18 + i * 3) * U, s = (i - 1) * 8 * U; espantalho(J.x + f[0] * d + l[0] * s, J.z + f[1] * d + l[1] * s); }
     const v = visitante(J.x + f[0] * 12 * U + l[0] * 12 * U, J.z + f[1] * 12 * U + l[1] * 12 * U); v.rig.av.rotation.y = Math.atan2(J.x - v.pos().x, J.z - v.pos().z) + Math.PI;
+    for(let k=0;k<2;k++){const g=new Group(),m=new Mesh(new BoxGeometry(1.1*U,1.1*U,1.1*U),new MeshStandardMaterial({color:0x796044,roughness:.85}));m.position.y=.55*U;g.add(m);const x=J.x+f[0]*(7+k*3)*U+l[0]*4*U,z=J.z+f[1]*(7+k*3)*U+l[1]*4*U;g.position.set(x,chao(x,z),z);G.add(g);DY.registraObjeto(g,'Caixa móvel','treino-caixa-'+k);}
     M.ctx && M.ctx.mostraAviso("Alvos de treino criados à frente (V = poder)"); }
-  function limpaTreino(){ S.alvos.filter(a => /^(esp|vis)/.test(a.id)).forEach(a => { if(a.g && a.g.parent) a.g.parent.remove(a.g); if(a.rig && a.rig.av.parent) a.rig.av.parent.remove(a.rig.av); remove(a); }); }
+  function limpaTreino(){for(const a of [...DY.S.objetos])if(a.id.startsWith('treino-')){DY.removeObjeto(a);descarta(a.g);}S.alvos.filter(a => /^(esp|vis)/.test(a.id)).forEach(a => { if(a.g && a.g.parent) a.g.parent.remove(a.g); if(a.rig && a.rig.av.parent) a.rig.av.parent.remove(a.rig.av); remove(a); }); }
 
   /* ---------- botão na tela ---------- */
   function hud(){
@@ -185,7 +186,7 @@ export function criarPoderes(M){
     for(const a of S.alvos.slice()){ if(a.morto){ a.t += dt; if(a.g){ const k = Math.min(1, a.t / .9); a.g.scale.setScalar(1 - k); if(k >= 1){ if(a.g.parent) a.g.parent.remove(a.g); remove(a); } } continue; }
       if(a.encantado > 0){ if(!a.tick) a.encantado = Math.max(0,a.encantado-dtAlvos); if(a.g) a.g.rotation.y += dt * 2; if(J && a.rig){ const dy = Math.atan2(J.x - a.rig.av.position.x, J.z - a.rig.av.position.z); a.rig.av.rotation.y += ((((dy - a.rig.av.rotation.y + 9.4248) % 6.2832) - 3.1416)) * Math.min(1, dt * 4); } }
       if(a.virar && a.rig){ a.rig.av.rotation.y += a.virar * dt * 1.5; a.virar *= Math.max(0, 1 - dt * 2); if(Math.abs(a.virar) < .02) a.virar = 0; }
-      if(a.tick) a.tick(dtAlvos, J); }
+      if(a.tick && !a.desistiu) a.tick(dtAlvos, J); }
   }
   function tecla(e){
     if(!M.andando() || M.personagens.S.tela)return false;
@@ -197,6 +198,6 @@ export function criarPoderes(M){
       e.preventDefault(); usa(); return true; }
     return false;
   }
-  const dispose = () => { PT.dispose(); JK.dispose(); KR.dispose(); MH.dispose(); MY.dispose(); limpaTreino(); S.fx.forEach(f => f.g && G.remove(f.g)); S.fx.length = 0; S.flechas.forEach(f => G.remove(f.g)); S.flechas.length = 0; if(S.chip) S.chip.remove(); if(S.flash) S.flash.remove(); };
-  return { liga:()=>{JK.liga();KR.liga();MH.liga();MY.liga();}, registra, remove, usa, tick, tecla, treino, limpaTreino, espantalho, visitante, relampago, naMira, def, liberado, S, alvos: S.alvos, krig: KR, jackao: JK, mohr: MH, mary: MY, diully: DY, kauling: KL, carlao: CA, pit: PT, aoTransformar: (id, on) => { KR.aoTransformar(id, on); JK.aoTransformar(id, on); MH.aoTransformar(id, on); MY.aoTransformar(id, on); DY.aoTransformar(id, on); KL.aoTransformar(id, on); CA.aoTransformar(id, on); PT.aoTransformar(id, on); }, info: () => { const s = [KR.info(), JK.info(), MH.info(), MY.info(), DY.info(), KL.info(), CA.info(), PT.info(), (def() ? "Poder: " + def().nome + (S.cd > 0 ? " (" + S.cd.toFixed(1) + " s)" : " pronto") : null)].filter(Boolean).join(" · "); return s || null; }, desliga: dispose };
+  const dispose = () => { PT.dispose(); JK.dispose(); KR.dispose(); MH.dispose(); MY.dispose(); limpaTreino(); DY.dispose(); S.fx.forEach(f => f.g && G.remove(f.g)); S.fx.length = 0; S.flechas.forEach(f => G.remove(f.g)); S.flechas.length = 0; if(S.chip) S.chip.remove(); if(S.flash) S.flash.remove(); };
+  return { liga:()=>{JK.liga();KR.liga();MH.liga();MY.liga();DY.liga();}, registra, remove, usa, tick, tecla, treino, limpaTreino, espantalho, visitante, relampago, naMira, def, liberado, S, alvos: S.alvos, krig: KR, jackao: JK, mohr: MH, mary: MY, diully: DY, kauling: KL, carlao: CA, pit: PT, aoTransformar: (id, on) => { KR.aoTransformar(id, on); JK.aoTransformar(id, on); MH.aoTransformar(id, on); MY.aoTransformar(id, on); DY.aoTransformar(id, on); KL.aoTransformar(id, on); CA.aoTransformar(id, on); PT.aoTransformar(id, on); }, info: () => { const s = [KR.info(), JK.info(), MH.info(), MY.info(), DY.info(), KL.info(), CA.info(), PT.info(), (def() ? "Poder: " + def().nome + (S.cd > 0 ? " (" + S.cd.toFixed(1) + " s)" : " pronto") : null)].filter(Boolean).join(" · "); return s || null; }, desliga: dispose };
 }

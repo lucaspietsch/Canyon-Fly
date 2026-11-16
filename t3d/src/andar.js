@@ -342,7 +342,7 @@ export function criarAndar(c){
 
   /* ---- movimento ---- */
   function emVoo(){return !!H.mundo?.poderes?.krig.voando();}
-  function pular(){ if(W.noChao && !emVoo()){ W.vy = 15.5; W.noChao = false; } }
+  function pular(){ if(W.noChao && !emVoo() && !(H.mundo?.transformacao?.ativa() && H.mundo.transformacao.S.id === "diully")){ W.vy = 15.5; W.noChao = false; } }
   function entrada(){
     const k = W.keys; let ix = 0, iy = 0;
     if(k.has("ArrowLeft")) ix -= 1;

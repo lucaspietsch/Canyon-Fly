@@ -1,3 +1,4 @@
+import { constroiDiully } from './diully-visual.js';
 import { constroiMary } from "./mary-visual.js";
 import { constroiMohr } from "./mohr-visual.js";
 import { constroiKrig } from "./krig-visual.js";
@@ -31,7 +32,7 @@ export function criarPersonagens(M){
   /* rigs (bonecos) dos desbloqueados que não são do jogo base: criados na primeira vez que o jogador os escolhe */
   function rig(id){
     if(S.rigs[id]) return S.rigs[id]; const d = def(id); if(!d || d.hub) return null;
-    try{ const r = id === "mary" ? constroiMary(H,d) : id === "mohr" ? constroiMohr(H,d) : id === "krig" ? constroiKrig(H,d) : id === "jackao" ? constroiJackao(H,d) : id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
+    try{ const r = id === "diully" ? constroiDiully(H,d) : id === "mary" ? constroiMary(H,d) : id === "mohr" ? constroiMohr(H,d) : id === "krig" ? constroiKrig(H,d) : id === "jackao" ? constroiJackao(H,d) : id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
   }
   /* o modo andar pergunta quem existe (ver trolley3d.js → H.personagens): os desbloqueados com boneco entram na lista */
   H.extraPersonagens = () => PERSONAGENS.filter(p => !p.hub && desbloqueado(p.id)).map(p => rig(p.id)).filter(Boolean).map(r => ({ id: r.id, nome: r.nome, p: r.p }));
