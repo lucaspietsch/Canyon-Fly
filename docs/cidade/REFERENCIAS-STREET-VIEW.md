@@ -401,6 +401,35 @@ Só anotações — a imagem do satélite **não** vai para o repositório (é d
 - **Geometria:** a malha é **inclinada** — as ruas "norte–sul" (Quinze de Março, Laurindo, Vinte de Setembro) correm a ~**340°/160°**, e as "leste–oeste" (Dona Úrsula, Getúlio Vargas/RS-020) a ~**70°/250°**. Os quarteirões têm ~**90–100 m**. Isso bate com as triangulações (a avenida "sobe" para o nordeste).
 - No jogo: nomes de comércio só com autorização; serviços públicos (Prefeitura, Igreja, Centro Cultural) e atrações (Termômetro, Sequoia) podem ter o nome real.
 
+## Mapa geral da cidade em quadrantes (prints do Google Maps/satélite do Lucas)
+Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a imagem não vai para o repositório).
+Conversão de pixel do print (1366×768) para metros locais — **calibrada pelo Du Perau** e conferida pela Rua Vinte de Setembro (dá x ≈ +89, o catálogo tem +93 ✔): escala ≈ **1,17 m/px**, norte para cima.
+
+### A1 — noroeste/centro-oeste (centro do print −29.0478122, −50.1499975 → local (−468, +153))
+- **Ruas** (rumo aproximado; x/y em m locais):
+  - **R. Joaquim Pereira** — leste–oeste no norte, y ≈ +300 a +340 (dois trechos, de x ≈ −250 até +200).
+  - **R. João Francisco Riter** — diagonal OSO→ENE pelo meio, de (−730, 20) até (−200, 170).
+  - **R. Adélcia Candido da Luz** — noroeste, perto da Pousada Bela Vista, y ≈ +170.
+  - **R. Primeiro de Maio** — NNO–SSE, x ≈ −270, de y +250 a +180.
+  - **R. São José** — norte–sul, x ≈ −215.
+  - **R. Dom Pedro II** — norte–sul, x ≈ −155, de y +170 até −240 (passa a oeste da praça).
+  - **R. Dona Úrsula** — trecho oeste em (−650, −80) e trecho leste em (+180, +150) (mesma rua da igreja).
+  - **Av. Getúlio Vargas** — entra pelo sudoeste em (−210, −50) rumo à praça.
+  - **R. Vinte de Setembro** — norte–sul, x ≈ +90, aparece de y +330 a +200.
+  - **R. Osvaldo Kroeff** — norte–sul, x ≈ +255 (leste da Vinte de Setembro).
+  - **R. Alberto Pasqualine** — canto nordeste, x ≈ +190, y ≈ +480.
+  - **R. Padre João Paza** — sul, ≈ (+50, −270).
+  - **Estrada de terra** — vem do oeste (−1240, +100), passa ao norte do banhado e junta na R. João Francisco Riter perto da Pousada Bela Vista; um ramo sobe para o norte em x ≈ −670.
+- **Lugares (Maps)**:
+  - **Pousada Bela Vista** (−554, +216) · **Pousada Fazenda Pindorama** (−960, +24), na beira da mata a oeste.
+  - **Posto de Saúde UBS Isabel Sueli Santos** (−525, +79) · ponto roxo (cultural/histórico, nome não aparece) (−470, +136).
+  - **Lagoinha urbana** (−467, +37), logo a sudeste do posto de saúde; **lagoa grande** (−770, +415) e **banhado escuro** (−600, +450) no campo ao norte.
+  - **Agência de Turismo Aparados da Serra Tours** (−108, +331) · **Cottage Fondue** (+157, +271) · restaurante (+273, +347).
+  - **Du Perau Gastro Pub** (+22, +60) — ponto de calibração · **Crepe Mania** e outro restaurante (−55, 0), ao sul da praça.
+  - **Hostel Cape Town em Cambará do Sul** (+236, −80) · hospedagem rosa (−338, +7) · café/restaurante laranja (−320, −105).
+  - **Igreja Pentecostal Deus É Amor** (−683, −165) · **Fundação Hospitalar São José** (hospital) (−293, −172).
+- **Forma da cidade:** a malha urbana vai de x ≈ −750 até além de +300; ao **norte** de y ≈ +350 há **mata de araucária** densa (nordeste) e **campo aberto com banhados e lagoas** (noroeste); a oeste, mata e a Pousada Pindorama.
+
 ## A receber do Lucas (praça)
 - [ ] **Foto do Termômetro** de Cambará.
 - [ ] **História da Sequoia Lunar** (e foto da **placa**).
