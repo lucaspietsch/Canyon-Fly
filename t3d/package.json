@@ -17,7 +17,9 @@
     "test:mary": "node test/browser/mary.cjs",
     "test:mary:game": "node test/browser/mary-game.cjs",
     "test:diully": "node test/browser/diully.cjs",
-    "test:diully:game": "node test/browser/diully-game.cjs"
+    "test:diully:game": "node test/browser/diully-game.cjs",
+    "test:kauling": "node test/browser/kauling.cjs",
+    "test:kauling:game": "node test/browser/kauling-game.cjs"
   },
   "keywords": [],
   "author": "",

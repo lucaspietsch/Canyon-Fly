@@ -1,3 +1,4 @@
+import { constroiKauling } from './kauling-visual.js';
 import { constroiDiully } from './diully-visual.js';
 import { constroiMary } from "./mary-visual.js";
 import { constroiMohr } from "./mohr-visual.js";
@@ -32,7 +33,7 @@ export function criarPersonagens(M){
   /* rigs (bonecos) dos desbloqueados que não são do jogo base: criados na primeira vez que o jogador os escolhe */
   function rig(id){
     if(S.rigs[id]) return S.rigs[id]; const d = def(id); if(!d || d.hub) return null;
-    try{ const r = id === "diully" ? constroiDiully(H,d) : id === "mary" ? constroiMary(H,d) : id === "mohr" ? constroiMohr(H,d) : id === "krig" ? constroiKrig(H,d) : id === "jackao" ? constroiJackao(H,d) : id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
+    try{ const r = id === "kauling" ? constroiKauling(H,d) : id === "diully" ? constroiDiully(H,d) : id === "mary" ? constroiMary(H,d) : id === "mohr" ? constroiMohr(H,d) : id === "krig" ? constroiKrig(H,d) : id === "jackao" ? constroiJackao(H,d) : id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
   }
   /* o modo andar pergunta quem existe (ver trolley3d.js → H.personagens): os desbloqueados com boneco entram na lista */
   H.extraPersonagens = () => PERSONAGENS.filter(p => !p.hub && desbloqueado(p.id)).map(p => rig(p.id)).filter(Boolean).map(r => ({ id: r.id, nome: r.nome, p: r.p }));
@@ -74,15 +75,17 @@ export function criarPersonagens(M){
     const cena = new Scene(); cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
     const luz = new DirectionalLight(0xffffff, 1.7); luz.position.set(3, 8, 6); cena.add(luz); const luz2 = new DirectionalLight(0xffe0b0, .6); luz2.position.set(-4, 3, -3); cena.add(luz2);
     const esc0 = av.scale.x, esc = opc.escala || 1; cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true; if(esc !== 1) av.scale.setScalar(esc0 * esc);
+    let comparacao=null,comparacaoMats=[];if(opc.gigante&&id==='kauling'){comparacao=av.clone(true);comparacao.traverse(o=>{if(o.material&&!Array.isArray(o.material)){o.material=o.material.clone();comparacaoMats.push(o.material);}});comparacao.position.set(-4,0,0);comparacao.scale.setScalar(esc0);cena.add(comparacao);av.scale.setScalar(esc0*2.5);av.position.x=1;}
     if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id); if(opc.transformado && id === "pit" && M.poderes && M.poderes.pit) M.poderes.pit.vesteEm(av); if(opc.transformado && r.fx){ r.fx.liga(); r.fx.tick(.4); r.fx.tick(.4); }
     const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, (id === "pit" ? 2.9 : 2.5) * esc, (id === "pit" ? 15 : id === "jackao" ? 15.5 : 12.5) * esc); cam.lookAt(0, (id === "pit" ? 2.85 : 2.45) * esc, 0); }
+    if(comparacao){cam.position.set(0,6.4,36);cam.lookAt(0,6.4,0);}
     const R = M.renderer, tam = new Vector2(); R.getSize(tam); const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(px, px, false); R.render(cena, cam);
     const url = R.domElement.toDataURL("image/png");
     R.setPixelRatio(pr); R.setSize(tam.x, tam.y, false);
     if(opc.transformado && M.transformacao && !(M.transformacao.ativa() && M.transformacao.S.id === id && S.ativo === id)) M.transformacao.despeEm(av); if(opc.transformado && r.fx && !(M.transformacao && M.transformacao.ativa() && M.transformacao.S.id === id)) r.fx.desliga();
     if(opc.transformado && id === "pit" && M.poderes && M.poderes.pit && !(M.transformacao && M.transformacao.ativa())) M.poderes.pit.despeEm(av);
     if(pitVisual){pitVisual.forma(pitArmado);if(posePit){r.p.bE.pv.rotation.copy(posePit[0]);r.p.bE.co.rotation.copy(posePit[1]);}}
-    cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; if(esc !== 1) av.scale.setScalar(esc0); return url;
+    cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; if(esc !== 1 || comparacao) av.scale.setScalar(esc0);comparacaoMats.forEach(m=>m.dispose());return url;
   }
   function fechaTela(){ if(S.tela){ S.tela.remove(); S.tela = null; } }
   function tecla(e){ if(S.tela){ if(e.code === "Escape"){ fechaTela(); } e.preventDefault(); return true; } return false; }

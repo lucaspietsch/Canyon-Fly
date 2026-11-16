@@ -404,6 +404,7 @@ export function criarAndar(c){
     av.position.set(W.x, W.y + bob + (cen.extraChao?.alturaExtra?.()||0), W.z); av.rotation.y = W.yaw;
     if(AV.nome) AV.nome.rotation.y = W.camYaw - W.yaw;                  // o nome sempre de frente para a câmera
   }
+  function tremorKauling(){const K=H.mundo?.poderes?.kauling;if(!K||H.mundo.congelado||H.mundo.personagens?.ativo!=='kauling')return;const a=Math.min(.08,K.S.tremor*.10),t=performance.now()*.06;cam.position.x+=Math.sin(t)*a;cam.position.y+=Math.cos(t*1.3)*a;}
   function camera(dt){
     if(W.camLivre) return;                                       // depuração/testes: a câmera fica por conta de quem chama
     /* a câmera volta sozinha para trás do Pit; o mouse/dedo ou Z X só a desviam por um tempo */
@@ -414,8 +415,8 @@ export function criarAndar(c){
     const alturaCamera=cen.extraChao?.alturaExtra?.()||0;
     if(W.fp){
       const dx = -Math.sin(W.camYaw) * Math.cos(W.fpPitch), dz = -Math.cos(W.camYaw) * Math.cos(W.fpPitch), dy = Math.sin(W.fpPitch);
-      camPos.set(W.x - Math.sin(W.camYaw) * .6, W.y + 4.85 + alturaCamera, W.z - Math.cos(W.camYaw) * .6);
-      cam.position.copy(camPos); lookAt.set(camPos.x + dx * 10, camPos.y + dy * 10, camPos.z + dz * 10); cam.lookAt(lookAt);
+      camPos.set(W.x - Math.sin(W.camYaw) * .6, W.y + 4.85 * (cen.extraChao?.escalaJogador?.()||1) + alturaCamera, W.z - Math.cos(W.camYaw) * .6);
+      cam.position.copy(camPos); lookAt.set(camPos.x + dx * 10, camPos.y + dy * 10, camPos.z + dz * 10); cam.lookAt(lookAt);tremorKauling();
       const fov = (H.mundo && H.mundo.fovFoto && H.mundo.fovFoto()) || 70;
       if(cam.fov !== fov){ cam.fov = fov; cam.updateProjectionMatrix(); }
       return;
@@ -425,7 +426,7 @@ export function criarAndar(c){
     const escJ = cen.extraChao && cen.extraChao.escalaJogador ? cen.extraChao.escalaJogador() : 1;                               // gigante (Kauling): câmera se afasta
     const dist = (dentro ? Math.min(W.dist, 10) : W.dist) * escJ, pit = dentro ? Math.max(W.camPitch, .62) : W.camPitch;
     const dx = Math.sin(W.camYaw) * Math.cos(pit), dy = Math.sin(pit), dz = Math.cos(W.camYaw) * Math.cos(pit);
-    lookAt.set(W.x, W.y + 3.5 + alturaCamera, W.z);
+    lookAt.set(W.x, W.y + 3.5 * escJ + alturaCamera, W.z);
     let d = dist;
     if(!dentro){                                                  // a câmera não atravessa as paredes da casinha
       tmp.set(dx, dy, dz).normalize(); ray.set(lookAt, tmp); ray.far = dist;
@@ -438,7 +439,7 @@ export function criarAndar(c){
       if(fr < 1) tmp.set(lookAt.x + (tmp.x - lookAt.x) * fr, lookAt.y + (tmp.y - lookAt.y) * fr, lookAt.z + (tmp.z - lookAt.z) * fr);
       tmp.y = Math.max(tmp.y, cen.relevo(tmp.x, tmp.z) + 1.4); }
     if(W.snap){ cam.position.copy(tmp); W.snap = false; } else cam.position.lerp(tmp, Math.min(1, dt * 12));
-    cam.lookAt(lookAt);
+    cam.lookAt(lookAt);tremorKauling();
   }
   function mira(){
     let melhor = null, md = 1e9;

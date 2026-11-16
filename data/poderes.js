@@ -23,7 +23,7 @@ export const PODERES = {
   /* Kauling (só transformado): V = GRITO forte — anéis de som visíveis que ARREMESSAM os inimigos no cone e balançam a vegetação (rajada de vento) ·
      teclas.crescer = CRESCER crescerX vezes por crescerSeg s (câmera se afasta, passos pesados tremem a câmera, golpes mais fortes; encolhe sozinho dentro da mata = copas baixas) ·
      teclas.curto = grito curto que atordoa animais enfeitiçados e sombras sem ferir. Falas gaúchas ao usar. */
-  kauling: { id: "grito", nome: "Grito do Kauling", texto: "U cresce 2,5× com pisadas que atordoam ao caminhar; V grito, I grito curto.", recarga: 2.2, pisaoM: 7, pisaoSeg: 1.25, pisaoRecarga: .8, alcanceM: 22, cone: 60, empurraM: 16, danoInimigo: 1, crescerX: 2.5, crescerSeg: 20, gritoCurtoM: 18, atordoaSeg: 4, teclas: { crescer: "KeyU", curto: "KeyI" },
+  kauling: { id: "grito", nome: "Grito do Kauling", texto: "E/L1 cresce 2,5×; clique/R2 grito forte; F/Triângulo grito curto.", recarga: 2.2, pisaoM: 7, pisaoSeg: 1.25, pisaoRecarga: .8, alcanceM: 22, cone: 60, empurraM: 16, danoInimigo: 1, crescerX: 2.5, crescerSeg: 20, gritoCurtoM: 18, atordoaSeg: 4, teclas: { crescer: "KeyE", curto: "KeyF" },
     falas: ["Bah, tchê!", "Se aprochega!", "Mas que barbaridade!", "Capaz, índio velho!", "Tri legal, bah!"] },
   /* Carlão (só transformado): V = CHUTE da bola dourada — toque rápido: a bola acerta e VOLTA para o pé (encadeia chutes); segurar ≥ segurarSeg: a bola EXPLODE no impacto e
      outra nasce no pé na hora (infinito) · teclas.capoeira = golpes encadeados (ginga → meia-lua de compasso → martelo → armada) · teclas.rasteira = derruba e deixa no chão por rasteiraSeg (imobiliza animais sem ferir). */

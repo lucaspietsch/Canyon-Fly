@@ -19,7 +19,7 @@ export const OPERADORES = {
   diully: { login: "diully", salt: "", iter: 100000, hash: "" }, // Cole salt e hash próprios da Diully.
   mary: { login: "mary", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios da Mary.
   mohr: { login: "mohr", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do Mohr.
-  /* kauling: { login: "", salt: "", iter: 100000, hash: "" }, */
+  kauling: { login: "kauling", salt: "", iter: 100000, hash: "" }, // Cole salt e hash próprios do Kauling.
 };
 
 /* LOGIN DE TESTE (pedido pelo Lucas): só vale em MODO DEBUG — página aberta em localhost/127.0.0.1 ou com ?debug na URL.
