@@ -519,6 +519,7 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Mata densa (araucária)** entre o bairro norte e a R. Joaquim Pereira (-75, +414).
   - **Bairro norte** (nordeste do print): **R. Hélio Noronha de Melo** (-221, +691), **R. Y** (-33, +657), **R. Cancha Reta** (-221, +576) → (+103, +634) (nome de **cancha de carreira de cavalo** — reta comprida), **R. Moacir da Rosa Monteiro** (-158, +524), **R. Sen. Alberto Pasqualine** (+145, +446), **R. Primeiro de Maio** (-346, +205), **R. Joaquim Pereira** (-2, +289), **R. Vinte de Setembro** (+124, +216).
   - Lugares: **escola** (ícone de capelo) (-148, +637) · ponto "paciente acamado" (rótulo estranho do Maps) (-195, +657) · **Empório Inovazzione** (-273, +531) · **Igreja Missionária de Cambará do Sul** (-265, +472) · **Pousada Bela Vista** (-498, +195) · restaurante (+134, +245).
+  - **Z0 em camada de mapa** (centro −29.0446554, −50.1501172; mesma escala — Agência cai em (-102, +300) ✔): a **área verde-clara** do Maps cobre todo o **norte/noroeste** (campo/mata fora da cidade), com borda passando por (-872, +297) → (-601, +621) → (-350, +767); a estrada de terra do norte termina num grupo de **3–4 construções** (-710, +621); a **R. Sen. Alberto Pasqualine** faz **curva** para o leste ao norte de (+100, +527); ruas do bairro norte confirmadas (Hélio Noronha de Melo, R. Y, Cancha Reta, Moacir da Rosa Monteiro).
 - (aguardando os prints)
 
 ## Próximos envios do Lucas (anotado)
