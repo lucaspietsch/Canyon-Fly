@@ -554,7 +554,8 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Pousada Fazenda Pindorama** (-870, +41) — sede **cercada de mata de araucária densa** (-801, -4), acesso por estrada que sai da João F. Riter (-697, +6).
   - **Campo a oeste:** pastagens com **valetas de drenagem** e **banhados em faixas** (linhas escuras sinuosas) (-1010, -192); **capões de mato** redondos (-1083, -281) (-1167, +1); **trilha de terra clara** em diagonal (-1188, -35); pequenas **estruturas/tanques retangulares** (-1136, -98); **lavoura** de terra vermelha no sudoeste (-1533, -380); mata ciliar escura acompanhando os banhados (-1156, -380).
   - **Sul:** **plantação de pinus** em quadra densa (-571, -443) e **açudes** (-451, -485) (-655, -485).
-- (aguardando os prints)
+- **A1, A2, B1, B2** dos arredores = os **4 quadrantes da cidade** já registrados acima (o miolo da grade).
+- (aguardando: **A3, B0, B3, C0, C1, C2, C3**)
 
 ## Próximos envios do Lucas (anotado)
 - [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
