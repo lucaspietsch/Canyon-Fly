@@ -1,3 +1,4 @@
+import { personalizaKrig } from "./mundo/personagens/krig-visual.js";
 import { Group, Mesh, CylinderGeometry, TorusGeometry, BoxGeometry, SphereGeometry, Vector3, Quaternion, MathUtils } from "three";
 import { mat, NIVEL } from "./lib.js";
 import { camera360, cadeirinhaZip } from "./midia.js";
@@ -31,6 +32,7 @@ export function criarJogo3D({ ag, cam, renderer, pessoa3d, M, pele, equipe, lanc
   const marcos = pessoa("MARCOS", { pele: pele.media, capacete: M(0xc22b2b, { roughness: .45, metalness: .1 }), barba: true });
   /* Krig, o coordenador (laranja e verde, mosquetão azul) e Carlos, o líder (bottom vermelho com 1 grau, mosquetão branco): ficam no lançamento */
   const krig = pessoa("KRIG", { pele: pele.clara, barba: true, camisa: M(0xe8731a, { roughness: .7 }), manga: M(0x56642d), pin: { barra: "#e8731a", pil: 1, mosq: "#3b82e0" } });
+  personalizaKrig(krig);
   const carlos = pessoa("CARLOS", { pele: pele.parda, barba: false, capacete: M(0x4a5d2f, { roughness: .5 }), pin: { barra: "#951c24", pil: 1, mosq: "#ece3cf" } });
   /* lançamento: Krig (coord.), Carlos (líder), Denilson (op. 4), Lorrany (op. 5), Jhonatan.   recebimento: Pit, Thaynara, Weslley, Renato (líder 3), Marcos (resgatista) */
   const op = { op4: equipe[3], op5: equipe[2], lider2: carlos, coord: krig, op8: equipe[4], op6: pit, op7: equipe[1], op9: equipe[0], lider3: renato, resg: marcos };
@@ -129,6 +131,7 @@ export function criarJogo3D({ ag, cam, renderer, pessoa3d, M, pele, equipe, lanc
       if(p.bD.rock) p.bD.rock.visible = false; p.bD.mao.children[0].scale.set(1.08, 1.08, 1.08);
       if(p.nome && p.nome.visible) p.nome.rotation.y = Math.atan2(cam.position.x - p.av.position.x, cam.position.z - p.av.position.z) - p.av.rotation.y;
     });
+    krig.krigVisual?.tick(dt);
   }
 
   /* cliente pendurado na via (v) ou na via intermediária; devolve a posição de pés e dos dois pontos da cadeirinha */

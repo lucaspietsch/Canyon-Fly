@@ -9,7 +9,7 @@ export const PODERES = {
     labia: { recarga: 4, alcanceM: 18, cone: 40, chance: .65 } },
   /* Krig (só transformado, no tempo antigo): V = investida em chamas · teclas.golpe = golpe no chão (empurra) · teclas.voo = liga/desliga o voo (vooM de altura, velocidadeVoo × a corrida) · teclas.rugido = rugido que atordoa animais e sombras sem ferir.
      (E, Q e F já são interagir, câmera e foto no jogo; por isso Y / U / I — troque aqui.) */
-  krig:   { id: "investida", nome: "Fúria de Krig", texto: "Investida com rastro de impacto; Y golpe no chão, U voo, I rugido.", recarga: 1.2, trilhaRaioM: 2.5, trilhaDano: .6, alcanceM: 12, cone: 30, empurraM: 6, danoInimigo: 1, vooM: 5, velocidadeVoo: 2, rugidoM: 25, rugidoSeg: 4, teclas: { golpe: "KeyY", voo: "KeyU", rugido: "KeyI" } },
+  krig:   { id: "investida", nome: "Fúria de Krig", texto: "Investida com rastro de impacto; Clique/R2 investida; Q/R1 golpe no chão, E/L1 voo, F/Triângulo rugido.", recarga: 1.2, trilhaRaioM: 2.5, trilhaDano: .6, alcanceM: 12, cone: 30, empurraM: 6, danoInimigo: 1, vooM: 5, velocidadeVoo: 2, rugidoM: 25, rugidoSeg: 4, teclas: { golpe: "KeyQ", voo: "KeyE", rugido: "KeyF" } },
   /* Jackão (só transformado): V = tiro do fuzil (balas infinitas; recarga só animação a cada `pente` tiros) · botão direito do mouse = mirar (zoom) ·
      teclas.granada = granada (granadasPorZona por zona; recarregam ao trocar de zona; fumaça + empurrão, sem dano à mata) · teclas.oculos = óculos de RA
      (contorno e distância de inimigos escondidos até oculosM, através de mata e névoa) · teclas.choque = alterna munição de choque (atordoa animais e sombras sem ferir). */

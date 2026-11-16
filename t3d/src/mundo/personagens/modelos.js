@@ -226,7 +226,7 @@ export function constroiOperadora(H, def){
 }
 
 /* ADORNOS por operador (dados/personagens.js → modelo): barbaCor (tinge a barba), oculosClaros (lentes transparentes = óculos de grau),
-   cracha (texto legível no peito e nas costas, nunca espelhado), viking (capacete com chifres, peles, ombreiras, braceletes — escondidos até a transformação).
+   cracha (texto legível no peito e nas costas, nunca espelhado), viking (capacete sem chifres, peles, ombreiras, braceletes — escondidos até a transformação).
    fx: aura de fogo (transformacao.aura = "fogo") com partículas e luz; a barba "ergue" na fúria. */
 const texTexto = (txt, cor, fundo) => { const c = document.createElement("canvas"); c.width = 256; c.height = 64; const x = c.getContext("2d"); x.fillStyle = fundo; x.fillRect(0, 0, 256, 64); x.strokeStyle = cor; x.lineWidth = 4; x.strokeRect(3, 3, 250, 58); x.fillStyle = cor; x.font = "bold 30px system-ui, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(txt, 128, 34); const tx = new CanvasTexture(c); tx.colorSpace = SRGBColorSpace; return tx; };
 function adornosOperador(H, rig, def){
@@ -248,10 +248,9 @@ function adornosOperador(H, rig, def){
     if(rig.bD && rig.bD.mao){ const f = new Group(); f.position.set(0, -.1, .35); f.rotation.x = -Math.PI / 2 + .15; rig.bD.mao.add(f); mk(new BoxGeometry(.16, .22, 1.9), arma, 0, 0, .3, f); mk(new CylinderGeometry(.045, .045, 1.3, 10), arma, 0, .06, 1.5, f).rotation.x = Math.PI / 2; mk(new BoxGeometry(.12, .5, .22), arma, 0, -.3, .1, f); mk(new BoxGeometry(.14, .35, .5), M(0x3b3f2e), 0, .18, -.2, f); mk(new BoxGeometry(.1, .14, .5), arma, 0, .2, .55, f); vik.userData.fuzil = f; f.visible = false; }
   }
   if(mo.viking){
-    const ferro = M(0x5a5e66, { roughness: .35, metalness: .85 }), pele = M(0x8a6a4a, { roughness: 1 }), couro = M(0x4a2e1a, { roughness: .9 }), chifre = M(0xe8dcc0, { roughness: .6 });
-    const chifres = new Group(); chifres.position.copy(cab.position); chifres.scale.copy(cab.scale); vik.add(chifres);
-    [-1, 1].forEach(sx => { const c = mk(new ConeGeometry(.24, 1.7, 12), chifre, sx * 1.25, .55, -.05, chifres); c.rotation.z = sx * -1.35; c.rotation.x = -.2; mk(new TorusGeometry(.26, .06, 8, 16), ferro, sx * .98, .3, -.05, chifres).rotation.z = sx * -1.35; });      // chifres grandes, para os lados
-    mk(new SphereGeometry(1.04, 28, 16, 0, Math.PI * 2, 0, Math.PI * .4), ferro, 0, .14, 0, chifres); mk(new BoxGeometry(.16, .5, .12), ferro, 0, .05, 1.0, chifres);                           // casco de ferro e protetor de nariz
+    const ferro = M(0x5a5e66, { roughness: .35, metalness: .85 }), pele = M(0x8a6a4a, { roughness: 1 }), couro = M(0x4a2e1a, { roughness: .9 });
+    const elmoViking = new Group(); elmoViking.position.copy(cab.position); elmoViking.scale.copy(cab.scale); vik.add(elmoViking);
+    mk(new SphereGeometry(1.04, 28, 16, 0, Math.PI * 2, 0, Math.PI * .4), ferro, 0, .14, 0, elmoViking); mk(new BoxGeometry(.16, .5, .12), ferro, 0, .05, 1.0, elmoViking);                           // casco de ferro e protetor de nariz
     [-1, 1].forEach(sx => { const p = mk(new SphereGeometry(.62, 16, 12), pele, sx * 1.0, 1.9 + 2.2, 0, vik); p.scale.set(1.15, .55, 1.0); const o = mk(new SphereGeometry(.44, 16, 12), ferro, sx * 1.1, 1.72 + 2.2, 0, vik); o.scale.set(1, .8, 1); });
     mk(new BoxGeometry(2.0, .9, .3), pele, 0, 1.55 + 2.2, -.75, vik).rotation.x = .15;
     mk(new TorusGeometry(.5, .07, 10, 24), couro, 0, .1 + 2.2, 0, vik).rotation.x = Math.PI / 2; [-1, 1].forEach(sx => mk(new BoxGeometry(.25, .55, .08), ferro, sx * .3, .05 + 2.2, .9, vik));

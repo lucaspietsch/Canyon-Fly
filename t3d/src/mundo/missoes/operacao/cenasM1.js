@@ -108,7 +108,7 @@ export function registraCenasM1(O){
       for(let i = 0; i < ITENS_DUPLA.length; i += 3) await dlg(X, [[a.lider2, ITENS_DUPLA.slice(i, i + 3).map(it => it.n + ": " + it.ok.toLowerCase()).join(". ") + ".", { dur: 5.5 }]]);
       await dlg(X, [[a.lider2, "Tudo conforme.", { dur: 2 }]]);
       /* 7 rádio com o recebimento */
-      await dlg(X, [[a.op5, "QAP Recebimento, status da Via " + via + ".", { dur: 2.6 }], [a.lider3, "Via " + via + " liberada.", { dur: 2.2, semBalao: true }], [a.op5, "Recebimento, confirmação da Via " + via + "?", { dur: 2.6 }], [a.lider3, "Confirmado: Via " + via + " liberada.", { dur: 2.4, semBalao: true }]]);
+      await dlg(X, [[a.coord, "QAP Recebimento, status da Via " + via + ".", { dur: 2.6 }], [a.lider3, "Via " + via + " liberada.", { dur: 2.2, semBalao: true }], [a.coord, "Recebimento, confirmação da Via " + via + "?", { dur: 2.6 }], [a.lider3, "Confirmado: Via " + via + " liberada.", { dur: 2.4, semBalao: true }]]);
       /* 8 contagem */
       await dlg(X, [[a.lider2, "Sejam muito bem-vindos à Tirolesa Mais Alta das Américas! Olhem muito para baixo, pois as nossas emoções começam em:", { dur: 6 }], [a.lider2, "3…", { dur: 1.1 }], [a.lider2, "2…", { dur: 1.1 }], [a.lider2, "1…", { dur: 1.1 }], [a.lider2, "Valeu, galera! O mundo é de vocês!!!", { dur: 2.6 }], [a.op4, "Retirando o backup e liberando o cliente!", { dur: 2.2 }]]);
       /* descida: câmera 360 do pacote mídia (à frente do cliente, olhando para ele) */

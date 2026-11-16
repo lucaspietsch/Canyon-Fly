@@ -22,6 +22,7 @@ export function criarDiretor(M){
   const prox = (rig) => { let p = S.prox.get(rig); if(!p){ p = { get x(){ return rig.av.position.x; }, get y(){ return rig.av.position.y; }, get z(){ return rig.av.position.z; }, esc: .82, ativo: true, oculto: false }; S.prox.set(rig, p); } return p; };
   /* fala: balão sobre a cabeça (visível de qualquer distância dentro da cena) + linha no terminal (laranja = operação da tirolesa) */
   function fala(rig, texto, o = {}){
+    if(rig?.krigVisual) rig.krigVisual.radio(o.dur || 4);
     const dur = o.dur || Math.max(2.8, Math.min(7, texto.length * .055));
     try{ if(!o.semBalao && M.gente && M.gente.baloes && rig) M.gente.baloes.fala(prox(rig), texto, dur, 1e9, o.cor || null); }catch(_){ /* balão é só enfeite */ }
     M.terminal.msg(o.tipo || "tirolesa", (rig ? nomeDe(rig) + ": " : "") + texto, { unico: true });

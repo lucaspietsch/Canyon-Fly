@@ -3,6 +3,7 @@ import {
   RingGeometry, PlaneGeometry, CircleGeometry, RepeatWrapping, BackSide, InstancedMesh, ConeGeometry, Object3D, Quaternion, Euler, SphereGeometry, MeshStandardMaterial, MeshBasicMaterial, Mesh, AmbientLight, DirectionalLight, HemisphereLight,
   Vector3, Raycaster, Vector2, CanvasTexture, AdditiveBlending, CatmullRomCurve3, TubeGeometry, Color, SRGBColorSpace, DoubleSide, MathUtils
 } from "three";
+import { personalizaKrig } from "./mundo/personagens/krig-visual.js";
 import { personalizaPit } from "./mundo/personagens/pit-visual.js";
 import { ehToque } from "./modo.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -652,6 +653,7 @@ export function montar(el, opts = {}){
     if(opts.lider){ criaLider(avatar, { x: 3.5, y: -6.0, z: 8, platY: 0 });
       /* Krig, o coordenador: igual ao Pit, de laranja e verde, trabalha no lançamento (fim do percurso) */
       avatar2 = pessoa3d({ nome: "Krig", x: 1593, y: 324.0, z: 8, yaw: .3, camisa: M(0xe8731a, { roughness: .7 }), manga: M(0x56642d), calca: M(0x4a5729), pin: { barra: "#e8731a", pil: 1, mosq: "#3b82e0" } });
+      personalizaKrig(avatar2);
       criaLider(avatar2, { x: 1593, y: 324.0, z: 8, platY: 330 }); }
     else if(H.cen){
       /* equipe do receptivo (2) e do lançamento (3): iguais ao Pit, mas de capacete laranja */

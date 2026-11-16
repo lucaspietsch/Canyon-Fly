@@ -9,7 +9,9 @@
     "test": "node --test test/*.test.mjs",
     "test:browser": "node test/browser/poderes.cjs",
     "test:jackao": "node test/browser/jackao.cjs",
-    "test:jackao:game": "node test/browser/jackao-game.cjs"
+    "test:jackao:game": "node test/browser/jackao-game.cjs",
+    "test:krig": "node test/browser/krig.cjs",
+    "test:krig:game": "node test/browser/krig-game.cjs"
   },
   "keywords": [],
   "author": "",

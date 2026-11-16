@@ -1,3 +1,4 @@
+import { criarCoordenacao } from "./personagens/coordenacao.js";
 import { ehToque } from "../modo.js";
 import { criarAnhangaMundo } from "./lenda/mundo.js";
 import { criarPoderes } from "./poderes/poderes.js";
@@ -102,7 +103,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.transformacao = criarTransformacao(M); M.registra({ semCongelar: true, tick: (dt) => M.transformacao.tick(dt), info: () => M.transformacao.info(), desliga: () => M.transformacao.desligaTudo() }); M.cen.extraChao.velMult = () => M.transformacao.velMult(); M.cen.extraChao.alturaExtra = () => M.transformacao.alturaExtra(); M.cen.extraChao.escalaJogador = () => (M.poderes && M.poderes.kauling ? M.poderes.kauling.escala() : 1);
   M.login = { sessao, confereLogin, modoDebug };                                                                       // depuração no console: M.login.confereLogin("login", "senha")
   M.terminal = criarTerminal(M);
-  M.missoes = criarMissoes(M); M.registra({ tick: (dt) => M.missoes.tick(dt), tecla: (e) => M.missoes.tecla(e), liga: (ui) => M.missoes.liga(ui), info: () => M.missoes.info(), desliga: () => M.missoes.desliga() }); M.operacao = criarOperacao(M); M.registra({ tick: (dt) => M.operacao.tick(dt), desliga: () => M.operacao.desliga() });
+  M.missoes = criarMissoes(M); M.registra({ tick: (dt) => M.missoes.tick(dt), tecla: (e) => M.missoes.tecla(e), liga: (ui) => M.missoes.liga(ui), info: () => M.missoes.info(), desliga: () => M.missoes.desliga() }); M.operacao = criarOperacao(M); M.coordenacao = criarCoordenacao(M); M.registra({ tick: (dt) => M.operacao.tick(dt), desliga: () => M.operacao.desliga() });
   M.dia1 = criarDia1(M); H.nomeJogador = () => M.dia1.nomeJogador(); M.registra(M.terminal);                                                  // abaixo do minimapa: missões, tirolesa, emergências, natureza, geral
   /* agenda de eventos (aviões e meteoros) */
   M.agenda = criarAgenda(M); M.aeronaves = criarAeronaves(M); M.meteoros = criarMeteoros(M, luzes);
@@ -233,7 +234,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
     if(e.code === "F3"){ e.preventDefault(); depurar = !depurar; if(painel) painel.style.display = depurar ? "block" : "none"; M.resgate.liga(depurar); return true; }      // M.depurando continua função (os módulos chamam M.depurando())
     if(e.code === "F12"){ e.preventDefault(); const ok = M.resgate.inicia({ origem: "debug" }); M.ctx.mostraAviso(ok ? "Emergência das 10h forçada" : "Já há uma emergência em andamento"); return true; }
     if(e.code === "KeyP" && !e.ctrlKey && !e.altKey && !e.metaKey && !(M.ctx && M.ctx.construindo && M.ctx.construindo())){ e.preventDefault(); copiaPosicao(); return true; }
-    if(M.poderes?.pit.tecla(e) || M.poderes?.jackao.tecla(e)) return true;
+    if(M.poderes?.pit.tecla(e) || M.poderes?.jackao.tecla(e) || M.poderes?.krig.tecla(e)) return true;
     if(M.partes.some(p => p.tecla && p.tecla(e))) return true;
     const evK = e.code === "F9" ? (e.shiftKey ? "baixo" : "mono") : e.code === "F10" ? "jato" : e.code === "F11" ? "met" : depurar && e.code === "KeyU" ? (e.shiftKey ? "baixo" : "mono") : depurar && e.code === "KeyI" ? "jato" : depurar && e.code === "KeyO" ? "met" : null;
     if(evK){ e.preventDefault(); if(evK === "mono" || evK === "baixo"){ M.aeronaves.voos.filter(v => v.tipo === "monomotor").forEach(v => { v.t = 1; }); M.aeronaves.iniciaMonomotor(evK === "baixo", { origem: "debug" }); M.ctx.mostraAviso(evK === "baixo" ? "Monomotor em voo baixo (debug)" : "Monomotor, altitude normal (debug)"); }

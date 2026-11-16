@@ -270,7 +270,7 @@ export function criarAndar(c){
   /* o que o "mundo vivo" (fauna, gente, mapa, fotos) precisa saber e fazer dentro do modo andar */
   function ctxMundo(){
     return { mk, BTN, FONTE, toque, mostraAviso, construindo: () => B.on, fp: () => W.fp, setFp: (on) => { if(W.fp !== on){ W.fp = on; W.fpPitch = 0; AV.av.visible = !on; } }, olhar: () => ({ yaw: W.camYaw, pitch: W.fp ? W.fpPitch : 0 }),
-      soltaTeclas: () => { W.keys.clear(); W.joy.x = W.joy.y = 0; W.vel = 0; }, teleporta: (x, z) => { W.x = x; W.z = z; W.y = cen.chao(x, z); W.vy = 0; W.noChao = true; W.snap = true; AV.av.position.set(W.x, W.y, W.z); },
+      soltaTeclas: () => { W.keys.clear(); W.joy.x = W.joy.y = 0; W.vel = 0; }, teleporta: (x, z) => { W.x = x; W.z = z; W.y = cen.chao(x, z); W.vy = 0; W.noChao = true; W.snap = true; AV.av.position.set(W.x, W.y + (cen.extraChao?.alturaExtra?.()||0), W.z); },
       correndo: () => Math.abs(W.vel) > 11, avatar: () => AV };
   }
   function alternaCamera(){ W.fp = !W.fp; W.fpPitch = 0; AV.av.visible = !W.fp; mostraAviso(W.fp ? "Primeira pessoa" : "Terceira pessoa"); }
@@ -341,7 +341,8 @@ export function criarAndar(c){
   }
 
   /* ---- movimento ---- */
-  function pular(){ if(W.noChao){ W.vy = 15.5; W.noChao = false; } }
+  function emVoo(){return !!H.mundo?.poderes?.krig.voando();}
+  function pular(){ if(W.noChao && !emVoo()){ W.vy = 15.5; W.noChao = false; } }
   function entrada(){
     const k = W.keys; let ix = 0, iy = 0;
     if(k.has("ArrowLeft")) ix -= 1;
@@ -361,25 +362,27 @@ export function criarAndar(c){
     const fv = cen.extraChao && cen.extraChao.fatorVel ? cen.extraChao.fatorVel(W.x, W.z, W.y) : 1;                         // turfeira: lento e encharcado
     const fa = cen.extraChao && cen.extraChao.fatorAgua ? cen.extraChao.fatorAgua(W.x, W.z, W.y) : 1;                         // água rasa: lento (canela/joelho)
     const fm = cen.extraChao && cen.extraChao.velMult ? cen.extraChao.velMult() : 1;                                           // transformação do operador (ex.: Krig 2×)
-    const alvoV = (iy > 0 ? (corre ? 17 : 6.3) * iy : iy < 0 ? 3 * iy : 0) * fv * fa * fm;
+    const voando=emVoo(),altVoo=voando?(cen.extraChao?.alturaExtra?.()||0):0;
+    const alvoV = (iy > 0 ? (voando || corre ? 17 : 6.3) * iy : iy < 0 ? (voando ? 17 : 3) * iy : 0) * (voando ? 1 : fv * fa) * fm;
     W.vel += (alvoV - W.vel) * Math.min(1, dt * 9);
     if(Math.abs(W.vel) > .05){
       const mx = Math.sin(W.yaw), mz = Math.cos(W.yaw);
       /* relevo: sobe mais devagar e desce um pouco mais rápido; acima de ~40° é parede (não sobe, desliza para trás) */
-      const noTerreno = Math.abs(W.y - cen.relevo(W.x, W.z)) < 1.6, h0 = cen.relevo(W.x, W.z);
+      const noTerreno = !voando && Math.abs(W.y - cen.relevo(W.x, W.z)) < 1.6, h0 = cen.relevo(W.x, W.z);
       const decl = noTerreno ? (cen.relevo(W.x + mx * 2, W.z + mz * 2) - h0) / 2 * Math.sign(W.vel) : 0;
-      const f = clamp(1 - decl * .55, .62, 1.12);
+      const f = voando ? 1 : clamp(1 - decl * .55, .62, 1.12);
       const dx = mx * W.vel * f * dt, dz = mz * W.vel * f * dt;
       const sobeOk = (nx, nz) => { if(!noTerreno) return true; const l = Math.hypot(nx - W.x, nz - W.z); return l < 1e-6 || (cen.relevo(nx, nz) - h0) / l <= TAN_MAX; };
-      const fundo = (nx, nz) => { const b = cen.extraChao && cen.extraChao.bloqueado; if(b && b(nx, nz) && !b(W.x, W.z)){ if(!W.avisoAgua || performance.now() - W.avisoAgua > 3500){ W.avisoAgua = performance.now(); mostraAviso((cen.extraChao.motivoBloqueio && cen.extraChao.motivoBloqueio(nx, nz)) || "Água funda: só dá para andar no raso"); } return true; } return false; };       // não entra no fundo
-      const preso = bate(W.x, W.z, W.y);                               // se por algum motivo já está encostado, deixa sair
+      const fundo = (nx, nz) => { if(voando)return false; const b = cen.extraChao && cen.extraChao.bloqueado; if(b && b(nx, nz) && !b(W.x, W.z)){ if(!W.avisoAgua || performance.now() - W.avisoAgua > 3500){ W.avisoAgua = performance.now(); mostraAviso((cen.extraChao.motivoBloqueio && cen.extraChao.motivoBloqueio(nx, nz)) || "Água funda: só dá para andar no raso"); } return true; } return false; };       // não entra no fundo
+      const preso = bate(W.x, W.z, W.y+altVoo);                               // se por algum motivo já está encostado, deixa sair
       let moveu = 0;
-      if(preso || (!bate(W.x + dx, W.z, W.y) && sobeOk(W.x + dx, W.z) && !fundo(W.x + dx, W.z))){ W.x += dx; moveu++; }
-      if(preso || (!bate(W.x, W.z + dz, W.y) && sobeOk(W.x, W.z + dz) && !fundo(W.x, W.z + dz))){ W.z += dz; moveu++; }
+      if(preso || (!bate(W.x + dx, W.z, W.y+altVoo) && sobeOk(W.x + dx, W.z) && !fundo(W.x + dx, W.z))){ W.x += dx; moveu++; }
+      if(preso || (!bate(W.x, W.z + dz, W.y+altVoo) && sobeOk(W.x, W.z + dz) && !fundo(W.x, W.z + dz))){ W.z += dz; moveu++; }
       if(!moveu && noTerreno && !sobeOk(W.x + dx, W.z + dz)){ W.x -= dx * .35; W.z -= dz * .35; W.vel *= .6; }          // parede íngreme: escorrega um pouco para trás
     }
     if(cen.extraChao && cen.extraChao.limite){ const q = cen.extraChao.limite(W.x, W.z); W.x = q[0]; W.z = q[1]; } else { W.x = clamp(W.x, -1450, 3350); W.z = clamp(W.z, -960, 3750); }       // limites do mundo (a estrada para a cidade amplia o mapa ao longo do corredor)
-    const chao = chaoY(W.x, W.z, W.y);
+    const chao = chaoY(W.x, W.z, voando ? 1e9 : W.y);
+    if(voando){W.y=chao;W.noChao=true;W.vy=0;}
     if(!W.noChao){ W.vy -= 46 * dt; W.y += W.vy * dt; if(W.y <= chao){ W.y = chao; W.vy = 0; W.noChao = true; } }
     else if(chao > W.y && chao - W.y < 1.5){ W.y = chao - W.y < .6 ? W.y + (chao - W.y) * Math.min(1, dt * 45) : chao; }          // degrau (escada do deck) · subida do terreno, suavizada
     else if(W.y > chao + .01){ W.noChao = false; W.vy = 0; }       // saiu da borda do deck: cai
@@ -388,7 +391,7 @@ export function criarAndar(c){
   }
   function pose(){
     const av = AV.av, a = clamp(Math.abs(W.vel) / 17, 0, 1), passoK = Math.min(1, Math.abs(W.vel) / 6.3);
-    const amp = .5 * passoK + .62 * a, f = W.fase, noAr = !W.noChao;
+    const amp = .5 * passoK + .62 * a, f = W.fase, noAr = !W.noChao || emVoo() || (cen.extraChao?.alturaExtra?.()||0)>.01;
     const [qD, qE] = AV.pernasA.quadril, [jD, jE] = AV.pernasA.joelho;
     if(noAr){ qD.rotation.x = -.7; qE.rotation.x = -.35; jD.rotation.x = .9; jE.rotation.x = .6; }
     else { qD.rotation.x = Math.sin(f) * amp; qE.rotation.x = -Math.sin(f) * amp; jD.rotation.x = Math.max(0, -Math.cos(f)) * amp * 1.5; jE.rotation.x = Math.max(0, Math.cos(f)) * amp * 1.5; }
@@ -398,7 +401,7 @@ export function criarAndar(c){
     if(B.carga){ AV.bD.pv.rotation.set(-1.45, 0, -.12); AV.bE.pv.rotation.set(-1.45, 0, .12); AV.bD.co.rotation.set(-.2, 0, 0); AV.bE.co.rotation.set(-.2, 0, 0); }
     AV.tronco.rotation.x = .02 + a * .2; AV.tronco.rotation.y = noAr ? 0 : -Math.sin(f) * amp * .25;
     const bob = noAr || Math.abs(W.vel) < .3 ? 0 : Math.abs(Math.cos(f)) * (.1 + a * .12);
-    av.position.set(W.x, W.y + bob, W.z); av.rotation.y = W.yaw;
+    av.position.set(W.x, W.y + bob + (cen.extraChao?.alturaExtra?.()||0), W.z); av.rotation.y = W.yaw;
     if(AV.nome) AV.nome.rotation.y = W.camYaw - W.yaw;                  // o nome sempre de frente para a câmera
   }
   function camera(dt){
@@ -408,9 +411,10 @@ export function criarAndar(c){
     W.camOff = clamp(W.camOff, -Math.PI, Math.PI);
     const alvoYaw = W.yaw + Math.PI + W.camOff;
     if(W.snap) W.camYaw = alvoYaw; else W.camYaw += ang(alvoYaw - W.camYaw) * Math.min(1, dt * 7);
+    const alturaCamera=cen.extraChao?.alturaExtra?.()||0;
     if(W.fp){
       const dx = -Math.sin(W.camYaw) * Math.cos(W.fpPitch), dz = -Math.cos(W.camYaw) * Math.cos(W.fpPitch), dy = Math.sin(W.fpPitch);
-      camPos.set(W.x - Math.sin(W.camYaw) * .6, W.y + 4.85, W.z - Math.cos(W.camYaw) * .6);
+      camPos.set(W.x - Math.sin(W.camYaw) * .6, W.y + 4.85 + alturaCamera, W.z - Math.cos(W.camYaw) * .6);
       cam.position.copy(camPos); lookAt.set(camPos.x + dx * 10, camPos.y + dy * 10, camPos.z + dz * 10); cam.lookAt(lookAt);
       const fov = (H.mundo && H.mundo.fovFoto && H.mundo.fovFoto()) || 70;
       if(cam.fov !== fov){ cam.fov = fov; cam.updateProjectionMatrix(); }
@@ -421,7 +425,7 @@ export function criarAndar(c){
     const escJ = cen.extraChao && cen.extraChao.escalaJogador ? cen.extraChao.escalaJogador() : 1;                               // gigante (Kauling): câmera se afasta
     const dist = (dentro ? Math.min(W.dist, 10) : W.dist) * escJ, pit = dentro ? Math.max(W.camPitch, .62) : W.camPitch;
     const dx = Math.sin(W.camYaw) * Math.cos(pit), dy = Math.sin(pit), dz = Math.cos(W.camYaw) * Math.cos(pit);
-    lookAt.set(W.x, W.y + 3.5, W.z);
+    lookAt.set(W.x, W.y + 3.5 + alturaCamera, W.z);
     let d = dist;
     if(!dentro){                                                  // a câmera não atravessa as paredes da casinha
       tmp.set(dx, dy, dz).normalize(); ray.set(lookAt, tmp); ray.far = dist;
@@ -480,7 +484,7 @@ export function criarAndar(c){
     /* boneco: saem as pernas "paradas", entram as articuladas e os braços ficam soltos */
     const l0 = quem(); if(!l0.some(x => x.p === AV)){ idxP = 0; AV = l0[0].p; nomeP = l0[0].nome; } else idxP = l0.findIndex(x => x.p === AV);
     prepara(AV); if(opts && opts.lugarInicial) lugar = opts.lugarInicial; colocaNoLugar();
-    lookAt.set(W.x, W.y + 3.5, W.z);
+    lookAt.set(W.x, W.y + 3.5 + (cen.extraChao?.alturaExtra?.()||0), W.z);
     modoReal(true);
     montaUI(); entraTelaCheia();
     if(H.mundo) H.mundo.liga(ui, ctxMundo());

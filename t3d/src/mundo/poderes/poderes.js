@@ -150,7 +150,7 @@ export function criarPoderes(M){
     if(!S.chip.parentNode) M.ui.appendChild(S.chip);
   }
   function tickHud(){
-    const d = def(), mostra = !!d && M.andando() && !(M.personagens.S.tela);
+    const d = def(), mostra = !!d && !!M.ui && M.andando() && !(M.personagens.S.tela);
     if(!mostra){ if(S.chip && S.chip.style.display !== "none") S.chip.style.display = "none"; return; }
     hud(); S.chip.style.display = "block"; const rotulo = liberado() ? "[V] " + d.nome : "🔒 " + d.nome + " · forma de poder"; if(S.ultRot !== rotulo){ S.txt.textContent = rotulo; S.ultRot = rotulo; S.chip.title = d.texto; }
     S.barra.style.width = (S.cd > 0 ? (1 - S.cd / (S.cdMax || 1)) * 100 : 100) + "%"; S.barra.style.background = S.cd > 0 ? "#7a7a52" : "#ffd36a";
@@ -197,6 +197,6 @@ export function criarPoderes(M){
       e.preventDefault(); usa(); return true; }
     return false;
   }
-  const dispose = () => { PT.dispose(); JK.dispose(); limpaTreino(); S.fx.forEach(f => f.g && G.remove(f.g)); S.fx.length = 0; S.flechas.forEach(f => G.remove(f.g)); S.flechas.length = 0; if(S.chip) S.chip.remove(); if(S.flash) S.flash.remove(); };
-  return { liga:()=>JK.liga(), registra, remove, usa, tick, tecla, treino, limpaTreino, espantalho, visitante, relampago, naMira, def, liberado, S, alvos: S.alvos, krig: KR, jackao: JK, mohr: MH, mary: MY, diully: DY, kauling: KL, carlao: CA, pit: PT, aoTransformar: (id, on) => { KR.aoTransformar(id, on); JK.aoTransformar(id, on); MH.aoTransformar(id, on); MY.aoTransformar(id, on); DY.aoTransformar(id, on); KL.aoTransformar(id, on); CA.aoTransformar(id, on); PT.aoTransformar(id, on); }, info: () => { const s = [KR.info(), JK.info(), MH.info(), MY.info(), DY.info(), KL.info(), CA.info(), PT.info(), (def() ? "Poder: " + def().nome + (S.cd > 0 ? " (" + S.cd.toFixed(1) + " s)" : " pronto") : null)].filter(Boolean).join(" · "); return s || null; }, desliga: dispose };
+  const dispose = () => { PT.dispose(); JK.dispose(); KR.dispose(); limpaTreino(); S.fx.forEach(f => f.g && G.remove(f.g)); S.fx.length = 0; S.flechas.forEach(f => G.remove(f.g)); S.flechas.length = 0; if(S.chip) S.chip.remove(); if(S.flash) S.flash.remove(); };
+  return { liga:()=>{JK.liga();KR.liga();}, registra, remove, usa, tick, tecla, treino, limpaTreino, espantalho, visitante, relampago, naMira, def, liberado, S, alvos: S.alvos, krig: KR, jackao: JK, mohr: MH, mary: MY, diully: DY, kauling: KL, carlao: CA, pit: PT, aoTransformar: (id, on) => { KR.aoTransformar(id, on); JK.aoTransformar(id, on); MH.aoTransformar(id, on); MY.aoTransformar(id, on); DY.aoTransformar(id, on); KL.aoTransformar(id, on); CA.aoTransformar(id, on); PT.aoTransformar(id, on); }, info: () => { const s = [KR.info(), JK.info(), MH.info(), MY.info(), DY.info(), KL.info(), CA.info(), PT.info(), (def() ? "Poder: " + def().nome + (S.cd > 0 ? " (" + S.cd.toFixed(1) + " s)" : " pronto") : null)].filter(Boolean).join(" · "); return s || null; }, desliga: dispose };
 }
