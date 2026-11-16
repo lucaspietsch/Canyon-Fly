@@ -474,6 +474,30 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
   - **Pousada Fazenda Pindorama** (-863, +29) · **Posto de Saúde** (-475, +76) · **lagoinha urbana** (-447, +41).
 - **Arredores:** a **oeste**, campo úmido/banhado grande com valetas; ao **sul**, **plantação de pinus** (fileiras escuras) (-593, -460); **açude** a sudeste (+248, -288) e outro (-39, -450); a cidade termina em y ≈ −450 ao sul.
 
+### B2 — sudeste (centro do print −29.0487782, −50.1394511 → local (+559, +46))
+- Conferência: o Du Perau cai em (+22, +60) (catálogo: (+22, +60)) ✔.
+- **Ruas:**
+  - **R. Joaquim Pereira** (-22, +290) · **R. Vinte de Setembro** (+77, +238) · **R. Osvaldo Kroeff** (+228, +92).
+  - **R. Dona Úrsula** (+150, +144) → (+479, +243) · **R. Nartécia Pereira** (+296, +133) → (+610, +285).
+  - **R. Dalfro Filho** (+458, +311) · **R. Cel. Vicente Pereira** (+531, +248).
+  - **Av. Getúlio Vargas** (+626, +128) → (+829, +201) (sai para o leste).
+  - **R. Padre João Paza** (-22, -112) → (+411, -34) · **R. Tradição** (norte–sul) (+343, -76).
+  - **R. Procópio Freire dos Santos** (+61, -185) → (+260, -138).
+- **Lugares (Maps):**
+  - **Restaurante Galpão Costaneira** (+392, +245) · restaurante (+134, +246) · **Restaurante Vitrine da Truta** (+451, +172) (ao lado do **quarteirão verde** (+396, +175)).
+  - **Igreja Assembleia de Deus** (+913, +263).
+  - **Du Perau** (+22, +60) · **Crepe Mania** (-31, +11) · café (+276, +64) · **Sabores da Querência** (+329, +36).
+  - **Hostel Cape Town** (+205, -65) · **Pousada Bem Estar** (+417, -68) · **Pizza Retrô** (+381, -132) · **Pousada Aparados** (+473, -211).
+  - Área com muitos pontinhos claros ao sul da avenida (+678, +71) — **provável cemitério** (confirmar).
+  - **Pista de terra em curvas** (+657, -222) — parece **pista de motocross/velocross** (confirmar).
+- **Arredores:** a leste e sudeste, **morro com mata** e manchas escuras, cortado por **estradas de terra** (+793, -117); a cidade termina em x ≈ +500 a +700 a sudeste.
+
+### Resumo do mapa geral (A1 + A2 + B1 + B2)
+- Área coberta: x ≈ −1200 a +1100, y ≈ −480 a +560 (≈ 2,3 km × 1 km).
+- **Eixo principal:** Av. Getúlio Vargas / **RS-020**, cruzando a cidade de **sudoeste a leste**, passando pela praça.
+- **Malha:** ruas "leste–oeste" (Joaquim Pereira, João F. Riter, Dona Úrsula, Nartécia Pereira, Padre João Paza, Procópio F. dos Santos) inclinadas para ENE; ruas "norte–sul" (Dom Pedro II, Quinze de Março, Laurindo, Vinte de Setembro, Osvaldo Kroeff, Tradição, Cel. Vicente Pereira…).
+- **Bordas:** norte = mata de araucária + campos e banhados com lagoas; oeste = banhado grande e mata (Pindorama); sul = pinus e açudes; leste = morro com mata e pátio industrial (nordeste).
+
 ## A receber do Lucas (praça)
 - [ ] **Foto do Termômetro** de Cambará.
 - [ ] **História da Sequoia Lunar** (e foto da **placa**).
