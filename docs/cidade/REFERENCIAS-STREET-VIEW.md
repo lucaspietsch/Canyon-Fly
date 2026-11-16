@@ -403,32 +403,58 @@ Só anotações — a imagem do satélite **não** vai para o repositório (é d
 
 ## Mapa geral da cidade em quadrantes (prints do Google Maps/satélite do Lucas)
 Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a imagem não vai para o repositório).
-Conversão de pixel do print (1366×768) para metros locais — **calibrada pelo Du Perau** e conferida pela Rua Vinte de Setembro (dá x ≈ +89, o catálogo tem +93 ✔): escala ≈ **1,17 m/px**, norte para cima.
+### Calibração
+- Escala ≈ **1,045 m/px** e centro do mapa no pixel ≈ (676, 444) do print — **calibrado pelo Du Perau**, que aparece em A1 e A2 (o mesmo ponto nos dois prints fecha a conta). Norte para cima.
+- Conferência: a Rua Vinte de Setembro cai em x ≈ +75 nos dois prints (o catálogo das fotos tem +88 a +93 mais ao sul — diferença de ~15 m, aceitável para o mapa geral).
 
-### A1 — noroeste/centro-oeste (centro do print −29.0478122, −50.1499975 → local (−468, +153))
-- **Ruas** (rumo aproximado; x/y em m locais):
-  - **R. Joaquim Pereira** — leste–oeste no norte, y ≈ +300 a +340 (dois trechos, de x ≈ −250 até +200).
-  - **R. João Francisco Riter** — diagonal OSO→ENE pelo meio, de (−730, 20) até (−200, 170).
-  - **R. Adélcia Candido da Luz** — noroeste, perto da Pousada Bela Vista, y ≈ +170.
-  - **R. Primeiro de Maio** — NNO–SSE, x ≈ −270, de y +250 a +180.
-  - **R. São José** — norte–sul, x ≈ −215.
-  - **R. Dom Pedro II** — norte–sul, x ≈ −155, de y +170 até −240 (passa a oeste da praça).
-  - **R. Dona Úrsula** — trecho oeste em (−650, −80) e trecho leste em (+180, +150) (mesma rua da igreja).
-  - **Av. Getúlio Vargas** — entra pelo sudoeste em (−210, −50) rumo à praça.
-  - **R. Vinte de Setembro** — norte–sul, x ≈ +90, aparece de y +330 a +200.
-  - **R. Osvaldo Kroeff** — norte–sul, x ≈ +255 (leste da Vinte de Setembro).
-  - **R. Alberto Pasqualine** — canto nordeste, x ≈ +190, y ≈ +480.
-  - **R. Padre João Paza** — sul, ≈ (+50, −270).
-  - **Estrada de terra** — vem do oeste (−1240, +100), passa ao norte do banhado e junta na R. João Francisco Riter perto da Pousada Bela Vista; um ramo sobe para o norte em x ≈ −670.
-- **Lugares (Maps)**:
-  - **Pousada Bela Vista** (−554, +216) · **Pousada Fazenda Pindorama** (−960, +24), na beira da mata a oeste.
-  - **Posto de Saúde UBS Isabel Sueli Santos** (−525, +79) · ponto roxo (cultural/histórico, nome não aparece) (−470, +136).
-  - **Lagoinha urbana** (−467, +37), logo a sudeste do posto de saúde; **lagoa grande** (−770, +415) e **banhado escuro** (−600, +450) no campo ao norte.
-  - **Agência de Turismo Aparados da Serra Tours** (−108, +331) · **Cottage Fondue** (+157, +271) · restaurante (+273, +347).
-  - **Du Perau Gastro Pub** (+22, +60) — ponto de calibração · **Crepe Mania** e outro restaurante (−55, 0), ao sul da praça.
-  - **Hostel Cape Town em Cambará do Sul** (+236, −80) · hospedagem rosa (−338, +7) · café/restaurante laranja (−320, −105).
-  - **Igreja Pentecostal Deus É Amor** (−683, −165) · **Fundação Hospitalar São José** (hospital) (−293, −172).
-- **Forma da cidade:** a malha urbana vai de x ≈ −750 até além de +300; ao **norte** de y ≈ +350 há **mata de araucária** densa (nordeste) e **campo aberto com banhados e lagoas** (noroeste); a oeste, mata e a Pousada Pindorama.
+### A1 — noroeste (centro do print −29.0478122, −50.1499975 → local (-468, +152))
+- **Ruas** (x/y em m locais, aproximados):
+  - **R. Joaquim Pereira** — leste–oeste no norte, perto de (-129, +277) e (+122, +303).
+  - **R. João Francisco Riter** — diagonal OSO→ENE pelo meio, de (-662, +21) até (-181, +157).
+  - **R. Adélcia Candido da Luz** — noroeste, (-558, +131), perto da Pousada Bela Vista.
+  - **R. Primeiro de Maio** — NNO–SSE, (-338, +219).
+  - **R. São José** — norte–sul, (-197, +115).
+  - **R. Dom Pedro II** — norte–sul, de (-155, +136) até (-119, -136) (oeste da praça).
+  - **R. Dona Úrsula** — trecho oeste (-589, -73), trecho leste (+153, +136).
+  - **Av. Getúlio Vargas** — entra pelo sudoeste, (-192, -42).
+  - **R. Vinte de Setembro** — norte–sul, (+75, +240).
+  - **R. Osvaldo Kroeff** — norte–sul, (+226, +73).
+  - **R. Alberto Pasqualine** — canto nordeste, (+158, +428).
+  - **R. Padre João Paza** — sul, (-25, -120).
+  - **Estrada de terra** — vem do oeste (-1091, +188), passa ao norte do banhado, junta perto da Pousada Bela Vista; um ramo sobe para o norte em (-620, +407).
+- **Lugares (Maps):**
+  - **Pousada Bela Vista** (-500, +196) · **Pousada Fazenda Pindorama** (-863, +25) (beira da mata, oeste).
+  - **Posto de Saúde UBS Isabel Sueli Santos** (-474, +74) · ponto roxo cultural sem nome (-425, +125).
+  - **Lagoinha urbana** (-422, +36); **lagoa grande** (-693, +376) e **banhado** (-537, +407) no campo ao norte.
+  - **Agência de Turismo Aparados da Serra Tours** (-102, +300) · **Cottage Fondue** (+135, +245) · restaurante (+239, +313).
+  - **Du Perau Gastro Pub** (+21, +62) (calibração) · **Crepe Mania** (-29, +16).
+  - **Hostel Cape Town** (+205, -68) · hospedagem (-307, +10) · café (-291, -90).
+  - **Igreja Pentecostal Deus É Amor** (-615, -143) · **Fundação Hospitalar São José** (hospital) (-267, -150).
+- **Arredores:** ao norte, **mata de araucária** densa (nordeste) e **campo com banhados e lagoas** (noroeste); a oeste, mata.
+
+### A2 — nordeste (centro do print −29.0465366, −50.140363 → local (+470, +293))
+- **Ruas:**
+  - **R. Sen. Alberto Pasqualine** — diagonal NNO, de (+108, +548) a (+176, +397).
+  - **R. Protássio Valim** — OSO→ENE, (+349, +475).
+  - **R. Joaquim Pereira** — continua para o leste, (+4, +287) → (+286, +339).
+  - **R. Vinte de Setembro** — norte–sul, (+72, +235).
+  - **R. Dona Úrsula** — continua para ENE, (+140, +141) → (+474, +256).
+  - **R. Osvaldo Kroeff** — norte–sul, (+223, +110).
+  - **R. Nartécia Pereira** — paralela ao sul da Dona Úrsula, (+296, +130) → (+610, +287).
+  - **R. Dalfro Filho** — norte–sul, (+453, +319) · **R. Cel. Vicente Pereira** — NNO–SSE, (+526, +287).
+  - **Av. Getúlio Vargas** — segue para ENE, (+631, +141) → (+829, +219) (saída da cidade rumo leste).
+  - **R. das Indústrias** — nordeste, (+986, +496), junto ao pátio industrial.
+  - Outras no topo: "…Canani" (+495, +590), "…osa Monteiro" (-132, +533).
+- **Lugares (Maps):**
+  - **Lancheria Bom Gosto — Delivery** (+337, +536) · hospedagem (+351, +422).
+  - **Costaneira Confeitaria e Café** (+483, +404) · **Restaurante Galpão Costaneira** (+392, +243).
+  - **O Casarão Cantina e Galeteria** (+237, +312) · restaurante (+134, +245).
+  - **Restaurante Vitrine da Truta** (+451, +169) (ao lado de um **quarteirão verde** (+401, +172) — praça/campo).
+  - **Sabores da Querência — Geleias Artesanais** (+329, +32) · café (+278, +64).
+  - **Igreja Assembleia de Deus de Cambará do Sul** (+913, +260).
+  - **Pátio industrial com toras de madeira** (+997, +444) (nordeste, R. das Indústrias) — provável **madeireira/fábrica** (a **Cambará S/A** já está no jogo pelo KML — confirmar se é ela).
+  - Área cinza com muitos pontinhos claros (+704, +78) — **possível cemitério** (confirmar).
+- **Arredores:** **mata densa** a leste e ao norte; a cidade termina em x ≈ +900 a leste.
 
 ## A receber do Lucas (praça)
 - [ ] **Foto do Termômetro** de Cambará.
