@@ -25,6 +25,14 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
   - Ajudar a montar as mesas na varanda antes de uma noite de música.
   - Achar o chaveiro/celular que um cliente esqueceu na praça.
 
+### Material de Construções Brentano  ★ com entrada (futuro)
+- Rua Vinte de Setembro nº 2 (Ref 56 do catálogo).
+- **[Lucas]** Modelar com **entrada e interior**, no mesmo estilo do Du Perau.
+- **[sugestão]** Missões:
+  - Levar material (tijolos, tinta, tábuas) para uma obra da cidade — ex.: a **construção de tijolo inacabada** da Dona Úrsula (Ref 39) ou o **prédio de concreto inacabado** da esquina Laurindo × Dona Úrsula.
+  - Buscar **madeira para consertar as mesas da varanda do Du Perau** (missão ligando dois parceiros).
+  - Ajudar a **arrumar o depósito** depois de um vendaval.
+
 ### Outros lugares já mapeados (candidatos a parceria)
 - **Pizzaria Recanto da Pizza** (esquina da Quinze de Março com a RS-020) — [sugestão] entregar pizzas pela cidade com tempo.
 - **Café do Casarão** (lado sul da RS-020, em frente à Rua Coberta) — [sugestão] missão de café/chocolate quente no inverno.
@@ -43,4 +51,5 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - [ ] Fotos do interior do Du Perau (mesas, balcão).
 - [ ] Cardápio, fotos dos hambúrgueres e do chopp.
 - [ ] Foto do Rodrigo + autorização de uso de nome e imagem.
+- [ ] Brentano: fotos do interior, nome do dono e autorização (quando houver acordo).
 - [ ] Lista de outros estabelecimentos interessados em patrocinar.
