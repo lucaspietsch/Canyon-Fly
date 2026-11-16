@@ -548,6 +548,12 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - A estrada leste segue sinuosa: (+2071, +409) → (+2395, +610) → (+2604, +527) → (+2813, +634) → (+2955, +631).
   - A estrada do entroncamento sobe para o norte até (+2068, +817); ramal para o sudoeste (+1747, +349).
   - **✔ Encaixe com o jogo:** essa estrada leste **é a "estrada até a cidade" do KML do jogo** — os pontos do KML (+944, +256) · (+1335, +359) · (+1557, +406) · (+1893, +465) · (+2125, +392) · (+2361, +617) · (+2627, +505) · (+2747, +618) batem com o traçado dos prints (diferença de poucos metros). É a estrada que liga a cidade ao parque/cânion do jogo. (No jogo ela fica **pela metade** do comprimento — regra do Lucas.)
+- **A0 — oeste/sudoeste da cidade** (centro −29.0512703, −50.1542503 → local (-882, -230); Pindorama e o hospital caem a ~12 m do que o B1 dava ✔):
+  - Lugares novos: **Flor de Anis Cafeteria & Bistrô** (-298, -74) (na Getúlio Vargas) · **Restaurante e Pousada Casa Nostra** (-572, -241) (beira da RS-020) · **Pousada Vereda do Sol** (-542, -325) · **Refúgio Fortal** (-352, -350) · **Igreja Pentecostal Deus É Amor** (-622, -126) · **Fundação Hospitalar São José** (-273, -133).
+  - **RS-020** sai da cidade para o **sudoeste** (-605, -312) → (-728, -460).
+  - **Pousada Fazenda Pindorama** (-870, +41) — sede **cercada de mata de araucária densa** (-801, -4), acesso por estrada que sai da João F. Riter (-697, +6).
+  - **Campo a oeste:** pastagens com **valetas de drenagem** e **banhados em faixas** (linhas escuras sinuosas) (-1010, -192); **capões de mato** redondos (-1083, -281) (-1167, +1); **trilha de terra clara** em diagonal (-1188, -35); pequenas **estruturas/tanques retangulares** (-1136, -98); **lavoura** de terra vermelha no sudoeste (-1533, -380); mata ciliar escura acompanhando os banhados (-1156, -380).
+  - **Sul:** **plantação de pinus** em quadra densa (-571, -443) e **açudes** (-451, -485) (-655, -485).
 - (aguardando os prints)
 
 ## Próximos envios do Lucas (anotado)
