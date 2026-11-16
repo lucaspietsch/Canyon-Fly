@@ -11,7 +11,9 @@
     "test:jackao": "node test/browser/jackao.cjs",
     "test:jackao:game": "node test/browser/jackao-game.cjs",
     "test:krig": "node test/browser/krig.cjs",
-    "test:krig:game": "node test/browser/krig-game.cjs"
+    "test:krig:game": "node test/browser/krig-game.cjs",
+    "test:mohr": "node test/browser/mohr.cjs",
+    "test:mohr:game": "node test/browser/mohr-game.cjs"
   },
   "keywords": [],
   "author": "",
