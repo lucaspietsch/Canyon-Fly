@@ -488,7 +488,7 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
   - **Igreja Assembleia de Deus** (+913, +263).
   - **Du Perau** (+22, +60) · **Crepe Mania** (-31, +11) · café (+276, +64) · **Sabores da Querência** (+329, +36).
   - **Hostel Cape Town** (+205, -65) · **Pousada Bem Estar** (+417, -68) · **Pizza Retrô** (+381, -132) · **Pousada Aparados** (+473, -211).
-  - Área com muitos pontinhos claros ao sul da avenida (+678, +71) — **provável cemitério** (confirmar).
+  - Área com muitos pontinhos claros ao sul da avenida (**não é o cemitério** — o Cemitério Municipal fica ao norte, na RS-020, ver Z2) (+678, +71) — **provável cemitério** (confirmar).
   - **Pista de terra em curvas** (+657, -222) — parece **pista de motocross/velocross** (confirmar).
 - **Arredores:** a leste e sudeste, **morro com mata** e manchas escuras, cortado por **estradas de terra** (+793, -117); a cidade termina em x ≈ +500 a +700 a sudeste.
 
@@ -526,6 +526,13 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - Ruas: **R. Mário Barros Cardoso** (+485, +646) · **R. Virgínia Canani** (+474, +573) · **R. Dalfro Filho** (+380, +594) → (+458, +323) · **R. Protássio Valim** (+359, +469) · **R. Sen. Alberto Pasqualine** (+150, +437) · **R. Nartécia Pereira** (+600, +270) · **R. Dona Úrsula** (+495, +223) · "…da Silva" (+683, +218) · **R. das Indústrias** (+939, +552).
   - Lugares: **Robson Silva Design** (+381, +688) · **Lancheria Bom Gosto** (+338, +534) · hospedagem (+351, +420) · **Costaneira Confeitaria e Café** (+484, +403) (na rótula onde a Cel. Vicente Pereira encontra a Dona Úrsula/Protássio) · **O Casarão Cantina e Galeteria** (+238, +312) · **Galpão Costaneira** (+391, +241) · restaurante (+136, +242).
   - Satélite: **bloco grande de mata densa** (araucária) entre a Moacir da Rosa Monteiro e a Joaquim Pereira (-59, +427); **campo aberto** com **rotatória sem saída** (-7, +521); a **leste da Ouro Verde**: morro aberto com **trilhas/cortes de terra** (+777, +730), **mata densa** (+673, +521) e o **pátio de toras da madeireira** (+882, +594) (R. das Indústrias).
+- **Z2 — nordeste, saída da RS-020** (centro −29.0425637, −50.1373392 → local (+764, +733); Robson Silva Design em (+382, +687), no Z1 dava (+381, +688) ✔):
+  - **RS-020** segue reta para o norte (+533, +820) → (+518, +1040); cruza a **R. Cancha Reta** em (+518, +768).
+  - **CEMITÉRIO MUNICIPAL DE CAMBARÁ DO SUL** — à beira da RS-020, lado leste, ao norte da cidade (+570, +935) (quadra cheia de túmulos brancos). ⚠ Corrige a minha suspeita do B2: aquela área cinza ao sul da avenida **não** é o cemitério (ver dúvidas).
+  - **"MADEIREIRA E MATERIAL DE…"** (nome cortado no Maps) (+945, +635) = o **pátio de toras** da **R. das Indústrias** (+946, +549) → (+956, +423) — galpões, pilhas de toras e chão de terra vermelha.
+  - **Área aberta degradada** com terra exposta e valetas entre a RS-020 e a madeireira (+685, +779); **clareiras de terra vermelha** (corte de pinus) ao norte (+685, +956).
+  - **Plantações de pinus** em fileiras a nordeste (+1103, +883); **mata/pinus densos** a leste (+1364, +622) e a oeste (+319, +852); **estradas de terra** no nordeste (+998, +883) → (+1207, +935).
+  - Camada de mapa: a área verde-clara (fora da cidade) cobre tudo ao norte da Cancha Reta e a leste da madeireira.
 - (aguardando os prints)
 
 ## Próximos envios do Lucas (anotado)
