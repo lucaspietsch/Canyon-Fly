@@ -533,6 +533,13 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Área aberta degradada** com terra exposta e valetas entre a RS-020 e a madeireira (+685, +779); **clareiras de terra vermelha** (corte de pinus) ao norte (+685, +956).
   - **Plantações de pinus** em fileiras a nordeste (+1103, +883); **mata/pinus densos** a leste (+1364, +622) e a oeste (+319, +852); **estradas de terra** no nordeste (+998, +883) → (+1207, +935).
   - Camada de mapa: a área verde-clara (fora da cidade) cobre tudo ao norte da Cancha Reta e a leste da madeireira.
+- **Acima do Z2 (norte, camada de mapa)** (centro −29.0387241, −50.1403851 → local (+468, +1157); mapa sem painel lateral → centro no pixel (683, 456); o **Cemitério Municipal** cai em (+560, +1033), batendo com o Z2 ✔):
+  - **RS-020** sai do cemitério para o **nor-nordeste**: (+506, +1064) → (+590, +1289) → (+747, +1477).
+  - **ETA Corsan** (estação de tratamento de água) (+705, +1441), com acesso pelo leste da RS-020 e 4–5 construções (+715, +1351).
+  - **CTG Baio Campeano** (Centro de Tradições Gaúchas — ícone roxo, cultural) (+410, +1222) — [sugestão] lugar de **rodeio/fandango** no jogo, cavalos, chimarrão.
+  - **Pousada e Camping Corucacas** (-1, +1236).
+  - **Estradas de terra:** uma sai da RS-020 perto do cemitério (+491, +1085) para o **noroeste**, passa pelo CTG e chega a um grupo de construções (+297, +1331); outra sai do CTG para o **oeste** (+203, +1179) até o Corucacas (+15, +1216) e sobe para o norte (+172, +1354); um ramal desce para o sudeste (+308, +1069).
+  - Tudo é **área verde** (campo) fora da cidade.
 - (aguardando os prints)
 
 ## Próximos envios do Lucas (anotado)
