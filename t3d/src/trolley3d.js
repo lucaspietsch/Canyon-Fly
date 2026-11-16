@@ -3,6 +3,7 @@ import {
   RingGeometry, PlaneGeometry, CircleGeometry, RepeatWrapping, BackSide, InstancedMesh, ConeGeometry, Object3D, Quaternion, Euler, SphereGeometry, MeshStandardMaterial, MeshBasicMaterial, Mesh, AmbientLight, DirectionalLight, HemisphereLight,
   Vector3, Raycaster, Vector2, CanvasTexture, AdditiveBlending, CatmullRomCurve3, TubeGeometry, Color, SRGBColorSpace, DoubleSide, MathUtils
 } from "three";
+import { personalizaPit } from "./mundo/personagens/pit-visual.js";
 import { ehToque } from "./modo.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { criarCasinha } from "./casinha.js";
@@ -647,6 +648,7 @@ export function montar(el, opts = {}){
       AV.limpa = () => { L.radioOn = false; L.fila.length = 0; L.tar = null; L.fase = "ocioso"; L.rock = false; };
     };
     avatar = pessoa3d({ nome: "Pit", x: 3.5, y: -6.0, z: 8, yaw: Math.PI, camisa: oliva, manga: oliva, calca: calca, pin: { barra: "#951c24", pil: 4, mosq: "#ece3cf" } });
+    personalizaPit(avatar); H.PIT_RIG = avatar;
     if(opts.lider){ criaLider(avatar, { x: 3.5, y: -6.0, z: 8, platY: 0 });
       /* Krig, o coordenador: igual ao Pit, de laranja e verde, trabalha no lançamento (fim do percurso) */
       avatar2 = pessoa3d({ nome: "Krig", x: 1593, y: 324.0, z: 8, yaw: .3, camisa: M(0xe8731a, { roughness: .7 }), manga: M(0x56642d), calca: M(0x4a5729), pin: { barra: "#e8731a", pil: 1, mosq: "#3b82e0" } });
@@ -980,13 +982,13 @@ export function montar(el, opts = {}){
   function quadro(){
     if(!vivo) return; requestAnimationFrame(quadro);
     if(el.clientWidth === 0 || el.clientHeight === 0) return;      // (offsetParent seria nulo em tela cheia)
-    const agora = performance.now(), dtReal = (agora - ult) / 1000, dtq = Math.min(0.05, dtReal); ult = agora; if(J) J.tick(dtq);
+    const agora = performance.now(), dtReal = (agora - ult) / 1000, dtq = Math.min(0.05, dtReal); ult = agora; if(J && !H.mundo?.congelado) J.tick(dtq);
     if(RES.pular || document.hidden) RES.pular = false; else { RES.soma += dtReal; RES.n++; RES.t += dtReal; RES.espera -= dtReal;                 // resolução adaptativa (o primeiro quadro após a aba voltar não conta)
       if(RES.t >= 2){ const fps = RES.n / RES.soma; RES.t = RES.soma = 0; RES.n = 0;
         if(RES.espera <= 0){ const novo = fps < 28 ? Math.max(RES.min, RES.pr - .25) : fps > 52 ? Math.min(RES.max, RES.pr + .25) : RES.pr;
           if(novo !== RES.pr){ RES.pr = novo; renderer.setPixelRatio(novo); ajustar(); RES.espera = 4; } } } }
-    if(H.neonPinta){ H.neonT = (H.neonT || 0) + dtq; H.neonC = (H.neonC || 0) + 1; if(H.neonC % 3 === 0) H.neonPinta(H.neonT); }
-    [avatar, avatar2].forEach(AVT => { if(!AVT) return; AVT.t += dtq; const t = AVT.t; AVT.tronco.scale.y = 1 + .012 * Math.sin(t * 2.1); AVT.cab.rotation.set(0.03 * Math.sin(t * 1.3), .22 + .16 * Math.sin(t * .7), .05 * Math.sin(t * 1.1)); if(AVT.lider) AVT.lider(dtq); else AVT.bD.co.rotation.z = -2.3 + .07 * Math.sin(t * 3.2); });
+    if(H.neonPinta && !H.mundo?.congelado){ H.neonT = (H.neonT || 0) + dtq; H.neonC = (H.neonC || 0) + 1; if(H.neonC % 3 === 0) H.neonPinta(H.neonT); }
+    [avatar, avatar2].forEach(AVT => { if(!AVT || H.mundo?.congelado && AVT !== H.PIT_RIG) return; AVT.t += dtq; const t = AVT.t; AVT.tronco.scale.y = 1 + .012 * Math.sin(t * 2.1); AVT.cab.rotation.set(0.03 * Math.sin(t * 1.3), .22 + .16 * Math.sin(t * .7), .05 * Math.sin(t * 1.1)); if(AVT.lider) AVT.lider(dtq); else AVT.bD.co.rotation.z = -2.3 + .07 * Math.sin(t * 3.2); });
     if(tween){ const k = Math.min(1, (performance.now() - tween.t0) / tween.ms), e = tempo(k);
       cam.position.lerpVectors(tween.p0, tween.p1, e); ctl.target.lerpVectors(tween.a0, tween.a1, e); if(k >= 1) tween = null; }
     /* tampa: desliza para trás ao ser removida */
@@ -994,10 +996,10 @@ export function montar(el, opts = {}){
     modT += ((modAberta ? 1 : 0) - modT) * 0.14; dobr.rotation.y = -modT * 1.95;
     if(opts.jogo3d && H.jogo) H.jogo.quadro(dtq, performance.now() / 1000); else if(andando()) andarMod.tick(dtq); else ctl.update();
     if(H.mundo) H.mundo.tick(dtq);
-      if(H.cen && !andando()) H.cen.tick(dtq, 9999, 9999);
+      if(H.cen && !andando() && !H.mundo?.congelado) H.cen.tick(dtq, 9999, 9999);
       if(H.cen && H.cen.ceu) H.cen.ceu.position.set(cam.position.x, 0, cam.position.z);
       if(H.jogo && !opts.jogo3d) H.jogo.rotulos();
-      if(H.npcs){ const tn = performance.now() / 1000; H.npcs.forEach(p => { const s = Math.sin(tn * 1.3 + p.fase); p.tronco.scale.y = 1 + s * .008; p.cab.rotation.y = Math.sin(tn * .45 + p.fase) * .35; p.cab.rotation.x = Math.sin(tn * .7 + p.fase * 2) * .04; p.nome.rotation.y = Math.atan2(cam.position.x - p.av.position.x, cam.position.z - p.av.position.z) - p.av.rotation.y; }); }
+      if(H.npcs && !H.mundo?.congelado){ H.tempoNpcs=(H.tempoNpcs||0)+dtq; const tn = H.tempoNpcs; H.npcs.forEach(p => { const s = Math.sin(tn * 1.3 + p.fase); p.tronco.scale.y = 1 + s * .008; p.cab.rotation.y = Math.sin(tn * .45 + p.fase) * .35; p.cab.rotation.x = Math.sin(tn * .7 + p.fase * 2) * .04; p.nome.rotation.y = Math.atan2(cam.position.x - p.av.position.x, cam.position.z - p.av.position.z) - p.av.rotation.y; }); }
     if(H.editor) H.editor.frame();
     renderer.render(cena, cam);
     cam.getWorldPosition(cp);

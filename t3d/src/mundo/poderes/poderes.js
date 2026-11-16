@@ -9,7 +9,7 @@ import { criarCarlao } from "./carlao.js";
 import { criarPit } from "./pit.js";
 import { Group, Mesh, SphereGeometry, CylinderGeometry, BoxGeometry, CircleGeometry, TubeGeometry, CatmullRomCurve3, Vector3, MeshStandardMaterial, MeshBasicMaterial, PointLight, AdditiveBlending, DoubleSide, TorusGeometry } from "three";
 import { U } from "../config.js";
-import { PODERES, PODERES_CFG, FALAS_LABIA } from "../../../../data/poderes.js";
+import { PODERES, PODERES_CFG } from "../../../../data/poderes.js";
 
 /* ============================================================================================================
    PODERES DOS PERSONAGENS — Tupã (raio do céu) · Sepé Tiarajú (arco e flechas infinitas) · Pit (lábia) · Atiara (encantamento dos olhos).
@@ -78,14 +78,6 @@ export function criarPoderes(M){
     for(const k of [-1, 1]){ const p = new Mesh(new BoxGeometry(.015 * U, .22 * U, .5 * U), new MeshStandardMaterial({ color: 0xb3472e, side: DoubleSide })); p.position.set(0, k * .06 * U, -.9 * U); g.add(p); const p2 = p.clone(); p2.rotation.z = Math.PI / 2; g.add(p2); }
     g.position.copy(o); G.add(g); S.flechas.push({ g, v: dir.multiplyScalar(d.velocidadeMS * U), t: 0, d });
   }
-  function labia(J, d){
-    const a = naMira(J, d, ["pessoa", "inimigo", "guardiao"]), fala = FALAS_LABIA[Math.floor(rnd() * FALAS_LABIA.length)];
-    msg("info", ((M.personagens && M.personagens.def(M.personagens.ativo) || {}).nome || "Pit") + ": " + fala);
-    if(!a){ msg("info", "Não há ninguém ao alcance para convencer (chegue mais perto e olhe de frente)."); M.ctx && M.ctx.mostraAviso("Ninguém para convencer"); return; }
-    const p = a.pos(); brilho(p.x, (p.y || chao(p.x, p.z)) + 5 * U, p.z, 0xffd36a, 12, 1.2);
-    const ok = a.aoLabia ? a.aoLabia(d) : false; if(ok === false) msg("info", a.nome + " não se deixa levar pela conversa.");
-    if(M.missoes && M.missoes.emite) M.missoes.emite("poder:labia", { alvo: a.id, ok: ok !== false });
-  }
   function olhos(J, d){
     const alvos = alvosEmCone(S.alvos,J,d.alcanceM*U,d.cone).slice(0,d.maxAlvos), a = alvos[0];
     const fau = ((M.fauna && M.fauna.animais)||[]).filter(q=>!q.fim && emCone(J,q,d.alcanceM*U,d.cone)).slice(0,Math.max(0,d.maxAlvos-alvos.length));
@@ -101,7 +93,7 @@ export function criarPoderes(M){
     M.ctx?.mostraAviso("Encantamento: " + (alvos.length+fau.length) + " alvo(s)");
     if(M.missoes && M.missoes.emite) M.missoes.emite("poder:olhos", { alvo: a ? a.id : null, alvos: alvos.map(o=>o.id), animais: fau.length });
   }
-  const USOS = { raio, arco: flecha, labia, olhos };
+  const USOS = { raio, arco: flecha, olhos };
   const KR = criarKrig(M, { S, naMira, luzFx, pulso, msg, G, chao }); USOS.investida = (J, d) => KR.investida(J, d);
   const JK = criarJackao(M, { S, naMira, luzFx, pulso, msg, G, chao }); USOS.tiro = (J, d) => JK.tiro(J, d);
   const MH = criarMohr(M, { S, naMira, luzFx, pulso, msg, G, chao }); USOS.onda = (J, d) => MH.onda(J, d);
@@ -165,9 +157,11 @@ export function criarPoderes(M){
   }
 
   function tick(dt, J){
-    KR.tick(dt); JK.tick(dt); MH.tick(dt); MY.tick(dt); DY.tick(dt); KL.tick(dt); CA.tick(dt); PT.tick(dt);
+    PT.tick(dt);
+    if(!M.congelado){ KR.tick(dt); JK.tick(dt); MH.tick(dt); MY.tick(dt); DY.tick(dt); KL.tick(dt); CA.tick(dt); }
     Object.keys(S.recargas).forEach(id=>{S.recargas[id]=Math.max(0,S.recargas[id]-dt);}); S.cd=S.recargas[M.personagens?.ativo]||0; S.cdMax=def()?.recarga||1; tickHud();
-    const dtEstado=M.congelado?dt*.0001:dt;
+    if(M.congelado) return;
+    const dtEstado=dt;
     for(const a of S.alvos){a.encharcado=Math.max(0,(a.encharcado||0)-dtEstado);a.congelado=Math.max(0,(a.congelado||0)-dtEstado);}
     for(let i = S.fx.length - 1; i >= 0; i--){ const f = S.fx[i]; f.t += dt; if(f.t < 0) continue; const k = Math.min(1, f.t / f.vida);
       if(f.l){ f.l.intensity = f.i0 * (1 - k); }
@@ -203,6 +197,6 @@ export function criarPoderes(M){
       e.preventDefault(); usa(); return true; }
     return false;
   }
-  const dispose = () => { limpaTreino(); S.fx.forEach(f => f.g && G.remove(f.g)); S.fx.length = 0; S.flechas.forEach(f => G.remove(f.g)); S.flechas.length = 0; if(S.chip) S.chip.remove(); if(S.flash) S.flash.remove(); };
+  const dispose = () => { PT.dispose(); limpaTreino(); S.fx.forEach(f => f.g && G.remove(f.g)); S.fx.length = 0; S.flechas.forEach(f => G.remove(f.g)); S.flechas.length = 0; if(S.chip) S.chip.remove(); if(S.flash) S.flash.remove(); };
   return { registra, remove, usa, tick, tecla, treino, limpaTreino, espantalho, visitante, relampago, naMira, def, liberado, S, alvos: S.alvos, krig: KR, jackao: JK, mohr: MH, mary: MY, diully: DY, kauling: KL, carlao: CA, pit: PT, aoTransformar: (id, on) => { KR.aoTransformar(id, on); JK.aoTransformar(id, on); MH.aoTransformar(id, on); MY.aoTransformar(id, on); DY.aoTransformar(id, on); KL.aoTransformar(id, on); CA.aoTransformar(id, on); PT.aoTransformar(id, on); }, info: () => { const s = [KR.info(), JK.info(), MH.info(), MY.info(), DY.info(), KL.info(), CA.info(), PT.info(), (def() ? "Poder: " + def().nome + (S.cd > 0 ? " (" + S.cd.toFixed(1) + " s)" : " pronto") : null)].filter(Boolean).join(" · "); return s || null; }, desliga: dispose };
 }

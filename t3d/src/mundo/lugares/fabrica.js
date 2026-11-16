@@ -101,6 +101,7 @@ export function criarFabrica(M, { poli, ref }){
       const src = ac.createBufferSource(), lp = ac.createBiquadFilter(); gain = ac.createGain(); gain.gain.value = 0; src.buffer = buf; src.loop = true; lp.type = "lowpass"; lp.frequency.value = 260; src.connect(lp); lp.connect(gain); gain.connect(ac.destination); src.start(); }catch(_){ ac = null; }
   }
   function tick(dt, J){
+    if(G.userData.hack){ if(gain) gain.gain.value=0; return; }
     S.t += dt;
     if(S.lampadas){ const h = M.ciclo.hora(), noite = h < 5.8 || h >= 18; S.lampadas.emissiveIntensity += ((noite ? 2.2 : .08) - S.lampadas.emissiveIntensity) * Math.min(1, dt * 1.5); }
     if(S.topo){ const vx = M.vento && M.vento.dir ? M.vento.dir : [1, 0]; S.fumaca.forEach(sp => { const u = sp.userData; u.t += dt; const k = (u.t % 9) / 9, e = 1 + k * 9; sp.position.set(S.topo.x + (vx[0] || 1) * k * 140, S.topo.y + k * 150, S.topo.z + (vx[1] || 0) * k * 140 + Math.sin(u.t) * 3); sp.scale.setScalar(10 + e * 7); sp.material.opacity = Math.sin(k * pi) * .5; }); }

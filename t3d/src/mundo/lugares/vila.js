@@ -90,7 +90,7 @@ export function criarVila(M, { poli, fabrica }){
     const pl = placaLegivel(tex, 7.6 * U, 2.5 * U, { verso: tex, cor: 0x3a2a1a }); pl.position.set(0, 2.2 * U, 0); g.add(pl); G.add(g);
   }
 
-  function tick(dt){ S.t += dt; if(S.lampadas){ const h = M.ciclo.hora(), noite = h < 5.8 || h >= 18; S.lampadas.emissiveIntensity += ((noite ? 2.2 : .08) - S.lampadas.emissiveIntensity) * Math.min(1, dt * 1.5); } }
+  function tick(dt){ if(G.userData.hack)return; S.t += dt; if(S.lampadas){ const h = M.ciclo.hora(), noite = h < 5.8 || h >= 18; S.lampadas.emissiveIntensity += ((noite ? 2.2 : .08) - S.lampadas.emissiveIntensity) * Math.min(1, dt * 1.5); } }
   const dispose = () => { S.colisores.forEach(k => { const i = cen.colisores.indexOf(k); if(i >= 0) cen.colisores.splice(i, 1); }); };
   S.colisores.forEach(k => cen.colisores.push(k));
   return { g: G, tick, dispose, S, centro: c0, casas: casas.length };

@@ -517,8 +517,8 @@ export function criarAndar(c){
   }
   function tick(dt){
     if(!W.on) return;
-    if(W.cinema){ cen.tick(dt, W.x, W.z); if(H.cinemaQuadro) H.cinemaQuadro(dt); return; }
-    passo(dt); pose(); cen.tick(dt, W.x, W.z); camera(dt); mira(); constroiTick(dt); atualizaPad();
+    if(W.cinema){ if(!H.mundo?.congelado) cen.tick(dt, W.x, W.z); if(H.cinemaQuadro) H.cinemaQuadro(dt); return; }
+    passo(dt); pose(); if(!H.mundo?.congelado) cen.tick(dt, W.x, W.z); camera(dt); mira(); constroiTick(dt); atualizaPad();
   }
   return {
     ligar, desligar, tick, cinema, emCinema: () => !!W.cinema, ativo: () => W.on,

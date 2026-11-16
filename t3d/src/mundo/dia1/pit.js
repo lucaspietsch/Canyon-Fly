@@ -1,3 +1,4 @@
+import { personalizaPit } from "../personagens/pit-visual.js";
 import { U } from "../config.js";
 import { DIA1 } from "../../../../data/missoes/dia1.js";
 
@@ -13,7 +14,7 @@ export function criaPit(M, D){
   function constroi(){
     if(S.rig) return S.rig; const Mt = H.M;
     const r = H.pessoa3d({ nome: "PIT", x: 0, y: -50, z: 0, yaw: 0, camisa: Mt(0x56642d), manga: Mt(0x56642d), calca: Mt(0x4a5729), pele: H.pele.media, capacete: Mt(0xc22b2b, { roughness: .45, metalness: .1 }), cabelo: 0x1e140d, barba: true, pin: { barra: "#951c24", pil: 4, mosq: "#ece3cf" } });
-    r.rotulo = "PIT"; r.av.visible = false; S.rig = r; return r;
+    personalizaPit(r); r.rotulo = "PIT"; r.av.visible = false; S.rig = r; return r;
   }
   const rig = () => S.rig || constroi();
 
