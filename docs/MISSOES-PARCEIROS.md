@@ -51,6 +51,10 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - **Loja Galochas** (calçados caros — chalé branco, RS-020 nº 1156, Refs 76–77) — [sugestão] missões de humor: achar o **par perdido** de um sapato caríssimo; entregar **botas novas** a um guia antes da trilha; um cliente exigente que não acha nada à altura.
 - **Sociedade Recreativa 15 de Março** — [sugestão] evento/baile no clube.
 
+## Atrações da praça (vistas no satélite)
+- **Termômetro Cambará do Sul** — [sugestão] missão de inverno: tirar foto do termômetro quando marcar abaixo de 0 °C; ponto de encontro de turistas.
+- **Sequoia Lunar** — [sugestão] missão de história (com o Centro Cultural / Sr. Gesmar): descobrir a origem da árvore.
+
 ## Lugares de lenda na cidade
 - **Casa antiga mal-assombrada** (Rua Dona Úrsula, lado norte, a leste da Laurindo — Ref 45 do catálogo) — **[Lucas]** a casa é tida como mal-assombrada.
   - **[sugestão]** missões noturnas: barulhos, luzes acendendo sozinhas, vulto na janela do bay de vidro; o holograma de assombração do Pit reage; trilha "floresta sombria"; **sem sangue**.
