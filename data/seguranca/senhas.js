@@ -17,7 +17,7 @@ export const OPERADORES = {
   /* carlao:  { login: "", salt: "", iter: 100000, hash: "" }, */
   jackao: { login: "jackao", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do Jackão.
   /* diully:  { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* mary:    { login: "", salt: "", iter: 100000, hash: "" }, */
+  mary: { login: "mary", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios da Mary.
   mohr: { login: "mohr", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do Mohr.
   /* kauling: { login: "", salt: "", iter: 100000, hash: "" }, */
 };

@@ -13,7 +13,9 @@
     "test:krig": "node test/browser/krig.cjs",
     "test:krig:game": "node test/browser/krig-game.cjs",
     "test:mohr": "node test/browser/mohr.cjs",
-    "test:mohr:game": "node test/browser/mohr-game.cjs"
+    "test:mohr:game": "node test/browser/mohr-game.cjs",
+    "test:mary": "node test/browser/mary.cjs",
+    "test:mary:game": "node test/browser/mary-game.cjs"
   },
   "keywords": [],
   "author": "",
