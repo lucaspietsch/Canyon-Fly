@@ -498,6 +498,14 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
 - **Malha:** ruas "leste–oeste" (Joaquim Pereira, João F. Riter, Dona Úrsula, Nartécia Pereira, Padre João Paza, Procópio F. dos Santos) inclinadas para ENE; ruas "norte–sul" (Dom Pedro II, Quinze de Março, Laurindo, Vinte de Setembro, Osvaldo Kroeff, Tradição, Cel. Vicente Pereira…).
 - **Bordas:** norte = mata de araucária + campos e banhados com lagoas; oeste = banhado grande e mata (Pindorama); sul = pinus e açudes; leste = morro com mata e pátio industrial (nordeste).
 
+### Encaixe com o mapa do jogo (o que já existe)
+- O polígono **"aarea de cambara do sul"** do KML do jogo vai de x ≈ −1090 a +1010 e y ≈ −1510 a +860 → **cobre toda a área dos 4 quadrantes** ✔.
+- **"área praça da cidade"** (KML): x −60 a +20, y −15 a +103 → praça + quarteirão da igreja ✔. **Sequoia Lunar** (−27, +18) e **Urna do Tempo** (−2, +23) dentro dela ✔.
+- **"estrada até a cidade"** chega pelo **nordeste/leste** em (+944, +618); **"estrada do centro até o fim da Vila Ouro Verde"** começa em (+482, +123) — perto da saída leste (Dona Úrsula / Nartécia / Getúlio Vargas no quadrante A2/B2).
+- **Cambará S/A** e o **Parque Industrial Celulose** do KML ficam **a mais de 3 km** → o **pátio de toras** da R. das Indústrias (≈ (+1000, +445)) é **outra madeireira** (não é a Cambará S/A).
+- **Hoje as ruas da cidade no jogo são uma grade provisória** (quadras de 110 m, `config.ruas`), girada pelo formato do polígono. O código já aceita **ruas reais do KML** (LineStrings do tipo "rua"): quando existem, **a grade some** e as ruas reais entram — inclusive no minimapa e na rota a pé.
+- **Próximo passo possível:** traçar as ruas reais (Getúlio Vargas/RS-020, Dona Úrsula, Joaquim Pereira, João F. Riter, Nartécia Pereira, Padre João Paza, Procópio F. dos Santos, Dom Pedro II, Quinze de Março, Laurindo, Vinte de Setembro, Osvaldo Kroeff, Tradição…) como **KML de ruas**, a partir destes prints.
+
 ## A receber do Lucas (praça)
 - [ ] **Foto do Termômetro** de Cambará.
 - [ ] **História da Sequoia Lunar** (e foto da **placa**).
