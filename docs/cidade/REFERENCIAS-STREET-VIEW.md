@@ -540,6 +540,14 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Pousada e Camping Corucacas** (-1, +1236).
   - **Estradas de terra:** uma sai da RS-020 perto do cemitério (+491, +1085) para o **noroeste**, passa pelo CTG e chega a um grupo de construções (+297, +1331); outra sai do CTG para o **oeste** (+203, +1179) até o Corucacas (+15, +1216) e sobe para o norte (+172, +1354); um ramal desce para o sudeste (+308, +1069).
   - Tudo é **área verde** (campo) fora da cidade.
+- **Z3 — leste/nordeste, camada de mapa** (centro −29.044099, −50.1308741 → local (+1393, +563); a Madeireira cai em (+937, +649), no Z2 dava (+945, +635) ✔):
+  - **R. das Indústrias** norte–sul (+920, +778) → (+993, +350), com a **madeireira** e galpões; acima dela, construções esparsas (+868, +757).
+  - **ESTRADA PARA O LESTE** (saída da cidade): (+1129, +308) → (+1463, +400) → (+1787, +415) → **entroncamento** (+1881, +459) → (+2107, +407); do entroncamento sai uma estrada para o **nor-nordeste** (+2069, +820); um ramal curto desce para o sul (+1745, +350).
+  - Tudo campo (área verde) fora da cidade.
+- **Z4 — leste, camada de mapa** (centro −29.0443148, −50.1221623 → local (+2241, +539); o entroncamento cai em (+1883, +460), igual ao do Z3 ✔):
+  - A estrada leste segue sinuosa: (+2071, +409) → (+2395, +610) → (+2604, +527) → (+2813, +634) → (+2955, +631).
+  - A estrada do entroncamento sobe para o norte até (+2068, +817); ramal para o sudoeste (+1747, +349).
+  - **✔ Encaixe com o jogo:** essa estrada leste **é a "estrada até a cidade" do KML do jogo** — os pontos do KML (+944, +256) · (+1335, +359) · (+1557, +406) · (+1893, +465) · (+2125, +392) · (+2361, +617) · (+2627, +505) · (+2747, +618) batem com o traçado dos prints (diferença de poucos metros). É a estrada que liga a cidade ao parque/cânion do jogo. (No jogo ela fica **pela metade** do comprimento — regra do Lucas.)
 - (aguardando os prints)
 
 ## Próximos envios do Lucas (anotado)
