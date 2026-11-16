@@ -36,6 +36,9 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
   - **[sugestão]** missões noturnas: barulhos, luzes acendendo sozinhas, vulto na janela do bay de vidro; o holograma de assombração do Pit reage; trilha "floresta sombria"; **sem sangue**.
   - Casa de moradores reais → no jogo como **"Casa antiga (lenda local)"**, sem o número real; idealmente com o ok dos moradores.
 
+- **Casa histórica da esquina Dona Úrsula × Vinte de Setembro** (branca com alpendre vermelho — Refs 49–51) — **[Lucas]** "histórica também".
+  - **[sugestão]** ponto de uma missão de turismo histórico (roteiro das casas antigas com a Secretaria de Turismo e o Sr. Gesmar).
+
 ## Pendências (a receber do Lucas)
 - [ ] Fotos do interior do Du Perau (mesas, balcão).
 - [ ] Cardápio, fotos dos hambúrgueres e do chopp.

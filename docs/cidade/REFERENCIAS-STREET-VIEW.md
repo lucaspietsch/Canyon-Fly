@@ -58,8 +58,15 @@ Origem local (0, 0) = câmera da Ref 01.
 | 44 | −29.0480248, −50.1446541 · 1027 m | 25° | jul/2025 | Mesmo ponto da Ref 43, olhando para o **norte**: **casa antiga comprida** de frente — reboco cinza-creme, telha vermelha, **chaminé alta**, **venezianas e porta vermelhas**, **varanda envidraçada** na ponta com terracinho em cima; garagem coberta com perua escura; cerca de madeira |
 | 45 | −29.047969, −50.1444553 · 1027 m | 340° | jul/2025 | **CASA ANTIGA E HISTÓRICA** (Dona Úrsula nº 121, lado norte): **bay de vidro** com 4 janelões, **frontão com terraço e grade de ferro decorativa**, venezianas vermelhas, telha vermelha; muro de pedra com cerquinha e portão de treliça; palmeira à dir. — **possivelmente a mesma casa da Ref 44 (confirmar)** |
 | 46 | −29.047969, −50.1444553 · 1027 m | 169° | jul/2025 | Mesmo ponto da Ref 45, olhando para o **sul**: **sobrado com varanda larga de madeira** (guarda-corpo em "X") de frente, muro branco com pilares e grade escura; casa térrea rosa de janelas gradeadas à dir.; casa de telha vermelha na esquina à esq. |
+| 47 | −29.0479431, −50.1443549 · 1027 m | 316° | jul/2025 | **Casa mal-assombrada vista do leste** (Dona Úrsula nº 122): bay de vidro com frontão e terraço de grade na **ponta oeste**; venezianas vermelhas e porta a leste; **palmeira** e **árvore alta antiga sem folhas** ao lado; muro de pedra com cerquinha branca |
+| 48 | −29.0478255, −50.144251 · 1027 m | 265° | jul/2025 | Vinte de Setembro nº 185, olhando para o **oeste** pela Dona Úrsula: **casa mal-assombrada** (palmeira + árvore alta) à frente, à dir. **sobrado branco** de 2 pavimentos com **escada externa de ferro**; à esq. **sobrado com varanda de madeira**; **torre da igreja** ao fundo a ~229° (bate com a posição da torre (−24, +51,5) ✔) |
+| 49 | −29.0478979, −50.1441581 · 1028 m | 141° | jul/2025 | Dona Úrsula nº 120: **CASA HISTÓRICA da esquina** Dona Úrsula × Vinte de Setembro — branca, telhado de 4 águas de telha vermelha, **alpendre recuado pintado de vermelho/coral** com coluna, janelas gradeadas; muro branco com gradil; **casa vermelha** atrás (leste); araucária ao fundo |
+| 50 | −29.0478778, −50.1440587 · 1028 m | 168° | jul/2025 | Mesma casa **de frente** (pela Dona Úrsula) — **Lucas: "histórica também"**: 3 janelas gradeadas brancas, alpendre vermelho na ponta leste, poste na calçada; à dir. sobrados de madeira escura com varanda |
+| 51 | −29.0479853, −50.1442396 · 1028 m | 117° | jul/2025 | **Cruzamento Dona Úrsula × Vinte de Setembro** ("R. Vinte de Setembro" pintado no chão): a casa histórica vista da esquina (noroeste); **cavalete de propaganda** na esquina; anexo **vermelho** e **chalé branco de empena alta** a leste dela |
+| 52 | −29.0479853, −50.1442396 · 1028 m | 178° | jul/2025 | Mesmo ponto, olhando para o **sul** pela **Rua Vinte de Setembro** (calçamento de paralelepípedo): à esq. o lado da casa histórica (muro branco, caixa de correio); à dir. **sobrado de madeira escura sobre base branca** com varandas de madeira e muro de pilares; **casa com placas solares** mais adiante |
+| 53 | −29.0480751, −50.1442249 · 1028 m | 241° | jul/2025 | Vinte de Setembro nº 120, olhando para o **sudoeste**: **sobrado de madeira escura** de frente — andar de cima em tábuas escuras com **2 varandas de madeira**, telhado de 4 águas escuro; **térreo branco** com garagem de porta de madeira e janelas com cortina branca; muro de **pilares de concreto + ripas de madeira**; ao sul, casa de telhado escuro com **placas solares** |
 
-Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35/36/37/38 (+14, +117) · Ref 39/40 (+33, +123) · Ref 41/42 (+43, +126) · Ref 43/44 (+52, +129) · Ref 45/46 (+72, +135).
+Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35/36/37/38 (+14, +117) · Ref 39/40 (+33, +123) · Ref 41/42 (+43, +126) · Ref 43/44 (+52, +129) · Ref 45/46 (+72, +135) · Ref 47 (+81, +138).
 
 > A partir da Ref 07 começa o "ao redor" (pedido do Lucas). Praça + igreja: Refs 01–06.
 
@@ -227,11 +234,27 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
   - sobre o bay, **frontão** cercado por **terraço com grade de ferro decorativa**;
   - reboco cinza-creme, **telhado de telha vermelha**, **venezianas vermelhas**, porta com número na fachada;
   - **muro baixo de pedra** com **cerquinha e portão de treliça**; **palmeira** à direita;
-  - **dúvida:** pode ser a **mesma casa da Ref 44** vista do outro lado (números 123 e 121, mesmos materiais) — na Ref 44 a parte envidraçada aparece na ponta leste, aqui à esquerda (oeste). Confirmar com o Lucas.
+  - **Refs 45 e 47 confirmam:** o bay de vidro (com o frontão e o terraço de grade) fica na **ponta OESTE**; a leste ficam as janelas de venezianas vermelhas, a porta e um ar-condicionado.
+  - Ao lado (leste): **palmeira** e **árvore alta e antiga sem folhas** — reforça o clima de casa assombrada.
+  - **dúvida:** a casa da Ref 44 (com chaminé alta) mostra a parte envidraçada na ponta **leste** → pode ser uma **casa vizinha** de estilo parecido. Confirmar com o Lucas se é uma casa só ou duas.
   - **CASA MAL-ASSOMBRADA** (Lucas): é tida como assombrada → **lugar de lenda** no jogo.
     - [sugestão] missões noturnas: barulhos, luzes que acendem sozinhas, vulto na janela do bay de vidro, o holograma de assombração do Pit reagindo; trilha sonora "floresta sombria"; regra **sem sangue**.
     - Cuidado: é casa de gente real → no jogo, **"Casa antiga (lenda local)"**, **sem o número real**; idealmente com o ok dos moradores.
   - No jogo: placa **"Casa histórica"** / "Casa antiga (lenda local)".
+
+### Casa histórica da esquina Dona Úrsula × Vinte de Setembro (Refs 49, 50, 51, 52) — Lucas: "histórica também"
+- **Rua Vinte de Setembro**: rua norte–sul em **x ≈ +93**, de paralelepípedo; cruza a Dona Úrsula em **≈ (+93, +140)**.
+- **Posição da casa:** triangulação Refs 49/50/51 → centro **≈ (+125, +127)**, na **esquina sudeste** do cruzamento (sul da Dona Úrsula, leste da Vinte de Setembro). Fachada principal para o **norte** (Dona Úrsula).
+- Aparência:
+  - térrea, **branca**, **telhado de 4 águas de telha vermelha** (tipo colonial);
+  - **alpendre recuado** na ponta leste da fachada, paredes pintadas de **vermelho/coral**, com **coluna** branca e degraus;
+  - **3–4 janelas brancas com grade decorativa**;
+  - **muro baixo branco com gradil** em volta, gramado e arbusto escuro de folha avermelhada;
+  - a leste: **anexo vermelho** e um **chalé branco de empena alta** (telhado íngreme) com porta de garagem.
+- Esquina: **cavalete de propaganda** (no jogo: placa genérica ou de parceiro).
+- **Esquina sudoeste (Refs 52 e 53), ≈ (+75, +118):** sobrado de **madeira escura** sobre **térreo branco**, varandas de madeira; mais ao sul, casa com **placas solares**.
+- **Ref 48 (na Vinte de Setembro, ao norte da esquina):** sobrado branco de 2 pavimentos com **escada externa de ferro** no lado norte da Dona Úrsula, a leste da casa mal-assombrada.
+- No jogo: placa **"Casa histórica"**.
 
 ### Objetos de cena
 - **Caminhonete branca de eletricista** com escadas no rack e **cones** em volta, na Dona Úrsula (Ref 37) — no jogo **sem logo** da concessionária.
@@ -261,6 +284,7 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
 - Gramado com canteiros; caminhos de pedra com **meio-fio branco**; bancos; poste preto; pinheiro grande (provável araucária ou cipreste), palmeira, árvores caducas grandes (sem folhas no inverno).
 
 ### Ruas
+- **Rua Vinte de Setembro:** paralelepípedo, norte–sul em x ≈ +93; cruza a Dona Úrsula em ≈ (+93, +140) (Refs 48–53).
 - **Rua Laurindo Francisco de Macedo:** paralelepípedo, carros estacionados; corre pelo **lado leste** da praça e da igreja (nºs 22, 38, 58, 80), rumo ~348° (norte-noroeste).
 - **Rua Dona Úrsula:** paralelepípedo, faixa de grama com meio-fio branco; corre **leste–oeste atrás da igreja**, em y ≈ +100 a +105 m; esquina com a Laurindo em ≈ (−2, +104) e com a Quinze de Março em ≈ (−58, +92).
 - **Rua Quinze de Março:** paralelepípedo, faixa de pedestres; corre pelo **lado oeste** do quarteirão, quase paralela à Laurindo (rumo ~158°/338°); passa pela rótula da árvore cambará.
