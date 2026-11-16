@@ -28,7 +28,8 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 ### Material de Construções Brentano  ★ com entrada (futuro)
 - Rua Vinte de Setembro nº 2 (Ref 56 do catálogo).
 - **[Lucas]** Modelar com **entrada e interior**, no mesmo estilo do Du Perau.
-- Do outro lado da rua (oeste) fica o **Supermercado Brentano** (Ref 60) — provavelmente da mesma família/grupo (confirmar com o Lucas).
+- Do outro lado da rua (oeste) fica o **Supermercado Brentano** (Refs 60–61) — provavelmente da mesma família/grupo (confirmar com o Lucas).
+  - **[Lucas]** o mercado também fica **aberto por dentro**, com **prateleiras de mercado**.
   - **[sugestão]** missões de mercado: fazer as compras de uma lista para um morador; levar pão e leite para a casa histórica; abastecer o Du Perau.
 - **[sugestão]** Missões:
   - Levar material (tijolos, tinta, tábuas) para uma obra da cidade — ex.: a **construção de tijolo inacabada** da Dona Úrsula (Ref 39) ou o **prédio de concreto inacabado** da esquina Laurindo × Dona Úrsula.
@@ -53,5 +54,5 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - [ ] Fotos do interior do Du Perau (mesas, balcão).
 - [ ] Cardápio, fotos dos hambúrgueres e do chopp.
 - [ ] Foto do Rodrigo + autorização de uso de nome e imagem.
-- [ ] Brentano: fotos do interior, nome do dono e autorização (quando houver acordo).
+- [ ] Brentano (material de construção e supermercado): fotos do interior, nome do dono e autorização (quando houver acordo).
 - [ ] Lista de outros estabelecimentos interessados em patrocinar.
