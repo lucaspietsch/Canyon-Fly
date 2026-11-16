@@ -14,7 +14,7 @@
 export const OPERADORES = {
   pit: { login: "pit", salt: "", iter: 100000, hash: "" }, // Cole aqui o salt e hash gerados para o Pit.
   krig: { login: "krig", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do coordenador.
-  /* carlao:  { login: "", salt: "", iter: 100000, hash: "" }, */
+  carlao: { login: "carlao", salt: "", iter: 100000, hash: "" }, // Cole salt e hash próprios do Carlão.
   jackao: { login: "jackao", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do Jackão.
   diully: { login: "diully", salt: "", iter: 100000, hash: "" }, // Cole salt e hash próprios da Diully.
   mary: { login: "mary", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios da Mary.

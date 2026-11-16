@@ -1,3 +1,4 @@
+import { constroiCarlao } from './carlao-visual.js';
 import { constroiKauling } from './kauling-visual.js';
 import { constroiDiully } from './diully-visual.js';
 import { constroiMary } from "./mary-visual.js";
@@ -33,7 +34,7 @@ export function criarPersonagens(M){
   /* rigs (bonecos) dos desbloqueados que não são do jogo base: criados na primeira vez que o jogador os escolhe */
   function rig(id){
     if(S.rigs[id]) return S.rigs[id]; const d = def(id); if(!d || d.hub) return null;
-    try{ const r = id === "kauling" ? constroiKauling(H,d) : id === "diully" ? constroiDiully(H,d) : id === "mary" ? constroiMary(H,d) : id === "mohr" ? constroiMohr(H,d) : id === "krig" ? constroiKrig(H,d) : id === "jackao" ? constroiJackao(H,d) : id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
+    try{ const r = id === "carlao" ? constroiCarlao(H,d) : id === "kauling" ? constroiKauling(H,d) : id === "diully" ? constroiDiully(H,d) : id === "mary" ? constroiMary(H,d) : id === "mohr" ? constroiMohr(H,d) : id === "krig" ? constroiKrig(H,d) : id === "jackao" ? constroiJackao(H,d) : id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
   }
   /* o modo andar pergunta quem existe (ver trolley3d.js → H.personagens): os desbloqueados com boneco entram na lista */
   H.extraPersonagens = () => PERSONAGENS.filter(p => !p.hub && desbloqueado(p.id)).map(p => rig(p.id)).filter(Boolean).map(r => ({ id: r.id, nome: r.nome, p: r.p }));
@@ -72,7 +73,7 @@ export function criarPersonagens(M){
     const am = H.andarMod, r = opc.objeto ? { p: { av: opc.objeto } } : id === "pit" ? (H.PIT_RIG ? { p: H.PIT_RIG } : null) : rig(id); if(!r || !r.p || !r.p.av) return null;
     const av = r.p.av, pai = av.parent, pos = av.position.clone(), rot = av.rotation.y, vis = av.visible, px = opc.px || 420;
     const pitVisual=id === "pit" ? visualPitDe(av) : null, pitArmado=pitVisual?.armado, posePit=pitVisual && r.p.bE ? [r.p.bE.pv.rotation.clone(),r.p.bE.co.rotation.clone()] : null; pitVisual?.forma(!!opc.transformado);
-    const cena = new Scene(); cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
+    const cena = new Scene();cena.name="retrato-estudio"; cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
     const luz = new DirectionalLight(0xffffff, 1.7); luz.position.set(3, 8, 6); cena.add(luz); const luz2 = new DirectionalLight(0xffe0b0, .6); luz2.position.set(-4, 3, -3); cena.add(luz2);
     const esc0 = av.scale.x, esc = opc.escala || 1; cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true; if(esc !== 1) av.scale.setScalar(esc0 * esc);
     let comparacao=null,comparacaoMats=[];if(opc.gigante&&id==='kauling'){comparacao=av.clone(true);comparacao.traverse(o=>{if(o.material&&!Array.isArray(o.material)){o.material=o.material.clone();comparacaoMats.push(o.material);}});comparacao.position.set(-4,0,0);comparacao.scale.setScalar(esc0);cena.add(comparacao);av.scale.setScalar(esc0*2.5);av.position.x=1;}

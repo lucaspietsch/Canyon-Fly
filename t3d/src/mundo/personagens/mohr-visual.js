@@ -40,6 +40,6 @@ export function constroiMohr(H,def){
  let on=false,pulso=0,t=0;
  function forma(v){on=!!v;normal.visible=r.capG.visible=!on;power.visible=hair.visible=on;extras.forEach(g=>g.visible=on);equip.forEach(([o,vis])=>o.visible=!on&&vis);roupas.forEach(([o,m])=>o.material=on?tecidoPoder:m);maos.forEach(o=>o.material=on?couro:r.rosto.pele);dobras.concat(wrist).forEach(o=>o.visible=!on);botas.forEach(([o,m])=>o.material=on?preto:m);if(!on){originais.forEach((s,m)=>{m.color.copy(s.color);m.map=s.map;m.emissive?.setHex(0);m.emissiveIntensity=0;m.needsUpdate=true;});pulso=0;brilho.emissiveIntensity=.20;}}
  function tick(dt){if(!on)return;t+=dt;pulso=Math.max(0,pulso-dt*1.6);brilho.emissiveIntensity=.16+pulso*1.45+.025*Math.sin(t*3);}
- const visual={forma,tick,pulsa:()=>{pulso=1;},brilho,get on(){return on;}};r.mohrVisual=visual;forma(false);
+ const visual={forma,tick,normal,pulsa:()=>{pulso=1;},brilho,get on(){return on;}};r.mohrVisual=visual;forma(false);
  return {id:def.id,nome:def.nome,p:r,tick,fx:{liga:()=>forma(true),desliga:()=>forma(false),tick,pulsa:visual.pulsa}};
 }

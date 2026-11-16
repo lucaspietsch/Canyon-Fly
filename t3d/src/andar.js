@@ -392,7 +392,7 @@ export function criarAndar(c){
   function pose(){
     const av = AV.av, a = clamp(Math.abs(W.vel) / 17, 0, 1), passoK = Math.min(1, Math.abs(W.vel) / 6.3);
     const amp = .5 * passoK + .62 * a, f = W.fase, noAr = !W.noChao || emVoo() || (cen.extraChao?.alturaExtra?.()||0)>.01;
-    const [qD, qE] = AV.pernasA.quadril, [jD, jE] = AV.pernasA.joelho;
+    const [qD, qE] = AV.pernasA.quadril, [jD, jE] = AV.pernasA.joelho;if(H.mundo?.personagens?.ativo==='carlao'){qD.rotation.z=qE.rotation.z=0;AV.tronco.rotation.z=0;AV.tronco.position.y=2.2;}
     if(noAr){ qD.rotation.x = -.7; qE.rotation.x = -.35; jD.rotation.x = .9; jE.rotation.x = .6; }
     else { qD.rotation.x = Math.sin(f) * amp; qE.rotation.x = -Math.sin(f) * amp; jD.rotation.x = Math.max(0, -Math.cos(f)) * amp * 1.5; jE.rotation.x = Math.max(0, Math.cos(f)) * amp * 1.5; }
     const sw = noAr ? 0 : Math.sin(f) * amp;
@@ -402,6 +402,7 @@ export function criarAndar(c){
     AV.tronco.rotation.x = .02 + a * .2; AV.tronco.rotation.y = noAr ? 0 : -Math.sin(f) * amp * .25;
     const bob = noAr || Math.abs(W.vel) < .3 ? 0 : Math.abs(Math.cos(f)) * (.1 + a * .12);
     av.position.set(W.x, W.y + bob + (cen.extraChao?.alturaExtra?.()||0), W.z); av.rotation.y = W.yaw;
+    H.mundo?.poderes?.carlao.pose();
     if(AV.nome) AV.nome.rotation.y = W.camYaw - W.yaw;                  // o nome sempre de frente para a câmera
   }
   function tremorKauling(){const K=H.mundo?.poderes?.kauling;if(!K||H.mundo.congelado||H.mundo.personagens?.ativo!=='kauling')return;const a=Math.min(.08,K.S.tremor*.10),t=performance.now()*.06;cam.position.x+=Math.sin(t)*a;cam.position.y+=Math.cos(t*1.3)*a;}
