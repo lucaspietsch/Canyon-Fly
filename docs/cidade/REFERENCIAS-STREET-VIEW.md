@@ -512,6 +512,13 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
 
 ## Arredores da cidade (grade de prints do Lucas, outra camada do Maps)
 Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de envio: Z0, Z1, …
+- **Z0 — norte/noroeste da cidade** (centro do print −29.0449139, −50.1505125 → local (-518, +473); conferido pela Agência Aparados da Serra Tours em (-103, +297), que no A1 dava (−102, +299) ✔):
+  - **Campo aberto** com **3 lagoas**: **lagoa escura comprida** (-707, +373), **açude barrento/marrom** (-535, +414) e **lagoinha redonda** (-654, +490); faixa de **banhado/mato ciliar** escuro entre elas (-493, +571).
+  - **Estrada de terra**: vem do oeste (-1036, +174), faz um **entroncamento** (-608, +273); um ramo sobe para o norte até uma **sede de fazenda** (galpões e casas) (-712, +613); outro desce para a **Pousada Bela Vista** (-498, +195) e a cidade.
+  - **Lavouras** (terra arada marrom) a oeste (-1120, +352) e ao norte (-702, +676); **capões de mato** escuros no noroeste (-879, +644).
+  - **Mata densa (araucária)** entre o bairro norte e a R. Joaquim Pereira (-75, +414).
+  - **Bairro norte** (nordeste do print): **R. Hélio Noronha de Melo** (-221, +691), **R. Y** (-33, +657), **R. Cancha Reta** (-221, +576) → (+103, +634) (nome de **cancha de carreira de cavalo** — reta comprida), **R. Moacir da Rosa Monteiro** (-158, +524), **R. Sen. Alberto Pasqualine** (+145, +446), **R. Primeiro de Maio** (-346, +205), **R. Joaquim Pereira** (-2, +289), **R. Vinte de Setembro** (+124, +216).
+  - Lugares: **escola** (ícone de capelo) (-148, +637) · ponto "paciente acamado" (rótulo estranho do Maps) (-195, +657) · **Empório Inovazzione** (-273, +531) · **Igreja Missionária de Cambará do Sul** (-265, +472) · **Pousada Bela Vista** (-498, +195) · restaurante (+134, +245).
 - (aguardando os prints)
 
 ## Próximos envios do Lucas (anotado)
