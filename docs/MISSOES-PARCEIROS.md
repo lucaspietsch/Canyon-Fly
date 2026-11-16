@@ -36,6 +36,14 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
   - Buscar **madeira para consertar as mesas da varanda do Du Perau** (missão ligando dois parceiros).
   - Ajudar a **arrumar o depósito** depois de um vendaval.
 
+### Loja Thewes  ★ com entrada (futuro)
+- Esquina sudoeste da Av. Getúlio Vargas × Rua Vinte de Setembro (Ref 64 do catálogo). Loja de roupas.
+- **[Lucas]** **Aberta ao público** (interior visitável).
+- **[sugestão]** Missões:
+  - Comprar um **casaco** para um turista que chegou despreparado para o frio de Cambará.
+  - Levar uma **encomenda** de roupa para um morador.
+  - **Trocar o visual** do personagem (loja de skins/roupas do jogo).
+
 ### Outros lugares já mapeados (candidatos a parceria)
 - **Pizzaria Recanto da Pizza** (esquina da Quinze de Março com a RS-020) — [sugestão] entregar pizzas pela cidade com tempo.
 - **Café do Casarão** (lado sul da RS-020, em frente à Rua Coberta) — [sugestão] missão de café/chocolate quente no inverno.
@@ -55,4 +63,5 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - [ ] Cardápio, fotos dos hambúrgueres e do chopp.
 - [ ] Foto do Rodrigo + autorização de uso de nome e imagem.
 - [ ] Brentano (material de construção e supermercado): fotos do interior, nome do dono e autorização (quando houver acordo).
+- [ ] Loja Thewes: fotos do interior e autorização.
 - [ ] Lista de outros estabelecimentos interessados em patrocinar.
