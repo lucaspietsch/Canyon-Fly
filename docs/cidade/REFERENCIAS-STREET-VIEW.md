@@ -47,8 +47,12 @@ Origem local (0, 0) = câmera da Ref 01.
 | 33 | −29.0484383, −50.1451618 · 1027 m | 70° | jul/2025 | Lado leste da Laurindo **ao norte da Benoit**: prédio comercial térreo branco com **Consultório de Psicologia**, **loja "Ivy"** (letreiro rosa/roxo) e **portão de garagem marrom** |
 | 34 | −29.0483529, −50.1451875 · 1026 m | 64° | jul/2025 | Esquina Laurindo × Dona Úrsula (nº 80), olhando para o **leste**: **Consultório de Psicologia** de perto (telhado próprio de duas águas); **sobrado de esquina** com térreo de tijolo à vista e **sacada de ferro trabalhado**; ao fundo, do outro lado da Dona Úrsula, **Secretaria de Educação** (amarela/laranja) e placa de PARE |
 | 35 | −29.0481291, −50.1450497 · 1026 m | 326° | jul/2025 | **SECRETARIA MUNICIPAL DE EDUCAÇÃO** de frente (Dona Úrsula nº 153, lado norte): casa de madeira amarela com acabamentos bordô e letreiro "SEC. DE EDUCAÇÃO"; à esq. **sobrado antigo amarelo-ocre** na esquina com a Laurindo; à dir. casa de madeira avermelhada; **araucária** atrás |
+| 36 | −29.0481291, −50.1450497 · 1026 m | 254° | jul/2025 | Mesmo ponto da Ref 35, olhando para o **oeste pela Dona Úrsula**: lado norte com a Secretaria de Educação e o sobrado amarelo-ocre; no fundo o prédio de concreto da esquina; cones de trânsito |
+| 37 | −29.0481291, −50.1450497 · 1026 m | 179° | jul/2025 | Mesmo ponto, olhando para o **sul**: **sobrado da esquina sudeste** visto pelo norte (creme com faixas de tijolinho); **casa térrea bege** de telha a leste dele; **caminhonete de eletricista** com escadas e cones; torre da igreja ao fundo |
+| 38 | −29.0481291, −50.1450497 · 1026 m | 118° | jul/2025 | Mesmo ponto, olhando para o **leste pela Dona Úrsula**: rua seguindo a ~74°; lado sul com a casa bege térrea e uma **casa branca de telha laranja com trapeira**; lado norte com casas de telha vermelha e caminhonete branca |
+| 39 | −29.04808, −50.1448528 · 1026 m | 164° | jul/2025 | Dona Úrsula nº 125, olhando para o **sul**: **casa branca de madeira** (tábuas verticais) com **telha laranja e trapeira triangular**, porta branca com varandinha; à esq. muro claro com placa azul de imobiliária e **construção de tijolo inacabada**; à dir. **sobrado bege** com varanda de madeira; torre da igreja no canto |
 
-Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35 (+14, +117).
+Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35/36/37/38 (+14, +117) · Ref 39 (+33, +123).
 
 > A partir da Ref 07 começa o "ao redor" (pedido do Lucas). Praça + igreja: Refs 01–06.
 
@@ -65,7 +69,7 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
   Interseções dos 6 pares: (−21.6, 51.0) (−23.1, 54.6) (−23.0, 50.9) (−25.5, 53.1) (−29.4, 50.4) (−20.6, 48.8).
   Média **(−24, +51.5) m** ≈ 57 m a 335° da Ref 01 ≈ **−29.04873, −50.14544** (±3 m).
   (A 1ª estimativa, com FOV de 75°, dava (−18, +42) e estava errada: a Ref 04 mostrou a torre num ângulo incompatível.)
-  **Validação independente:** Ref 05 prevê 202,4° e a foto mostra 201,6°; Ref 06 prevê 178,6° e a foto mostra 178,1°; Ref 10 prevê 133,0° e mostra 131,2°; Ref 11 prevê 72,7° e mostra 69,8°; Ref 19 prevê 23,9° e mostra 23,3°; Ref 21 prevê 5,8° e mostra 7,1° → posição **confirmada por 10 vistas**.
+  **Validação independente:** Ref 05 prevê 202,4° e a foto mostra 201,6°; Ref 06 prevê 178,6° e a foto mostra 178,1°; Ref 10 prevê 133,0° e mostra 131,2°; Ref 11 prevê 72,7° e mostra 69,8°; Ref 19 prevê 23,9° e mostra 23,3°; Ref 21 prevê 5,8° e mostra 7,1°; Ref 37 prevê 209,8° e mostra 208°; Ref 39 prevê 218,6° e mostra 218,4° → posição **confirmada por 12 vistas**.
 - **Torre vista do oeste (Ref 11):** campanário alto e branco com **aberturas em arco** (duas janelas compridas lado a lado) e cruz no topo.
 - **Fundos (Ref 06):** parede alta branca com frontão, ≈ y +88 → **comprimento ~40 m** (fachada ~y +48 até fundos ~y +88).
 - **Dimensões estimadas:** nave ~14 m de largura × ~40 m de comprimento; torre ~25 m de altura (confirmar com a vista de frente).
@@ -169,7 +173,8 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
   - **Consultório de Psicologia** (parte norte, Refs 33 e 34): **telhado próprio de duas águas** com beiral de madeira, **porta de madeira**, janela de bloco de vidro, toldo marrom; placa com o nome da psicóloga (não registrado aqui por privacidade) — no jogo: placa genérica "Consultório";
   - **loja "Ivy"** (centro): letreiro rosa/roxo com flores, porta de vidro com degraus, janela com **grade vermelho-amarronzada**;
   - **portão de garagem marrom** (parte sul, encostado na Benoit).
-- **Sobrado na esquina sudeste Laurindo × Dona Úrsula** (Ref 34), ≈ x +4 a +12, y +95 a +103:
+- **Sobrado na esquina sudeste Laurindo × Dona Úrsula** (Refs 34 e 37), ≈ x +4 a +12, y +95 a +103:
+  - lado norte (Ref 37): paredes creme com **faixas de tijolinho aparente**, janelas de madeira;
   - térreo com **tijolo à vista** e partes brancas; lojinha de moda (letreiro "…Moda…");
   - 1º andar branco com **sacada de ferro trabalhado**, janelas de madeira; telhado de duas águas com **beiral de madeira marrom**.
 - **Lado norte da Dona Úrsula, a leste da Laurindo** (Refs 34 e 35):
@@ -177,7 +182,7 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
   - **SECRETARIA MUNICIPAL DE EDUCAÇÃO** (nº 153): **casa térrea de madeira amarela** com **acabamentos bordô** (frontão e faixas), letreiro branco **"SEC. DE EDUCAÇÃO"** numa faixa bordô no alto; **portão de garagem bordô** à esquerda; jardinzinho com **grade de ferro vermelho-amarronzada** entre pilares — ≈ (+5, +128), fachada virada para a rua (sul/sudeste).
   - **Casa de madeira avermelhada** de telhado escuro, a leste — ≈ (+15, +130).
   - **Araucária** grande atrás da Secretaria; **placa de PARE** na esquina.
-  - Obs.: a câmera da Ref 35 ficou em y ≈ +117 — a Dona Úrsula provavelmente sobe um pouco para o norte a leste da Laurindo (conferir).
+  - **Direção da rua (Ref 36):** a leste da Laurindo a Dona Úrsula segue para **leste-nordeste (~74°)**. A câmera da Ref 35 ficou em y ≈ +117, alguns metros mais ao norte do que essa direção indica (diferença normal de GPS do Street View, ±5–9 m).
 - **Posição:** lado **leste** da Rua Laurindo, em frente à igreja, ≈ (+22, +60); fachada virada para o **oeste** (para a rua).
 - **Requisitos do Lucas:**
   - **Entrada funcional e interior** (o jogador entra no pub);
@@ -185,7 +190,18 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
   - Base para **missões de parceiros** (ver docs/MISSOES-PARCEIROS.md no repositório do jogo).
 - Ao sul do pub: a **casa térrea branca com bandeirinhas** (Ref 29).
 
+### Lado sul da Dona Úrsula, a leste do sobrado da esquina (Refs 37, 38, 39) — de oeste para leste
+- **Casa térrea bege** (madeira/alvenaria) com **telhado de telha marrom**, grade baixa na frente — ≈ (+20, +106).
+- **Sobrado bege** com telhado de telha e **varanda de madeira** — ≈ (+26, +108).
+- **Casa branca de madeira** (nº 125): **tábuas verticais brancas**, **telhado de telha laranja** com **trapeira triangular** pequena na frente, janela de moldura avermelhada, **porta branca com varandinha e degraus**, portãozinho — ≈ (+32, +110).
+- Terreno a leste: **muro claro** com **placa azul de imobiliária**, **construção de tijolo inacabada** atrás — ≈ (+40, +112).
+
+### Lado norte da Dona Úrsula, a leste da Secretaria (Ref 38)
+- Casas térreas de **telhado de telha vermelha**; caminhonete branca estacionada.
+
 ### Objetos de cena
+- **Caminhonete branca de eletricista** com escadas no rack e **cones** em volta, na Dona Úrsula (Ref 37) — no jogo **sem logo** da concessionária.
+- **Cones de trânsito** na esquina Laurindo × Dona Úrsula (Ref 36).
 - **Caminhonete branca antiga** (tipo Toyota Bandeirante) com estepe na caçamba, na Laurindo (Ref 29).
 - **Caminhãozinho branco antigo de entregas** (baú, tipo Ford F-4000) e **caminhonete Hilux branca** (Ref 25).
 - **Lixeiras cilíndricas** (duas lado a lado) sob a Rua Coberta (Ref 24).
