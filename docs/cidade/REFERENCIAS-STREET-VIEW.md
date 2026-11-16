@@ -73,6 +73,7 @@ Origem local (0, 0) = câmera da Ref 01.
 | 59 | −29.048611, −50.1440793 · 1028 m | 163° | jul/2025 | Mesmo ponto da Ref 58, olhando para o **sul** pela **Vinte de Setembro** (asfalto/paralelepípedo, nome pintado no chão): à dir. (oeste) **galpão branco comprido** com janelas gradeadas e **ícone de loja/mercado** do Maps; à esq. (leste) muros de tijolo, casinhas brancas e **caminhão antigo vermelho** estacionado; ao fundo **chalé de empena vermelha**, prédio de 3 pavimentos e o **campo aberto no horizonte** (a rua desce rumo à Av. Getúlio Vargas) |
 | 60 | −29.0487937, −50.1440476 · 1027 m | 275° | jul/2025 | Vinte de Setembro, olhando para o **oeste**: o galpão branco da Ref 59 é o **SUPERMERCADO BRENTANO** (letreiro branco com letras pretas "…ERCADO BRENTANO" no alto da esquina) — prédio branco de 2 pavimentos com entrada de loja e mercadoria na porta, janelas gradeadas; ao sul, **parede branca comprida e cega** do galpão com 2 janelinhas gradeadas; à dir. prédios de **tijolo aparente** inacabados |
 | 61 | −29.0487937, −50.1440476 · 1027 m | 226° | jul/2025 | Mesmo ponto, olhando para o **sudoeste**: **SUPERMERCADO BRENTANO** de frente para a esquina — letreiro **"SUPERMERCADO BRENTANO"** (placa branca, letras pretas) no 2º pavimento; **porta de entrada** de madeira e vidro com **carrinhos de compra** dos dois lados; janelas gradeadas; moto estacionada; telhado de 2 águas com beiral escuro. À esq., do outro lado da rua transversal ao sul, **prédio de 2–3 pavimentos** cinza com lojas embaixo; casa de telha vermelha; campo no horizonte. **Lucas: "deixe aberto internamente também, com prateleiras de mercado"** |
+| 62 | −29.0489878, −50.1440551 · 1027 m | 124° | jul/2025 | **Av. Getúlio Vargas nº 1201** ("Av. Getúlio Vargas" pintado no chão), na esquina com a Vinte de Setembro, olhando para o **leste-sudeste**: à dir. **casa antiga branca** de telha vermelha com **trapeira**, janelas de moldura **vermelha**, chaminé de tijolo e jardim com palmeirinhas; ao lado **lojinhas com toldo** e sobrado de tijolo/vermelho; **canteiro central com postes coloniais pretos**; à esq. prédio branco de 3 pavimentos com sacadas; à dir. na borda, prédio moderno com sacadas e **campo aberto** ao fundo |
 
 Câmeras na origem local (x = leste, y = norte, em m): Ref 01 (0, 0) · Ref 02 (+18, +15) · Ref 03 (+10, +54) · Ref 04 (+5, +74) · Ref 05 (−2, +104) · Ref 06/07/08 (−25, +106) · Ref 09 (−54, +98) · Ref 10 (−64, +89) · Ref 11/13/14 (−57, +41) · Ref 12 (−60, +61) · Ref 15/16 (−54, +22) · Ref 17/20 (−52, +2) · Ref 18/19 (−50, −8) · Ref 21 (−30, −5) · Ref 22/23 (−20, −4) · Ref 24 (−10, −2) · Ref 25/26/27 (+20, +6) · Ref 28 (+16, +25) · Ref 29 (+14, +34) · Ref 30 = mesmo ponto da Ref 03 (+10, +54) · Ref 31 (+8, +64) · Ref 32 = mesmo ponto da Ref 04 (+5, +74) · Ref 33 (+3, +83) · Ref 34 (0, +93) · Ref 35/36/37/38 (+14, +117) · Ref 39/40 (+33, +123) · Ref 41/42 (+43, +126) · Ref 43/44 (+52, +129) · Ref 45/46 (+72, +135) · Ref 47 (+81, +138).
 
@@ -272,8 +273,13 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
 - **[Lucas]** "deixe com **entrada** futuramente, **estilo o Pub**" → interior visitável (balcão, prateleiras, depósito).
 - Nome real → só com **autorização** do dono (como o Du Perau); antes disso, letreiro genérico "Material de Construção".
 
+### Av. Getúlio Vargas a leste da Vinte de Setembro (Ref 62), lado sul
+- **Casa antiga branca** de telha vermelha com **trapeira**, janelas com moldura **vermelha**, **chaminé de tijolo** e jardim — mais uma candidata a "casa histórica" (confirmar).
+- A seguir, **lojinhas térreas com toldo** e um **sobrado de tijolo** de 2 pavimentos.
+- Canteiro central com **postes coloniais pretos de 3 braços** (os mesmos do trecho da Ref 26).
+
 ### SUPERMERCADO BRENTANO (Refs 59, 60, 61) — ★ estabelecimento com entrada (futuro)
-- **Posição:** lado **oeste** da Vinte de Setembro, na **esquina com a rua transversal ao sul** (provável Av. Getúlio Vargas / RS-020 — confirmar), **≈ (+90, +30 a +60)**; entrada principal **virada para a esquina** (sudeste).
+- **Posição:** lado **oeste** da Vinte de Setembro, na **esquina com a rua transversal ao sul** = **Av. Getúlio Vargas** (confirmado na Ref 62), **≈ (+90, +30 a +60)**; entrada principal **virada para a esquina** (sudeste).
 - **Aparência:** prédio **branco de 2 pavimentos**, telhado de 2 águas com beiral marrom escuro; letreiro **"SUPERMERCADO BRENTANO"** no alto; porta de madeira e vidro com **carrinhos de compra** dos dois lados; janelas gradeadas no térreo, janelas de madeira em cima; para o norte segue a **parede comprida do galpão** (base de pedra pintada de branco).
 - **[Lucas]** "deixe **aberto internamente** também, com **prateleiras de mercado**" → interior visitável: corredores de prateleiras, caixa, geladeiras, carrinhos.
 - Nome real → com **autorização** do dono; antes disso, letreiro genérico "Supermercado".
@@ -312,7 +318,7 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
 - Gramado com canteiros; caminhos de pedra com **meio-fio branco**; bancos; poste preto; pinheiro grande (provável araucária ou cipreste), palmeira, árvores caducas grandes (sem folhas no inverno).
 
 ### Ruas
-- **Rua Vinte de Setembro:** paralelepípedo, norte–sul em x ≈ +93; cruza a Dona Úrsula em ≈ (+93, +140) (Refs 48–53).
+- **Rua Vinte de Setembro:** paralelepípedo, norte–sul em x ≈ +93; cruza a Dona Úrsula em ≈ (+93, +140) (Refs 48–53). Ao sul termina na **Av. Getúlio Vargas** em ≈ (+100, +25) (Ref 62) — ou seja, a avenida **sobe para o nordeste** a partir da praça (y ≈ −5 lá, +25 aqui).
 - **Rua Laurindo Francisco de Macedo:** paralelepípedo, carros estacionados; corre pelo **lado leste** da praça e da igreja (nºs 22, 38, 58, 80), rumo ~348° (norte-noroeste).
 - **Rua Dona Úrsula:** paralelepípedo, faixa de grama com meio-fio branco; corre **leste–oeste atrás da igreja**, em y ≈ +100 a +105 m; esquina com a Laurindo em ≈ (−2, +104) e com a Quinze de Março em ≈ (−58, +92).
 - **Rua Quinze de Março:** paralelepípedo, faixa de pedestres; corre pelo **lado oeste** do quarteirão, quase paralela à Laurindo (rumo ~158°/338°); passa pela rótula da árvore cambará.
