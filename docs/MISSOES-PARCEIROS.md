@@ -48,6 +48,7 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - **Pizzaria Recanto da Pizza** (esquina da Quinze de Março com a RS-020) — [sugestão] entregar pizzas pela cidade com tempo.
 - **Café do Casarão** (lado sul da RS-020, em frente à Rua Coberta) — [sugestão] missão de café/chocolate quente no inverno.
 - **Centro Cultural / Secretaria Municipal do Turismo** — [sugestão] missões de turismo (levar visitantes a pontos da cidade e do parque; casa histórica).
+- **Loja Galochas** (calçados caros — chalé branco, RS-020 nº 1156, Refs 76–77) — [sugestão] missões de humor: achar o **par perdido** de um sapato caríssimo; entregar **botas novas** a um guia antes da trilha; um cliente exigente que não acha nada à altura.
 - **Sociedade Recreativa 15 de Março** — [sugestão] evento/baile no clube.
 
 ## Lugares de lenda na cidade
