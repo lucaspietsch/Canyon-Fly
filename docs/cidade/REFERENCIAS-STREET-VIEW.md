@@ -565,7 +565,14 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Cambará Eco Hotel** (+1050, -405) · hospedagem (+631, -403) · **"…Lago Imbuia"** (hospedagem) (+1443, -444) e **lagos** escuros entre eles (+1190, -421).
   - Ruas na borda da cidade: **R. João Pereira da Silva** (+714, +220) · **Av. Getúlio Vargas** (+694, +148) · **R. Ouro Verde** (+549, +624) · **Pizza Retrô** (+497, -129).
 - **A3 em camada de trânsito** (mais perto, centro −29.046969, −50.1331109): mostra a **Igreja Assembleia de Deus** na Getúlio Vargas, a **R. das Indústrias** descendo até a estrada leste, a **borda da cidade** (área verde a leste) e o **ramal de terra para o sudeste** com uma construção no fim.
-- (aguardando: **B0, B3, C0, C1, C2, C3**)
+- **B0 — sul/sudoeste da cidade** (centro −29.054716, −50.1479918 → local (-273, -611); Refúgio Fortal em (-353, -355), batendo com B1/A0 ✔):
+  - **RS-020** desce para o **sul-sudoeste**: (-600, -318) → (-746, -485) → (-777, -694) → (-840, -935); **Pousada Oliveira** (-757, -749) à beira dela, com um grupinho de casas.
+  - **Estrada de terra** sai do Caiamba Auto Center para o sul (-349, -381) → (-317, -543) até um **galpão** (-312, -564).
+  - **Estradas de terra a sudeste:** (-25, -308) → (-108, -485) → (-129, -595) e (+48, -308) → (+106, -475), passando por sítios.
+  - **Mata nativa densa (araucária)** — bloco grande no centro-sul (-307, -726).
+  - **Pinus** em quadras uniformes (-568, -454) e (-526, -611); capões de mato (-892, -747).
+  - **Açudes**: **açude grande com barragem** (+111, -663); menores (-448, -485) (-647, -501) (-615, -590) (-51, -443) (+226, -501) (+304, -438); **banhados em faixas** com mata ciliar a leste (+163, -579); **campo** aberto a leste.
+- (aguardando: **B3, C0, C1, C2, C3**)
 
 ## Próximos envios do Lucas (anotado)
 - [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
