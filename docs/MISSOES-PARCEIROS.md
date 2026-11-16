@@ -53,7 +53,9 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 
 ## Atrações da praça (vistas no satélite)
 - **Termômetro Cambará do Sul** — [sugestão] missão de inverno: tirar foto do termômetro quando marcar abaixo de 0 °C; ponto de encontro de turistas.
-- **Sequoia Lunar** — [sugestão] missão de história (com o Centro Cultural / Sr. Gesmar): descobrir a origem da árvore.
+- **Sequoia Lunar** (já no jogo) — [sugestão] missão de história (com o Centro Cultural / Sr. Gesmar): descobrir a origem da árvore — **[Lucas] vai enviar a história e a foto da placa**.
+- **Calçada em favos de mel** — Cambará do Sul é a **capital do mel do RS** → [sugestão] missão do mel: levar mel de um produtor até a feira/praça; abelhas como tema de um colecionável.
+- **Urna do Tempo** (já no jogo; formato especial) — [sugestão] missão: descobrir o ano em que a urna será aberta.
 
 ## Lugares de lenda na cidade
 - **Casa antiga mal-assombrada** (Rua Dona Úrsula, lado norte, a leste da Laurindo — Ref 45 do catálogo) — **[Lucas]** a casa é tida como mal-assombrada.

@@ -391,8 +391,8 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
 
 ## Vista de cima (print do Google Maps/satélite enviado pelo Lucas)
 Só anotações — a imagem do satélite **não** vai para o repositório (é do Google). Nomes como aparecem no Maps:
-- **Igreja Matriz São José** (nome oficial da igreja) — telhado cinza; o **telhado vermelho comprido** a oeste é o **Salão Paroquial**.
-- **Na praça:** **"Termômetro Cambará do Sul"** (ícone roxo — o termômetro gigante da "cidade mais fria"; ótimo objeto de cena) e **"Sequoia Lunar"** (ícone roxo — árvore/atração; confirmar a história); **Crepe Mania** (restaurante) no lado sul, junto à Rua Coberta.
+- **Igreja Matriz São José** (nome oficial — **confirmado pelo Lucas**) — telhado cinza; o **telhado vermelho comprido** a oeste é o **Salão Paroquial**.
+- **Na praça:** **"Termômetro Cambará do Sul"** (ícone roxo — o termômetro gigante da "cidade mais fria"; ótimo objeto de cena) e **"Sequoia Lunar"** (ícone roxo) — **já existe no jogo** (vem do KML; aparece em várias fotos da praça); **[Lucas]** melhorar a montagem dela e da **calçada em formato de favos de mel** (hexágonos) em volta — **Cambará do Sul é a capital do mel do RS** (o "monumento de hexágonos brancos" da Ref 19 é desse tema). A **Urna do Tempo** (também já no jogo) tem um **formato bem legal** — refazer com as fotos; **Crepe Mania** (restaurante) no lado sul, junto à Rua Coberta.
 - **Norte da Dona Úrsula:** **Prefeitura Municipal** (atrás da igreja, a oeste), **Consultório Veterinário**, **Centro Espírita Caminho, Verdade e Vida** (noroeste).
 - **Quarteirão leste da igreja** (entre a Laurindo e a Vinte de Setembro): **Banca do Robinho** (perto da Dona Úrsula), **ícone laranja de bar** = **Du Perau Gastro Pub**, **Igreja Pentecostal Amor e Fé** (no meio do quarteirão), **Supermercado Brentano** (sul), **Sociedade Recreativa XV de Março** (sudoeste, na avenida).
 - **Leste da Vinte de Setembro:** **Coisas da Serra**, **Construtora Paraná e Acad Engenharia**, **Pousada Itaimbezeza** (nordeste), **Rafaela Cardoso Fisioterapia** e **Táxi do Raffa** (na avenida).
@@ -400,6 +400,15 @@ Só anotações — a imagem do satélite **não** vai para o repositório (é d
 - **Oeste:** **Centro Cultural Dr. Santo Bornéo** (= o Centro Cultural / Secretaria de Turismo das Refs 13–14), **Rua Dom Pedro** (rua a oeste da Quinze de Março?), depósito de **bebidas**.
 - **Geometria:** a malha é **inclinada** — as ruas "norte–sul" (Quinze de Março, Laurindo, Vinte de Setembro) correm a ~**340°/160°**, e as "leste–oeste" (Dona Úrsula, Getúlio Vargas/RS-020) a ~**70°/250°**. Os quarteirões têm ~**90–100 m**. Isso bate com as triangulações (a avenida "sobe" para o nordeste).
 - No jogo: nomes de comércio só com autorização; serviços públicos (Prefeitura, Igreja, Centro Cultural) e atrações (Termômetro, Sequoia) podem ter o nome real.
+
+## A receber do Lucas (praça)
+- [ ] **Foto do Termômetro** de Cambará.
+- [ ] **História da Sequoia Lunar** (e foto da **placa**).
+- [ ] **Fotos da praça** (daqui alguns dias): calçada em favos de mel, Sequoia, **Urna do Tempo**, placas.
+
+## Mapa do que já foi montado
+- [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.svg) + [`PROGRESSO.md`](PROGRESSO.md), gerados por `mapa_progresso.py`.
+- **[Lucas]** ao terminar cada casa/lugar no jogo, **marcar no mapa** (status `feito`) e rodar o script de novo.
 
 ## Planta provisória (vista de cima, norte para cima; x = leste, y = norte, em m, origem Ref 01)
 
