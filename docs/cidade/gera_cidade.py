@@ -59,9 +59,38 @@ def predios():
         out.append([nome, x, y, w, h, alto, tipo, round(ang, 1), round(fx, 1), round(fy, 1)])
     return out
 
+CORES_GEN = ["branca", "bege", "amarelo-clara", "rosa", "verde", "cinza", "creme", "azul clara"]
+def genericas(P):
+    """Casas GENÉRICAS (provisórias) nos trechos de rua que ainda não têm nenhum prédio do catálogo: preenchem a cidade até chegarem os prints.
+    Ficam a cada ~16 m dos dois lados da rua, afastadas da calçada e longe de outras ruas, da praça e dos prédios já catalogados."""
+    import random
+    rnd = random.Random(7); ocup = [(q[1], q[2], max(q[3], q[4]) / 2 + 4) for q in P]; out = []; k = 0
+    segs = [(a, b) for pts in RUAS.values() for a, b in zip(pts, pts[1:])]
+    def dist_rua(x, y):
+        best = 1e9
+        for (x0, y0), (x1, y1) in segs:
+            vx, vy = x1 - x0, y1 - y0; L2 = vx * vx + vy * vy; t = max(0, min(1, ((x - x0) * vx + (y - y0) * vy) / L2)); best = min(best, math.hypot(x0 + t * vx - x, y0 + t * vy - y))
+        return best
+    for nome, pts in RUAS.items():
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            Ls = math.hypot(x1 - x0, y1 - y0); tx, ty = (x1 - x0) / Ls, (y1 - y0) / Ls
+            for i in range(int(Ls / 16) + 1):
+                cx, cy = x0 + tx * i * 16, y0 + ty * i * 16
+                for lado in (-1, 1):
+                    w, d = rnd.choice([7, 8, 9, 10]), rnd.choice([8, 9, 10])
+                    off = 6 + 2.2 + d / 2 + 1.5; x, y = cx - ty * lado * off, cy + tx * lado * off
+                    if -60 < x < 5 and 10 < y < 50: continue                                                  # praça
+                    if dist_rua(x, y) < off - .5: continue                                                    # perto de outra rua (esquina)
+                    if any(math.hypot(x - a, y - b) < r + max(w, d) / 2 for a, b, r in ocup): continue
+                    k += 1; cor = rnd.choice(CORES_GEN); alt = rnd.choice([4.5, 4.5, 4.5, 7])
+                    nomeG = "Casa genérica %s #%d (precisa de print)" % (cor, k) if alt < 6 else "Sobrado genérico %s #%d (precisa de print)" % (cor, k)
+                    ang, fx, fy = rua_proxima(x, y); out.append([nomeG, round(x, 1), round(y, 1), w, d, alt, "casa", round(ang, 1), round(fx, 1), round(fy, 1)])
+                    ocup.append((x, y, max(w, d) / 2 + 2))
+    return out
+
 if __name__ == "__main__":
     d = os.path.join(RAIZ, "t3d", "src", "mundo", "dados")
     open(os.path.join(d, "kml-cidade.js"), "w", encoding="utf-8").write("/* GERADO por docs/cidade/gera_cidade.py — ruas reais do centro de Cambará do Sul (traçado aproximado dos prints do Lucas). Não editar à mão. */\nexport const KML_CIDADE = `" + kml() + "`;\n")
-    P = predios()
+    P = predios(); P += genericas(P)
     open(os.path.join(d, "cidade-centro.js"), "w", encoding="utf-8").write("/* GERADO por docs/cidade/gera_cidade.py — prédios do centro em blocos: [nome, x leste m, y norte m, largura m, fundo m, altura m, tipo, ângulo da rua (graus), ponto da rua mais próxima x, y]. Origem = Ref 01 (−29.0491915, −50.1451915). */\nexport const ORIGEM_CENTRO = { lat: %r, lon: %r, mLat: %r, mLon: %r };\nexport const PREDIOS_CENTRO = %s;\n" % (LAT0, LON0, MLAT, MLON, json.dumps(P, ensure_ascii=False)))
-    print("ruas:", len(RUAS), "· prédios:", len(P))
+    print("ruas:", len(RUAS), "· prédios:", len(P), "(", sum(1 for q in P if "genéric" in q[0]), "genéricos )")
