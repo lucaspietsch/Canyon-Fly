@@ -27,9 +27,9 @@ export const DEF = {
   },
   puma: {
     spec: "puma", alertaSeg: [1, 2], alertaMax: 3, aposAlerta: "sair",
-    pose: { neutroPesc: 1.55, neutroCab: .3, altoPesc: 1.25, baixoPesc: 2.35, cauda: -.3, caudaAlerta: -.12, caudaFuga: -.4, perna: .54 },
-    atividades: () => [["andar", 38], ["beber", 28], ["farejar", 14], ["escutar", 20]],
-    durs: { farejar: [2, 4], escutar: [2, 4], beber: [4, 8] },
+    pose: { neutroPesc: .45, neutroCab: -.22, altoPesc: .15, baixoPesc: 1.65, cauda: -.3, caudaAlerta: -.12, caudaFuga: -.4, perna: .54 },
+    atividades: () => [["andar", 36], ["beber", 26], ["farejar", 14], ["escutar", 16], ["sentar", 8]],
+    durs: { farejar: [2, 4], escutar: [2, 4], beber: [4, 8], sentar: [4, 8] },
     /* caminha pela margem, seguindo o curso d'água */
     destino: (a, c) => {
       const Z = c.zonas.agua, L = Z.eixo; let k = 0, md = 1e9; L.forEach((p, i) => { const d = Math.hypot(p[0] - a.x, p[1] - a.z); if(d < md){ md = d; k = i; } });

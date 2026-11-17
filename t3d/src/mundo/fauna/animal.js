@@ -171,6 +171,7 @@ export class Animal {
     /* olhos brilham de noite (luz refletida) */
     const k2 = c.noite > .5 ? Math.min(1, (c.noite - .5) * 2) : 0;
     r.olhos.forEach(o => { o.material.color.lerpColors(o.userData.escuro, o.userData.brilho, k2); o.scale.setScalar(o.scale.x * (1 + (k2 > 0 ? .0 : 0))); });
+    r.pose?.(p,dt);
   }
 
   /* aplica posição/rotação no modelo (com o corpo acompanhando o relevo) */

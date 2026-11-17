@@ -1,3 +1,4 @@
+import { criarPuma } from './puma-visual.js';
 import { criarGraxaim } from './graxaim-visual.js';
 import { Group, Mesh, SphereGeometry, BoxGeometry, CylinderGeometry, ConeGeometry, MeshStandardMaterial, MeshBasicMaterial, Color } from "three";
 import { U } from "../config.js";
@@ -18,6 +19,7 @@ const parte = (pai, geo, cor, sx, sy, sz, x = 0, y = 0, z = 0) => { const o = ne
 const esf = (pai, cor, rx, ry, rz, x, y, z) => parte(pai, geoEsf, cor, rx, ry, rz, x, y, z);
 
 export function criarQuadrupede(S, opts = {}){
+  if(S.visual === "puma")return criarPuma(S,opts);
   if(S.visual === "graxaim")return criarGraxaim(S,opts);
   MATF = opts.clonar ? ((hex) => new MeshStandardMaterial({ color: hex, roughness: 1, metalness: 0 })) : mat;
   const { tronco: T, perna: P, pesc: N, cab: C, orelha: O, cauda: R, cor } = S;
@@ -82,6 +84,7 @@ export const SPEC = {
       orelha: 0x2a1c14, orelhaInt: 0xe3b48a, cauda: 0xc4551f, caudaPonta: 0xf5eee0, olho: 0x3a1c08, brilho: 0xff8a1e }
   },
   puma: {
+    visual: "puma",
     tronco: { comp: 1.15, alt: .34, larg: .26 }, perna: { sup: .27, inf: .27, esp: .08 }, pesc: { comp: .24, esp: .15 },
     cab: { comp: .22, alt: .15, larg: .16, focinho: { comp: .10, alt: .075, larg: .10 } }, orelha: { alt: .07, larg: .08, redonda: true }, cauda: { comp: .86, esp: .075 },
     cor: { corpo: 0xb99a6e, peito: 0xc2a478, barriga: 0xd9c8a6, pernaSup: 0xb69866, pernaInf: 0xad9060, pata: 0xa08558, pescoco: 0xbd9f72, cabeca: 0xbf9f74, focinhoCor: 0xe6d9c0, queixo: 0xf0e8d6, nariz: 0xc98a82, mascara: 0x2a2018,

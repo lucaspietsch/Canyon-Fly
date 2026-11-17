@@ -22,7 +22,8 @@
     "test:kauling:game": "node test/browser/kauling-game.cjs",
     "test:carlao": "node test/browser/carlao.cjs",
     "test:carlao:game": "node test/browser/carlao-game.cjs",
-    "test:graxaim:game": "node test/browser/graxaim-game.cjs"
+    "test:graxaim:game": "node test/browser/graxaim-game.cjs",
+    "test:puma:game": "node test/browser/puma-game.cjs"
   },
   "keywords": [],
   "author": "",
