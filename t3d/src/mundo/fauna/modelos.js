@@ -1,3 +1,4 @@
+import { criarGraxaim } from './graxaim-visual.js';
 import { Group, Mesh, SphereGeometry, BoxGeometry, CylinderGeometry, ConeGeometry, MeshStandardMaterial, MeshBasicMaterial, Color } from "three";
 import { U } from "../config.js";
 
@@ -17,6 +18,7 @@ const parte = (pai, geo, cor, sx, sy, sz, x = 0, y = 0, z = 0) => { const o = ne
 const esf = (pai, cor, rx, ry, rz, x, y, z) => parte(pai, geoEsf, cor, rx, ry, rz, x, y, z);
 
 export function criarQuadrupede(S, opts = {}){
+  if(S.visual === "graxaim")return criarGraxaim(S,opts);
   MATF = opts.clonar ? ((hex) => new MeshStandardMaterial({ color: hex, roughness: 1, metalness: 0 })) : mat;
   const { tronco: T, perna: P, pesc: N, cab: C, orelha: O, cauda: R, cor } = S;
   const hip = (P.sup + P.inf) * .965 + T.alt * .22;                                    // altura do centro do corpo
@@ -86,12 +88,14 @@ export const SPEC = {
       orelha: 0x3d2c20, orelhaInt: 0xd8c4a0, cauda: 0xb4966a, caudaPonta: 0x2e231b, olho: 0x6e6428, brilho: 0xb7ff3c }
   },
   graxaimCinza: {
+    visual: "graxaim",
     tronco: { comp: .56, alt: .19, larg: .13 }, perna: { sup: .17, inf: .18, esp: .033 }, pesc: { comp: .13, esp: .07 },
     cab: { comp: .12, alt: .072, larg: .08, focinho: { comp: .10, alt: .036, larg: .042 } }, orelha: { alt: .115, larg: .06 }, cauda: { comp: .36, esp: .075 },
     cor: { corpo: 0x8d8a83, peito: 0xa39f96, barriga: 0xd9d3c6, pernaSup: 0xb8884f, pernaInf: 0xb8884f, pata: 0x6e5a40, cabeca: 0xa59a8a, focinhoCor: 0xb98d5e, queixo: 0xe8e0d0, nariz: 0x1c1815,
       orelha: 0xb97a42, orelhaInt: 0xe8d4b6, cauda: 0x8d8a83, caudaPonta: 0x1e1814, olho: 0x5a4418, brilho: 0xfff0b0 }
   },
   graxaimRuivo: {
+    visual: "graxaim",
     tronco: { comp: .56, alt: .19, larg: .13 }, perna: { sup: .17, inf: .18, esp: .033 }, pesc: { comp: .13, esp: .07 },
     cab: { comp: .12, alt: .072, larg: .08, focinho: { comp: .10, alt: .036, larg: .042 } }, orelha: { alt: .115, larg: .06 }, cauda: { comp: .36, esp: .075 },
     cor: { corpo: 0xa5724c, peito: 0xb48a62, barriga: 0xe0d2b8, pernaSup: 0xc58f55, pernaInf: 0xc58f55, pata: 0x6e5a40, cabeca: 0xb98a5c, focinhoCor: 0xc89a66, queixo: 0xeee4d0, nariz: 0x1c1815,

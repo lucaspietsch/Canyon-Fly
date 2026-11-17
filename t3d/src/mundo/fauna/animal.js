@@ -180,6 +180,6 @@ export class Animal {
     r.root.position.set(this.x, (yF + yB) / 2, this.z); r.root.rotation.y = this.yaw; r.corpo.parent.rotation.x = 0;
     r.corpo.rotation.x = Math.atan2(yB - yF, L * 2) * .9 - this.p.sentar * .55;
   }
-  libera(){ this.rig.root.parent && this.rig.root.parent.remove(this.rig.root); this.rig.root.traverse(o => { if(o.isMesh && o.material && o.material.isMeshBasicMaterial) o.material.dispose(); }); }
+  libera(){if(this.rig.dispose){this.rig.root.removeFromParent();this.rig.dispose();return;} this.rig.root.parent && this.rig.root.parent.remove(this.rig.root); this.rig.root.traverse(o => { if(o.isMesh && o.material && o.material.isMeshBasicMaterial) o.material.dispose(); }); }
 }
 export { pick, rnd, angDif };

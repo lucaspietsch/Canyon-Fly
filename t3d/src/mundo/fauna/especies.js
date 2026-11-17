@@ -53,7 +53,7 @@ export const DEF = {
   },
   graxaim: {
     spec: "graxaimCinza", variante: () => (Math.random() < .5 ? "graxaimCinza" : "graxaimRuivo"), alertaSeg: [2, 5], alertaMax: 9, aposAlerta: "natural",
-    pose: { neutroPesc: 1.1, neutroCab: .2, altoPesc: .75, baixoPesc: 2.2, cauda: -.35, caudaAlerta: -.5, caudaFuga: -.2, perna: .35 },
+    pose: { neutroPesc: .30, neutroCab: -.18, altoPesc: .10, baixoPesc: 1.50, cauda: -.35, caudaAlerta: -.5, caudaFuga: -.2, perna: .35 },
     atividades: () => [["zigue", 34], ["farejar", 24], ["sentar", 14], ["cocar", 8], ["observar", 14]],
     durs: { farejar: [3, 6], sentar: [4, 9], cocar: [2.5, 4], observar: [3, 6] },
     destino: (a, c) => {

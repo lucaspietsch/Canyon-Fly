@@ -80,6 +80,7 @@ export function criarPersonagens(M){
     if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id); if(opc.transformado && id === "pit" && M.poderes && M.poderes.pit) M.poderes.pit.vesteEm(av); if(opc.transformado && r.fx){ r.fx.liga(); r.fx.tick(.4); r.fx.tick(.4); }
     const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, (id === "pit" ? 2.9 : 2.5) * esc, (id === "pit" ? 15 : id === "jackao" ? 15.5 : 12.5) * esc); cam.lookAt(0, (id === "pit" ? 2.85 : 2.45) * esc, 0); }
     if(comparacao){cam.position.set(0,6.4,36);cam.lookAt(0,6.4,0);}
+    if(opc.alvoY!==undefined){cam.position.set(0,opc.alvoY+.15,opc.distancia||8);cam.lookAt(0,opc.alvoY,0);}
     const R = M.renderer, tam = new Vector2(); R.getSize(tam); const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(px, px, false); R.render(cena, cam);
     const url = R.domElement.toDataURL("image/png");
     R.setPixelRatio(pr); R.setSize(tam.x, tam.y, false);

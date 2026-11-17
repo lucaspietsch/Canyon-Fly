@@ -47,7 +47,7 @@ export const ESPECIES = {
     anda: .9, trota: 5
   },
   graxaim: {
-    id: "graxaim", nome: "Graxaim", zona: "estacionamento", max: 2, fatorDist: .7,
+    id: "graxaim", nome: "Graxaim-do-campo", zona: "estacionamento", max: 2, fatorDist: .7,
     chance: .2, cooldown: [100, 220], duracao: [60, 120], dupla: .3,
     horas: [[0, .75], [4.5, .6], [6, .3], [8, .18], [15, .22], [17, .7], [19, 1], [22, .9], [24, .75]],
     anda: 1.5, trota: 5.4
