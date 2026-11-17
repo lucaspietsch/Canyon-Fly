@@ -65,3 +65,4 @@ cd t3d && npm run build
 - `audio/trilha.js`: `nomes.atiara`. `t3d/src/mundo/trilha.js`: `personagem==='atiara'` → `'atiara'` (mesma prioridade de Tupã/Sepé: terror, tirolesa e eventos continuam acima).
 - Testes: `t3d/test/trilha.test.mjs` e `t3d/test/browser/musica-mobile.cjs` incluem a nova faixa.
 - `audio/anhanga.mp3` — faixa do Anhangá (espírito da mata), reafinada para 432 Hz (−6,5 cents; original ~433,6 Hz). `trilha.js`: novo contexto `anhanga` (= `M.anhanga.S.vivo`) com prioridade **acima de terror** e abaixo de tirolesa/eventos Tupã/Sepé/tela de personagens. `terror` agora = Gritador ou mata à noite. `musica-mobile.cjs` espera `'anhanga'` quando ele aparece.
+- `audio/boitata.mp3` — faixa do Boitatá, reafinada para 432 Hz (−43,2 cents; original ~443 Hz). `trilha.js`: contexto `boitata` (alvo `boitata` visível em `M.poderes.alvos`), logo abaixo de `anhanga` e acima de `terror`.
