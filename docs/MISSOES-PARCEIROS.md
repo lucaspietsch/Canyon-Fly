@@ -59,6 +59,10 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - **Calçada em favos de mel** — Cambará do Sul é a **capital do mel do RS** → [sugestão] missão do mel: levar mel de um produtor até a feira/praça; abelhas como tema de um colecionável.
 - **Urna do Tempo** (já no jogo; formato especial) — [sugestão] missão: descobrir o ano em que a urna será aberta.
 
+## Pontos de chegada (saída leste)
+- **Casa do Turista** (pé do Morro das Antenas, Av. Getúlio Vargas nº 595) — [sugestão] centro de informações do jogo: pegar o mapa, receber missões de turismo, falar com o atendente.
+- **Morro das Antenas** — [sugestão] subir pela estrada de terra até o topo para uma vista da cidade (mirante urbano; colecionável lá em cima).
+
 ## Lugares de lenda na cidade
 - **Casa antiga mal-assombrada** (Rua Dona Úrsula, lado norte, a leste da Laurindo — Ref 45 do catálogo) — **[Lucas]** a casa é tida como mal-assombrada.
   - **[sugestão]** missões noturnas: barulhos, luzes acendendo sozinhas, vulto na janela do bay de vidro; o holograma de assombração do Pit reage; trilha "floresta sombria"; **sem sangue**.

@@ -625,7 +625,14 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **89° (leste):** a avenida vira **estrada asfaltada** entrando na **mata de pinus/eucalipto**; à esq. **galpão e casa de tábuas cinza**; à dir. **casinha branca de serviço com cerca azul** (provável estação de água/elevatória — confirmar) e casas de madeira.
   - **142° (sudeste):** a casinha branca de **cerca azul** de perto; portão para um terreno com **casa branca de acabamento vermelho**, **palmeira**, casas de madeira; **morros com mata** ao fundo.
   - **262° (oeste, voltando à cidade):** à esq. o **morro com as 2 torres de antena** (uma **listrada vermelha e branca**, outra treliçada) — as mesmas vistas do SV-I9; galpões e casas na base; à dir. **esqueleto de prédio de madeira em obra** sob **araucárias**; caminhão branco estacionado; "Av. Getúlio Vargas" pintado no asfalto.
-  - **193° (sul-sudoeste):** terreno com **casa branca de acabamento vermelho** (alpendre, varal), **palmeira**, casas de tábuas e galpões; ao fundo o **MORRO DAS ANTENAS** com as **2 torres** a ~**215–225°** deste ponto → o morro fica **ao sul da avenida**, entre aqui e a R. Tradição — **triangulado** pelo SV-I9 (~107°) e por este (~215°): **≈ (+705, −60)**. Morros de campo e mata ao redor.
+  - **193° (sul-sudoeste):** terreno com **casa branca de acabamento vermelho** (alpendre, varal), **palmeira**, casas de tábuas e galpões; ao fundo o **MORRO DAS ANTENAS** com as **2 torres** a ~**215–225°** deste ponto → o morro fica **ao sul da avenida**, entre aqui e a R. Tradição — **triangulado** por 3 vistas (SV-I9 ~107°, este ~215°, SV-L2 ~145°): **≈ (+712, −52)**. Morros de campo e mata ao redor.
+- **SV-L2** — **Av. Getúlio Vargas nº 595**, −29.04787366, −50.13918297 · 1022 m · rumo 158° · jul/2025 → local **(+585, +146)**, olhando para o **sul-sudeste**, para o **MORRO DAS ANTENAS** de frente:
+  - **Morro de campo** (grama seca, barranco de terra vermelha) com **2 torres grandes** no topo: uma **de concreto listrada vermelha e branca** (com antenas penduradas) e uma **treliçada de aço**; mais 2–3 antenas menores; **estrada de terra** subindo pela direita.
+  - Ao pé do morro: **CASA DO TURISTA** — prédio **térreo branco comprido**, **telhado de 4 águas** cinza, **janelas verdes**, letreiro "CASA DO TURISTA" na fachada e **mural pintado** na ponta direita; estacionamento com vans.
+  - **Escultura de um grande "C"** (vermelho-ferrugem, provável "C" de Cambará) num canteiro e **4 mastros de bandeira** brancos ao lado.
+  - À dir., **prédio branco com portal em arco** e frontão (provável **pórtico/entrada da cidade** — confirmar).
+  - Na frente: avenida com **canteiro gramado** e meio-fio branco.
+  - [sugestão] a Casa do Turista é o **ponto de informação** do jogo (mapa, dicas, missões de turismo); o "C" e os mastros são ótimos marcos de chegada.
   - Clima do lugar: **fim da cidade**, casas de madeira, mata de pinus/eucalipto e araucárias — transição para a estrada do parque.
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
