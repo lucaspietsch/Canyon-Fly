@@ -561,6 +561,7 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
     - **PONTE DE FERRO sobre o rio** (Photo Sphere set/2022) — −29.15804738, −50.06929215 · **923 m** (ponto mais baixo da estrada interna, ~30 m abaixo da guarita) · rumo 294° → local **(+7 386, −12 033)**, **sobre a linha do KML** ✔ (entre os pontos (+7 433, −12 010) e (+7 359, −12 048)):
       - **ponte estreita de treliça de aço** (vigas em "X", rebites, **ferrugem marrom-avermelhada**), **piso de pranchas de madeira**, uma faixa;
       - **rio de água escura/cor de chá** (água de turfeira/campo), calmo, ~10–15 m de largura, correndo para o **oeste** (rumo ao cânion) entre **mata ciliar** densa e **araucárias** altas; morros com mata ao fundo;
+      - **Vista a 60° (de volta para a guarita):** a ponte por cima — **duas trilhas de pranchas longitudinais** (por onde passam as rodas) sobre pranchas transversais escuras; **guarda-corpos de treliça** de aço enferrujado dos dois lados, com chapas e parafusos aparentes; do outro lado a estrada de terra sobe entrando num **túnel de mata** (araucárias, capoeira).
       - provável **Arroio Perdizes**, o rio que forma o **Cânion Itaimbezinho** (confirmar o nome).
       - No jogo (regra do Lucas): a estrada é asfaltada de pista dupla — a ponte vira **ponte larga**, mas dá para manter o **visual de treliça de aço enferrujada** nas laterais; na **época antiga** volta a ser a ponte estreita de madeira/ferro.
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
