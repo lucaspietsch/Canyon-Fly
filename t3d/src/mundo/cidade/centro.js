@@ -54,14 +54,39 @@ export function criarCentro(M, u){
   const colisores = [], m4 = new Matrix4(), q = new Quaternion(), e = new Euler(), v = new Vector3(), s = new Vector3();
 
   /* ---------- prédios em blocos ---------- */
-  for(const [nome, x, y, w, d, alt, tipo, angG] of PREDIOS_CENTRO){
+  for(const [nome, x, y, w, d, alt, tipo, angG, fx0, fy0] of PREDIOS_CENTRO){
     const a = angG * Math.PI / 180, [cx, cz] = mundo(x, y), ex = eixo(x, y, a), le = Math.hypot(ex[0], ex[1]), yaw = Math.atan2(-ex[1], ex[0]);
     const W = w * le, D = d * le, H = alt * U, y0 = Math.min(Y(cx, cz), Y(cx + ex[0] * w / 2, cz + ex[1] * w / 2), Y(cx - ex[0] * w / 2, cz - ex[1] * w / 2)) - .3;
     const cTelha = (COR[tipo] || COR.casa)[1], cParede = corDe(nome, tipo);
     e.set(0, yaw, 0); q.setFromEuler(e);
     const par = new BoxGeometry(1, 1, 1); uvCaixa(par, w, d, alt); par.applyMatrix4(m4.compose(v.set(cx, y0 + H / 2, cz), q, s.set(W, H, D))); add(cParede, par, tipo);
-    const rh = Math.min(W, D) * .42, tel = new ConeGeometry(Math.SQRT1_2, 1, 4); tel.rotateY(Math.PI / 4);
-    tel.applyMatrix4(m4.compose(v.set(cx, y0 + H + rh / 2, cz), q, s.set(W * 1.08, rh, D * 1.08))); add(cTelha, tel);
+    /* frente: lado do bloco virado para a rua mais próxima (a igreja: para a praça, ao sul) */
+    const [fx, fy] = /Igreja/.test(nome) ? [x, y - 60] : [fx0, fy0], fp = mundo(fx, fy), vx = fp[0] - cx, vz = fp[1] - cz;
+    const ux = [Math.cos(yaw), -Math.sin(yaw)], uz = [Math.sin(yaw), Math.cos(yaw)], px = vx * ux[0] + vz * ux[1], pz = vx * uz[0] + vz * uz[1];
+    const frenteX = Math.abs(px) > Math.abs(pz), sg = Math.sign(frenteX ? px : pz) || 1, meioFundo = (frenteX ? w : d) / 2, meioLarg = (frenteX ? d : w) / 2;
+    /* ponto/peça no sistema da FACHADA: a = ao longo da fachada (m), b = para fora (m, 0 = parede), h = altura (m) */
+    const P = (a, b, h) => { const lx = frenteX ? sg * (meioFundo + b) : a, lz = frenteX ? -a * sg : sg * (meioFundo + b); return [cx + (lx * ux[0] + lz * uz[0]) * le, y0 + h * U, cz + (lx * ux[1] + lz * uz[1]) * le]; };
+    const peca = (a, b, h, la, pb, ah, cor, tex) => { const [qx, qy, qz] = P(a, b, h + ah / 2), g = new BoxGeometry(1, 1, 1); if(tex) uvCaixa(g, la, pb, ah);
+      g.applyMatrix4(m4.compose(v.set(qx, qy, qz), q, frenteX ? s.set(pb * le, ah * U, la * le) : s.set(la * le, ah * U, pb * le))); add(cor, g, tex || ""); };
+    /* telhado: chalés e casas antigas com empena (duas águas, cumeeira perpendicular à rua); o resto 4 águas */
+    const empena = /Chalé|chalé|Galochas|mal-assombrada|trapeira|Casa histórica|tábuas/.test(nome);
+    if(empena){ const rh = meioLarg * 1.15, g = new ConeGeometry(Math.SQRT1_2, 1, 4); g.rotateY(Math.PI / 4);
+      const sx = frenteX ? W * 1.08 : W * 1.1, sz = frenteX ? D * 1.1 : D * 1.08; g.scale(1, 1, 1);
+      /* duas águas = "pirâmide esticada" cortada: usa um prisma triangular */
+      const t = new BoxGeometry(1, 1, 1), pos = t.attributes.position; for(let i = 0; i < pos.count; i++){ if(pos.getY(i) > 0){ if(frenteX) pos.setZ(i, 0); else pos.setX(i, 0); } } pos.needsUpdate = true; t.computeVertexNormals();
+      t.applyMatrix4(m4.compose(v.set(cx, y0 + H + rh / 2, cz), q, s.set(sx, rh, sz))); add(cTelha, t); g.dispose(); }
+    else { const rh = Math.min(W, D) * .42, tel = new ConeGeometry(Math.SQRT1_2, 1, 4); tel.rotateY(Math.PI / 4);
+      tel.applyMatrix4(m4.compose(v.set(cx, y0 + H + rh / 2, cz), q, s.set(W * 1.08, rh, D * 1.08))); add(cTelha, tel); }
+    /* porta na fachada (comércio: porta de vidro larga) */
+    if(!/Igreja/.test(nome)){ if(tipo === "comercio") peca(0, .05, 0, 2.4, .2, 2.6, 0x2f3d48); else peca(0, .05, 0, 1.1, .2, 2.2, 0x5a3b24); }
+    /* ---- detalhes dos prédios principais (catálogo) ---- */
+    if(/Du Perau/.test(nome)){ peca(0, 1.6, 0, w * .9, 3.2, 1.3, 0x9a9690); peca(0, 3.15, 1.3, w * .9, .12, 1.0, 0x5a3b24); peca(-w * .45 + .6, 4.2, 0, 1.2, 2.2, .45, 0xa8a49c); peca(-w * .45 + .6, 3.6, 0, 1.2, 1.2, .9, 0xa8a49c); }          // varanda elevada com guarda-corpo e escada de concreto
+    if(/Sociedade/.test(nome)){ for(const lado of [-1, 1]){ peca(lado * 2.6, 1.4, 0, 2.2, 2.8, .5, 0xa8483a); peca(lado * 2.6, 1.0, 0, 2.2, 2.0, 1.0, 0xa8483a); } peca(0, 1.2, 3.4, 4.2, 2.4, .25, 0x7a4a2a); peca(0, .06, 3.1, w * .98, .1, .35, 0x7a4a2a); }     // escadaria dupla, marquise de cobre e faixa marrom
+    if(/Igreja/.test(nome)){ peca(0, 2.5, 0, 9, 5, .5, 0xd8d2c4); peca(0, 1.5, 0, 9, 3, 1.0, 0xd8d2c4); peca(0, .6, 0, 9, 1.2, 1.5, 0xd8d2c4); }                                      // escadaria na frente (praça)
+    if(/mal-assombrada|histórica|trapeira/.test(nome)){ peca(-w * .3, 1.2, 0, 3.4, 2.4, 3.4, 0x9fc0d4); peca(meioLarg * .6, -meioFundo * .6, alt, .9, .9, 3.2, 0x8a4a34); }           // bay de vidro na ponta e chaminé de tijolo
+    if(/amarela/.test(nome)){ peca(meioLarg * .5, -meioFundo * .5, alt, 1, 1, 5.5, 0x8a4a34); }                                                                                   // chaminé de tijolo muito alta
+    if(/Supermercado/.test(nome)){ peca(0, .06, alt - 1.6, Math.min(8, w * .9), .15, 1.0, 0xffffff); }                                                                              // placa branca do letreiro (texto: só com autorização)
+    if(/Thewes|Galochas|Material|Restaurante/.test(nome)){ peca(0, .7, 2.7, w * .7, 1.4, .15, 0x2a2a2a); }                                                                          // toldo/marquise sobre a vitrine
     /* colisor: caixa alinhada aos eixos que cobre o bloco girado (um pouco menor para não travar nas quinas) */
     const c = Math.abs(Math.cos(yaw)), sn = Math.abs(Math.sin(yaw)), hx = (W * c + D * sn) / 2 * .86, hz = (W * sn + D * c) / 2 * .86;
     colisores.push({ x0: cx - hx, x1: cx + hx, z0: cz - hz, z1: cz + hz, peca: "predio:" + nome });

@@ -34,6 +34,15 @@ def kml():
         pm.append("<Placemark><name>%s</name><LineString><coordinates>%s</coordinates></LineString></Placemark>" % (nome, c))
     return '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>ruas do centro</name>' + "".join(pm) + "</Document></kml>"
 
+def rua_proxima(x, y):
+    """ângulo (graus, ±45 — só o desvio da rua) e ponto mais próximo das ruas REAIS do jogo (RUAS acima): a frente do prédio fica paralela e virada para ela"""
+    best = (1e9, 0, x, y)
+    for pts in RUAS.values():
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            vx, vy = x1 - x0, y1 - y0; L2 = vx * vx + vy * vy; t = max(0, min(1, ((x - x0) * vx + (y - y0) * vy) / L2)); px, py = x0 + t * vx, y0 + t * vy; d = math.hypot(px - x, py - y)
+            if d < best[0]: best = (d, math.degrees(math.atan2(vy, vx)), px, py)
+    return (best[1] + 45) % 90 - 45, best[2], best[3]
+
 def predios():
     sp = importlib.util.spec_from_file_location("m", os.path.join(AQUI, "mapa_progresso.py")); m = importlib.util.module_from_spec(sp); sp.loader.exec_module(m)
     fora = ("Praça", "Rua Coberta", "Sequoia", "Urna", "Termômetro", "favos", "Rótula", "Pátio")
@@ -43,12 +52,13 @@ def predios():
         nome = nome.lstrip("· ")
         alto = 12 if "Igreja" in nome else 7 if any(k in nome for k in ("Sociedade", "Supermercado", "Thewes", "Pioneiro", "Prédio", "obrado", "Brentano", "Salão", "Prefeitura")) else 4.5
         tipo = "igreja" if "Igreja" in nome else "publico" if any(k in nome for k in ("Prefeitura", "Salão", "Sociedade", "Centro Cultural")) else "comercio" if any(k in nome for k in ("★", "Loja", "Supermercado", "Pub", "Material", "Restaurante", "Advocacia", "Pioneiro")) else "casa"
-        out.append([nome, x, y, w, h, alto, tipo, round(m.angulo_rua(x, y), 1)])
+        ang, fx, fy = rua_proxima(x, y)
+        out.append([nome, x, y, w, h, alto, tipo, round(ang, 1), round(fx, 1), round(fy, 1)])
     return out
 
 if __name__ == "__main__":
     d = os.path.join(RAIZ, "t3d", "src", "mundo", "dados")
     open(os.path.join(d, "kml-cidade.js"), "w", encoding="utf-8").write("/* GERADO por docs/cidade/gera_cidade.py — ruas reais do centro de Cambará do Sul (traçado aproximado dos prints do Lucas). Não editar à mão. */\nexport const KML_CIDADE = `" + kml() + "`;\n")
     P = predios()
-    open(os.path.join(d, "cidade-centro.js"), "w", encoding="utf-8").write("/* GERADO por docs/cidade/gera_cidade.py — prédios do centro em blocos: [nome, x leste m, y norte m, largura m, fundo m, altura m, tipo, ângulo da rua (graus)]. Origem = Ref 01 (−29.0491915, −50.1451915). */\nexport const ORIGEM_CENTRO = { lat: %r, lon: %r, mLat: %r, mLon: %r };\nexport const PREDIOS_CENTRO = %s;\n" % (LAT0, LON0, MLAT, MLON, json.dumps(P, ensure_ascii=False)))
+    open(os.path.join(d, "cidade-centro.js"), "w", encoding="utf-8").write("/* GERADO por docs/cidade/gera_cidade.py — prédios do centro em blocos: [nome, x leste m, y norte m, largura m, fundo m, altura m, tipo, ângulo da rua (graus), ponto da rua mais próxima x, y]. Origem = Ref 01 (−29.0491915, −50.1451915). */\nexport const ORIGEM_CENTRO = { lat: %r, lon: %r, mLat: %r, mLon: %r };\nexport const PREDIOS_CENTRO = %s;\n" % (LAT0, LON0, MLAT, MLON, json.dumps(P, ensure_ascii=False)))
     print("ruas:", len(RUAS), "· prédios:", len(P))
