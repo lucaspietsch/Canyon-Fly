@@ -583,7 +583,15 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **RS-427** continua para o **sudeste** (+787, -420) → (+1252, -662) → (+1545, -819) e **vira para o leste** (+1733, -821) → (+1917, -767).
   - Nome completo: **Pousada Cardoso** (+1416, -561) (era o "Card…" cortado). **Cabanas Imbuia** (+1441, -440) · **Cutelaria Cambará** (+1376, -489) · **Restaurante do Lago** (+1038, -510).
   - **Estradinhas de terra em laço** a sudeste da Pousada Cardoso (+1430, -683) → (+1524, -725) → (+1493, -772), ligando à RS-427; acesso das Cabanas Imbuia/Cutelaria sai da RS-427 em (+1211, -631).
-- (aguardando: **C0, C1, C2, C3**)
+- **Linha C dispensada** pelo Lucas — grade dos arredores concluída.
+
+### Saídas da cidade (identificadas nos prints)
+1. **Norte — RS-020 / R. Ouro Verde**: passa pelo Cemitério, CTG Baio Campeano e ETA Corsan (Z1, Z2, acima do Z2).
+2. **Leste — estrada do parque** (= "estrada até a cidade" do jogo): continuação da Av. Getúlio Vargas, entroncamento e dobra para o sul-sudeste (Z3, Z4, A3).
+3. **Sudeste — RS-427**: sai na Pizza Retrô, passa Eco Hotel, Cabanas Imbuia, Pousada Cardoso e vira para o leste (B3).
+4. **Sudoeste — RS-020**: passa Casa Nostra e Pousada Oliveira (A0, B0).
+5. **Oeste/noroeste — estrada de terra**: pelo campo das lagoas até a sede de fazenda (Z0).
+- **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
 ## Próximos envios do Lucas (anotado)
 - [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
