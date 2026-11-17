@@ -566,6 +566,15 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
       - **Chegando na ponte** (−29.15795326, −50.06910229 · 924 m · rumo 238° → local ≈ (+7 404, −12 023), ~20 m antes, lado da guarita): a ponte inteira à frente, **curta (~15 m)**, treliças de aço nas laterais, piso de pranchas; **placas de curva** (setas pretas sobre fundo amarelo, tipo "chevron") dos dois lados da entrada; mata ciliar fechada e **araucárias** altas — a estrada faz curva logo depois.
       - provável **Arroio Perdizes**, o rio que forma o **Cânion Itaimbezinho** (confirmar o nome).
       - No jogo (regra do Lucas): a estrada é asfaltada de pista dupla — a ponte vira **ponte larga**, mas dá para manter o **visual de treliça de aço enferrujada** nas laterais; na **época antiga** volta a ser a ponte estreita de madeira/ferro.
+    - **TRILHAS DO VÉRTICE e da CASA DO VÔ MARÇAL** — arquivo `docs/cidade/kml/itaimbezinho-trilhas-vertice-e-vo-marcal.kml` ("Caminho sem título"), **1 linha só com as duas trilhas** (101 pontos, ≈ 2,1 km desenhados). **[Lucas]** são **trilhas distintas**, já **perto das bordas do Itaimbezinho**.
+      - Começa ao lado do **retorno da estrada interna** (≈ (+6 366, −12 079), ~50 m do laço) — ponto de partida das trilhas.
+      - Estrutura que o desenho mostra (as "voltas" são pontas de ida-e-volta, típicas de **mirantes**):
+        1. ponta curta logo no início, ≈ (+6 346, −12 157);
+        2. caminho para o **leste** até ≈ (+6 668, −12 160) e depois para o **sul**, descendo até a **ponta mais distante ≈ (+6 603, −12 707)** (~630 m ao sul do retorno) — provável **mirante na borda do cânion**;
+        3. volta por **outro caminho a oeste** com uma ponta em ≈ (+6 350, −12 369) (outro mirante?);
+        4. ponta curta em ≈ (+6 504, −12 239);
+        5. **fecha o laço** em ≈ (+6 630, −12 215), juntando com o caminho da ida.
+      - **Dúvida:** qual parte é a **Trilha do Vértice** e qual é a **Casa do Vô Marçal** (onde fica a casa)? E as pontas (2) e (3) são **mirantes**?
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
 - **Escala no jogo (regra das estradas pela metade):** 24,4 km reais → **≈ 12,2 km** no jogo; a guarita fica a **≈ 8,5 km** da cidade.
