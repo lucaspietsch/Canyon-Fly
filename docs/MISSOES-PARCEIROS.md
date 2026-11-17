@@ -67,6 +67,7 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 ## Itaimbezinho (Parque Nacional de Aparados da Serra)
 - **Guarita Gralha Azul** — [sugestão] guarda-parque do ICMBio na cancela explica as regras.
 - **Trilha do Vértice** → **Mirante da Cachoeira das Andorinhas** — [sugestão] missão de foto da cachoeira; colecionável no mirante.
+- **Trilha do Cotovelo** (~3,2 km pela borda até o Mirante do Cotovelo) — [sugestão] missão mais longa: levar água/lanche a um grupo de turistas no Cotovelo; fotos ao longo da borda.
 - **Casa do Vô Marçal** (fim da trilha pelo campo, ao sul) — [sugestão] personagem/história do Vô Marçal (morador antigo da borda do cânion); serve muito bem para as **viagens no tempo** (a casa no passado). Aguardo do Lucas fotos e a história.
 
 ## Lugares de lenda na cidade

@@ -615,7 +615,9 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
   - O ponto mais ao norte da borda passa a **~85 m do Mirante das Andorinhas** e ~110 m do centro de visitantes ✔ (a borda faz a "cabeceira" do cânion ali — onde fica a **Cachoeira das Andorinhas**).
   - A linha contorna **as duas bordas** (lado RS e lado SC, que a divisa separa pelo fundo do cânion), com muitos **recortes/reentrâncias** (vales laterais), indo e voltando — começa em ≈ (+6 697, −15 974) e termina em ≈ (+5 815, −16 467), no sul.
   - **No jogo:** igual ao Fortaleza — usar como **linha de borda** (limite do terreno onde começa o paredão), com os **paredões de basalto** descritos no Mirante das Andorinhas.
-  - **A receber:** **Trilha do Cotovelo** (segue pela borda).
+- **TRILHA DO COTOVELO** — arquivo `docs/cidade/kml/itaimbezinho-trilha-do-cotovelo.kml` ("cotovelo"), 52 pontos, **≈ 3,2 km** (só ida):
+  - Começa perto do **retorno/estacionamento** (+6 465, −12 041) (~120 m do centro de visitantes), vai para o **oeste-sudoeste acompanhando a borda** do cânion pelo **lado RS** — em média **~60 m da borda** (máx. ~190 m) — e termina em **≈ (+4 525, −13 413)**, numa ponta da borda: o **MIRANTE DO COTOVELO** (onde o cânion faz a curva em "cotovelo" — confirmar).
+  - Bem mais longa que a do Vértice (~3,2 km × poucos metros); no jogo vale a regra das trilhas/estradas (confirmar se fica **pela metade**).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
 - **Escala no jogo (regra das estradas pela metade):** 24,4 km reais → **≈ 12,2 km** no jogo; a guarita fica a **≈ 8,5 km** da cidade.
 - **A receber:** **área do Itaimbezinho** (borda, trilhas, centro de visitantes); **mapa do município**.
