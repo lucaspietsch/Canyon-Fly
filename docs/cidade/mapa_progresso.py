@@ -82,6 +82,18 @@ LUGARES = [
     ("Prédio de 4 pavimentos com sacadas", 254, 36, 12, 10, "parcial", "SV-I2"),
     ("Casa do Turista", 580, 128, 24, 10, "parcial", "SV-L2"),
     ("Templo Assembleia de Deus", 919, 258, 14, 22, "parcial", "SV-L"),
+    # --- 4ª leva: mais lugares do satélite/arredores (posição ±15 m) ---
+    ("Templo Missionário", -265, 472, 10, 16, "parcial", "sat Z0"),
+    ("Escola do bairro norte", -148, 637, 24, 12, "parcial", "sat Z0"),
+    ("Empório (bairro norte)", -273, 531, 10, 8, "parcial", "sat Z0"),
+    ("Flor de Anis Cafeteria e Bistrô", -298, -74, 10, 9, "parcial", "sat A0"),
+    ("Restaurante e Pousada Casa Nostra", -572, -241, 14, 10, "parcial", "sat A0"),
+    ("Pousada Bem Estar", 417, -68, 12, 10, "parcial", "sat B2"),
+    ("Pousada Aparados", 468, -206, 12, 10, "parcial", "sat B2 B3"),
+    ("Churrasco no Galpão (madeira)", 427, -896, 14, 10, "parcial", "sat B3"),
+    ("Pousada Cambará Eco Hotel", 1046, -405, 20, 12, "parcial", "sat A3 B3"),
+    ("Pousada Oliveira", -757, -749, 12, 10, "parcial", "sat B0"),
+    ("Galpão da madeireira (pátio de toras)", 946, 634, 30, 16, "parcial", "sat Z2 Z3"),
     # --- 3ª leva: lugares do satélite/mapa e das saídas (posição ±15 m; o gerador afasta da rua) ---
     ("Pousada Bela Vista", -500, 196, 14, 10, "parcial", "sat A1"),
     ("Pousada Fazenda Pindorama (sede)", -863, 27, 16, 12, "parcial", "sat A1 A0"),

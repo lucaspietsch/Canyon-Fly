@@ -182,6 +182,10 @@ export function criarCentro(M, u){
     if(/Bikers/.test(nome)) peca(0, .1, 2.8, 2 * meioLarg * .8, .12, .8, 0xf4f4f4);                                                                 // letreiro branco (nome real só com autorização)
     if(/cruz de madeira/.test(nome)){ peca(0, 2.2, 0, .25, .25, 3.2, 0x6a4a2c); peca(0, 2.2, 2.2, 1.4, .25, .25, 0x6a4a2c); }
     if(/Pousada|Hostel|Refúgio/.test(nome)) peca(0, 1.2, 0, 2 * meioLarg * .5, 2.4, .2, 0x8a6a44);                                               // deck de entrada
+    /* ---- 4ª leva ---- */
+    if(/madeireira/.test(nome)){ for(let k = 0; k < 6; k++) peca(-meioLarg * .8 + k * meioLarg * .32, 6, 0, 2.4, 8, 1.4 + (k % 3) * .4, 0x7a5a3a); }        // pilhas de toras no pátio
+    if(/Escola/.test(nome)){ peca(meioLarg * .8, 4, 0, .12, .12, 7, 0xe8e8e8); peca(meioLarg * .8 + .45, 4, 6.2, .8, .05, .5, 0x1c8a3a); peca(0, 6, 0, 2 * meioLarg, .1, 1.6, 0x2a2a2a); }   // mastro e grade do pátio
+    if(/Templo Missionário/.test(nome)){ peca(0, .1, alt - .4, .25, .1, 1.6, 0x6a4a2c); peca(0, .1, alt + .3, .9, .1, .25, 0x6a4a2c); }
     /* ---- casas da Rua Dona Úrsula (Refs 37–44) ---- */
     if(/térrea bege/.test(nome)) peca(0, 1.6, 0, 2 * meioLarg, .08, .8, 0x2a2a2a);                                                                 // grade baixa na frente
     if(/varanda de madeira/.test(nome)){ peca(0, .7, 3.3, 2 * meioLarg * .85, 1.4, .15, 0x6a4a2c); peca(0, 1.35, 3.45, 2 * meioLarg * .85, .08, .9, 0x6a4a2c); for(const l of [-1, 1]) peca(l * meioLarg * .4, 1.3, 0, .2, .2, 3.3, 0x6a4a2c); }   // varanda de madeira no andar de cima
