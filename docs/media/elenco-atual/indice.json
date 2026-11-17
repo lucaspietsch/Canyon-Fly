@@ -239,32 +239,36 @@
       "arquivo": "npcs-39.png"
     },
     {
-      "nome": "Gritador",
+      "nome": "Anhangá · cervo humanoide",
       "arquivo": "npcs-40.png"
     },
     {
-      "nome": "Boitatá",
+      "nome": "Gritador",
       "arquivo": "npcs-41.png"
     },
     {
-      "nome": "THAYNARA",
+      "nome": "Boitatá",
       "arquivo": "npcs-42.png"
     },
     {
-      "nome": "WESLLEY",
+      "nome": "THAYNARA",
       "arquivo": "npcs-43.png"
     },
     {
-      "nome": "LORRANY",
+      "nome": "WESLLEY",
       "arquivo": "npcs-44.png"
     },
     {
-      "nome": "DENILSON",
+      "nome": "LORRANY",
       "arquivo": "npcs-45.png"
     },
     {
-      "nome": "JHONATAN",
+      "nome": "DENILSON",
       "arquivo": "npcs-46.png"
+    },
+    {
+      "nome": "JHONATAN",
+      "arquivo": "npcs-47.png"
     }
   ],
   "animais": [

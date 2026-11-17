@@ -88,3 +88,16 @@ Os scripts de navegador aceitam `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. Os testes do m
 Após o repasse inicial, o usuário enviou novas referências para o rosto do Pit. A barba cheia foi substituída por bigode marcado com pontas levantadas e cavanhaque curto. Foram adicionados óculos escuros de armação preta, lentes arredondadas e barra superior reta. Os acessórios ficam no grupo da cabeça normal, preservando o capacete integral da armadura. Arquivos: `pit-barba.js`, `pit-oculos.js` e integração em `pit-visual.js`. O bundle foi reconstruído e as capturas do modelo real foram conferidas sem erros JavaScript.
 
 Revisão seguinte dos óculos: altura reduzida, largura ampliada e contorno reforçado com aro mais espesso e filete frontal de realce, conforme solicitado. Capturas e galeria atualizadas.
+
+## Atualização complementar — Anhangá humano, cervo e híbrido
+
+Referências adicionais enviadas pelo usuário: humano de cabelo branco comprido, pinturas vermelhas, cocar vermelho com pena central amarela; cervo branco marcado de vermelho; humanoide com crânio e galhada de cervo.
+
+- `t3d/src/mundo/lenda/anhanga-humano.js`: modelo humano dedicado, cabelos e cocar animados, pinturas no rosto e tronco, colares e pés descalços.
+- `t3d/src/mundo/lenda/anhanga-cervo-humano.js`: forma híbrida própria, crânio alongado, olhos luminosos, galhada ramificada e manto branco nos ombros.
+- `t3d/src/mundo/lenda/anhanga.js`: cervo quadrúpede continua sendo a forma principal; recebeu galhada maior e marcas vermelhas. A nova chave `cervoHumano` entra no ciclo de metamorfoses depois de `humano`. Tatu, boi e pirarucu continuam disponíveis. A mudança ocorre pela mesma transição de névoa já existente.
+- Bundle reconstruído em `t3d/dist/trolley3d.min.js`. Galeria e fixture de elenco incluem a sexta forma.
+
+Validação: 67 testes unitários passaram; captura no navegador verifica as seis metamorfoses, retorno ao cervo e coordenadas finitas das geometrias, sem erros JavaScript. Prints reais em `docs/media/anhanga/`; galeria completa em `docs/media/elenco-atual/index.html`. Script reproduzível: `t3d/test/browser/anhanga-humano.cjs`.
+
+Os modelos usam a linguagem visual procedural atual do jogo. As referências orientam silhueta e acessórios; não foram transformadas em modelos fotorrealistas. Esta atualização é visual e de registro de formas, sem novas missões do Anhangá. As pendências de narrativa/cinemática indicadas acima continuam abertas.
