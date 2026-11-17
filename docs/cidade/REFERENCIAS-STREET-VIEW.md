@@ -640,6 +640,9 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - A RS-020 faz **curva à esquerda subindo** para o centro; meio-fio pintado de branco.
   - À esq.: **Restaurante Sabor da Serra** e prédios de **pousada** (sobrado de tijolo aparente com placas "POUSADA"), casas.
   - À dir.: **barranco alto de grama** com **cerca branca de madeira** no topo; mais à frente casas de telhado vermelho e um **portal/caramanchão de telhas** na esquina.
+  - **352° (norte):** o letreiro fica numa **rotatória/canteiro em gota** com dois níveis de **muro de pedra**; à esq. a RS-020 segue para o **norte-noroeste** reta, entre **campo com cerca de arame** e **mata de eucalipto/pinus**; uma **placa vermelha em forma de gota** (pino de localização gigante — confirmar) junto à pista.
+  - **280° (oeste):** **entroncamento** com ilha triangular de grama e faixas zebradas; do outro lado, **campo com cavalos soltos pastando**, **placa grande da "Pousada Fazenda Pindorama"** (vermelha) e placa menor de "Área de … segurança"; casinha branca e galpões ao fundo; **coxilhas** (morros de campo) e mata no horizonte — **paisagem típica dos Campos de Cima da Serra**.
+  - O boneco ao lado do letreiro parece um **pinguim** (branco e preto, nariz laranja) — brincadeira com o **frio** de Cambará (confirmar).
   - [sugestão] **ponto de chegada** do jogador vindo do sudoeste: o letreiro "CAMBARÁ DO SUL" é o cartão-postal da entrada.
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
