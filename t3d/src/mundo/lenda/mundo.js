@@ -7,7 +7,7 @@ export function criarAnhangaMundo(M){
   const some = () => { if(S.a && S.a.g.parent) S.a.g.parent.remove(S.a.g); S.vivo = false; };
   function apareceDiante(J){
     if(S.vivo) return false; if(!J) return false; if(!S.a){ S.a = criaAnhanga(M.H); S.alvo = M.poderes.registra({ id: "anhanga", tipo: "guardiao", nome: "Anhangá", raioM: 2.2, alturaM: 2.4, pos: () => S.a.g.position,
-      aoRaio(){ if(M.terminal) M.terminal.msg("sobrenatural", "O raio cai e se apaga nos olhos de brasa: Anhangá não teme o trovão de Tupã."); }, aoFlecha(){ if(M.terminal) M.terminal.msg("sobrenatural", "A flecha atravessa a névoa. Anhangá apenas inclina a galhada."); },
+      aoRaio(){ M.olaria?.defende(); if(M.terminal) M.terminal.msg("sobrenatural", "O raio cai e se apaga nos olhos de brasa: Anhangá não teme o trovão de Tupã."); }, aoFlecha(){ if(M.terminal) M.terminal.msg("sobrenatural", "A flecha atravessa a névoa. Anhangá apenas inclina a galhada."); },
       aoLabia(){ if(M.terminal) M.terminal.msg("sobrenatural", "Anhangá ouve, mas não se deixa convencer por palavras: ele julga por atos."); return true; }, aoOlhos(){ if(M.terminal) M.terminal.msg("sobrenatural", "Os olhos de brasa encaram os olhos de Atiara. Nenhum dos dois desvia."); } }); }
     const d = ANHANGA.distanciaDebug * U, yaw = J.camYaw !== undefined ? J.camYaw : J.yaw, x = J.x - Math.sin(yaw) * d, z = J.z - Math.cos(yaw) * d;
     M.cen.grupo.add(S.a.g); S.a.coloca(x, M.cen.chao(x, z, 1e9), z, Math.atan2(J.x - x, J.z - z)); S.vivo = true; return true;

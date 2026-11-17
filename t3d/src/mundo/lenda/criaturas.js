@@ -21,10 +21,10 @@ export function gritoSom(pan = 0, intens = 1){
     o.connect(f); o2.connect(f); f.connect(g); if(p){ p.pan.value = Math.max(-1, Math.min(1, pan)); g.connect(p); p.connect(c.destination); } else g.connect(c.destination); o.start(t); o2.start(t); o.stop(t + 2.2); o2.stop(t + 2.2); }catch(_){ /* sem áudio */ }
 }
 
-export function criaGritador(M){
+export function criaGritador(M,opts={}){
   const C=GRITADOR,visual=criarVisualGritador(),{g,bracos,boca,luz}=visual;
   g.scale.setScalar(U); g.visible = false;
-  const a = { id: "gritador", tipo: "inimigo", nome: "o Gritador", raioM: 1.1, alturaM: 1.6, hp: C.hp, g, x: 0, z: 0, estado: "parado", t: 0, vel: C.velMS, encantado: 0, mortoCb: null,
+  const a = { id: opts.id||"gritador", tipo: "inimigo", nome: "o Gritador", raioM: 1.1, alturaM: 1.6, hp: C.hp, g, x: 0, z: 0, estado: "parado", t: 0, vel: C.velMS, encantado: 0, mortoCb: null,
     respostas:0,responde(){a.respostas++;a.vel=Math.min(12,C.velCorridaMS+a.respostas-1);a.estado="aproxima";luz.intensity=3;if(M.terminal)M.terminal.msg("sobrenatural","Você respondeu ao grito. O vulto se aproxima mais depressa; uma luz de fogo corta a escuridão.");},
     pos: () => g.position,
     dano(q){ if(a.morto) return; a.hp -= q; luz.intensity = 3; a.estado = "ferido"; a.t = 0; if(a.hp <= 0){ a.morto = true; a.t = 0; if(M.terminal) M.terminal.msg("sobrenatural", "O Gritador se desfaz num último grito, que o vento leva embora."); gritoSom(0, .7); if(a.mortoCb) a.mortoCb(); } },
@@ -42,7 +42,7 @@ export function criaGritador(M){
   M.cen.grupo.add(g); M.poderes.registra(a); return a;
 }
 
-export function criaBoitata(M){
+export function criaBoitata(M,opts={}){
   const C = BOITATA, g = new Group(), seg = [], corpo = new MeshBasicMaterial({ color: C.cor }), halo = (r) => new MeshBasicMaterial({ color: 0xff8a2a, transparent: true, opacity: .22, blending: AdditiveBlending, depthWrite: false });
   const chamas=[];
   for(let i=0;i<C.segmentos;i++){const k=1-i/C.segmentos,r=C.raioM*(i===0?1.35:.45+.55*Math.pow(k,.6))*U;
@@ -56,7 +56,7 @@ export function criaBoitata(M){
   const focinho=new Mesh(new SphereGeometry(1,20,14),new MeshStandardMaterial({color:0x8a854a,emissive:0xa74610,emissiveIntensity:.6,roughness:.7}));focinho.scale.set(.49*U,.25*U,.64*U);focinho.position.set(0,-.1*U,.32*U);cabeca.add(focinho);
   for(const sx of [-1, 1]){ const o = new Mesh(new SphereGeometry(.14 * U, 8, 6), olhoM); o.position.set(sx * .28 * U, .2 * U, .42 * U); cabeca.add(o); const pu = new Mesh(new SphereGeometry(.07 * U, 6, 4), new MeshBasicMaterial({ color: 0x220800 })); pu.position.set(0, 0, .1 * U); o.add(pu); }
   const luz = new PointLight(0xff7a2a, 2.2, 26 * U); cabeca.add(luz);
-  const a = { id: "boitata", tipo: "guardiao", nome: "o Boitatá", raioM: 1.6, alturaM: 1.2, g, hp: 99, alvoXZ: null, t: 0, ponto: 0, rota: [], encantado: 0, brava: false, pos: () => cabeca.position,
+  const a = { id: opts.id||"boitata", tipo: "guardiao", nome: "o Boitatá", raioM: 1.6, alturaM: 1.2, g, hp: 99, alvoXZ: null, t: 0, ponto: 0, rota: [], encantado: 0, brava: false, pos: () => cabeca.position,
     aoRaio(){ a.fere(); }, aoFlecha(){ a.fere(); }, aoOlhos(){ if(M.terminal) M.terminal.msg("sobrenatural", "O Boitatá encara de volta. Seus olhos enormes não piscam."); }, aoLabia(){ if(M.terminal) M.terminal.msg("sobrenatural", "O Boitatá escuta. Não responde com palavras: o fogo se acalma um pouco."); return true; },
     fere(){ if(a.feriu) return; a.feriu = true; if(M.terminal) M.terminal.msg("emergencia", "Você feriu o guardião da mata! O fogo do Boitatá se enfurece."); if(a.aoFerido) a.aoFerido(); },
     coloca(x, z){ for(let i = 0; i < seg.length; i++) seg[i].position.set(x - i * C.espacoM * U, M.cen.chao(x, z, 1e9) + 1.2 * U, z); g.visible = true; },

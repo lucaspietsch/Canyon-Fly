@@ -1,3 +1,4 @@
+import {criarFlorestaOlaria} from './lenda/olaria.js';
 import {criarEpilogo} from './futuro/epilogo.js';
 import {criarNpcsCentro} from './cidade/npcs-centro.js';
 import {criarLibelulas} from './fauna/libelulas.js';
@@ -163,6 +164,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.ancestral=criarAncestral(M);M.registra({tick:(dt,J)=>M.ancestral.tick(dt,J),desliga:()=>M.ancestral.desliga()});
   M.futuro=criarEpilogo(M);M.registra({tick:(dt,J)=>M.futuro.tick(dt,J),desliga:()=>M.futuro.desliga()});
   M.espiritoGralha=criarAparicoes(M);M.registra({tick:(dt,J)=>M.espiritoGralha.tick(dt,J),desliga:()=>M.espiritoGralha.desliga()});
+  M.olaria=criarFlorestaOlaria(M);M.registra({tick:(dt,J)=>M.olaria.tick(dt,J),desliga:()=>M.olaria.desliga()});
   M.fauna.andorinhas = criarAndorinhas(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.andorinhas.tick(dt, J, E), info: () => M.fauna.andorinhas.info(), desliga: () => M.fauna.andorinhas.desliga() });
   M.agenda.registra({ id: "andorinhas", cfg: EVENTOS.andorinhas, dispara: () => M.fauna.andorinhas.chega() });
   M.fauna.conflitos = criarConflitos(M); M.registra({ zona: "parque", tick: (dt, J) => M.fauna.conflitos.tick(dt, J), info: () => M.fauna.conflitos.info() });

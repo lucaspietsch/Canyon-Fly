@@ -7,13 +7,13 @@ import { U } from "../config.js";
 /* ============================================================================================================
    ANHANGÁ — espírito protetor da caça e da mata na tradição tupi ("anhanga": espírito, sombra, alma). Justiça na mata: castiga quem maltrata os bichos.
    • Forma principal: CERVO BRANCO GIGANTE, pelagem alva, galhada alta, olhos de BRASA que pulsam. NÃO há cruz na testa.
-   • Metamorfoses: tatu · boi · pirarucu · humano · cervo humanoide — sempre com os mesmos olhos de brasa, trocando de corpo no meio de uma névoa.
+   • Metamorfoses: boi · pirarucu · humano · cervo humanoide — sempre com os mesmos olhos de brasa, trocando de corpo no meio de uma névoa.
    • Este arquivo só desenha e anima. Quem o põe no mundo (perto da Árvore Anciã e dos pontos encantados) é a Antiga Floresta da Olaria.
    Depuração (F3 aberto): Shift+' (aspas) ou Numpad* — Ctrl+' ou Numpad/ some — aparece à frente do jogador; de novo, troca de forma. Ctrl+' some com ele.
    ============================================================================================================ */
 
 export const ANHANGA = {
-  formas: ["cervo", "tatu", "boi", "pirarucu", "humano", "cervoHumano"],
+  formas: ["cervo", "boi", "pirarucu", "humano", "cervoHumano"],
   tempoTroca: 1.1,                                   // s de névoa em cada metade da metamorfose
   distanciaDebug: 13,                                // m à frente do jogador (Shift+' (aspas) ou Numpad* — Ctrl+' ou Numpad/ some)
   brasa: 0xff5a1c, brasaHalo: 0xff7a2a, pelo: 0xf3f0e8, osso: 0xe9e2cf
@@ -50,13 +50,6 @@ export function criaAnhanga(H){
 
   // Marcas geométricas e galhada ampliada na forma animal.
   {const g=formas.cervo,vermelho=mat(0x9e3430);for(const side of [-1,1]){for(const z of [-.44,0,.44])tubo(g,vermelho,[[1.75,z-.12],[1.88,z],[1.75,z+.12],[1.62,z],[1.75,z-.12]].map(([y,z])=>[side*(.52*Math.sqrt(1-((y-1.75)/.55)**2-z*z)+.012),y,z]),.018);for(const z of [.62,-.68])for(const y of [.22,.35]){const ring=new Mesh(new CylinderGeometry(.104,.104,.045,14),vermelho);ring.position.set(side*.30,y,z);g.add(ring);}}const head=g.userData.cabeca;tubo(head,vermelho,[[0,.11,.38],[0,.21,.12],[0,.23,-.08]],.014);head.children.filter(o=>o.isGroup&&o.position.y===.18).forEach(o=>o.scale.set(1.25,1.15,1.12));}
-
-  /* ---------- TATU ---------- */
-  { const g = new Group(); formas.tatu = g; const faixas = canvasTex(128, 128, (c, w, h) => { c.fillStyle = "#8d7f70"; c.fillRect(0, 0, w, h); for(let y = 0; y < h; y += 10){ c.fillStyle = "rgba(40,30,22,.55)"; c.fillRect(0, y, w, 2.5); } for(let x = 0; x < w; x += 12){ c.fillStyle = "rgba(255,255,255,.08)"; c.fillRect(x, 0, 1.5, h); } }, { repeat: [1, 1] });
-    const casco = mat(0xffffff, { roughness: .8 }); casco.map = faixas; const dome = elip(g, casco, .52, .4, .82, 0, .55, 0); dome.rotation.x = 0;
-    elip(g, mat(0x9a8d7e), .2, .2, .34, 0, .38, .86); elip(g, mat(0x9a8d7e), .1, .09, .2, 0, .33, 1.16); for(const sx of [-1, 1]){ const o = elip(g, mat(0x9a8d7e), .05, .15, .06, sx * .1, .56, .74); o.rotation.z = sx * -.2; }
-    olhos(g, .13, .45, 1.04, .8); tubo(g, mat(0x8d7f70), [[0, .4, -.75], [0, .3, -1.1], [0, .12, -1.4]], .09);
-    for(const [x, z] of [[.3, .5], [-.3, .5], [.3, -.45], [-.3, -.45]]){ membro(g, mat(0x9a8d7e), new Vector3(x, .4, z), new Vector3(x * 1.1, .05, z + .06), .12, .08); } }
 
   /* ---------- BOI ---------- */
   { const g = new Group(), boi = mat(0xd9d3c5, { emissive: 0x15130f, emissiveIntensity: .5 }); formas.boi = g;

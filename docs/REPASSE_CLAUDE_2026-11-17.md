@@ -101,3 +101,23 @@ Referências adicionais enviadas pelo usuário: humano de cabelo branco comprido
 Validação: 67 testes unitários passaram; captura no navegador verifica as seis metamorfoses, retorno ao cervo e coordenadas finitas das geometrias, sem erros JavaScript. Prints reais em `docs/media/anhanga/`; galeria completa em `docs/media/elenco-atual/index.html`. Script reproduzível: `t3d/test/browser/anhanga-humano.cjs`.
 
 Os modelos usam a linguagem visual procedural atual do jogo. As referências orientam silhueta e acessórios; não foram transformadas em modelos fotorrealistas. Esta atualização é visual e de registro de formas, sem novas missões do Anhangá. As pendências de narrativa/cinemática indicadas acima continuam abertas.
+
+## Clipes para o timelapse de produção
+
+Adicionado `t3d/test/browser/clipes-laterais.cjs`: ferramenta de captura cinematográfica das cenas reais do jogo, com câmera lateral e exportação quadro a quadro. Produz três clipes MP4/H.264 sem áudio, em 1280 × 720, 24 fps e 4 s: praça central/NPCs, Anhangá cervo humanoide e Atiara em 2071. O script pausa o loop normal de renderização e configura os enquadramentos apenas na sessão de captura. Não altera a câmera nem o comportamento do jogo distribuído. `PREVIEW=1` gera enquadramentos; `VIDEO_OUT` escolhe a pasta. Requer Playwright, Chromium e ffmpeg.
+
+Arquivos de vídeo entregues separadamente em `/workspace/artifacts/videos-jogo/`, evitando incluir os quadros intermediários e os vídeos no bundle/repositório. A sequência para edição usa cortes secos e tem 12 s, sem títulos nem trilha.
+
+## Lobisomem e floresta sombria da Olaria
+
+O tatu foi retirado das metamorfoses do Anhangá, inclusive da demonstração na conversa de Tupã. Permanecem cervo, boi, pirarucu, humano e cervo humanoide. O lobisomem é um aliado separado do Anhangá, conforme o papel de defensor solicitado.
+
+- `lenda/lobisomem-visual.js`: modelo lupino escuro, focinho, orelhas, olhos luminosos, mãos com garras, pernas digitígradas e animação alternada dos braços.
+- `lenda/lobisomem.js`: guarda Anhangá; ao ataque de Tupã, aproxima-se e executa dois arranhões, com impactos a 0,20 s e 0,44 s. Alcance de 2,8 m, recuperação entre combos e limite de perseguição de 32 m a partir do guardião. Cada acerto provoca pequeno recuo e emite `lobisomem:golpe`. Não foi criado um sistema global de vida: o efeito sobre o jogador é recuo/aviso, compatível com a base atual. Outros personagens não são perseguidos; encantamento de Atiara interrompe temporariamente o movimento.
+- `lenda/olaria.js`: clareira vinculada ao polígono real da Olaria, ativa em 1950 a até 75 m do centro. Árvores, névoa circular e luz fria local; reúne Anhangá, lobisomem, Gritador e Boitatá. Alvos saem do registro dos poderes ao sair da área e retornam sem duplicação. A geometria da clareira é reutilizada entre visitas.
+- `lenda/criaturas.js`: IDs opcionais permitem instâncias locais de Gritador/Boitatá sem colidir com os IDs das missões. A narrativa das missões continua independente da presença na clareira.
+- Integração em `mundo/index.js`; fontes e bundle atualizados. A resposta ao raio do Anhangá aciona o defensor.
+
+Validação: 69 testes unitários passaram, incluindo alternância/intervalo dos ataques, recuo, alcance, limite de perseguição e limpeza do alvo. `t3d/test/browser/olaria-game.cjs` verifica a defesa após o raio, os dois golpes e a saída/retorno sem duplicação; produz prints reais em `docs/media/olaria/`. O teste espera o carregamento do relevo e prepara o cenário/horário para as capturas; não representa uma campanha manual completa.
+
+O teste de navegador confirmou proteção ao ataque de Tupã, dois impactos distintos (`esquerda`, `direita`), interrupção da perseguição, ausência de agressão a Atiara e retorno à floresta sem duplicar alvos, sem erros JavaScript. Os prints incluem a clareira, as três formas principais do Anhangá, lobisomem, Gritador, Boitatá e as duas poses de arranhão, em `docs/media/olaria/index.html`. A atmosfera escura e a neblina local são restauradas ao sair. A galeria geral substitui a imagem do tatu pela do lobisomem. Montagem reproduzível: `scripts/montar-olaria.py`.
