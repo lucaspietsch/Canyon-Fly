@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:ex="http://earth.google.com/kml/ext">
+<Document id="document">
+	<ex:extension>base64;CooBCoEBCn8KAggBEnkKdwokCiAKAwjQDxoHCNLtZRD_ASEAAAAAAADwPykAAAAAAAAAABgAEg8KCAitgO8HEP8BEKAfGAAaGgoHCP___wcQQBIICK2A7wcQ_wEYoB8gACgAIgkIARIFCP___wcqFwgBEggI____BxD_ARkAAAAAAADwPyAAEgQIARAA</ex:extension>
+	<name>Arquivo KML sem título</name>
+	<gx:CascadingStyle kml:id="__managed_style_01E5F6B366431CB756EE_highlight">
+		<ex:extension>base64;EgIYAQ</ex:extension>
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_01E5F6B366431CB756EE_normal">
+		<ex:extension>base64;EgIYAQ</ex:extension>
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_01E5F6B366431CB756EE">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_01E5F6B366431CB756EE_normal</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_01E5F6B366431CB756EE_highlight</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0269829ADA431CB75610">
+		<name>caminho, saida fortaleza ate portico</name>
+		<LookAt>
+			<longitude>-50.16091423559602</longitude>
+			<latitude>-29.06593705085148</latitude>
+			<altitude>922.3211986445873</altitude>
+			<heading>34.22246664839732</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>788.9669655729085</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_01E5F6B366431CB756EE</styleUrl>
+		<LineString>
+			<coordinates>
+				-50.13380789385116,-29.04647705023086,0 -50.14406118460617,-29.04900846990734,0 -50.14647247275395,-29.04936462047512,0 -50.14729719237627,-29.04953391177561,0 -50.14888559878596,-29.05006147090269,0 -50.14964291232602,-29.05054127350694,0 -50.15043739670428,-29.05126134919252,0 -50.15121681442207,-29.05195990956635,0 -50.15206694482912,-29.05281870968185,0 -50.15283627440249,-29.05361419462263,0 -50.15303158784651,-29.05396914594777,0 -50.15319489973564,-29.05546248617677,0 -50.15318901321704,-29.05599238520885,0 -50.1532862733054,-29.05640444386006,0 -50.15368138234863,-29.05702162430207,0 -50.15507437499598,-29.06084862462585,0 -50.15550703924637,-29.06127350594061,0 -50.15600989171971,-29.06152612927231,0 -50.15641240433347,-29.06162969267951,0 -50.15702392665215,-29.06191172416116,0 -50.15814604092525,-29.06268625465072,0 -50.15907969870804,-29.06350227121409,0 -50.15992148887783,-29.06416471260068,0 -50.16041679720842,-29.06469624715688,0 -50.16142875404783,-29.0657585656713,0 -50.16174364440231,-29.06611415233636,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+</Document>
+</kml>

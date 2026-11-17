@@ -508,6 +508,16 @@ Grade do Lucas: **A1 · A2** em cima, **B1 · B2** embaixo. Só anotações (a i
 - **Hoje as ruas da cidade no jogo são uma grade provisória** (quadras de 110 m, `config.ruas`), girada pelo formato do polígono. O código já aceita **ruas reais do KML** (LineStrings do tipo "rua"): quando existem, **a grade some** e as ruas reais entram — inclusive no minimapa e na rota a pé.
 - **Próximo passo possível:** traçar as ruas reais (Getúlio Vargas/RS-020, Dona Úrsula, Joaquim Pereira, João F. Riter, Nartécia Pereira, Padre João Paza, Procópio F. dos Santos, Dom Pedro II, Quinze de Março, Laurindo, Vinte de Setembro, Osvaldo Kroeff, Tradição…) como **KML de ruas**, a partir destes prints.
 
+## AVENIDA PRINCIPAL — arquivo do Google Earth do Lucas
+Arquivo: `docs/cidade/kml/avenida-principal-fortaleza-portico.kml` ("caminho, saída fortaleza até pórtico") — 26 pontos, **≈ 3,8 km**.
+- **[Lucas]** É a **avenida principal da cidade**: liga a **chegada/saída para o Fortaleza** (leste), passa pela **cidade e pela praça**, sai da área urbana e vai até o **PÓRTICO de entrada de quem vem de São Francisco de Paula** (sudoeste).
+- Traçado em metros locais (origem Ref 01): (+1108, +300) → (+110, +20) → **praça** (passa a ~2 m da Ref 01, ao longo da Rua Coberta) → (−205, −38) → (−433, −149) → (−586, −306) → **letreiro "CAMBARÁ DO SUL"** (passa a ~20 m) → (−744, −489) → (−779, −693) → (−826, −866) → (−962, −1289) → (−1092, −1375) → (−1352, −1582) → **pórtico ≈ (−1611, −1871)**.
+- **Conferências:** passa a ~7 m da **Casa do Turista**, a ~20 m da esquina da **R. Tradição** e a ~20 m do **letreiro** ✔.
+- **Encaixe com o jogo:** a "estrada até a cidade" do KML do jogo começa em **(+944, +256)**, que fica **exatamente sobre esta avenida** (a avenida passa em (+944, +254)) → a estrada do parque/Fortaleza **sai desta avenida** nesse ponto. O primeiro ponto do arquivo (+1108, +300) fica ~170 m adiante, na saída leste.
+- **Trechos:** dentro da cidade (≈ x +1108 até o letreiro, ~1,9 km) = **escala real**; do letreiro até o pórtico (~1,9 km) = **estrada entre lugares** → no jogo fica **pela metade** (~0,95 km), pela regra do Lucas.
+- Nomes ao longo dela: **Av. Getúlio Vargas** (no centro, com canteiro e postes coloniais), **RS-020** (endereços) e, a leste da praça, também **RS-427** até a R. Tradição.
+- **A receber:** foto do **pórtico** (São Francisco de Paula).
+
 ## Regras do mapa do jogo (Lucas)
 - **[Lucas] Estradas até os cânions, vilas e outras cidades são reduzidas pela METADE** no jogo, para encurtar o caminho do jogador. A **cidade em si** (ruas, casas, praça) fica em **escala real**; só os trechos de estrada **entre** lugares são comprimidos.
 - **[Lucas] Guardar tudo** que aparecer nos prints (Street View e aéreos): **plantas, florestas, pontos de referência e detalhes**, para montar o mais original possível.
