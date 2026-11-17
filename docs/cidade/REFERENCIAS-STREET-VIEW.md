@@ -551,6 +551,7 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
     - **Mesmo ponto, 259° (oeste, entrando no parque):** **OUTDOOR "BEM-VINDO AO PARQUE NACIONAL DE APARADOS DA SERRA"** — painel grande branco/claro sobre **2 postes de madeira escura**, com **foto das paredes do Cânion Itaimbezinho** (paredões verticais, cachoeira, mata) e a legenda **"Cânion Itaimbezinho"**, logos institucionais embaixo. A **estrada interna** segue **estreita e de terra**, fazendo **curva à esq.** entre **capim dourado** e **mata de araucária**; placas de **velocidade (20?)** e **"proibido ultrapassar"**; placa verde pequena à esq.
       - No jogo: **reproduzir o outdoor** com a arte do jogo (foto real do cânion só com licença — usar **render do próprio jogo** do Itaimbezinho).
     - **Estrada interna, ~55 m adiante** — −29.15531505, −50.06146575 · 955 m · rumo 266° → local ≈ (+8 151, −11 731): estrada **estreita de terra batida** (uma faixa), curvando à esq.; à esq. **capim dourado** e um poste de madeira; à dir. **capoeira/mata baixa densa** encostando na pista; **araucárias altas** em volta e ao fundo; placa vermelha (PARE/velocidade) na curva. Clima de **túnel de mata** entrando no parque.
+    - **Estrada interna, mais adiante** — −29.15557479, −50.06205738 · 958 m · rumo 239° → local ≈ (+8 093, −11 760): **túnel de mata** — **araucárias muito altas** dos dois lados (troncos retos, copas em candelabro), **capoeira densa** (vassourão, bracatinga) encostando na pista; estrada estreita reta descendo levemente; postes de luz de madeira e placa pequena branca à esq.
     - [sugestão] no jogo: **portão/cancela** e um **guarda-parque NPC** (ICMBio) dando as regras do parque, como na equipe do Fortaleza.
   - **[Lucas]** depois da guarita há uma **estrada interna** do parque (a receber).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
@@ -558,6 +559,8 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
 - **A receber:** marcação da **guarita** e da **estrada interna** no Earth; **área do Itaimbezinho**; **mapa do município**.
 
 ## Regras do mapa do jogo (Lucas)
+- **[Lucas] TODAS AS RUAS E ESTRADAS ASFALTADAS** no jogo — cidade, estradas entre lugares e **estrada interna do Itaimbezinho** — com **DUAS PISTAS + faixa lateral de ESTACIONAMENTO**, mesmo onde a real é de terra ou paralelepípedo (os prints guardam como é de verdade, para referência).
+- **[Lucas] VIAGENS NO TEMPO:** nos **próximos capítulos** o jogo vai **voltar no tempo nesta região por DUAS vezes** → as referências de hoje (2025) são a **época atual**; guardar também o que for **antigo** (casas históricas, estradas de terra, paralelepípedo, casarão, lendas) porque vai servir para montar **as épocas passadas**. (O jogo já tem seletor de época — `lugares.epoca()`.)
 - **[Lucas] Estradas até os cânions, vilas e outras cidades são reduzidas pela METADE** no jogo, para encurtar o caminho do jogador. A **cidade em si** (ruas, casas, praça) fica em **escala real**; só os trechos de estrada **entre** lugares são comprimidos.
 - **[Lucas] Guardar tudo** que aparecer nos prints (Street View e aéreos): **plantas, florestas, pontos de referência e detalhes**, para montar o mais original possível.
 
