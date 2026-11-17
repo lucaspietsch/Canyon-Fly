@@ -527,6 +527,17 @@ Arquivo: `docs/cidade/kml/avenida-principal-fortaleza-portico.kml` ("caminho, sa
   - No jogo: **frente "BEM-VINDOS A CAMBARÁ DO SUL"** para quem chega e **verso "VOLTE SEMPRE"** para quem sai.
   - **[Lucas] REMOVER OS PINGUINS** — os bonecos de pinguim (de boina) que ficam ao pé do pórtico **não entram no jogo**; o mesmo vale para o **pinguim do letreiro** "CAMBARÁ DO SUL" na entrada sudoeste.
 
+## ESTRADA PARA O ITAIMBEZINHO (RS-427) — arquivo do Google Earth do Lucas
+Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estrada até o início da serra") — 130 pontos, **≈ 24,4 km reais** (o arquivo também traz de novo a avenida principal).
+- **[Lucas]** Vai da cidade até **onde começa a SERRA DO FAXINAL** (também **borda de cânion**).
+- **Traçado:** começa na **esquina da Av. Getúlio Vargas com a R. Tradição** (+289, +59) (a ~10 m do SV-I1 ✔), desce a Tradição, passa a **Pizza Retrô** (~26 m ✔), segue a **RS-427** para o **sudeste** passando ao sul do Eco Hotel, faz zigue-zagues pelo campo e termina em **≈ (+12 505, −14 722)** (≈ 12,5 km a leste e 14,7 km ao sul da praça).
+- **GUARITA GRALHA AZUL — entrada do Cânion Itaimbezinho** (foto do Lucas): −29.15459854, −50.06015192 · **952 m** · jul/2025 → local **(+8 276, −11 652)**, **a ~30 m da linha** ✔, a **≈ 17,0 km** da cidade pela estrada.
+  - Na foto (rumo 296°, olhando de volta para a cidade): estrada **de terra/cascalho** marrom ("RS-427" pintado), **totem/marco alto cinza-escuro** do **Parque Nacional de Aparados da Serra** à esq. (placa vertical com o logo), **vegetação de campo e capoeira** baixa (arbustos de vassoura, capim) e **araucárias** ao fundo.
+  - **[Lucas]** depois da guarita há uma **estrada interna** do parque (a receber).
+- **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
+- **Escala no jogo (regra das estradas pela metade):** 24,4 km reais → **≈ 12,2 km** no jogo; a guarita fica a **≈ 8,5 km** da cidade.
+- **A receber:** marcação da **guarita** e da **estrada interna** no Earth; **área do Itaimbezinho**; **mapa do município**.
+
 ## Regras do mapa do jogo (Lucas)
 - **[Lucas] Estradas até os cânions, vilas e outras cidades são reduzidas pela METADE** no jogo, para encurtar o caminho do jogador. A **cidade em si** (ruas, casas, praça) fica em **escala real**; só os trechos de estrada **entre** lugares são comprimidos.
 - **[Lucas] Guardar tudo** que aparecer nos prints (Street View e aéreos): **plantas, florestas, pontos de referência e detalhes**, para montar o mais original possível.
@@ -682,7 +693,7 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
 
 ## Próximos envios do Lucas (anotado)
 - [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
-- [ ] **Estrada para o Itaimbezinho** (o outro cânion) — arquivo do **Google Earth** (KML/KMZ).
+- [x] **Estrada para o Itaimbezinho** — recebida (até a Serra do Faxinal).
 - [ ] **Área do Itaimbezinho** (Earth).
 - [ ] **Print do mapa do município** — para localizar tudo.
 
