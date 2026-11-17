@@ -593,6 +593,8 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
         - **[Lucas] PISO DA TRILHA ATÉ O VÉRTICE DO CÂNION:** **bloquetes de concreto SEXTAVADOS (hexágonos)** cinza, encaixados, com **borda/meio-fio de bloquetes retangulares** dos dois lados; largura ~1,5 m; folhas e sombra das árvores por cima. À esq. **cerca de tela verde** presa em **mourões/troncos de madeira**; à dir. barranco com samambaias e capim.
           - Combina com o tema **favo de mel** da praça da cidade (mesmo desenho hexagonal) → reaproveitar a textura.
           - → Esta trilha (que sai de trás do centro de visitantes) é a **Trilha do Vértice**.
+        - **MIRANTE com guarda-corpo (921 m):** plataforma pequena de **piso de concreto/cimento**, cercada por **guarda-corpo de madeira grossa** (corrimão largo de tábua, pilares quadrados) com **tela de arame** por baixo (proteção contra queda); para fora, **barranco de capim** descendo e **pedras/água** lá embaixo à esq. (rio/borda); arbustos densos ao redor. Na foto aparece o **fotógrafo** (pessoa de boné) — não entra no jogo.
+          - No jogo: modelo padrão de **mirante do parque** (madeira grossa + tela), reutilizável em todos os mirantes do Itaimbezinho.
         - → A guarita e este prédio formam um **conjunto arquitetônico** (branco + pedra + madeira escura + telha colonial) — usar o mesmo estilo nas construções do parque no jogo.
       - **Dúvida:** qual parte é a **Trilha do Vértice** e qual é a **Casa do Vô Marçal** (onde fica a casa)? E as pontas (2) e (3) são **mirantes**?
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
