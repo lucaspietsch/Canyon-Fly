@@ -572,7 +572,14 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Mata nativa densa (araucária)** — bloco grande no centro-sul (-307, -726).
   - **Pinus** em quadras uniformes (-568, -454) e (-526, -611); capões de mato (-892, -747).
   - **Açudes**: **açude grande com barragem** (+111, -663); menores (-448, -485) (-647, -501) (-615, -590) (-51, -443) (+226, -501) (+304, -438); **banhados em faixas** com mata ciliar a leste (+163, -579); **campo** aberto a leste.
-- (aguardando: **B3, C0, C1, C2, C3**)
+- **B3 — sul/sudeste: saída da RS-427** (satélite ampliado, centro −29.0559728, −50.140267 → local (+479, -750), escala 2,07 m/px; trânsito, centro −29.0530748, −50.136866; e "abaixo do B3", centro −29.0571873, −50.1388562; a **Pizza Retrô** cai em (+374, -131) e (+373, -121), batendo com o B2 (+381, −132) ✔):
+  - **RS-427** sai da cidade na Pizza Retrô e segue reta para o **sudeste**: (+441, -231) → (+786, -421) → (+1100, -583) → (+1382, -743); no satélite continua (+1384, -752) → (+1736, -839) (provável **caminho do Itaimbezinho / Praia Grande** — confirmar com o arquivo do Earth).
+  - **RS-020** contorna a cidade pelo **oeste/sudoeste** (-728, -514) (Pousada Oliveira (-744, -752)).
+  - Ruas: **R. Padre João Paza** (-396, -234) · **R. Noé de Freitas** (-210, -327) · **R. Procópio Freire dos Santos** (+253, -152) · **R. Antônio Raupp** (estrada de terra norte–sul) (+502, -419) → (+472, -905) — trecho com **bloqueio/interdição** (tracejado vermelho e placas de "proibido") (+483, -732) (+464, -947); estradinha paralela a leste (+588, -544) → (+530, -884).
+  - Lugares: **Pousada Aparados** (+464, -202) · **Aparados da Serra Adventure** (roxo — atração/aventura) (+531, -322) · hospedagens na R. Antônio Raupp (+623, -399) (+612, -474) · **Cabana Cambará** (+536, -808) · **Churrasco no Galpão** (+427, -896) · **Cambará Container** (hospedagem) (+479, -974).
+  - Ao longo da RS-427: **Cambará Eco Hotel** (+1044, -406) · **Restaurante do Lago — Fogo, Brasa e Sabor** (+1037, -511) · **Cabanas Imbuia** (+1442, -442) · **Cutelaria Cambará** (+1377, -490) · **Pousada Card…** (nome cortado) (+1416, -563) · **SE CAA / CPFL / RGE** (**subestação de energia**) (+1121, -649) · **Atmosphera** (hospedagem) (+984, -1387).
+  - Satélite: **pista de motocross** (+659, -245); **loteamento novo** (terra vermelha, quadras demarcadas) junto à RS-427 (+1135, -690); **lagos/açudes** (+100, -679) (+245, -307) (+307, -462) (-438, -503) e o **lago do Eco Hotel/Imbuia** (+1239, -514); lago ao sul (+1260, -1331); **pinus** e **mata densa** no oeste (-479, -928); **talhões cortados** (marrom) (-65, -1114); campos e capões ao sul (+928, -1073).
+- (aguardando: **C0, C1, C2, C3**)
 
 ## Próximos envios do Lucas (anotado)
 - [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
