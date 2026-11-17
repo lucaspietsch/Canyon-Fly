@@ -580,6 +580,12 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
         - **2 painéis verdes** informativos do parque (mapa/regras das trilhas) e um **monólito/totem escuro de pedra** alto ao fundo (marco do parque — confirmar);
         - à esq. **cercadinho de troncos/estacas de madeira** com placa branca (proteção de alguma muda/objeto — confirmar) e **estação meteorológica** pequena (poste com sensores);
         - em volta, **mata de araucária** densa e capoeira; campo aberto.
+      - **Mesmo ponto, 158° (sul-sudeste) — PRÉDIO GRANDE do parque** (provável **centro de visitantes / sede administrativa** — confirmar), ao lado do início das trilhas:
+        - **paredes brancas** com **telhado alto de duas águas** em telha colonial marrom e **beiral largo de madeira**;
+        - **TORRE quadrada de pedra** (pedra cinza/rosada em placas) mais alta que o telhado, com **abertura no topo** (estilo campanário/chaminé) — mesmo estilo da chaminé de pedra da **guarita**;
+        - **sacada de madeira escura** no 2º andar sobre uma **marquise de concreto**; **pilares de pedra**; porta de entrada de madeira com vidro em grade; **janelões com treliça de madeira**;
+        - **antenas parabólicas**, **mastros de bandeira**, refletor; **guarda-corpo de madeira** na rampa à dir.; **araucárias** encostando no prédio.
+        - → A guarita e este prédio formam um **conjunto arquitetônico** (branco + pedra + madeira escura + telha colonial) — usar o mesmo estilo nas construções do parque no jogo.
       - **Dúvida:** qual parte é a **Trilha do Vértice** e qual é a **Casa do Vô Marçal** (onde fica a casa)? E as pontas (2) e (3) são **mirantes**?
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
