@@ -4,6 +4,8 @@ Modelos procedurais em 3D, com formas e cores baseadas nas referências fornecid
 
 ## Espécies
 
+- **Quero-quero — Vanellus chilensis:** pernas longas rosadas, peito preto, barriga clara, asas acinzentadas com tons bronzeados, olhos vermelhos e penacho fino voltado para trás. Mantém os casais, ninhos e rasantes de defesa existentes.
+- **Tucano-de-bico-verde — Ramphastos dicolorus:** bico verde-claro grande e curvo com base escura, garganta amarela, ventre e região sob a cauda vermelhos, plumagem escura e pele vermelha com anel verde-azulado ao redor dos olhos. Mantém a ocorrência rara no alto das árvores, com poses de voo e pouso próprias do renderizador.
 - **Tico-tico — Zonotrichia capensis:** substitui a identificação genérica “Passarinho”, incluindo geração, inspeção e fotografia. Cabeça cinzenta com faixas escuras, colar ferrugem, garganta clara, dorso e asas marrons rajados, bico curto e pernas rosadas. Mantém os saltos e bandos pequenos no chão. O canto permanece uma síntese de notas, sem gravação da espécie.
 - **Pica-pau-do-campo — Colaptes campestris:** cabeça preta, face e garganta amarelas, corpo claro salpicado de escuro, asas barradas e bico comprido. Agora também busca alimento no chão dos campos e pode aparecer em pares.
 - **Sabiá-laranjeira — Turdus rufiventris:** ventre alaranjado, dorso castanho, garganta clara riscada, bico amarelado e anel dourado nos olhos.
@@ -12,6 +14,10 @@ Modelos procedurais em 3D, com formas e cores baseadas nas referências fornecid
 - **Papagaio-de-peito-roxo — Amazona vinacea:** verde com peito vinho-violeta e pequena testa vermelha. Possui geometria própria e não recebe a aura das gralhas.
 
 ![Aves atualizadas](media/pinheirais/aves-atualizadas.jpg)
+
+![Tucano-de-bico-verde](media/pinheirais/tucano-de-bico-verde.png)
+
+![Quero-quero](media/pinheirais/quero-quero.png)
 
 ## Corte sagrada
 
