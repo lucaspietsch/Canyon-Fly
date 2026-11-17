@@ -59,7 +59,8 @@ export function criarCentro(M, u){
     const W = w * le, D = d * le, H = alt * U, y0 = Math.min(Y(cx, cz), Y(cx + ex[0] * w / 2, cz + ex[1] * w / 2), Y(cx - ex[0] * w / 2, cz - ex[1] * w / 2)) - .3;
     const cTelha = (COR[tipo] || COR.casa)[1], cParede = corDe(nome, tipo);
     e.set(0, yaw, 0); q.setFromEuler(e);
-    const par = new BoxGeometry(1, 1, 1); uvCaixa(par, w, d, alt, tipo === "igreja"); par.applyMatrix4(m4.compose(v.set(cx, y0 + H / 2, cz), q, s.set(W, H, D))); add(cParede, par, tipo);
+    const oco = /Du Perau/.test(nome);                                                                    /* prédios com interior visitável: paredes ocas e porta aberta */
+    if(!oco){ const par = new BoxGeometry(1, 1, 1); uvCaixa(par, w, d, alt, tipo === "igreja"); par.applyMatrix4(m4.compose(v.set(cx, y0 + H / 2, cz), q, s.set(W, H, D))); add(cParede, par, tipo); }
     /* frente: lado do bloco virado para a rua mais próxima (a igreja: para a praça, ao sul) */
     const [fx, fy] = /Igreja/.test(nome) ? [x, y - 60] : [fx0, fy0], fp = mundo(fx, fy), vx = fp[0] - cx, vz = fp[1] - cz;
     const ux = [Math.cos(yaw), -Math.sin(yaw)], uz = [Math.sin(yaw), Math.cos(yaw)], px = vx * ux[0] + vz * ux[1], pz = vx * uz[0] + vz * uz[1];
@@ -78,9 +79,24 @@ export function criarCentro(M, u){
     else { const rh = Math.min(W, D) * .42, tel = new ConeGeometry(Math.SQRT1_2, 1, 4); tel.rotateY(Math.PI / 4);
       tel.applyMatrix4(m4.compose(v.set(cx, y0 + H + rh / 2, cz), q, s.set(W * 1.08, rh, D * 1.08))); add(cTelha, tel); }
     /* porta na fachada (comércio: porta de vidro larga) */
-    if(!/Igreja/.test(nome)){ if(tipo === "comercio") peca(0, .05, 0, 2.4, .2, 2.6, 0x2f3d48); else peca(0, .05, 0, 1.1, .2, 2.2, 0x5a3b24); }
+    if(!/Igreja/.test(nome) && !oco){ if(tipo === "comercio") peca(0, .05, 0, 2.4, .2, 2.6, 0x2f3d48); else peca(0, .05, 0, 1.1, .2, 2.2, 0x5a3b24); }
     /* ---- detalhes dos prédios principais (catálogo) ---- */
-    if(/Du Perau/.test(nome)){ peca(0, 1.6, 0, w * .9, 3.2, 1.3, 0x9a9690); peca(0, 3.15, 1.3, w * .9, .12, 1.0, 0x5a3b24); peca(-w * .45 + .6, 4.2, 0, 1.2, 2.2, .45, 0xa8a49c); peca(-w * .45 + .6, 3.6, 0, 1.2, 1.2, .9, 0xa8a49c); }          // varanda elevada com guarda-corpo e escada de concreto
+    if(oco){ /* ===== DU PERAU GASTRO PUB — interior visitável (layout provisório; mesas conforme as fotos do Lucas depois) ===== */
+      const F = 2 * meioFundo, L2 = meioLarg, t = .3, porta = 1.2, cc = (a, b, la, pb, nomeP) => { const c = [P(a - la / 2, b - pb / 2, 0), P(a + la / 2, b - pb / 2, 0), P(a - la / 2, b + pb / 2, 0), P(a + la / 2, b + pb / 2, 0)];
+        colisores.push({ x0: Math.min(...c.map(p => p[0])), x1: Math.max(...c.map(p => p[0])), z0: Math.min(...c.map(p => p[2])), z1: Math.max(...c.map(p => p[2])), peca: "pub:" + nomeP }); };
+      const parede = (a, b, la, pb, h, ah, nomeP) => { peca(a, b, h, la, pb, ah, cParede, tipo); if(h < 1) cc(a, b, la, pb, nomeP); };
+      parede((-L2 - porta) / 2, -t / 2, L2 - porta, t, 0, alt, "frente esq"); parede((L2 + porta) / 2, -t / 2, L2 - porta, t, 0, alt, "frente dir"); peca(0, -t / 2, 2.6, porta * 2, t, alt - 2.6, cParede, tipo);   // fachada com a porta aberta
+      parede(0, -F + t / 2, 2 * L2, t, 0, alt, "fundo"); for(const l of [-1, 1]) parede(l * (L2 - t / 2), -F / 2, t, F, 0, alt, "lado");
+      peca(0, -F / 2, 0, 2 * L2 - .1, F - .1, .08, 0x7a5638);                                                                                        // piso de tábuas
+      peca(0, -F / 2, alt - .15, 2 * L2, F, .15, 0x4a3524);                                                                                        // forro de madeira
+      peca(0, -F + 1.3, 0, L2 * 1.3, .7, 1.1, 0x5a3b24); peca(0, -F + 1.3, 1.1, L2 * 1.35, .8, .08, 0x2a2a2a); cc(0, -F + 1.3, L2 * 1.3, .7, "balcão");   // balcão do bar
+      peca(-1, -F + 1.3, 1.18, .5, .3, .5, 0xb8bcc2); peca(-.4, -F + 1.3, 1.18, .5, .3, .5, 0xb8bcc2);                                            // chopeiras
+      peca(0, -F + .45, 1.4, L2 * 1.3, .3, 1.6, 0x3a2a1a); for(let i = 0; i < 10; i++) peca(-L2 * .6 + i * L2 * .13, -F + .45, 1.55 + (i % 2) * .5, .12, .12, .32, [0x2f6a3a, 0x7a3a1a, 0xd8b04a][i % 3]);   // prateleira com garrafas
+      for(const a of [-L2 * .55, 0, L2 * .55]) for(const b of [-F * .3, -F * .55]){ peca(a, b, .72, 1.1, 1.1, .08, 0x8a6a44); peca(a, b, 0, .15, .15, .72, 0x3a2a1a); cc(a, b, 1.1, 1.1, "mesa");      // mesas com banquinhos
+        for(const da of [-.85, .85]) peca(a + da, b, 0, .4, .4, .45, 0x5a3b24); }
+      peca(0, 1.5, 0, 2 * L2 * .95, 3, .15, 0x8a6a44); for(const l of [-1, 1]) peca(l * L2 * .55, 2.95, .15, L2 * .8, .1, .9, 0x5a3b24);   // varanda de tábuas na frente, guarda-corpo com passagem no meio
+      peca(0, .1, 2.75, 3.2, .12, .7, 0x1a1a1a);                                                                                                  // placa (nome só com autorização: "PUB")
+    }
     if(/Sociedade/.test(nome)){ for(const lado of [-1, 1]){ peca(lado * 2.6, 1.4, 0, 2.2, 2.8, .5, 0xa8483a); peca(lado * 2.6, 1.0, 0, 2.2, 2.0, 1.0, 0xa8483a); } peca(0, 1.2, 3.4, 4.2, 2.4, .25, 0x7a4a2a); peca(0, .06, 3.1, w * .98, .1, .35, 0x7a4a2a); }     // escadaria dupla, marquise de cobre e faixa marrom
     if(/Igreja/.test(nome)){ peca(0, 6.5, 0, 9, 3, .5, 0xd8d2c4); peca(0, 5.5, 0, 9, 1.6, 1.0, 0xd8d2c4); peca(0, 4.6, 0, 9, 1.2, 1.5, 0xd8d2c4); for(const l of [-1, 1]){ peca(l * (w / 2 - .6), .25, 0, 1.0, .5, alt, 0xe0dacb); } peca(0, .25, alt - .6, w, .5, .6, 0xe0dacb); }       // escadaria diante da torre, pilastras e cornija na fachada                                      // escadaria na frente (praça)
     if(/mal-assombrada|histórica|trapeira/.test(nome)){ peca(-w * .3, 1.2, 0, 3.4, 2.4, 3.4, 0x9fc0d4); peca(meioLarg * .6, -meioFundo * .6, alt, .9, .9, 3.2, 0x8a4a34); }           // bay de vidro na ponta e chaminé de tijolo
@@ -89,7 +105,7 @@ export function criarCentro(M, u){
     if(/Thewes|Galochas|Material|Restaurante/.test(nome)){ peca(0, .7, 2.7, w * .7, 1.4, .15, 0x2a2a2a); }                                                                          // toldo/marquise sobre a vitrine
     /* colisor: caixa alinhada aos eixos que cobre o bloco girado (um pouco menor para não travar nas quinas) */
     const c = Math.abs(Math.cos(yaw)), sn = Math.abs(Math.sin(yaw)), hx = (W * c + D * sn) / 2 * .86, hz = (W * sn + D * c) / 2 * .86;
-    colisores.push({ x0: cx - hx, x1: cx + hx, z0: cz - hz, z1: cz + hz, peca: "predio:" + nome });
+    if(!oco) colisores.push({ x0: cx - hx, x1: cx + hx, z0: cz - hz, z1: cz + hz, peca: "predio:" + nome });
   }
 
   /* ---------- torre da Igreja Matriz São José (−24, +51,5) ---------- */
@@ -103,7 +119,7 @@ export function criarCentro(M, u){
   }
 
   /* ---------- Rua Coberta: 10 arcos-favo (hexágonos) na frente da praça, da esquina da Quinze de Março (x −56) à da Laurindo (x −2), y ≈ +6 (faixa entre a avenida e o gramado) ---------- */
-  { const N = 10, xa = -56, xb = -2, yr = 6, R = 6.2 * U, tubo = .32 * U, giro = Math.PI / 6 + .17;   // ~10° de giro sobre o próprio plano
+  { const N = 10, xa = -56, xb = -2, yr = 10.5, R = 5.2 * U, tubo = .32 * U, giro = Math.PI / 6 + .17;   // ~10° de giro sobre o próprio plano
     const a0 = mundo(xa, yr), a1 = mundo(xb, yr), dx = a1[0] - a0[0], dz = a1[1] - a0[1], yaw = Math.atan2(dx, dz);
     for(let k = 0; k < N; k++){ const t = k / (N - 1), px = a0[0] + dx * t, pz = a0[1] + dz * t, py = Y(px, pz) + R * .72;   // centro baixo: a ponta de baixo do hexágono fica enterrada
       const g = new TorusGeometry(R, tubo, 4, 6); g.rotateZ(giro); g.rotateY(yaw); g.translate(px, py, pz); add(0xa82b22, g); }
