@@ -50,8 +50,8 @@ def predios():
     for nome, x, y, w, h, st, refs, *_ in m.LUGARES:
         if not w or not h or any(k in nome for k in fora): continue
         nome = nome.lstrip("· ")
-        alto = 12 if "Igreja" in nome else 7 if any(k in nome for k in ("Sociedade", "Supermercado", "Thewes", "Pioneiro", "Prédio", "obrado", "Brentano", "Salão", "Prefeitura")) else 4.5
-        tipo = "igreja" if "Igreja" in nome else "publico" if any(k in nome for k in ("Prefeitura", "Salão", "Sociedade", "Centro Cultural")) else "comercio" if any(k in nome for k in ("★", "Loja", "Supermercado", "Pub", "Material", "Restaurante", "Advocacia", "Pioneiro")) else "casa"
+        alto = 13 if "4 pavimentos" in nome else 3.5 if "Quiosques" in nome else 2 if "muro e jardim" in nome else 12 if "Igreja" in nome else 7 if any(k in nome for k in ("Sociedade", "Supermercado", "Thewes", "Pioneiro", "Prédio", "obrado", "Brentano", "Salão", "Prefeitura")) else 4.5
+        tipo = "igreja" if "Igreja Matriz" in nome else "publico" if "Assembleia" in nome or "Casa do Turista" in nome else "publico" if any(k in nome for k in ("Prefeitura", "Salão", "Sociedade", "Centro Cultural")) else "comercio" if any(k in nome for k in ("★", "Loja", "Supermercado", "Pub", "Material", "Restaurante", "Advocacia", "Pioneiro", "Pizzaria", "Prédio comercial", "Lojinha", "Quiosques", "Sabores", "Dois Irmãos", "Hamburgueria", "Cooperativa", "Galpão branco", "Prédio amarelo")) else "casa"
         ang, fx, fy = rua_proxima(x, y)
         out.append([nome, x, y, w, h, alto, tipo, round(ang, 1), round(fx, 1), round(fy, 1)])
     return out

@@ -60,8 +60,8 @@
 <text x="596" y="221" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio de tijolo inacabado (obra)</text>
 <rect transform="rotate(-20.8 640.0 198.8)" x="622" y="183" width="36" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea rosa-avermelhada — em andamento (blocos) (refs 42 43)</title></rect>
 <text x="640" y="202" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa térrea rosa-avermelhada</text>
-<rect transform="rotate(-20.8 492.0 157.2)" x="478" y="141" width="28" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea avermelhada c/ portão branco — em andamento (blocos) (refs 40)</title></rect>
-<text x="492" y="160" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa térrea avermelhada c/ portão branco</text>
+<rect transform="rotate(-20.8 496.0 156.0)" x="485" y="140" width="22" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea avermelhada c/ portão branco — em andamento (blocos) (refs 40)</title></rect>
+<text x="496" y="159" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa térrea avermelhada c/ portão branco</text>
 <rect transform="rotate(-20.8 536.0 138.8)" x="522" y="121" width="28" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado bege-mostarda nº 707 — em andamento (blocos) (refs 40)</title></rect>
 <text x="536" y="142" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado bege-mostarda nº 707</text>
 <rect transform="rotate(-20.8 566.0 131.2)" x="556" y="117" width="20" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casinha antiga de tábuas brancas — em andamento (blocos) (refs 41)</title></rect>
@@ -102,9 +102,63 @@
 <text x="684" y="647" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa de tábuas cinza</text>
 <rect transform="rotate(-10.4 632.0 684.0)" x="614" y="660" width="36" height="48" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja Galochas — em andamento (blocos) (refs 76 77)</title></rect>
 <text x="632" y="727" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Loja Galochas</text>
+<rect transform="rotate(-1.2 92.0 482.0)" x="72" y="468" width="40" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Construção comprida rosa-magenta — em andamento (blocos) (refs 12 13)</title></rect>
+<text x="92" y="485" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Construção comprida rosa-magenta</text>
+<rect transform="rotate(-1.2 92.0 440.0)" x="72" y="422" width="40" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa rosa com chaminé e bay — em andamento (blocos) (refs 12 13)</title></rect>
+<text x="92" y="443" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa rosa com chaminé e bay</text>
+<rect transform="rotate(-1.2 96.0 386.0)" x="80" y="372" width="32" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Lojinha de topo em arco (amarelo) — em andamento (blocos) (refs 12)</title></rect>
+<text x="96" y="389" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Lojinha de topo em arco (amarelo)</text>
+<rect transform="rotate(-1.2 112.0 592.0)" x="92" y="572" width="40" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa branca térrea com palmeira — em andamento (blocos) (refs 16)</title></rect>
+<text x="112" y="595" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa branca térrea com palmeira</text>
+<rect transform="rotate(-0.0 112.0 648.0)" x="94" y="628" width="36" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Pizzaria Recanto da Pizza — em andamento (blocos) (refs 16 17 22)</title></rect>
+<text x="112" y="651" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Pizzaria Recanto da Pizza</text>
+<rect transform="rotate(-0.0 272.0 756.0)" x="244" y="736" width="56" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Café do Casarão (muro e jardim) — em andamento (blocos) (refs 18 20 22)</title></rect>
+<text x="272" y="759" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Café do Casarão (muro e jardim)</text>
+<rect transform="rotate(-0.0 332.0 744.0)" x="312" y="726" width="40" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio comercial branco térreo — em andamento (blocos) (refs 23)</title></rect>
+<text x="332" y="747" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio comercial branco térreo</text>
+<rect transform="rotate(-3.9 388.0 740.0)" x="364" y="720" width="48" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja de rede (letreiro verde) — em andamento (blocos) (refs 23 24)</title></rect>
+<text x="388" y="743" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Loja de rede (letreiro verde)</text>
+<rect transform="rotate(-3.9 474.0 368.0)" x="448" y="344" width="52" height="48" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja de eletrodomésticos (vermelha) — em andamento (blocos) (refs 31 32)</title></rect>
+<text x="474" y="371" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Loja de eletrodomésticos (vermelha)</text>
+<rect transform="rotate(-3.9 470.0 316.0)" x="442" y="296" width="56" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio comercial térreo branco (Laurindo) — em andamento (blocos) (refs 33)</title></rect>
+<text x="470" y="319" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio comercial térreo branco (Laurindo)</text>
+<rect transform="rotate(-3.9 436.0 284.0)" x="420" y="268" width="32" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado da esquina Laurindo × D. Úrsula — em andamento (blocos) (refs 34 37)</title></rect>
+<text x="436" y="287" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado da esquina Laurindo × D. Úrsula</text>
+<rect transform="rotate(-20.8 444.0 176.0)" x="432" y="160" width="24" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado antigo amarelo-ocre — em andamento (blocos) (refs 38)</title></rect>
+<text x="444" y="179" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado antigo amarelo-ocre</text>
+<rect transform="rotate(-20.8 470.0 166.0)" x="458" y="150" width="24" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Secretaria de Educação (madeira amarelo-bordô) — em andamento (blocos) (refs 38 40)</title></rect>
+<text x="470" y="169" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Secretaria de Educação (madeira amarelo-bordô)</text>
+<rect transform="rotate(-4.0 720.0 300.0)" x="702" y="286" width="36" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa verde-acinzentada com alpendre — em andamento (blocos) (refs 54)</title></rect>
+<text x="720" y="303" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa verde-acinzentada com alpendre</text>
+<rect transform="rotate(-4.0 720.0 268.0)" x="704" y="254" width="32" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Chalé de madeira marrom elevado — em andamento (blocos) (refs 54)</title></rect>
+<text x="720" y="271" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Chalé de madeira marrom elevado</text>
+<rect transform="rotate(-4.0 716.0 236.0)" x="700" y="222" width="32" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado claro (Vinte de Setembro) — em andamento (blocos) (refs 54)</title></rect>
+<text x="716" y="239" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado claro (Vinte de Setembro)</text>
+<rect transform="rotate(0.0 302.0 634.0)" x="272" y="622" width="60" height="24" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Quiosques da Rua Coberta — em andamento (blocos) (refs 01 21)</title></rect>
+<text x="302" y="637" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Quiosques da Rua Coberta</text>
+<rect transform="rotate(-11.3 1712.0 524.0)" x="1692" y="504" width="40" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sabores da Querência (chalé de pedra) — em andamento (blocos) (refs SV-I1 I11)</title></rect>
+<text x="1712" y="527" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sabores da Querência (chalé de pedra)</text>
+<rect transform="rotate(-11.3 1480.0 388.0)" x="1464" y="368" width="32" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Dois Irmãos confeitaria — em andamento (blocos) (refs SV-I6)</title></rect>
+<text x="1480" y="391" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Dois Irmãos confeitaria</text>
+<rect transform="rotate(-11.3 1444.0 396.0)" x="1428" y="378" width="32" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Hamburgueria (sacada de madeira) — em andamento (blocos) (refs SV-I6)</title></rect>
+<text x="1444" y="399" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Hamburgueria (sacada de madeira)</text>
+<rect transform="rotate(-11.3 1612.0 380.0)" x="1596" y="362" width="32" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja de roupas cinza-escura — em andamento (blocos) (refs SV-I7)</title></rect>
+<text x="1612" y="383" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Loja de roupas cinza-escura</text>
+<rect transform="rotate(-11.3 1656.0 372.0)" x="1636" y="352" width="40" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Cooperativa de crédito (faixa verde) — em andamento (blocos) (refs SV-I7)</title></rect>
+<text x="1656" y="375" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Cooperativa de crédito (faixa verde)</text>
+<rect transform="rotate(-11.3 1536.0 500.0)" x="1508" y="484" width="56" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Galpão branco de janelas azuis — em andamento (blocos) (refs SV-I2)</title></rect>
+<text x="1536" y="503" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Galpão branco de janelas azuis</text>
+<rect transform="rotate(-11.3 1472.0 508.0)" x="1452" y="492" width="40" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio amarelo com azulejos azuis — em andamento (blocos) (refs SV-I2)</title></rect>
+<text x="1472" y="511" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio amarelo com azulejos azuis</text>
+<rect transform="rotate(-11.3 1416.0 516.0)" x="1392" y="496" width="48" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio de 4 pavimentos com sacadas — em andamento (blocos) (refs SV-I2)</title></rect>
+<text x="1416" y="519" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio de 4 pavimentos com sacadas</text>
+<rect transform="rotate(-11.9 2720.0 148.0)" x="2672" y="128" width="96" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa do Turista — em andamento (blocos) (refs SV-L2)</title></rect>
+<text x="2720" y="151" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa do Turista</text>
+<rect transform="rotate(-11.9 4076.0 -372.0)" x="4048" y="-416" width="56" height="88" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Templo Assembleia de Deus — em andamento (blocos) (refs SV-L)</title></rect>
+<text x="4076" y="-369" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Templo Assembleia de Deus</text>
 <rect x="20" y="860.0" width="14" height="14" fill="#2e7dd7"/><text x="40" y="871.0" font-size="12">já no jogo (3)</text>
 <rect x="220" y="860.0" width="14" height="14" fill="#2e9e4f"/><text x="240" y="871.0" font-size="12">feito (0)</text>
-<rect x="420" y="860.0" width="14" height="14" fill="#e0a800"/><text x="440" y="871.0" font-size="12">em andamento (blocos) (40)</text>
+<rect x="420" y="860.0" width="14" height="14" fill="#e0a800"/><text x="440" y="871.0" font-size="12">em andamento (blocos) (67)</text>
 <rect x="620" y="860.0" width="14" height="14" fill="#c9483f"/><text x="640" y="871.0" font-size="12">falta (3)</text>
 <text x="20" y="898.0" font-size="11" fill="#555">Norte para cima · 1 quadradinho da grade do catálogo = 1 m × 4 px · origem = Ref 01 (sul da praça) · posições aproximadas</text>
 </svg>

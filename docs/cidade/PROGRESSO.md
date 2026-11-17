@@ -2,7 +2,7 @@
 
 Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.svg). Status: 🔵 já no jogo · 🟢 feito · 🟡 em andamento · 🔴 falta.
 
-**3 de 46 prontos.**
+**3 de 73 prontos.**
 
 | | Lugar | Posição (x, y) m | Refs |
 |---|---|---|---|
@@ -31,7 +31,7 @@ Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.s
 | 🟡 | Casa branca de madeira nº 125 (trapeira) | (+32.5, +104.9) | 39 |
 | 🟡 | Prédio de tijolo inacabado (obra) | (+49, +110.6) | 42 |
 | 🟡 | Casa térrea rosa-avermelhada | (+60, +115.3) | 42 43 |
-| 🟡 | Casa térrea avermelhada c/ portão branco | (+23, +125.7) | 40 |
+| 🟡 | Casa térrea avermelhada c/ portão branco | (+24, +126) | 40 |
 | 🟡 | Sobrado bege-mostarda nº 707 | (+34, +130.3) | 40 |
 | 🟡 | Casinha antiga de tábuas brancas | (+41.5, +132.2) | 41 |
 | 🟡 | Garagem coberta | (+50, +134.9) | 41 |
@@ -52,3 +52,30 @@ Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.s
 | 🟡 | Galpão de madeira | (+82, -5) | 69 74 |
 | 🟡 | Casa de tábuas cinza | (+71, -5) | 74 75 |
 | 🟡 | Loja Galochas | (+58, -6) | 76 77 |
+| 🟡 | Construção comprida rosa-magenta | (-77, +44.5) | 12 13 |
+| 🟡 | Casa rosa com chaminé e bay | (-77, +55) | 12 13 |
+| 🟡 | Lojinha de topo em arco (amarelo) | (-76, +68.5) | 12 |
+| 🟡 | Casa branca térrea com palmeira | (-72, +17) | 16 |
+| 🟡 | Pizzaria Recanto da Pizza | (-72, +3) | 16 17 22 |
+| 🟡 | Café do Casarão (muro e jardim) | (-32, -24) | 18 20 22 |
+| 🟡 | Prédio comercial branco térreo | (-17, -21) | 23 |
+| 🟡 | Loja de rede (letreiro verde) | (-3, -20) | 23 24 |
+| 🟡 | Loja de eletrodomésticos (vermelha) | (+18.5, +73) | 31 32 |
+| 🟡 | Prédio comercial térreo branco (Laurindo) | (+17.5, +86) | 33 |
+| 🟡 | Sobrado da esquina Laurindo × D. Úrsula | (+9, +94) | 34 37 |
+| 🟡 | Sobrado antigo amarelo-ocre | (+11, +121) | 38 |
+| 🟡 | Secretaria de Educação (madeira amarelo-bordô) | (+17.5, +123.5) | 38 40 |
+| 🟡 | Casa verde-acinzentada com alpendre | (+80, +90) | 54 |
+| 🟡 | Chalé de madeira marrom elevado | (+80, +98) | 54 |
+| 🟡 | Sobrado claro (Vinte de Setembro) | (+79, +106) | 54 |
+| 🟡 | Quiosques da Rua Coberta | (-24.5, +6.5) | 01 21 |
+| 🟡 | Sabores da Querência (chalé de pedra) | (+328, +34) | SV-I1 I11 |
+| 🟡 | Dois Irmãos confeitaria | (+270, +68) | SV-I6 |
+| 🟡 | Hamburgueria (sacada de madeira) | (+261, +66) | SV-I6 |
+| 🟡 | Loja de roupas cinza-escura | (+303, +70) | SV-I7 |
+| 🟡 | Cooperativa de crédito (faixa verde) | (+314, +72) | SV-I7 |
+| 🟡 | Galpão branco de janelas azuis | (+284, +40) | SV-I2 |
+| 🟡 | Prédio amarelo com azulejos azuis | (+268, +38) | SV-I2 |
+| 🟡 | Prédio de 4 pavimentos com sacadas | (+254, +36) | SV-I2 |
+| 🟡 | Casa do Turista | (+580, +128) | SV-L2 |
+| 🟡 | Templo Assembleia de Deus | (+919, +258) | SV-L |
