@@ -2,7 +2,7 @@
 
 Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.svg). Status: 🔵 já no jogo · 🟢 feito · 🟡 em andamento · 🔴 falta.
 
-**3 de 73 prontos.**
+**3 de 96 prontos.**
 
 | | Lugar | Posição (x, y) m | Refs |
 |---|---|---|---|
@@ -79,3 +79,26 @@ Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.s
 | 🟡 | Prédio de 4 pavimentos com sacadas | (+254, +36) | SV-I2 |
 | 🟡 | Casa do Turista | (+580, +128) | SV-L2 |
 | 🟡 | Templo Assembleia de Deus | (+919, +258) | SV-L |
+| 🟡 | Pousada Bela Vista | (-500, +196) | sat A1 |
+| 🟡 | Pousada Fazenda Pindorama (sede) | (-863, +27) | sat A1 A0 |
+| 🟡 | Posto de Saúde UBS | (-474, +75) | sat A1 |
+| 🟡 | Agência de turismo | (-102, +300) | sat A1 |
+| 🟡 | Cottage Fondue (chalé de madeira) | (+135, +245) | sat A1 |
+| 🟡 | Hostel Cape Town | (+205, -66) | sat A1 B1 |
+| 🟡 | Templo Pentecostal Deus É Amor | (-615, -141) | sat A1 B1 |
+| 🟡 | Fundação Hospitalar São José (hospital) | (-267, -148) | sat A1 B1 |
+| 🟡 | Rádio Fidelidade 104.9 FM | (-146, -279) | sat B1 |
+| 🟡 | Pousada Vereda do Sol | (-535, -337) | sat B1 A0 |
+| 🟡 | Refúgio Fortal | (-345, -363) | sat B1 |
+| 🟡 | Galpão da oficina Caiamba | (-380, -388) | sat B1 |
+| 🟡 | Lancheria Bom Gosto | (+337, +536) | sat A2 |
+| 🟡 | Costaneira Confeitaria e Café | (+483, +404) | sat A2 Z1 |
+| 🟡 | Restaurante Galpão Costaneira (madeira) | (+392, +244) | sat A2 B2 |
+| 🟡 | O Casarão Cantina e Galeteria | (+237, +312) | sat A2 |
+| 🟡 | Restaurante Vitrine da Truta | (+451, +170) | sat A2 B2 |
+| 🟡 | Pizza Retrô | (+381, -132) | sat B2 B3 |
+| 🟡 | Infame Bikers Pub (fachada preta) | (+522, +492) | SV-N2 |
+| 🟡 | Prédio salmão comprido com portas de enrolar | (+518, +478) | SV-N2 |
+| 🟡 | Sobrado lilás (em obra) | (+505, +440) | SV-N1 |
+| 🟡 | Posto de combustível (cobertura verde) | (+350, -5) | SV-I1 sat |
+| 🟡 | Construção baixa com cruz de madeira | (+84, +58) | 57 |
