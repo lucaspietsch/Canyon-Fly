@@ -1,3 +1,8 @@
+import { criarLontra } from './lontra-visual.js';
+import { criarVeado } from './veado-visual.js';
+import { criarQuati } from './quati-visual.js';
+import { criarGamba } from './gamba-visual.js';
+import { criarCapivaraVisual } from './capivara-visual.js';
 import { criarLoboGuara } from './lobo-visual.js';
 import { criarPuma } from './puma-visual.js';
 import { criarGraxaim } from './graxaim-visual.js';
@@ -20,6 +25,11 @@ const parte = (pai, geo, cor, sx, sy, sz, x = 0, y = 0, z = 0) => { const o = ne
 const esf = (pai, cor, rx, ry, rz, x, y, z) => parte(pai, geoEsf, cor, rx, ry, rz, x, y, z);
 
 export function criarQuadrupede(S, opts = {}){
+  if(S.visual === "lontra")return criarLontra(S,opts);
+  if(S.visual === "veado")return criarVeado(S,opts);
+  if(S.visual === "quati")return criarQuati(S,opts);
+  if(S.visual === "gamba")return criarGamba(S,opts);
+  if(S.visual === "capivara")return criarCapivaraVisual(S,opts);
   if(S.visual === "lobo-guara")return criarLoboGuara(S,opts);
   if(S.visual === "puma")return criarPuma(S,opts);
   if(S.visual === "graxaim")return criarGraxaim(S,opts);
@@ -111,17 +121,20 @@ export const SPEC = {
 
 /* capivara: corpo de barril, pernas curtas, sem cauda, cabeça grande e retangular com focinho largo e rombudo; olhos, orelhas e narinas no ALTO da cabeça */
 SPEC.capivara = {
+  visual: "capivara",
   tronco: { comp: 1.05, alt: .54, larg: .5 }, perna: { sup: .13, inf: .13, esp: .075 }, pesc: { comp: .07, esp: .27 },
   cab: { comp: .36, alt: .25, larg: .27, focinho: { comp: .15, alt: .17, larg: .23 } }, orelha: { alt: .055, larg: .05, redonda: true }, cauda: { comp: .04, esp: .02 }, olhoY: .42, olhoZ: .26, olhoR: .06,
   cor: { corpo: 0x8a5b3c, peito: 0x84583a, barriga: 0xa68a62, pernaSup: 0x6e4a32, pernaInf: 0x5a3e2a, pata: 0x3a2a20, pescoco: 0x8a5b3c, cabeca: 0x7e5538, focinhoCor: 0x6e4a32, queixo: 0x9a7e5c, nariz: 0x1a1210,
     orelha: 0x5a3a28, orelhaInt: 0x8a6a52, cauda: 0x8a5b3c, olho: 0x1c120c, brilho: 0xe8d9a0 }
 };
 SPEC.capivaraFilhote = JSON.parse(JSON.stringify(SPEC.capivara));
+SPEC.capivaraFilhote.juvenil = true;
 Object.assign(SPEC.capivaraFilhote.cor, { corpo: 0xa8723f, peito: 0xa06c3c, barriga: 0xc9a674, pernaSup: 0x8a5e38, pernaInf: 0x7a5232, cabeca: 0xa8723f, focinhoCor: 0x8a5e38, pescoco: 0xa8723f });
 SPEC.capivaraFilhote.cab = { comp: .44, alt: .31, larg: .33, focinho: { comp: .17, alt: .2, larg: .27 } };
 
 /* ---- Cambará do Sul: veado-campeiro (macho com chifres de três pontas), quati (focinho comprido, cauda anelada), gambá-de-orelha-branca, lontra ---- */
 SPEC.veado = {
+  visual: "veado",
   tronco: { comp: 1.0, alt: .3, larg: .2 }, perna: { sup: .3, inf: .32, esp: .038 }, pesc: { comp: .3, esp: .075 },
   cab: { comp: .24, alt: .1, larg: .1, focinho: { comp: .14, alt: .05, larg: .06 } }, orelha: { alt: .17, larg: .1 }, cauda: { comp: .16, esp: .05 },
   cor: { corpo: 0xb2764a, peito: 0xb87d50, barriga: 0xf0e4cc, pernaSup: 0xa86f46, pernaInf: 0x9a6a46, pata: 0x2a1c12, pescoco: 0xb2764a, cabeca: 0xa9704a, focinhoCor: 0xc7a47a, queixo: 0xf3ead6, nariz: 0x1c1411,
@@ -133,18 +146,21 @@ SPEC.veado = {
   }
 };
 SPEC.quati = {
+  visual: "quati",
   tronco: { comp: .5, alt: .15, larg: .12 }, perna: { sup: .1, inf: .1, esp: .03 }, pesc: { comp: .09, esp: .06 },
   cab: { comp: .12, alt: .065, larg: .07, focinho: { comp: .12, alt: .035, larg: .04 } }, orelha: { alt: .035, larg: .04, redonda: true }, cauda: { comp: .5, esp: .055 },
   cor: { corpo: 0x6e4a2e, peito: 0x6a472c, barriga: 0x8a6a46, pernaSup: 0x2e1f14, pernaInf: 0x2a1c12, pata: 0x1c120b, pescoco: 0x6a472c, cabeca: 0x5a3d26, focinhoCor: 0xd8c4a0, queixo: 0xe6d8bc, nariz: 0x120d0a, mascara: 0x1c120b,
     orelha: 0x4a3220, cauda: 0x6b4a2c, caudaPonta: 0x2a1c12, olho: 0x1c120a, brilho: 0xffe39a }
 };
 SPEC.gamba = {
+  visual: "gamba",
   tronco: { comp: .38, alt: .14, larg: .13 }, perna: { sup: .06, inf: .07, esp: .026 }, pesc: { comp: .06, esp: .07 },
   cab: { comp: .12, alt: .07, larg: .07, focinho: { comp: .11, alt: .035, larg: .04 } }, orelha: { alt: .05, larg: .045 }, cauda: { comp: .38, esp: .03 },
   cor: { corpo: 0x8c8a86, peito: 0x9a9893, barriga: 0xc9c4b8, pernaSup: 0x4a4540, pernaInf: 0x3a3632, pata: 0x2a2623, pescoco: 0x8c8a86, cabeca: 0xe8e2d4, focinhoCor: 0xf0eadc, queixo: 0xf4efe2, nariz: 0xd98a8a,
     orelha: 0xf2eee2, orelhaInt: 0xe0b0a8, cauda: 0x4a3f3a, caudaPonta: 0xd8d0c0, olho: 0x120c08, brilho: 0xff9a7a }
 };
 SPEC.lontra = {
+  visual: "lontra",
   tronco: { comp: .7, alt: .16, larg: .16 }, perna: { sup: .08, inf: .07, esp: .045 }, pesc: { comp: .1, esp: .09 },
   cab: { comp: .14, alt: .09, larg: .1, focinho: { comp: .06, alt: .06, larg: .08 } }, orelha: { alt: .03, larg: .03, redonda: true }, cauda: { comp: .45, esp: .07 },
   cor: { corpo: 0x5a3f2c, peito: 0x5e4330, barriga: 0xc8ad86, pernaSup: 0x4e3524, pernaInf: 0x452e1f, pata: 0x2c1d13, pescoco: 0x5a3f2c, cabeca: 0x55392a, focinhoCor: 0x6a4d38, queixo: 0xe4d4b6, nariz: 0x120c08,
