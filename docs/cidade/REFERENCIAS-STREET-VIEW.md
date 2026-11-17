@@ -605,6 +605,7 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
         - o **centro de visitantes** (ícone de câmera roxo) fica no **noroeste**, junto à borda; a trilha passa por ele e desce para o **oeste** até o **"Mirante — Cachoeira das Andorinhas"** (ícone roxo) na **borda do cânion**;
         - dali a trilha segue para o **sul/sudeste acompanhando a borda** (outro ícone de câmera = **outro mirante**) e volta para o leste, fechando por baixo do laço;
         - uma **linha pontilhada branca** marcada **"SANTA CATARINA"** atravessa a área → é a **DIVISA RS/SC**, que passa **pelo meio do cânion e da área do parque** (o Itaimbezinho fica na divisa dos dois estados).
+      - **[Lucas] Os Street View enviados vão até o Mirante da Cachoeira das Andorinhas** → sequência registrada: início das trilhas → centro de visitantes → mata de altitude (piso sextavado) → mirante → **Mirante da Cachoeira das Andorinhas** (fim deste trecho). A parte que segue **pela borda para o sul** ainda não tem fotos.
       - **Dúvida:** qual parte é a **Trilha do Vértice** e qual é a **Casa do Vô Marçal** (onde fica a casa)? E as pontas (2) e (3) são **mirantes**?
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
