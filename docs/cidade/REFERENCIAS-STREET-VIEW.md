@@ -623,6 +623,18 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
 - **A receber:** **área do Itaimbezinho** (borda, trilhas, centro de visitantes); **mapa do município**.
 - **Dúvida:** a estrada interna (2,2 km) fica em **escala real** (como a cidade) ou também **pela metade**?
 
+## MAPA DO MUNICÍPIO DE CAMBARÁ DO SUL (2 prints do Lucas — mapa base e mapa ambiental)
+Só anotações (as imagens são de publicação de terceiros, não vão para o repositório). Escala gráfica de 10 km; norte para cima. (As coordenadas impressas nos cantos do mapa parecem trocadas/erradas — usar a escala e a posição da cidade.)
+- **Sede:** Cambará do Sul no **centro-leste** do município.
+- **Localidades/distritos:** **Varzinha** e **Bom Retiro** (norte) · **Capão Penso** (oeste) · **Vila Santana**, **Ouro Verde** e **Osvaldo Kroeff** (nordeste, na RS-020 rumo norte — **já estão no jogo**) · **Morro Agudo** e **Morro Grande** (sudeste, perto do Itaimbezinho) · **Azulega** (sudoeste) · **Faxinalzinho** (sul) · **Vila Unidos** (extremo sudoeste, na RS-020).
+- **Rodovias:** **RS-020** atravessa o município de **nordeste (São José dos Ausentes)** a **sudoeste (São Francisco de Paula)**, passando pela cidade; **RS-427** sai da cidade para o **sudeste**, passa o Itaimbezinho e desce para **Praia Grande/SC**; **RS-439** para o oeste; RS-453/RS-486/RS-230 no extremo sudoeste.
+- **Rios:** **Rio das Antas** (divisa norte), **Rio Santana** (norte/nordeste), **Rio Camisas** (passa logo a oeste/sul da cidade), **Arroio Cipó**, **Rio Tainhas** (oeste), **Arroio Contendas** (sul), **Arroio São Gonçalo** (nordeste).
+- **Vizinhos:** Jaquirana (oeste), São José dos Ausentes (norte), São Francisco de Paula (sudoeste), e em **SC**: Timbé do Sul, Jacinto Machado e **Praia Grande** (leste, descendo a serra).
+- **Parques Nacionais** (linha pontilhada verde) no **leste**, na borda da serra: **Fortaleza** (nordeste da cidade), **Malacara** e **Itaimbezinho** (sudeste) — batem com o Fortaleza do jogo e com o Itaimbezinho mapeado (≈ 14–15 km a sudeste da cidade ✔).
+- **Pontos turísticos:** **Cascata dos Venâncios** (oeste), **Lageado das Margaridas** (oeste da cidade, Rio Camisas), **Passo da Ilha** (oeste, balneário/camping), balneários e campings ao longo do Rio Camisas.
+- **Mapa ambiental (curiosidades para o cenário):** plantações de **batata** e de **pinus**, áreas de **corte raso**, **saibreiras** e **pedreiras (brita)**, resíduos de **madeira** perto da cidade e de Vila Unidos, **barragens/poços** de abastecimento — ajuda a espalhar lavouras, pinus e saibreiras no mapa do jogo.
+- **Escala no jogo:** pela regra do Lucas, as estradas entre a cidade e esses lugares ficam **pela metade**.
+
 ## Regras do mapa do jogo (Lucas)
 - **[Lucas] TODAS AS RUAS E ESTRADAS ASFALTADAS** no jogo — cidade, estradas entre lugares e **estrada interna do Itaimbezinho** — com **DUAS PISTAS + faixa lateral de ESTACIONAMENTO**, mesmo onde a real é de terra ou paralelepípedo (os prints guardam como é de verdade, para referência).
 - **[Lucas] VIAGENS NO TEMPO:** nos **próximos capítulos** o jogo vai **voltar no tempo nesta região por DUAS vezes** → as referências de hoje (2025) são a **época atual**; guardar também o que for **antigo** (casas históricas, estradas de terra, paralelepípedo, casarão, lendas) porque vai servir para montar **as épocas passadas**. (O jogo já tem seletor de época — `lugares.epoca()`.)
@@ -782,7 +794,7 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
 - [ ] Prints dos **arredores da cidade** (grade Z–C × 0–3).
 - [x] **Estrada para o Itaimbezinho** — recebida (até a Serra do Faxinal).
 - [ ] **Área do Itaimbezinho** (Earth).
-- [ ] **Print do mapa do município** — para localizar tudo.
+- [x] **Print do mapa do município** — recebido.
 
 ## A receber do Lucas (praça)
 - [ ] **Foto do Termômetro** de Cambará.
