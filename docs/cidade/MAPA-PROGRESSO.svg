@@ -68,8 +68,8 @@
 <text x="566" y="134" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casinha antiga de tábuas brancas</text>
 <rect transform="rotate(-20.8 600.0 120.4)" x="590" y="108" width="20" height="24" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Garagem coberta — em andamento (blocos) (refs 41)</title></rect>
 <text x="600" y="123" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Garagem coberta</text>
-<rect transform="rotate(-20.8 648.0 68.0)" x="624" y="50" width="48" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa mal-assombrada — em andamento (blocos) (refs 45 47 48)</title></rect>
-<text x="648" y="71" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa mal-assombrada</text>
+<rect transform="rotate(-20.8 652.0 80.0)" x="608" y="60" width="88" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa mal-assombrada — em andamento (blocos) (refs 41 44 45 47 48)</title></rect>
+<text x="652" y="83" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa mal-assombrada</text>
 <rect transform="rotate(-11.9 900.0 152.0)" x="872" y="128" width="56" height="48" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa histórica da esquina (alpendre vermelho) — em andamento (blocos) (refs 49-51)</title></rect>
 <text x="900" y="155" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa histórica da esquina (alpendre vermelho)</text>
 <rect transform="rotate(-4.0 708.0 196.0)" x="684" y="176" width="48" height="40" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado madeira escura — em andamento (blocos) (refs 52 53)</title></rect>

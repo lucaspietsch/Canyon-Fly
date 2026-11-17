@@ -266,7 +266,7 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
   - **muro baixo de pedra** com **cerquinha e portão de treliça**; **palmeira** à direita;
   - **Refs 45 e 47 confirmam:** o bay de vidro (com o frontão e o terraço de grade) fica na **ponta OESTE**; a leste ficam as janelas de venezianas vermelhas, a porta e um ar-condicionado.
   - Ao lado (leste): **palmeira** e **árvore alta e antiga sem folhas** — reforça o clima de casa assombrada.
-  - **dúvida:** a casa da Ref 44 (com chaminé alta) mostra a parte envidraçada na ponta **leste** → pode ser uma **casa vizinha** de estilo parecido. Confirmar com o Lucas se é uma casa só ou duas.
+  - **[Lucas] É UMA CASA SÓ, ENORME:** a casa antiga comprida da Ref 44 (chaminé alta, venezianas vermelhas, varanda fechada de vidro com terracinho numa ponta) e a nº 121 das Refs 45/47 (bay de vidro com frontão e grade na outra ponta) são **a mesma casa** — ≈ (+63, +145), uns **22 m de frente**.
   - **CASA MAL-ASSOMBRADA** (Lucas): é tida como assombrada → **lugar de lenda** no jogo.
     - [sugestão] missões noturnas: barulhos, luzes que acendem sozinhas, vulto na janela do bay de vidro, o holograma de assombração do Pit reagindo; trilha sonora "floresta sombria"; regra **sem sangue**.
     - Cuidado: é casa de gente real → no jogo, **"Casa antiga (lenda local)"**, **sem o número real**; idealmente com o ok dos moradores.

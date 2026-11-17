@@ -37,7 +37,7 @@ LUGARES = [
     ("Sobrado bege-mostarda nº 707", 34, 130.3, 7, 9, "parcial", "40"),
     ("Casinha antiga de tábuas brancas", 41.5, 132.2, 5, 7, "parcial", "41"),
     ("Garagem coberta", 50, 134.9, 5, 6, "parcial", "41"),
-    ("Casa mal-assombrada", 62, 148, 12, 9, "parcial", "45 47 48"),
+    ("Casa mal-assombrada", 63, 145, 22, 10, "parcial", "41 44 45 47 48"),
     ("Casa histórica da esquina (alpendre vermelho)", 125, 127, 14, 12, "parcial", "49-51"),
     ("Sobrado madeira escura", 77, 116, 12, 10, "parcial", "52 53"),
     ("Chalé branco + casa vermelha", 112, 105, 10, 20, "parcial", "55"),

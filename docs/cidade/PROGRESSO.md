@@ -35,7 +35,7 @@ Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.s
 | 🟡 | Sobrado bege-mostarda nº 707 | (+34, +130.3) | 40 |
 | 🟡 | Casinha antiga de tábuas brancas | (+41.5, +132.2) | 41 |
 | 🟡 | Garagem coberta | (+50, +134.9) | 41 |
-| 🟡 | Casa mal-assombrada | (+62, +148) | 45 47 48 |
+| 🟡 | Casa mal-assombrada | (+63, +145) | 41 44 45 47 48 |
 | 🟡 | Casa histórica da esquina (alpendre vermelho) | (+125, +127) | 49-51 |
 | 🟡 | Sobrado madeira escura | (+77, +116) | 52 53 |
 | 🟡 | Chalé branco + casa vermelha | (+112, +105) | 55 |
