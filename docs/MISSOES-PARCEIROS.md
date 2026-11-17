@@ -51,6 +51,7 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - **Loja Galochas** (calçados caros — chalé branco, RS-020 nº 1156, Refs 76–77) — [sugestão] missões de humor: achar o **par perdido** de um sapato caríssimo; entregar **botas novas** a um guia antes da trilha; um cliente exigente que não acha nada à altura.
 - **Dois Irmãos — confeitaria e café** e **Hamburgueria Rota 44** (saída do Itaimbezinho, início da RS-427) — [sugestão] lanche/café para levar na viagem ao cânion; entrega de bolo encomendado.
 - **Sabores da Querência — Geleias Artesanais** (chalé com telhado verde, R. Tradição) — [sugestão] comprar geleia para presentear uma pousada.
+- **Infame Bikers Pub** (saída norte, R. Ouro Verde nº 56, junto à placa "Fim da área urbana") — [sugestão] ponto de encontro de motociclistas; missão de levar uma peça de moto; tom de humor.
 - **Sociedade Recreativa 15 de Março** — [sugestão] evento/baile no clube.
 
 ## Atrações da praça (vistas no satélite)
