@@ -64,3 +64,4 @@ cd t3d && npm run build
 - `audio/atiara.mp3` — faixa enviada pelo Lucas (indígena instrumental, 1689–1700), reafinada para A = 432 Hz (−24,8 cents; a original estava em ~438 Hz).
 - `audio/trilha.js`: `nomes.atiara`. `t3d/src/mundo/trilha.js`: `personagem==='atiara'` → `'atiara'` (mesma prioridade de Tupã/Sepé: terror, tirolesa e eventos continuam acima).
 - Testes: `t3d/test/trilha.test.mjs` e `t3d/test/browser/musica-mobile.cjs` incluem a nova faixa.
+- `audio/anhanga.mp3` — faixa do Anhangá (espírito da mata), reafinada para 432 Hz (−6,5 cents; original ~433,6 Hz). `trilha.js`: novo contexto `anhanga` (= `M.anhanga.S.vivo`) com prioridade **acima de terror** e abaixo de tirolesa/eventos Tupã/Sepé/tela de personagens. `terror` agora = Gritador ou mata à noite. `musica-mobile.cjs` espera `'anhanga'` quando ele aparece.
