@@ -545,6 +545,8 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
       - mais adiante, **outdoor/painel branco** e mais placas verdes; a estrada segue para dentro entre **capoeira** e **mata de araucária** no morro.
     - **Vista a 193° (sul):** a pista se divide em **duas faixas** pela ilha da guarita — à dir. a faixa de **ENTRADA** (placa verde-água "ENTRADA →" e painel de regras) sob o **pórtico de troncos**; à esq. a faixa de **saída**, junto ao **barranco de capim dourado**; **2 contêineres de lixo verdes** com cerquinha de madeira escura; **toquinhos de madeira** delimitando o gramado; cones laranja; ao fundo, **painel branco com mapa** do parque e mata de araucária.
       - → A **pista dupla** do jogo já tem a base real aqui: **entrada à direita da guarita, saída à esquerda**.
+    - **Vista a 67° (leste-nordeste, olhando de volta para a RS-427):** **pátio largo de terra/cascalho** com poças em frente à guarita; **ônibus branco antigo** com faixa amarela (empresa de transporte — no jogo **sem o nome real**) estacionado e 2 caminhonetes; à esq. **muro baixo de pedra empilhada** e **toquinhos de madeira** na borda do gramado; ao fundo **campos e capões de araucária** em **coxilhas** até a serra — paisagem aberta típica dos Aparados.
+      - [sugestão] o **ônibus de turistas** pode ser objeto de cena/NPC (grupo de visitantes descendo para a trilha).
     - [sugestão] no jogo: **portão/cancela** e um **guarda-parque NPC** (ICMBio) dando as regras do parque, como na equipe do Fortaleza.
   - **[Lucas]** depois da guarita há uma **estrada interna** do parque (a receber).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
