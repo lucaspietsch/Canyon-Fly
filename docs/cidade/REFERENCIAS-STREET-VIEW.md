@@ -538,6 +538,11 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
     - **piso de lajota** cerâmica na varanda, **calçada de paralelepípedo**, **gramado**;
     - **ilha de canteiro** com meio-fio branco separando as pistas, **cones laranja**, **placas pequenas** marrons (parque) na beira;
     - em volta: **barranco de capim dourado**, **araucárias** e mata no horizonte; estrada de **terra batida** (no jogo: **asfalto, pista dupla**).
+    - **Vista a 248° (entrada, olhando para dentro do parque)** — −29.15485645, −50.06052109 → local ≈ (+8 240, −11 680):
+      - **PÓRTICO DE TRONCOS**: dois **postes altos de tronco de madeira** com **travessas de troncos roliços cruzados** no topo (estilo rústico), na ilha da guarita;
+      - placa verde-água **"ENTRADA"** e painéis informativos verde-água do parque; **cerca de tábuas de madeira escura** dos dois lados da pista;
+      - à dir., placa grande clara **"PARQUE NACIONAL DE APARADOS DA SERRA"** (letras pretas) sobre **muro baixo de pedra empilhada**; gramado;
+      - mais adiante, **outdoor/painel branco** e mais placas verdes; a estrada segue para dentro entre **capoeira** e **mata de araucária** no morro.
     - [sugestão] no jogo: **portão/cancela** e um **guarda-parque NPC** (ICMBio) dando as regras do parque, como na equipe do Fortaleza.
   - **[Lucas]** depois da guarita há uma **estrada interna** do parque (a receber).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
