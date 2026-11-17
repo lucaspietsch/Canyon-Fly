@@ -1,3 +1,4 @@
+import {criarMenuMobile} from './mobile-menu.js';
 import { ehToque } from "./modo.js";
 import { Group, Mesh, BoxGeometry, CylinderGeometry, SphereGeometry, Vector3, Raycaster, MathUtils, Box3, BoxHelper } from "three";
 
@@ -173,10 +174,10 @@ export function criarAndar(c){
   const mk = (css, txt, pai, tag = "div") => { const e = document.createElement(tag); e.style.cssText = css; if(txt !== undefined) e.textContent = txt; if(pai) pai.appendChild(e); return e; };
   const BTN = "pointer-events:auto;user-select:none;-webkit-user-select:none;touch-action:none;cursor:pointer;border:1.5px solid #8a9a3b;background:rgba(18,19,14,.72);color:#e9efc0;border-radius:14px;text-align:center;" + FONTE;
   let bPers = null, bLugar = null, bClima = null, titulo = null;
-  let ui = null, joyBase = null, joyKnob = null, dica = null, ajuda = null, btnCorrer = null, btnInter = null;
+  let menuMobile=null;let ui = null, joyBase = null, joyKnob = null, dica = null, ajuda = null, btnCorrer = null, btnInter = null;
   function montaUI(){
     ui = mk("position:absolute;inset:0;pointer-events:none;z-index:30;" + FONTE, undefined, el);
-    estiloHud();
+    estiloHud();if(toque)ui.dataset.cfMobile="";
     const topo = mk("position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;align-items:center;pointer-events:none;", undefined, ui); topo.dataset.hud = "extra";
     titulo = mk("pointer-events:none;background:rgba(18,19,14,.72);border:1.5px solid #8a9a3b;border-radius:12px;padding:7px 12px;color:#e0883a;letter-spacing:.6px;text-transform:uppercase;", "Andando com " + nomeP, topo);
     mk("flex:1", undefined, topo);
@@ -186,6 +187,7 @@ export function criarAndar(c){
     bConstruir = b("🔨", () => alternaConstruir(), "Construir: pegar, carregar e soltar peças do cenário"); bConstruir.style.minWidth = "36px"; bConstruir.style.padding = "9px 10px"; bConstruir.title = "Construir (B)";
     b("?", () => alternaAjuda(), "Ajuda"); b("👁", () => alternaCamera(), "Alternar câmera"); b("✕ Sair", () => desligar(), "Sair");
     dica = mk("position:absolute;left:50%;bottom:" + (toque ? "150px" : "46px") + ";transform:translateX(-50%);pointer-events:none;background:rgba(18,19,14,.82);border:1.5px solid #e0883a;border-radius:12px;padding:9px 16px;color:#ffd7a8;display:none;white-space:nowrap;max-width:92%;pointer-events:auto;cursor:pointer;", "", ui);
+    if(toque){dica.style.cssText+='bottom:155px;max-width:min(220px,65vw);white-space:normal;font-size:12px;line-height:1.2;text-align:center;';}
     dica.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); interagir(); });
     aviso = mk("position:absolute;left:50%;top:64px;transform:translateX(-50%);max-width:86%;text-align:center;pointer-events:none;background:rgba(18,19,14,.86);border:1.5px solid #8a9a3b;border-radius:12px;padding:9px 16px;opacity:0;transition:opacity .25s;", "", ui);
     ajuda = mk("position:absolute;left:12px;bottom:12px;pointer-events:none;background:rgba(18,19,14,.82);border:1.5px solid #3a3f27;border-radius:12px;padding:10px 14px;line-height:1.7;display:" + (toque ? "none" : "block") + ";", undefined, ui);
@@ -197,8 +199,9 @@ export function criarAndar(c){
     bMenu = mk(BTN + "position:absolute;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));width:42px;height:42px;padding:0;display:grid;place-items:center;border-radius:50%;font-size:18px;opacity:.8;z-index:31;", "☰", ui);
     bMenu.setAttribute("role", "button"); bMenu.setAttribute("aria-label", "Menu: mostrar ou esconder o painel completo");
     bMenu.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); alternaHud(); });
-    pad = toque ? mk("position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:300px;height:250px;pointer-events:none;", undefined, ui) : null; padSig = "";      // notebook/PC: sem botões na tela, só teclado
+    pad = toque ? mk("position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:300px;height:250px;pointer-events:none;", undefined, ui) : null; if(pad)pad.dataset.cfPad="";padSig = "";      // notebook/PC: sem botões na tela, só teclado
     try{ hudCompleto = localStorage.getItem(HUD_CHAVE) === "1"; }catch(_){ hudCompleto = false; }
+    if(toque){menuMobile=criarMenuMobile(ui,[['👤','Personagens',trocaPersonagem],['⌖','Mapa',()=>{tecla('KeyM','keydown');tecla('KeyM','keyup');}],['◇','Missões',()=>H.mundo?.missoes.abreTela()],['➜','Viajar',()=>H.mundo?.viagem.abreMenu()],['◉','Câmera',alternaCamera],['♫','Música',()=>window.CanyonMusic?.abre()],['☁','Clima',()=>cen.proximoClima()],['?','Ajuda',ajudaMobile],['↩','Sair',desligar]],soltaControles);hudCompleto=false;}
     aplicaHud(); atualizaPad();
     if(!toque) setTimeout(() => { if(W.on) mostraAviso("Setas andam · Shift corre · Espaço pula · E interage · V Y U I = poderes · ☰ menu"); }, 1200);
   }
@@ -218,17 +221,27 @@ export function criarAndar(c){
       ".cf-b:active,.cf-b.on{transform:scale(.93);border-color:#ffd166;background:radial-gradient(circle at 50% 35%,rgba(224,136,58,.95),rgba(80,40,10,.9))}" +
       ".cf-b .k{position:absolute;top:-6px;right:-4px;font:800 10px ui-monospace,monospace;background:#ffd166;color:#1b1f12;border-radius:6px;padding:1px 5px}" +
       ".cf-b .cd{position:absolute;inset:0;border-radius:50%;pointer-events:none}";
+    s.textContent += `[data-cf-mobile] [data-hud=mapa],[data-cf-mobile] [data-hud=extra]{display:none!important}
+[data-cf-mobile] [data-mobile-ajuda]{display:block!important;inset:70px 16px auto!important;max-height:60dvh;overflow:auto;pointer-events:auto!important;font-size:11px;z-index:80}
+[data-cf-mobile] [aria-label^="Menu:"]{min-width:44px;min-height:44px}
+[data-cf-mobile] .cf-b{width:54px!important;height:54px!important;border:1px solid #adc6a085;background:#182b23cc;box-shadow:0 3px 12px #0004;font-size:10px;border-radius:50%;position:relative;left:auto!important;top:auto!important;}
+[data-cf-mobile] [data-cf-pad]{display:grid;grid-template-columns:repeat(3,54px);grid-auto-rows:54px;gap:8px;width:178px!important;height:auto!important;align-content:end;right:max(14px,env(safe-area-inset-right))!important;bottom:max(20px,env(safe-area-inset-bottom))!important;transform:none!important;}
+[data-cf-mobile] [data-cf-pad] .cf-b:first-child{grid-column:3;grid-row:2;width:62px!important;height:62px!important;background:#8a6534db;border-color:#e5c791;}
+[data-cf-mobile] [data-cf-pad] .cf-b:last-child{grid-column:2;grid-row:2;}
+[data-cf-mobile][data-mobile-menu-open] [data-cf-pad],[data-cf-mobile][data-mobile-menu-open] [data-cf-joystick]{visibility:hidden}
+@media(max-height:420px){[data-cf-mobile] [data-cf-pad]{bottom:max(12px,env(safe-area-inset-bottom))!important}[data-cf-mobile] [data-mobile-ajuda]{max-height:65dvh;}}`;
     document.head.appendChild(s);
   }
   function aplicaHud(){ if(!ui) return; if(hudCompleto) ui.removeAttribute("data-cf-limpo"); else ui.setAttribute("data-cf-limpo", ""); if(bMenu) bMenu.textContent = hudCompleto ? "✕" : "☰"; }
-  function alternaHud(){ hudCompleto = !hudCompleto; try{ localStorage.setItem(HUD_CHAVE, hudCompleto ? "1" : "0"); }catch(_){ /* sem armazenamento */ } aplicaHud(); }
+  function ajudaMobile(){ajuda.textContent='';ajuda.dataset.mobileAjuda='';ajuda.style.display='block';for(const texto of ['Arraste o direcional à esquerda para andar; vá até a borda para correr.','Arraste o cenário à direita para olhar em volta.','Use os botões à direita para pular e usar habilidades.','Perto de um ponto de interação, toque na ação que aparece.','No menu você encontra mapa, missões, personagens e música.']){const p=document.createElement('p');p.textContent=texto;p.style.cssText='white-space:normal;margin:8px 0';ajuda.append(p);}const b=document.createElement('button');b.textContent='Entendi';b.style.cssText='min-height:44px;padding:8px 20px;border:0;border-radius:10px;background:#e2bc7b;color:#17241f';b.onclick=()=>{delete ajuda.dataset.mobileAjuda;ajuda.style.display='none';};ajuda.append(b);}
+  function alternaHud(){if(toque&&menuMobile){menuMobile.alterna();return;} hudCompleto = !hudCompleto; try{ localStorage.setItem(HUD_CHAVE, hudCompleto ? "1" : "0"); }catch(_){ /* sem armazenamento */ } aplicaHud(); }
   function tecla(code, tipo){ const key = code.startsWith("Key") ? code.slice(3).toLowerCase() : code === "Space" ? " " : code; window.dispatchEvent(new KeyboardEvent(tipo, { code, key, bubbles: true, cancelable: true })); }
   function botaoTecla(rot, code, css, letra){
-    const b = mk("", undefined, pad); b.className = "cf-b"; b.style.cssText = css; b.setAttribute("role", "button"); b.setAttribute("aria-label", rot);
+    const b = mk("", undefined, pad); b.className = "cf-b";b.dataset.key=code; b.style.cssText = css; b.setAttribute("role", "button"); b.setAttribute("aria-label", rot);
     const t = mk("", rot, b); t.style.cssText = "max-width:86%;"; if(letra && !toque){ const k = mk("", letra, b); k.className = "k"; }
     let pid = null;
-    b.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); if(pid !== null) return; pid = e.pointerId; try{ b.setPointerCapture(pid); }catch(_){ /* sem captura */ } b.classList.add("on"); tecla(code, "keydown"); });
-    const solta = e => { if(e.pointerId !== pid) return; pid = null; b.classList.remove("on"); tecla(code, "keyup"); };
+    b.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); if(pid !== null) return; pid = e.pointerId;b.dataset.pid=pid; try{ b.setPointerCapture(pid); }catch(_){ /* sem captura */ } b.classList.add("on"); tecla(code, "keydown"); });
+    const solta = e => { if(e.pointerId !== pid) return; pid = null;delete b.dataset.pid; b.classList.remove("on"); tecla(code, "keyup"); };
     b.addEventListener("pointerup", solta); b.addEventListener("pointercancel", solta);
     return b;
   }
@@ -253,11 +266,12 @@ export function criarAndar(c){
     if(recarga && P && P.S){ const k = P.S.cd > 0 ? Math.min(1, P.S.cd / (P.S.cdMax || 1)) : 0; const v = k > 0 ? `conic-gradient(rgba(0,0,0,.62) ${Math.round(k * 360)}deg,transparent 0)` : "none"; if(recarga.style.background !== v) recarga.style.background = v; }
   }
   function montaToque(){
-    joyBase = mk("position:absolute;left:22px;bottom:26px;width:132px;height:132px;border-radius:50%;border:2px solid rgba(138,154,59,.8);background:rgba(18,19,14,.45);pointer-events:auto;touch-action:none;", undefined, ui);
-    joyKnob = mk("position:absolute;left:41px;top:41px;width:50px;height:50px;border-radius:50%;background:rgba(224,136,58,.85);border:2px solid #ffd7a8;pointer-events:none;", undefined, joyBase);
+    joyBase = mk("position:absolute;left:22px;bottom:26px;width:104px;height:104px;border-radius:50%;border:2px solid rgba(138,154,59,.8);background:rgba(18,19,14,.45);pointer-events:auto;touch-action:none;", undefined, ui);
+    joyBase.dataset.cfJoystick="";joyBase.setAttribute("aria-label","Mover; arraste mais para correr");
+    joyKnob = mk("position:absolute;left:34px;top:34px;width:36px;height:36px;border-radius:50%;background:rgba(224,136,58,.85);border:2px solid #ffd7a8;pointer-events:none;", undefined, joyBase);
     let pid = null;
-    const mover = (e) => { const r = joyBase.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2; let dx = (e.clientX - cx) / 50, dy = (e.clientY - cy) / 50; const n = Math.hypot(dx, dy); W.joyCorre = n > 1.12; if(n > 1){ dx /= n; dy /= n; }      // empurrar até a borda = correr
-      joyKnob.style.transform = `translate(${dx * 41}px,${dy * 41}px)`; W.joy.x = Math.abs(dx) < .12 ? 0 : dx; W.joy.y = Math.abs(dy) < .12 ? 0 : -dy; };
+    const mover = (e) => { const r = joyBase.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2; let dx = (e.clientX - cx) / (r.width*.33), dy = (e.clientY - cy) / (r.height*.33); const n = Math.hypot(dx, dy); W.joyCorre = n > 1.12; if(n > 1){ dx /= n; dy /= n; }      // empurrar até a borda = correr
+      joyKnob.style.transform = `translate(${dx * r.width*.33}px,${dy * r.height*.33}px)`; W.joy.x = Math.abs(dx) < .12 ? 0 : dx; W.joy.y = Math.abs(dy) < .12 ? 0 : -dy; };
     joyBase.addEventListener("pointerdown", e => { e.preventDefault(); e.stopPropagation(); pid = e.pointerId; try{ joyBase.setPointerCapture(pid); }catch(_){ /* sem captura */ } mover(e); });
     joyBase.addEventListener("pointermove", e => { if(e.pointerId === pid) mover(e); });
     const fim = (e) => { if(e.pointerId !== pid) return; pid = null; joyKnob.style.transform = ""; W.joy.x = W.joy.y = 0; W.joyCorre = false; };
@@ -269,8 +283,8 @@ export function criarAndar(c){
   function alternaAjuda(){ if(!ajuda) return; ajuda.style.display = ajuda.style.display === "none" ? "block" : "none"; ajuda.style.opacity = "1"; }
   /* o que o "mundo vivo" (fauna, gente, mapa, fotos) precisa saber e fazer dentro do modo andar */
   function ctxMundo(){
-    return { mk, BTN, FONTE, toque, mostraAviso, construindo: () => B.on, fp: () => W.fp, setFp: (on) => { if(W.fp !== on){ W.fp = on; W.fpPitch = 0; AV.av.visible = !on; } }, olhar: () => ({ yaw: W.camYaw, pitch: W.fp ? W.fpPitch : 0 }),
-      soltaTeclas: () => { W.keys.clear(); W.joy.x = W.joy.y = 0; W.vel = 0; }, teleporta: (x, z) => { W.x = x; W.z = z; W.y = cen.chao(x, z); W.vy = 0; W.noChao = true; W.snap = true; AV.av.position.set(W.x, W.y, W.z); },
+    return { mk, BTN, FONTE, toque, mostraAviso, construindo: () => B.on||!!menuMobile?.aberto, fp: () => W.fp, setFp: (on) => { if(W.fp !== on){ W.fp = on; W.fpPitch = 0; AV.av.visible = !on; } }, olhar: () => ({ yaw: W.camYaw, pitch: W.fp ? W.fpPitch : 0 }),
+      soltaTeclas: () => { W.keys.clear(); W.joy.x = W.joy.y = 0; W.vel = 0; }, teleporta: (x, z) => { W.x = x; W.z = z; W.y = cen.chao(x, z); W.vy = 0; W.noChao = true; W.snap = true; AV.av.position.set(W.x, W.y + (cen.extraChao?.alturaExtra?.()||0), W.z); },
       correndo: () => Math.abs(W.vel) > 11, avatar: () => AV };
   }
   function alternaCamera(){ W.fp = !W.fp; W.fpPitch = 0; AV.av.visible = !W.fp; mostraAviso(W.fp ? "Primeira pessoa" : "Terceira pessoa"); }
@@ -291,6 +305,7 @@ export function criarAndar(c){
   const TECLAS = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
   function aoTeclaBaixo(e){
     if(!W.on) return;
+    if(menuMobile?.aberto){if(e.code==="Escape")menuMobile.fecha();e.preventDefault();return;}
     if(painelPc){ if(e.code === "Escape"){ fechaComputador(); e.preventDefault(); } return; }
     if(H.mundo && H.mundo.tecla(e)){ return; }                       // F3, depuração, modo foto, mapa (M)
     if(W.cinema){ if(H.cinemaTecla) H.cinemaTecla(e); e.preventDefault(); return; }       // cena de missão em andamento: o jogador só assiste (Esc pula, se a cena deixar)
@@ -315,7 +330,7 @@ export function criarAndar(c){
   function aoTeclaCima(e){ W.keys.delete(e.code); }
   let arrasta = null;
   const cv = renderer.domElement;
-  function aoPonteiroBaixo(e){ if(!W.on || painelPc) return; if(e.pointerType === "mouse" && e.button !== 0) return; arrasta = { id: e.pointerId, x: e.clientX, y: e.clientY }; try{ cv.setPointerCapture(e.pointerId); }catch(_){ /* sem captura */ } }
+  function aoPonteiroBaixo(e){ if(!W.on || painelPc || menuMobile?.aberto) return; if(e.pointerType === "mouse" && e.button !== 0) return; arrasta = { id: e.pointerId, x: e.clientX, y: e.clientY }; try{ cv.setPointerCapture(e.pointerId); }catch(_){ /* sem captura */ } }
   function aoPonteiroMove(e){
     if(!W.on || !arrasta || e.pointerId !== arrasta.id) return;
     const dx = e.clientX - arrasta.x, dy = e.clientY - arrasta.y; arrasta.x = e.clientX; arrasta.y = e.clientY;
@@ -341,9 +356,12 @@ export function criarAndar(c){
   }
 
   /* ---- movimento ---- */
-  function pular(){ if(W.noChao){ W.vy = 15.5; W.noChao = false; } }
+  function emVoo(){return !!H.mundo?.poderes?.krig.voando();}
+  function pular(){ if(W.noChao && !emVoo() && !(H.mundo?.transformacao?.ativa() && H.mundo.transformacao.S.id === "diully")){ W.vy = 15.5; W.noChao = false; } }
+  function soltaControles(){H.mundo?.poderes?.carlao.cancela();for(const b of pad?.querySelectorAll('[data-pid]')||[])b.dispatchEvent(new PointerEvent('pointercancel',{pointerId:Number(b.dataset.pid)}));W.keys.clear();W.joy.x=W.joy.y=0;W.vel=0;W.joyCorre=false;arrasta=null;if(joyKnob)joyKnob.style.transform='';}
+  function ocultaDocumento(){if(document.hidden)soltaControles();}
   function entrada(){
-    const k = W.keys; let ix = 0, iy = 0;
+    if(menuMobile?.aberto)return {ix:0,iy:0,mag:0,corre:false};const k = W.keys; let ix = 0, iy = 0;
     if(k.has("ArrowLeft")) ix -= 1;
     if(k.has("ArrowRight")) ix += 1;
     if(k.has("ArrowUp")) iy += 1;
@@ -361,25 +379,27 @@ export function criarAndar(c){
     const fv = cen.extraChao && cen.extraChao.fatorVel ? cen.extraChao.fatorVel(W.x, W.z, W.y) : 1;                         // turfeira: lento e encharcado
     const fa = cen.extraChao && cen.extraChao.fatorAgua ? cen.extraChao.fatorAgua(W.x, W.z, W.y) : 1;                         // água rasa: lento (canela/joelho)
     const fm = cen.extraChao && cen.extraChao.velMult ? cen.extraChao.velMult() : 1;                                           // transformação do operador (ex.: Krig 2×)
-    const alvoV = (iy > 0 ? (corre ? 17 : 6.3) * iy : iy < 0 ? 3 * iy : 0) * fv * fa * fm;
+    const voando=emVoo(),altVoo=voando?(cen.extraChao?.alturaExtra?.()||0):0;
+    const alvoV = (iy > 0 ? (voando || corre ? 17 : 6.3) * iy : iy < 0 ? (voando ? 17 : 3) * iy : 0) * (voando ? 1 : fv * fa) * fm;
     W.vel += (alvoV - W.vel) * Math.min(1, dt * 9);
     if(Math.abs(W.vel) > .05){
       const mx = Math.sin(W.yaw), mz = Math.cos(W.yaw);
       /* relevo: sobe mais devagar e desce um pouco mais rápido; acima de ~40° é parede (não sobe, desliza para trás) */
-      const noTerreno = Math.abs(W.y - cen.relevo(W.x, W.z)) < 1.6, h0 = cen.relevo(W.x, W.z);
+      const noTerreno = !voando && Math.abs(W.y - cen.relevo(W.x, W.z)) < 1.6, h0 = cen.relevo(W.x, W.z);
       const decl = noTerreno ? (cen.relevo(W.x + mx * 2, W.z + mz * 2) - h0) / 2 * Math.sign(W.vel) : 0;
-      const f = clamp(1 - decl * .55, .62, 1.12);
+      const f = voando ? 1 : clamp(1 - decl * .55, .62, 1.12);
       const dx = mx * W.vel * f * dt, dz = mz * W.vel * f * dt;
       const sobeOk = (nx, nz) => { if(!noTerreno) return true; const l = Math.hypot(nx - W.x, nz - W.z); return l < 1e-6 || (cen.relevo(nx, nz) - h0) / l <= TAN_MAX; };
-      const fundo = (nx, nz) => { const b = cen.extraChao && cen.extraChao.bloqueado; if(b && b(nx, nz) && !b(W.x, W.z)){ if(!W.avisoAgua || performance.now() - W.avisoAgua > 3500){ W.avisoAgua = performance.now(); mostraAviso((cen.extraChao.motivoBloqueio && cen.extraChao.motivoBloqueio(nx, nz)) || "Água funda: só dá para andar no raso"); } return true; } return false; };       // não entra no fundo
-      const preso = bate(W.x, W.z, W.y);                               // se por algum motivo já está encostado, deixa sair
+      const fundo = (nx, nz) => { if(voando)return false; const b = cen.extraChao && cen.extraChao.bloqueado; if(b && b(nx, nz) && !b(W.x, W.z)){ if(!W.avisoAgua || performance.now() - W.avisoAgua > 3500){ W.avisoAgua = performance.now(); mostraAviso((cen.extraChao.motivoBloqueio && cen.extraChao.motivoBloqueio(nx, nz)) || "Água funda: só dá para andar no raso"); } return true; } return false; };       // não entra no fundo
+      const preso = bate(W.x, W.z, W.y+altVoo);                               // se por algum motivo já está encostado, deixa sair
       let moveu = 0;
-      if(preso || (!bate(W.x + dx, W.z, W.y) && sobeOk(W.x + dx, W.z) && !fundo(W.x + dx, W.z))){ W.x += dx; moveu++; }
-      if(preso || (!bate(W.x, W.z + dz, W.y) && sobeOk(W.x, W.z + dz) && !fundo(W.x, W.z + dz))){ W.z += dz; moveu++; }
+      if(preso || (!bate(W.x + dx, W.z, W.y+altVoo) && sobeOk(W.x + dx, W.z) && !fundo(W.x + dx, W.z))){ W.x += dx; moveu++; }
+      if(preso || (!bate(W.x, W.z + dz, W.y+altVoo) && sobeOk(W.x, W.z + dz) && !fundo(W.x, W.z + dz))){ W.z += dz; moveu++; }
       if(!moveu && noTerreno && !sobeOk(W.x + dx, W.z + dz)){ W.x -= dx * .35; W.z -= dz * .35; W.vel *= .6; }          // parede íngreme: escorrega um pouco para trás
     }
     if(cen.extraChao && cen.extraChao.limite){ const q = cen.extraChao.limite(W.x, W.z); W.x = q[0]; W.z = q[1]; } else { W.x = clamp(W.x, -1450, 3350); W.z = clamp(W.z, -960, 3750); }       // limites do mundo (a estrada para a cidade amplia o mapa ao longo do corredor)
-    const chao = chaoY(W.x, W.z, W.y);
+    const chao = chaoY(W.x, W.z, voando ? 1e9 : W.y);
+    if(voando){W.y=chao;W.noChao=true;W.vy=0;}
     if(!W.noChao){ W.vy -= 46 * dt; W.y += W.vy * dt; if(W.y <= chao){ W.y = chao; W.vy = 0; W.noChao = true; } }
     else if(chao > W.y && chao - W.y < 1.5){ W.y = chao - W.y < .6 ? W.y + (chao - W.y) * Math.min(1, dt * 45) : chao; }          // degrau (escada do deck) · subida do terreno, suavizada
     else if(W.y > chao + .01){ W.noChao = false; W.vy = 0; }       // saiu da borda do deck: cai
@@ -388,8 +408,8 @@ export function criarAndar(c){
   }
   function pose(){
     const av = AV.av, a = clamp(Math.abs(W.vel) / 17, 0, 1), passoK = Math.min(1, Math.abs(W.vel) / 6.3);
-    const amp = .5 * passoK + .62 * a, f = W.fase, noAr = !W.noChao;
-    const [qD, qE] = AV.pernasA.quadril, [jD, jE] = AV.pernasA.joelho;
+    const amp = .5 * passoK + .62 * a, f = W.fase, noAr = !W.noChao || emVoo() || (cen.extraChao?.alturaExtra?.()||0)>.01;
+    const [qD, qE] = AV.pernasA.quadril, [jD, jE] = AV.pernasA.joelho;if(H.mundo?.personagens?.ativo==='carlao'){qD.rotation.z=qE.rotation.z=0;AV.tronco.rotation.z=0;AV.tronco.position.y=2.2;}
     if(noAr){ qD.rotation.x = -.7; qE.rotation.x = -.35; jD.rotation.x = .9; jE.rotation.x = .6; }
     else { qD.rotation.x = Math.sin(f) * amp; qE.rotation.x = -Math.sin(f) * amp; jD.rotation.x = Math.max(0, -Math.cos(f)) * amp * 1.5; jE.rotation.x = Math.max(0, Math.cos(f)) * amp * 1.5; }
     const sw = noAr ? 0 : Math.sin(f) * amp;
@@ -398,9 +418,11 @@ export function criarAndar(c){
     if(B.carga){ AV.bD.pv.rotation.set(-1.45, 0, -.12); AV.bE.pv.rotation.set(-1.45, 0, .12); AV.bD.co.rotation.set(-.2, 0, 0); AV.bE.co.rotation.set(-.2, 0, 0); }
     AV.tronco.rotation.x = .02 + a * .2; AV.tronco.rotation.y = noAr ? 0 : -Math.sin(f) * amp * .25;
     const bob = noAr || Math.abs(W.vel) < .3 ? 0 : Math.abs(Math.cos(f)) * (.1 + a * .12);
-    av.position.set(W.x, W.y + bob, W.z); av.rotation.y = W.yaw;
+    av.position.set(W.x, W.y + bob + (cen.extraChao?.alturaExtra?.()||0), W.z); av.rotation.y = W.yaw;
+    H.mundo?.poderes?.carlao.pose();
     if(AV.nome) AV.nome.rotation.y = W.camYaw - W.yaw;                  // o nome sempre de frente para a câmera
   }
+  function tremorKauling(){const K=H.mundo?.poderes?.kauling;if(!K||H.mundo.congelado||H.mundo.personagens?.ativo!=='kauling')return;const a=Math.min(.08,K.S.tremor*.10),t=performance.now()*.06;cam.position.x+=Math.sin(t)*a;cam.position.y+=Math.cos(t*1.3)*a;}
   function camera(dt){
     if(W.camLivre) return;                                       // depuração/testes: a câmera fica por conta de quem chama
     /* a câmera volta sozinha para trás do Pit; o mouse/dedo ou Z X só a desviam por um tempo */
@@ -408,10 +430,11 @@ export function criarAndar(c){
     W.camOff = clamp(W.camOff, -Math.PI, Math.PI);
     const alvoYaw = W.yaw + Math.PI + W.camOff;
     if(W.snap) W.camYaw = alvoYaw; else W.camYaw += ang(alvoYaw - W.camYaw) * Math.min(1, dt * 7);
+    const alturaCamera=cen.extraChao?.alturaExtra?.()||0;
     if(W.fp){
       const dx = -Math.sin(W.camYaw) * Math.cos(W.fpPitch), dz = -Math.cos(W.camYaw) * Math.cos(W.fpPitch), dy = Math.sin(W.fpPitch);
-      camPos.set(W.x - Math.sin(W.camYaw) * .6, W.y + 4.85, W.z - Math.cos(W.camYaw) * .6);
-      cam.position.copy(camPos); lookAt.set(camPos.x + dx * 10, camPos.y + dy * 10, camPos.z + dz * 10); cam.lookAt(lookAt);
+      camPos.set(W.x - Math.sin(W.camYaw) * .6, W.y + 4.85 * (cen.extraChao?.escalaJogador?.()||1) + alturaCamera, W.z - Math.cos(W.camYaw) * .6);
+      cam.position.copy(camPos); lookAt.set(camPos.x + dx * 10, camPos.y + dy * 10, camPos.z + dz * 10); cam.lookAt(lookAt);tremorKauling();
       const fov = (H.mundo && H.mundo.fovFoto && H.mundo.fovFoto()) || 70;
       if(cam.fov !== fov){ cam.fov = fov; cam.updateProjectionMatrix(); }
       return;
@@ -421,7 +444,7 @@ export function criarAndar(c){
     const escJ = cen.extraChao && cen.extraChao.escalaJogador ? cen.extraChao.escalaJogador() : 1;                               // gigante (Kauling): câmera se afasta
     const dist = (dentro ? Math.min(W.dist, 10) : W.dist) * escJ, pit = dentro ? Math.max(W.camPitch, .62) : W.camPitch;
     const dx = Math.sin(W.camYaw) * Math.cos(pit), dy = Math.sin(pit), dz = Math.cos(W.camYaw) * Math.cos(pit);
-    lookAt.set(W.x, W.y + 3.5, W.z);
+    lookAt.set(W.x, W.y + 3.5 * escJ + alturaCamera, W.z);
     let d = dist;
     if(!dentro){                                                  // a câmera não atravessa as paredes da casinha
       tmp.set(dx, dy, dz).normalize(); ray.set(lookAt, tmp); ray.far = dist;
@@ -434,7 +457,7 @@ export function criarAndar(c){
       if(fr < 1) tmp.set(lookAt.x + (tmp.x - lookAt.x) * fr, lookAt.y + (tmp.y - lookAt.y) * fr, lookAt.z + (tmp.z - lookAt.z) * fr);
       tmp.y = Math.max(tmp.y, cen.relevo(tmp.x, tmp.z) + 1.4); }
     if(W.snap){ cam.position.copy(tmp); W.snap = false; } else cam.position.lerp(tmp, Math.min(1, dt * 12));
-    cam.lookAt(lookAt);
+    cam.lookAt(lookAt);tremorKauling();
   }
   function mira(){
     let melhor = null, md = 1e9;
@@ -480,10 +503,11 @@ export function criarAndar(c){
     /* boneco: saem as pernas "paradas", entram as articuladas e os braços ficam soltos */
     const l0 = quem(); if(!l0.some(x => x.p === AV)){ idxP = 0; AV = l0[0].p; nomeP = l0[0].nome; } else idxP = l0.findIndex(x => x.p === AV);
     prepara(AV); if(opts && opts.lugarInicial) lugar = opts.lugarInicial; colocaNoLugar();
-    lookAt.set(W.x, W.y + 3.5, W.z);
+    lookAt.set(W.x, W.y + 3.5 + (cen.extraChao?.alturaExtra?.()||0), W.z);
     modoReal(true);
     montaUI(); entraTelaCheia();
     if(H.mundo) H.mundo.liga(ui, ctxMundo());
+    window.addEventListener("blur",soltaControles);document.addEventListener("visibilitychange",ocultaDocumento);
     window.addEventListener("keydown", aoTeclaBaixo, true); window.addEventListener("keyup", aoTeclaCima, true);
     cv.addEventListener("pointerdown", aoPonteiroBaixo); cv.addEventListener("pointermove", aoPonteiroMove); cv.addEventListener("pointerup", aoPonteiroCima); cv.addEventListener("pointercancel", aoPonteiroCima);
     cv.addEventListener("wheel", aoRoda, { passive: false }); document.addEventListener("fullscreenchange", aoTelaCheia);
@@ -493,6 +517,7 @@ export function criarAndar(c){
   function desligar(){
     if(!W.on) return;
     limpaConstruir(); W.on = false; fechaComputador();
+    soltaControles();window.removeEventListener("blur",soltaControles);document.removeEventListener("visibilitychange",ocultaDocumento);menuMobile=null;
     window.removeEventListener("keydown", aoTeclaBaixo, true); window.removeEventListener("keyup", aoTeclaCima, true);
     cv.removeEventListener("pointerdown", aoPonteiroBaixo); cv.removeEventListener("pointermove", aoPonteiroMove); cv.removeEventListener("pointerup", aoPonteiroCima); cv.removeEventListener("pointercancel", aoPonteiroCima);
     cv.removeEventListener("wheel", aoRoda); document.removeEventListener("fullscreenchange", aoTelaCheia);
@@ -517,8 +542,8 @@ export function criarAndar(c){
   }
   function tick(dt){
     if(!W.on) return;
-    if(W.cinema){ cen.tick(dt, W.x, W.z); if(H.cinemaQuadro) H.cinemaQuadro(dt); return; }
-    passo(dt); pose(); cen.tick(dt, W.x, W.z); camera(dt); mira(); constroiTick(dt); atualizaPad();
+    if(W.cinema){ if(!H.mundo?.congelado) cen.tick(dt, W.x, W.z); if(H.cinemaQuadro) H.cinemaQuadro(dt); return; }
+    passo(dt); pose(); if(!H.mundo?.congelado) cen.tick(dt, W.x, W.z); camera(dt); mira(); constroiTick(dt); atualizaPad();
   }
   return {
     ligar, desligar, tick, cinema, emCinema: () => !!W.cinema, ativo: () => W.on,

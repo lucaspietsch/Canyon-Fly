@@ -1,0 +1,6 @@
+// Capões de Floresta Ombrófila Mista nas bordas; complementam o KML sem cobrir campos inteiros.
+export function capoesBorda(cen){
+ const C=cen.campo,resultado=[],dentro=(x,z)=>C.emPoli(C.terraPoli,x,z)||(C.NORTE_POLI&&C.emPoli(C.NORTE_POLI,x,z)),seed=n=>{const x=Math.sin(n*127.1+31.7)*43758.5453;return x-Math.floor(x);};
+ for(const [borda,L]of [C.BORDA_PTS||[],C.NORTE_RIM||[]].entries()){let distancia=0,proximo=0,id=0;for(let i=1;i<L.length;i++){const a=L[i-1],b=L[i],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);if(len<.001)continue;while(proximo<=distancia+len){const t=(proximo-distancia)/len,x=a[0]+dx*t,z=a[1]+dz*t,k=id+borda*1000;id++;proximo+=240;if(seed(k)<.20||x< -4000||x>5000||z< -5500||z>2200)continue;const tx=dx/len,tz=dz/len;let nx=tz,nz=-tx;if(!dentro(x+nx*100,z+nz*100)){nx=-nx;nz=-nz;}const cx=x+nx*120,cz=z+nz*120,rx=140+seed(k+3)*65,rz=80+seed(k+7)*25,pts=[];for(let j=0;j<12;j++){const ang=j/12*Math.PI*2,r=.88+seed(k*13+j)*.18;pts.push([cx+tx*Math.cos(ang)*rx*r+nx*Math.sin(ang)*rz*r,cz+tz*Math.cos(ang)*rx*r+nz*Math.sin(ang)*rz*r]);}if(!pts.every(p=>dentro(...p)))continue;resultado.push({nome:'Floresta Ombrófila Mista · borda',tipo:'mata',pts,rin:rz*.85,bb:[Math.min(...pts.map(p=>p[0])),Math.max(...pts.map(p=>p[0])),Math.min(...pts.map(p=>p[1])),Math.max(...pts.map(p=>p[1]))]});}distancia+=len;}}
+ return resultado;
+}

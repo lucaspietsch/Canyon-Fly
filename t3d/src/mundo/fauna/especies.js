@@ -20,16 +20,16 @@ function destinoLivre(a, c, rMin, rMax, zona, abertura = 1.7){
 export const DEF = {
   lobo: {
     spec: "lobo", alertaSeg: [3, 7], alertaMax: 12, aposAlerta: "natural",
-    pose: { neutroPesc: .95, neutroCab: .15, altoPesc: .62, baixoPesc: 2.2, cauda: -.55, caudaAlerta: -.1, caudaFuga: -.95, perna: .78 },
+    pose: { neutroPesc: .22, neutroCab: -.15, altoPesc: .08, baixoPesc: 1.45, cauda: -.85, caudaAlerta: -.5, caudaFuga: -.95, perna: .78 },
     atividades: () => [["andar", 40], ["farejar", 25], ["escutar", 20], ["parar", 10]],
     durs: { farejar: [3, 6], escutar: [3, 6], parar: [2, 4] },
     destino: (a, c) => destinoLivre(a, c, 8, 22, c.zonas.recebimento)
   },
   puma: {
     spec: "puma", alertaSeg: [1, 2], alertaMax: 3, aposAlerta: "sair",
-    pose: { neutroPesc: 1.55, neutroCab: .3, altoPesc: 1.25, baixoPesc: 2.35, cauda: -.3, caudaAlerta: -.12, caudaFuga: -.4, perna: .54 },
-    atividades: () => [["andar", 38], ["beber", 28], ["farejar", 14], ["escutar", 20]],
-    durs: { farejar: [2, 4], escutar: [2, 4], beber: [4, 8] },
+    pose: { neutroPesc: .45, neutroCab: -.22, altoPesc: .15, baixoPesc: 1.65, cauda: -.3, caudaAlerta: -.12, caudaFuga: -.4, perna: .54 },
+    atividades: () => [["andar", 36], ["beber", 26], ["farejar", 14], ["escutar", 16], ["sentar", 8]],
+    durs: { farejar: [2, 4], escutar: [2, 4], beber: [4, 8], sentar: [4, 8] },
     /* caminha pela margem, seguindo o curso d'água */
     destino: (a, c) => {
       const Z = c.zonas.agua, L = Z.eixo; let k = 0, md = 1e9; L.forEach((p, i) => { const d = Math.hypot(p[0] - a.x, p[1] - a.z); if(d < md){ md = d; k = i; } });
@@ -53,7 +53,7 @@ export const DEF = {
   },
   graxaim: {
     spec: "graxaimCinza", variante: () => (Math.random() < .5 ? "graxaimCinza" : "graxaimRuivo"), alertaSeg: [2, 5], alertaMax: 9, aposAlerta: "natural",
-    pose: { neutroPesc: 1.1, neutroCab: .2, altoPesc: .75, baixoPesc: 2.2, cauda: -.35, caudaAlerta: -.5, caudaFuga: -.2, perna: .35 },
+    pose: { neutroPesc: .30, neutroCab: -.18, altoPesc: .10, baixoPesc: 1.50, cauda: -.35, caudaAlerta: -.5, caudaFuga: -.2, perna: .35 },
     atividades: () => [["zigue", 34], ["farejar", 24], ["sentar", 14], ["cocar", 8], ["observar", 14]],
     durs: { farejar: [3, 6], sentar: [4, 9], cocar: [2.5, 4], observar: [3, 6] },
     destino: (a, c) => {
@@ -68,14 +68,14 @@ export const DEF = {
 /* ---- bichos de Cambará do Sul: veado-campeiro (campos, tímido), quati (estacionamento, de dia, em bando), gambá (à noite) e lontra (margens do arroio) ---- */
 DEF.veado = {
   spec: "veado", alertaSeg: [4, 8], alertaMax: 14, aposAlerta: "sair",
-  pose: { neutroPesc: .62, neutroCab: .12, altoPesc: .3, baixoPesc: 2.1, cauda: -.3, caudaAlerta: .25, caudaFuga: .5, perna: .7 },
+  pose: { neutroPesc: .16, neutroCab: -.12, altoPesc: -.05, baixoPesc: 1.9, cauda: -.3, caudaAlerta: .25, caudaFuga: .5, perna: .7 },
   atividades: () => [["andar", 30], ["farejar", 32], ["escutar", 26], ["parar", 12]],
   durs: { farejar: [4, 9], escutar: [3, 7], parar: [3, 6] },
   destino: (a, c) => destinoLivre(a, c, 8, 24, c.zonas.recebimento)
 };
 DEF.quati = {
   spec: "quati", alertaSeg: [1.5, 4], alertaMax: 7, aposAlerta: "natural",
-  pose: { neutroPesc: .5, neutroCab: .55, altoPesc: .45, baixoPesc: 2.3, cauda: .5, caudaAlerta: .9, caudaFuga: .3, perna: .4 },
+  pose: { neutroPesc: .18, neutroCab: .12, altoPesc: -.12, baixoPesc: .70, cauda: 1.12, caudaAlerta: 1.35, caudaFuga: .45, perna: .4 },
   atividades: () => [["andar", 36], ["farejar", 40], ["escutar", 12], ["parar", 12]],
   durs: { farejar: [3, 7], escutar: [2, 4], parar: [2, 4] },
   destino: (a, c) => {
@@ -87,14 +87,14 @@ DEF.quati = {
 };
 DEF.gamba = {
   spec: "gamba", alertaSeg: [2, 5], alertaMax: 8, aposAlerta: "natural",
-  pose: { neutroPesc: .45, neutroCab: .5, altoPesc: .4, baixoPesc: 2.3, cauda: -.2, caudaAlerta: -.1, caudaFuga: -.3, perna: .3 },
+  pose: { neutroPesc: .12, neutroCab: .12, altoPesc: -.08, baixoPesc: .65, cauda: -.2, caudaAlerta: -.1, caudaFuga: -.3, perna: .3 },
   atividades: () => [["andar", 38], ["farejar", 40], ["escutar", 12], ["parar", 10]],
   durs: { farejar: [3, 8], escutar: [2, 4], parar: [2, 5] },
   destino: (a, c) => DEF.quati.destino(a, c)
 };
 DEF.lontra = {
   spec: "lontra", alertaSeg: [2, 5], alertaMax: 8, aposAlerta: "sair",
-  pose: { neutroPesc: .5, neutroCab: .3, altoPesc: .35, baixoPesc: 2.2, cauda: -.15, caudaAlerta: -.05, caudaFuga: -.3, perna: .35 },
+  pose: { neutroPesc: .15, neutroCab: -.08, altoPesc: -.12, baixoPesc: .85, cauda: -.15, caudaAlerta: -.05, caudaFuga: -.3, perna: .35 },
   atividades: () => [["andar", 40], ["beber", 25], ["farejar", 20], ["escutar", 15]],
   durs: { farejar: [2, 5], escutar: [2, 4], beber: [4, 8] },
   destino: (a, c) => DEF.puma.destino(a, c), destinoBeber: (a, c) => DEF.puma.destinoBeber(a, c)

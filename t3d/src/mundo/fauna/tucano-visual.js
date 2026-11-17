@@ -1,0 +1,14 @@
+import {SphereGeometry,BufferGeometry,Float32BufferAttribute,Color,TubeGeometry,CatmullRomCurve3,Vector3} from 'three';
+import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import {criarGralhas,geometriasGralha} from './gralha-visual.js';
+const pinta=(g,hex)=>{g=g.index?g.toNonIndexed():g;const c=new Color(hex),a=[];for(let i=0;i<g.attributes.position.count;i++)a.push(c.r,c.g,c.b);g.setAttribute('color',new Float32BufferAttribute(a,3));return g;};
+const oval=(x,y,z,a,b,c,col)=>pinta(new SphereGeometry(1,20,14).scale(a,b,c).translate(x,y,z),col);
+const junta=parts=>{const g=mergeGeometries(parts);parts.forEach(p=>p.dispose());return g;};
+// Bico com secções elípticas: arco superior convexo, ponta curva e base preta.
+function bico(){const pos=[],cols=[],idx=[],N=28,K=24;for(let j=0;j<=N;j++){const t=j/N,z=.15+t*.78,upper=.11+.14*Math.sin(Math.PI*t)-.19*t*t,lower=-.105+.03*t,width=.105*Math.pow(1-t,.6)+.001;for(let k=0;k<=K;k++){const a=k/K*Math.PI*2,y=(upper+lower)/2+Math.sin(a)*(upper-lower)/2;pos.push(Math.cos(a)*width,y,z);const c=new Color(j<3?0x202d28:Math.sin(a)>.4?0xc7d38a:0x8fa965);cols.push(c.r,c.g,c.b);if(j<N&&k<K){const n=j*(K+1)+k;idx.push(n,n+1,n+K+1,n+1,n+K+2,n+K+1);}}}const g=new BufferGeometry();g.setAttribute('position',new Float32BufferAttribute(pos,3));g.setAttribute('color',new Float32BufferAttribute(cols,3));g.setAttribute('uv',new Float32BufferAttribute(new Float32Array(pos.length/3*2),2));g.setIndex(idx);g.computeVertexNormals();const result=g.toNonIndexed();g.dispose();return result;}
+export function geometriasTucano(){
+ const geo=geometriasGralha();for(const [key,g]of Object.entries(geo)){const c=g.attributes.color;for(let i=0;i<c.count;i++){const v=new Color(key==='pernas'?0x65847d:0x142630);c.setXYZ(i,v.r,v.g,v.b);}}
+ geo.corpo.dispose();geo.corpo=junta([oval(0,0,0,.23,.30,.43,0x142630),oval(0,-.14,.12,.20,.18,.30,0xb62827),oval(0,.13,.24,.19,.23,.21,0xeee0a4),oval(0,.08,.33,.18,.26,.20,0xefb62f),oval(0,-.04,-.40,.18,.10,.12,0xbc2b2d)]);
+ geo.cab.dispose();const h=[oval(0,0,0,.17,.19,.20,0x142630),bico()];for(const s of [-1,1]){h.push(oval(s*.150,.012,.08,.025,.072,.071,0xc73a2f),oval(s*.174,.024,.092,.014,.043,.043,0x76b7a7),oval(s*.185,.024,.095,.008,.029,.030,0xb8cd45),oval(s*.191,.024,.098,.006,.020,.021,0x101d20),oval(s*.194,.033,.108,.004,.007,.008,0xf8f6dc));const line=new CatmullRomCurve3(Array.from({length:15},(_,i)=>{const t=i/14;return new Vector3(s*(.105*Math.pow(1-t,.6)+.002),-.07+.009*Math.sin(t*Math.PI),.16+t*.76);}));h.push(pinta(new TubeGeometry(line,28,.005,5,false),0x59473e));}geo.cab=junta(h);geo.cauda.scale(1.12,1,1.15);return geo;
+}
+export function criarTucanos(pai,max=96){const r=criarGralhas(pai,max,{geo:geometriasTucano(),nome:'tucano-de-bico-verde',sagrado:false});r.group.userData.especie='Ramphastos dicolorus';return r;}

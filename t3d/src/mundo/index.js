@@ -1,3 +1,7 @@
+import {criarAncestral} from './ancestral/ancestral.js';
+import {criarAparicoes} from './ancestral/aparicoes.js';
+import {criarTrilha} from './trilha.js';
+import { criarCoordenacao } from "./personagens/coordenacao.js";
 import { ehToque } from "../modo.js";
 import { criarAnhangaMundo } from "./lenda/mundo.js";
 import { criarPoderes } from "./poderes/poderes.js";
@@ -99,11 +103,12 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.fotos = criarFotos(M); M.registra(M.fotos); M.fovFoto = () => M.fotos.fovFoto();
     M.horizonte = criarHorizonte(M, luzes); M.registra({ tick: (dt, J, E) => M.horizonte.tick(dt, J, E), info: () => M.horizonte.info() });
   M.mapa = criarMinimapa(M); M.registra(M.mapa);
+  M.trilha=criarTrilha(M);M.registra({tick:()=>M.trilha.tick(),desliga:()=>M.trilha.desliga()});
   M.personagens = criarPersonagens(M); M.registra({ tick: (dt) => M.personagens.tick(dt), tecla: (e) => M.personagens.tecla(e), info: () => M.personagens.info(), desliga: () => M.personagens.desliga() });
   M.transformacao = criarTransformacao(M); M.registra({ semCongelar: true, tick: (dt) => M.transformacao.tick(dt), info: () => M.transformacao.info(), desliga: () => M.transformacao.desligaTudo() }); M.cen.extraChao.velMult = () => M.transformacao.velMult(); M.cen.extraChao.alturaExtra = () => M.transformacao.alturaExtra(); M.cen.extraChao.escalaJogador = () => (M.poderes && M.poderes.kauling ? M.poderes.kauling.escala() : 1);
   M.login = { sessao, confereLogin, modoDebug };                                                                       // depuração no console: M.login.confereLogin("login", "senha")
   M.terminal = criarTerminal(M);
-  M.missoes = criarMissoes(M); M.registra({ tick: (dt) => M.missoes.tick(dt), tecla: (e) => M.missoes.tecla(e), liga: (ui) => M.missoes.liga(ui), info: () => M.missoes.info(), desliga: () => M.missoes.desliga() }); M.operacao = criarOperacao(M); M.registra({ tick: (dt) => M.operacao.tick(dt), desliga: () => M.operacao.desliga() });
+  M.missoes = criarMissoes(M); M.registra({ tick: (dt) => M.missoes.tick(dt), tecla: (e) => M.missoes.tecla(e), liga: (ui) => M.missoes.liga(ui), info: () => M.missoes.info(), desliga: () => M.missoes.desliga() }); M.operacao = criarOperacao(M); M.coordenacao = criarCoordenacao(M); M.registra({ tick: (dt) => M.operacao.tick(dt), desliga: () => M.operacao.desliga() });
   M.dia1 = criarDia1(M); H.nomeJogador = () => M.dia1.nomeJogador(); M.registra(M.terminal);                                                  // abaixo do minimapa: missões, tirolesa, emergências, natureza, geral
   /* agenda de eventos (aviões e meteoros) */
   M.agenda = criarAgenda(M); M.aeronaves = criarAeronaves(M); M.meteoros = criarMeteoros(M, luzes);
@@ -120,7 +125,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.zonas = criarZonas(M); M.registra({ info: () => M.zonas.infoJogador() }); M.cidade = criarCidade(M); M.registra({ tick: (dt, J) => M.cidade.tick(dt, J), info: () => M.cidade.info() }); M.zonas.liga(); M.registra({ tick: (dt, J) => M.zonas.tick(dt, J) });
   M.registra({ tick: (dt, J, E) => M.fauna.antigo.tick(dt, J, E), info: () => M.fauna.antigo.info(), desliga: () => M.fauna.antigo.desliga() });                  // bichos do passado (só com o portal violeta), em qualquer zona
   M.portal = criarPortal(M); M.registra({ tick: (dt, J) => M.portal.tick(dt, J), desliga: () => M.portal.desliga() });
-  M.poderes = criarPoderes(M); M.registra({ semCongelar: true, tick: (dt, J) => M.poderes.tick(dt, J), tecla: (e) => M.poderes.tecla(e), info: () => M.poderes.info(), desliga: () => M.poderes.desliga() });
+  M.poderes = criarPoderes(M); M.registra({ semCongelar: true, liga: () => M.poderes.liga(), tick: (dt, J) => M.poderes.tick(dt, J), tecla: (e) => M.poderes.tecla(e), info: () => M.poderes.info(), desliga: () => M.poderes.desliga() });
   M.anhanga = criarAnhangaMundo(M); registraCenasTupa(M); M.registra({ tick: (dt) => M.anhanga.tick(dt), desliga: () => M.anhanga.some() });
   M.lugares = criarLugares(M); M.zonas.aoMudar(() => M.lugares.monta()); M.registra({ tick: (dt, J) => M.lugares.tick(dt, J), tecla: (e) => M.lugares.tecla(e), info: () => M.lugares.info(), desliga: () => M.lugares.desliga() });
   M.kml.aoCarregar(() => M.zonas.carregaKML());
@@ -149,7 +154,9 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.cascata = criarCascata(M, M.vento); M.registra({ zona: "parque", tick: (dt, J, E) => M.cascata.tick(dt, J, E), info: () => M.cascata.info(), desliga: () => M.cascata.desliga() });
   M.vegetacao = criarVegetacao(M, M.vento); M.registra({ tick: (dt, J, E) => M.vegetacao.tick(dt, J, E), info: () => M.vegetacao.info(), tecla: (e) => M.vegetacao.placas.tecla(e), desliga: () => M.vegetacao.placas.desliga() }); M.kml.aoCarregar(() => M.vegetacao.regenera());
   M.fauna.sapinhos = criarSapinhos(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.sapinhos.tick(dt, J, E), info: () => M.fauna.sapinhos.info(), desliga: () => M.fauna.sapinhos.desliga() });
-  M.fauna.aves = criarAves(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.aves.tick(dt, J, E), info: () => M.fauna.aves.info(), desliga: () => M.fauna.aves.desliga(), aoSalto: () => M.fauna.aves.desliga() });
+  M.fauna.aves = criarAves(M); M.registra({ tick: (dt, J, E) => {if(M.zonas.atual==="parque"||M.lugares.epoca()!=="2026"||M.fauna.aves.lista.some(b=>b.esp==="gralha"))M.fauna.aves.tick(dt,J,E);}, info: () => M.fauna.aves.info(), desliga: () => M.fauna.aves.desliga(), aoSalto: () => M.fauna.aves.desliga() });
+  M.ancestral=criarAncestral(M);M.registra({tick:(dt,J)=>M.ancestral.tick(dt,J),desliga:()=>M.ancestral.desliga()});
+  M.espiritoGralha=criarAparicoes(M);M.registra({tick:(dt,J)=>M.espiritoGralha.tick(dt,J),desliga:()=>M.espiritoGralha.desliga()});
   M.fauna.andorinhas = criarAndorinhas(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.andorinhas.tick(dt, J, E), info: () => M.fauna.andorinhas.info(), desliga: () => M.fauna.andorinhas.desliga() });
   M.agenda.registra({ id: "andorinhas", cfg: EVENTOS.andorinhas, dispara: () => M.fauna.andorinhas.chega() });
   M.fauna.conflitos = criarConflitos(M); M.registra({ zona: "parque", tick: (dt, J) => M.fauna.conflitos.tick(dt, J), info: () => M.fauna.conflitos.info() });
@@ -234,6 +241,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
     if(e.code === "F3"){ e.preventDefault(); depurar = !depurar; if(painel) painel.style.display = depurar ? "block" : "none"; M.resgate.liga(depurar); return true; }      // M.depurando continua função (os módulos chamam M.depurando())
     if(e.code === "F12"){ e.preventDefault(); const ok = M.resgate.inicia({ origem: "debug" }); M.ctx.mostraAviso(ok ? "Emergência das 10h forçada" : "Já há uma emergência em andamento"); return true; }
     if(e.code === "KeyP" && !e.ctrlKey && !e.altKey && !e.metaKey && !(M.ctx && M.ctx.construindo && M.ctx.construindo())){ e.preventDefault(); copiaPosicao(); return true; }
+    if(M.poderes?.pit.tecla(e) || M.poderes?.jackao.tecla(e) || M.poderes?.krig.tecla(e) || M.poderes?.mohr.tecla(e) || M.poderes?.mary.tecla(e) || M.poderes?.diully.tecla(e) || M.poderes?.kauling.tecla(e) || M.poderes?.carlao.tecla(e)) return true;
     if(M.partes.some(p => p.tecla && p.tecla(e))) return true;
     const evK = e.code === "F9" ? (e.shiftKey ? "baixo" : "mono") : e.code === "F10" ? "jato" : e.code === "F11" ? "met" : depurar && e.code === "KeyU" ? (e.shiftKey ? "baixo" : "mono") : depurar && e.code === "KeyI" ? "jato" : depurar && e.code === "KeyO" ? "met" : null;
     if(evK){ e.preventDefault(); if(evK === "mono" || evK === "baixo"){ M.aeronaves.voos.filter(v => v.tipo === "monomotor").forEach(v => { v.t = 1; }); M.aeronaves.iniciaMonomotor(evK === "baixo", { origem: "debug" }); M.ctx.mostraAviso(evK === "baixo" ? "Monomotor em voo baixo (debug)" : "Monomotor, altitude normal (debug)"); }
@@ -282,14 +290,14 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   function tick(dt){
     const J = M.andando() ? M.jogador() : null;
     cam.getWorldPosition(vcam);
-    const dtM = M.congelado ? dt * 1e-4 : dt;                                                                             // Pit parou o tempo: o mundo recebe dt≈0 (o jogador continua)
-    ciclo.tick(dtM, vcam);
-    if(ciclo.ativo()){ nevoa.tick(dtM, ciclo.estado, vcam, dtM * ciclo.segJogoPorSeg()); }
-    else nevoa.grupo.visible = false;
+    const dtM = M.congelado ? 0 : dt;                                                                             // Pit parou o tempo: a simulação do mundo fica suspensa.
+    if(!M.congelado) ciclo.tick(dtM, vcam);
+    if(ciclo.ativo() && !M.congelado){ nevoa.tick(dtM, ciclo.estado, vcam, dtM * ciclo.segJogoPorSeg()); }
+    else if(!ciclo.ativo()) nevoa.grupo.visible = false;
     sombras(!!J, J);
-    if(cen.paredao){ const n = nevoa.estado ? nevoa.estado.n : 0; cen.paredao.U.uWet.value += (Math.min(1, n * .45 + (ciclo.estado.h < 9.5 ? .2 : 0)) - cen.paredao.U.uWet.value) * Math.min(1, dt * .3); }
+    if(cen.paredao && !M.congelado){ const n = nevoa.estado ? nevoa.estado.n : 0; cen.paredao.U.uWet.value += (Math.min(1, n * .45 + (ciclo.estado.h < 9.5 ? .2 : 0)) - cen.paredao.U.uWet.value) * Math.min(1, dt * .3); }
     const zAtual = M.zonas ? M.zonas.atual : "parque";
-    M.partes.forEach(p => { if(p.zona && ZONAS.simulaSoNaZona && p.zona !== zAtual) return; p.tick && p.tick(p.semCongelar ? dt : dtM, J, ciclo.estado); });       // NPCs, fauna, partículas e sons só rodam na zona do jogador
+    M.partes.forEach(p => { if(p.zona && ZONAS.simulaSoNaZona && p.zona !== zAtual) return; if(!M.congelado || p.semCongelar) p.tick && p.tick(dt, J, ciclo.estado); });       // NPCs, fauna, partículas e sons só rodam na zona do jogador
     quadros++; const t = performance.now(); if(t - tFps > 500){ fps = quadros * 1000 / (t - tFps); quadros = 0; tFps = t; atualizaHud(); atualizaPainel(); marcaHoraAtual(); }
     void ultT; void Frustum; void Matrix4;
   }

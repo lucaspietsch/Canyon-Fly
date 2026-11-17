@@ -1,3 +1,4 @@
+import {capoesBorda} from './capoes-borda.js';
 import { U } from "../config.js";
 
 /* ============================================================================================================
@@ -34,6 +35,7 @@ export function criarBase(M){
     if(S && S.poligonos.length){ S.poligonos.forEach(p => { const o = { nome: p.nome, tipo: p.tipo === "banhado" ? "turfeira" : p.tipo, pts: p.pts, bb: caixa(p.pts) }; if(o.tipo === "mata") A.mata.push(o); else if(o.tipo === "mataBaixa") A.mataBaixa.push(o); else if(o.tipo === "turfeira") A.turfeira.push(o); A.todas.push(o); }); }
     if(antigoCfg.lista) antigoCfg.lista.forEach(pts => { const o = { nome: "mata antiga", tipo: "mata", pts, bb: caixa(pts), denso: true }; A.mata.push(o); A.todas.push(o); });
     (M.cenaEstrada ? M.cenaEstrada.capoes() : []).forEach(o => A.mata.push(o));                                         // capões gerados ao longo da estrada
+    if(!antigoCfg.lista){const bordas=capoesBorda(cen);A.mata.push(...bordas);A.todas.push(...bordas);}
     A.vindoDoKML = A.mata.length + A.mataBaixa.length + A.turfeira.length > 0;
   }
   const noPoli = (L, x, z) => { for(let i = 0; i < L.length; i++){ const o = L[i], b = o.bb; if(x < b[0] || x > b[1] || z < b[2] || z > b[3]) continue; if(dentroPoli(o.pts, x, z)) return o; } return null; };
@@ -42,9 +44,9 @@ export function criarBase(M){
   const fatorMata = (x, z) => { const t = tipoEm(x, z); return t === "mata" ? 1 : t === "mataBaixa" ? .55 : 0; };
   /* construído (cercado, estacionamento, casinha), água corrente e fora do platô: sem vegetação */
   const E0 = cen.estac;
-  const livreBase = (x, z, folgaCerca = 3) => { if(!emPoli(terraPoli, x, z) && !(M.estrada && M.estrada.dist(x, z) < M.estrada.CW)) return false; if(Z.emCerca(x, z, folgaCerca)) return false; if(E0.poli && dentroPoli(E0.poli, x, z)) return false; return true; };
+  const livreBase = (x, z, folgaCerca = 3) => { if(!emPoli(terraPoli, x, z) && !(cen.campo.NORTE_POLI && emPoli(cen.campo.NORTE_POLI,x,z)) && !(M.estrada && M.estrada.dist(x, z) < M.estrada.CW)) return false; if(Z.emCerca(x, z, folgaCerca)) return false; if(E0.poli && dentroPoli(E0.poli, x, z)) return false; return true; };
   const naAgua = (x, z) => { const ag = cen.agua(x, z); return ag && ag.dentro; };
-  const alturaNo = (x, z) => cen.relevo(x, z) + (cen.extraChao && cen.extraChao.cushion ? cen.extraChao.cushion(x, z) : 0);
+  const alturaNo = (x, z) => (cen.campo.NORTE_POLI && emPoli(cen.campo.NORTE_POLI,x,z) && !emPoli(terraPoli,x,z) ? cen.chaoNivel : cen.relevo(x, z)) + (cen.extraChao && cen.extraChao.cushion ? cen.extraChao.cushion(x, z) : 0);
   /* estimativa do "raio interno" de um polígono (para escalonar grande → pequeno do centro para a borda) */
   function raioInterno(o){ if(o.rin) return o.rin; let m = 0; const [x0, x1, z0, z1] = o.bb; for(let k = 0; k < 600; k++){ const x = x0 + Math.random() * (x1 - x0), z = z0 + Math.random() * (z1 - z0); if(dentroPoli(o.pts, x, z)) m = Math.max(m, distPoli(o.pts, x, z)); } return (o.rin = Math.max(60, m * .85)); }
   const excluir = [];                                                              // funções (x,z)→bool registradas por outros sistemas (poças, passarelas...)

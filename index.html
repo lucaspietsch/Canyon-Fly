@@ -34,12 +34,14 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
 <div id="palco"></div>
 <div id="inicio">
   <h1>CanyonFly</h1>
-  <p>Mundo aberto do Cânion Fortaleza e de Cambará do Sul. O jogo (≈1,5 MB + mapa e elevação) só é baixado quando você clicar.</p>
+  <p>Mundo aberto do Cânion Fortaleza e de Cambará do Sul. Explore trilhas, observe a fauna e viva a aventura da tirolesa.</p>
   <div id="aparelho">Reconhecendo o aparelho…</div>
+  <button id="som-menu" type="button" aria-label="Configurar música" style="position:absolute;right:16px;top:16px;min-width:44px;min-height:44px;border:1px solid #63785c;border-radius:12px;background:#17241f;color:#f3e5ba;cursor:pointer">♫</button>
   <button id="jogar">▶ CanyonFly</button>
   <div id="barra"><i></i></div>
   <div id="status"></div>
 </div>
+<script src="audio/trilha.js"></script>
 <script>
   /* CanyonFly: mundo aberto do Cânion Fortaleza e arredores. Abra por um servidor estático (ex.: Live Server do VS Code, ou `npx serve .`).
      O pacote t3d/dist/trolley3d.min.js só é baixado depois do clique, com barra de progresso; o tamanho e o tempo saem no console. */
@@ -82,6 +84,7 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
     $("trocaModo").onclick = () => { modo = modo === "toque" ? "teclado" : "toque"; try{ localStorage.setItem("canyonfly:modo", modo); }catch(_){ /* sem armazenamento */ } mostraModo(); };
   }
   mostraModo();
+  $("som-menu").onclick=()=>window.CanyonMusic?.abre();
   let jogoAberto = false;
   const toque = () => modo === "toque";
   function telaCheia(){

@@ -1,0 +1,32 @@
+{
+  "primeiro": {
+    "b1": true,
+    "b2": true,
+    "guardas": 6
+  },
+  "persistencia": {
+    "flag": true,
+    "repetiu": false,
+    "salvo": true
+  },
+  "passado": {
+    "bando": 12,
+    "vistas": 3,
+    "quarta": false
+  },
+  "ancestral": {
+    "epoca": "1689-1700",
+    "personagem": "atiara",
+    "bando": 33,
+    "arvores": 340,
+    "animais": 27,
+    "guia": true
+  },
+  "retorno": {
+    "ok": true,
+    "restaurou": true,
+    "epoca": "1950",
+    "salvo": true
+  },
+  "errors": []
+}

@@ -1,0 +1,8 @@
+import {Group,Color} from 'three';
+import {criarGralhas,geometriasGralha} from '../fauna/gralha-visual.js';
+import {criarGralhaEspiritual} from './gralha-espiritual.js';
+export function geometriasProtetora(){const geo=geometriasGralha();for(const [key,g]of Object.entries(geo)){const p=g.attributes.position,c=g.attributes.color;for(let i=0;i<c.count;i++){const azul=c.getZ(i)>c.getX(i)*1.5&&c.getZ(i)>c.getY(i)*1.2;let col;if(azul)col=new Color(key==='corpo'&&p.getY(i)<.09?0xe6bc29:0x1c773b);if(key==='cab'&&c.getX(i)>.3&&c.getY(i)>.3)col=new Color(0xebb62b);if(key==='cab'&&Math.abs(p.getX(i))>.1&&p.getY(i)>.06&&p.getZ(i)>.04)col=new Color(0x583b96);if(col)c.setXYZ(i,col.r,col.g,col.b);}}return geo;}
+export function criarCorteSagrada(){const g=new Group();g.name='Rainha Ancestral e Guarda Real';const rainha=criarGralhaEspiritual();g.add(rainha.g);const guarda=criarGralhas(g,6,{geo:geometriasProtetora(),nome:'seis-protetoras-sagradas'});guarda.group.userData.familia='Corvidae';const membros=Array.from({length:6},(_,i)=>({id:'protetora-'+(i+1),casal:Math.floor(i/2)+1,lado:i%2?1:-1,sexo:i%2?'m':'f'}));let escudo=0;
+ function tick(t,travessia=0){rainha.g.visible=travessia===0;rainha.tick(t);escudo=Math.max(0,escudo-.016);guarda.inicia();for(const m of membros){if(travessia>m.casal*.2)continue;const atras=m.casal*1.05,x=m.lado*(1.3+m.casal*.2),f=escudo>0?1:.0;guarda.escreve({x:x*(1-f*.35),y:Math.sin(t+m.casal)*.15,z:-atras*(1-f*.4),yaw:0,pitch:0,roll:0,s:.44,estado:'guia',fase:t*.55+m.casal*.13,cabP:0,cabY:0},t,.5);}guarda.fim('1689-1700');}
+ return{g,rainha,guarda,membros,tick,protege(){escudo=2.5;},dispose(){guarda.dispose();rainha.dispose();g.removeFromParent();}};
+}

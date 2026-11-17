@@ -44,8 +44,8 @@ export function criarTransformacao(M){
   function limpaFx(){ [S.luz, S.bolha].forEach(o => { if(o && o.parent) o.parent.remove(o); }); if(S.bolha){ S.bolha.geometry.dispose(); S.bolha.material.dispose(); } S.luz = S.bolha = null; }
 
   function liga(id){
-    const d = def(id), T = d && d.transformacao, av = avatarDe(); if(!T || !av) return false;
-    S.ativa = true; S.id = id; S.cor = T.cor; veste(av, T); clarao(av, T.cor);
+    const d = def(id), T = d && d.transformacao, av = avatarDe(); if(!T || !av || operadorLogado() !== id || M.lugares?.epoca?.() !== "1950") return false;
+    M.trilha?.transformou();S.ativa = true; S.id = id; S.cor = T.cor; veste(av, T); clarao(av, T.cor);
     const r = M.personagens.rig(id); if(r && r.fx) r.fx.liga(T); S.alvoAlt = (T.flutuaM || 0) * U; S.velMultExtra = 1;                                 // partículas/luzes do rig e flutuação (Diully: 2 m)
     if(M.terminal) M.terminal.msg("sobrenatural", d.nome + " se transforma: " + T.nome + ". " + (T.texto || ""));
     if(M.ctx) M.ctx.mostraAviso(T.nome + " — poderes ativos");
@@ -64,7 +64,7 @@ export function criarTransformacao(M){
   function tick(dt){
     S.alt += (S.alvoAlt - S.alt) * Math.min(1, dt * 2);
     if(!S.ativa) return;
-    if(S.luz){ S.t += dt; const k = S.t < .6 ? S.t / .6 : Math.max(0, 1 - (S.t - .6) / 1.4); S.luz.intensity = 60 * k; if(S.bolha){ S.bolha.material.opacity = .55 * k; S.bolha.scale.setScalar(1 + S.t * 1.6); } if(S.t > 2.2){ limpaFx(); } }
+    if(S.luz && !M.congelado){ S.t += dt; const k = S.t < .6 ? S.t / .6 : Math.max(0, 1 - (S.t - .6) / 1.4); S.luz.intensity = 60 * k; if(S.bolha){ S.bolha.material.opacity = .55 * k; S.bolha.scale.setScalar(1 + S.t * 1.6); } if(S.t > 2.2){ limpaFx(); } }
     const av = avatarDe(); if(av && av.userData._trajeDe !== S.id){ const d = def(S.id); if(d && d.transformacao){ veste(av, d.transformacao); av.userData._trajeDe = S.id; } }     // trocou de boneco (ou o rig foi recriado): reveste
     const ep = M.lugares && M.lugares.epoca ? M.lugares.epoca() : "2026"; if(ep !== "1950") desliga();
   }

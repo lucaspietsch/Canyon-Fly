@@ -12,7 +12,7 @@ import { Animal, rnd, angDif, pick } from "./animal.js";
 
 const DEF = {
   clonar: true, alertaSeg: [1.2, 1.2], alertaMax: 99, aposAlerta: "natural",
-  pose: { neutroPesc: 1.3, neutroCab: .3, altoPesc: .8, baixoPesc: 2.0, cauda: 0, caudaAlerta: 0, caudaFuga: 0, perna: .26 },
+  pose: { neutroPesc: .10, neutroCab: -.04, altoPesc: -.14, baixoPesc: .75, cauda: 0, caudaAlerta: 0, caudaFuga: 0, perna: .26 },
   atividades: () => [["andar", 1]], durs: {}, destino: () => null
 };
 
@@ -47,15 +47,15 @@ function latido(){
   }catch(_){ /* sem áudio */ }
 }
 
-class Capivara extends Animal {
+export class Capivara extends Animal {
   constructor(ctx, papel, x, z, yaw, fam, idx, fx){
-    const filhote = papel === "filhote", def = { ...DEF, variante: () => (filhote ? "capivaraFilhote" : "capivara"), escala: filhote ? .26 + idx * .02 : 1 };
+    const filhote = papel === "filhote", def = { ...DEF, variante: () => (filhote ? "capivaraFilhote" : "capivara"), escala: filhote ? .38 + idx * .025 : 1 };
     super(def, ESPECIES.capivara, ctx, x, z, yaw);
-    this.papel = papel; this.fam = fam; this.idx = idx; this.fx = fx; this.submersa = 0; this.molhado = 0; this.yv = this.y; this.emAgua = false; this.nada = false; this.plano = new Plane(new Vector3(0, 1, 0), -1e5);
+    this.papel = papel; this.fam = fam; this.idx = idx; this.fx = fx; this.submersa = 0; this.molhado = 0; this.yv = this.y; this.emAgua = false; this.nada = false; this.plano = new Plane(new Vector3(0, 1, 0), 1e5);
     this.dEsc = def.escala; this.meta = null; this.vMeta = 0; this.offX = 0; this.offZ = 0; this.sacode = 0; this.rastro = null;
     this.corBase = this.rig.materiais.map(m => m.color.clone()); this.rig.materiais.forEach(m => { m.clippingPlanes = [this.plano]; });
     this.estado = "natural"; this.ativ = "parar"; this.duracao = 1e9;
-    if(filhote){ this.rig.cab.scale.setScalar(1.18); }
+    if(filhote){ this.rig.cab.scale.setScalar(1.08); }
   }
   vai(dt, c, al, v, giro = 3){
     const dx = al[0] - this.x, dz = al[1] - this.z, d = Math.hypot(dx, dz); this.yaw += angDif(this.yaw, Math.atan2(dx, dz)) * Math.min(1, dt * giro);
@@ -79,7 +79,7 @@ class Capivara extends Animal {
     this.submersa = this.nada ? (this.esconde ? 1 : .55) : 0;
     this.y = this.yv;
     /* recorte da água */
-    this.plano.constant = ag.dentro ? -ag.y : -1e5;
+    this.plano.constant = ag.dentro ? -ag.y : 1e5;
     /* respingos ao entrar/sair e anéis ao nadar */
     if(antes !== this.emAgua){ this.fx.respingo(this.x, ag.y, this.z, this.papel === "mae" ? 14 : 8, 6); this.fx.anel(this.x, ag.y, this.z, this.papel === "mae" ? 7 : 4, 1.8); if(!this.emAgua) this.molhado = 1; else this.molhado = Math.max(this.molhado, .7); }
     this.tAnel = (this.tAnel || 0) - dt; if(this.tAnel < 0 && this.emAgua){ this.tAnel = this.esconde ? rnd(.9, 1.5) : rnd(.35, .7) / Math.max(.3, Math.min(1, this.vel / U)); this.fx.anel(this.x, ag.y, this.z, this.esconde ? 3 : 4.4, this.esconde ? 2.2 : 1.5, this.esconde ? .4 : .5); }
@@ -248,7 +248,7 @@ export function criarCapivaras(M, ctx, Z, fauna){
       const dj = J ? Math.hypot(a.x - J.x, a.z - J.z) / U : 0; if(dj > FAUNA.raioAtivo) fam.fim = true;
       a.atualizaAgua(dt, ctx); a.anima(dt, ctx, dj > FAUNA.lod.longe); a.aplica(ctx);
       /* a pose "afundada" não deve inclinar o corpo; mantém cabeça reta quando escondida */
-      if(a.esconde && a.submersa > .5){ a.rig.pesc.rotation.x = .9; a.rig.cab.rotation.x = .2; }
+      if(a.esconde && a.submersa > .5){ a.rig.pesc.rotation.x = -.08; a.rig.cab.rotation.x = .08; }
     });
     if(fam.fim && fam.membros.every(a => a.fim)){ fam.membros.forEach(a => { fauna.remove(a); }); cooldown = relogio + rnd(CAPIVARAS.cooldown[0], CAPIVARAS.cooldown[1]); fam = null; }
     else if(fam.fim) fam.membros.forEach(a => { a.fim = true; });

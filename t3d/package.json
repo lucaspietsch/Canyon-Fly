@@ -5,7 +5,26 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/trolley3d.js --bundle --format=iife --global-name=Trolley3D --minify --outfile=dist/trolley3d.min.js",
-    "start": "npx serve .."
+    "start": "npx serve ..",
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "node test/browser/poderes.cjs",
+    "test:jackao": "node test/browser/jackao.cjs",
+    "test:jackao:game": "node test/browser/jackao-game.cjs",
+    "test:krig": "node test/browser/krig.cjs",
+    "test:krig:game": "node test/browser/krig-game.cjs",
+    "test:mohr": "node test/browser/mohr.cjs",
+    "test:mohr:game": "node test/browser/mohr-game.cjs",
+    "test:mary": "node test/browser/mary.cjs",
+    "test:mary:game": "node test/browser/mary-game.cjs",
+    "test:diully": "node test/browser/diully.cjs",
+    "test:diully:game": "node test/browser/diully-game.cjs",
+    "test:kauling": "node test/browser/kauling.cjs",
+    "test:kauling:game": "node test/browser/kauling-game.cjs",
+    "test:carlao": "node test/browser/carlao.cjs",
+    "test:carlao:game": "node test/browser/carlao-game.cjs",
+    "test:graxaim:game": "node test/browser/graxaim-game.cjs",
+    "test:puma:game": "node test/browser/puma-game.cjs",
+    "test:fortaleza:game": "node test/browser/fortaleza-game.cjs"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +32,8 @@
   "dependencies": {
     "esbuild": "^0.28.2",
     "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.0"
   }
 }

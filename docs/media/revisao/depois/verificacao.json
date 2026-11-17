@@ -1,0 +1,75 @@
+{
+  "audio": [
+    {
+      "faixa": "ambiente",
+      "mudo": false,
+      "volume": 0.35,
+      "liberado": true,
+      "src": "http://127.0.0.1:8020/audio/ambiente.mp3",
+      "loop": true,
+      "paused": false,
+      "currentTime": 0.107229,
+      "readyState": 4
+    },
+    {
+      "faixa": "tirolesa",
+      "mudo": false,
+      "volume": 0.35,
+      "liberado": true,
+      "src": "http://127.0.0.1:8020/audio/tirolesa.mp3",
+      "loop": false,
+      "paused": false,
+      "currentTime": 0.122743,
+      "readyState": 4
+    },
+    {
+      "faixa": "personagens",
+      "mudo": false,
+      "volume": 0.35,
+      "liberado": true,
+      "src": "http://127.0.0.1:8020/audio/personagens.mp3",
+      "loop": true,
+      "paused": false,
+      "currentTime": 0.105134,
+      "readyState": 4
+    },
+    {
+      "faixa": "sepe",
+      "mudo": false,
+      "volume": 0.35,
+      "liberado": true,
+      "src": "http://127.0.0.1:8020/audio/sepe.mp3",
+      "loop": true,
+      "paused": false,
+      "currentTime": 0.333334,
+      "readyState": 4
+    },
+    {
+      "faixa": "tupa",
+      "mudo": false,
+      "volume": 0.35,
+      "liberado": true,
+      "src": "http://127.0.0.1:8020/audio/tupa.mp3",
+      "loop": true,
+      "paused": false,
+      "currentTime": 0.104543,
+      "readyState": 4
+    },
+    {
+      "faixa": "terror",
+      "mudo": false,
+      "volume": 0.35,
+      "liberado": true,
+      "src": "http://127.0.0.1:8020/audio/terror.mp3",
+      "loop": true,
+      "paused": false,
+      "currentTime": 0.102219,
+      "readyState": 4
+    }
+  ],
+  "viewport": [
+    "844x390",
+    "390x844"
+  ],
+  "errors": []
+}

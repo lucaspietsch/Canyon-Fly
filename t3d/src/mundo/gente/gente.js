@@ -14,7 +14,7 @@ import { EQUIPE, COR_PERFIL, TEMAS, resposta } from "../icmbio/equipe.js";
 
 const rnd = (a, b) => a + Math.random() * (b - a), ri = (a, b) => Math.floor(rnd(a, b + 1)), pick = (L) => L[Math.floor(Math.random() * L.length)];
 const PELES = [0xf1c9a5, 0xe6b996, 0xd9a37a, 0xc68a5e, 0xa8714a, 0x8a5a3a, 0x6f4a32, 0x4a3222], CABELOS = [0x1a1410, 0x2a1c12, 0x4a3220, 0x6a4a2a, 0xb08a4a, 0xc8c8c8, 0x7a2a1a, 0xd8c070];
-const CAMISAS = [0xc0392b, 0x2c6fbb, 0xe8b429, 0x3a8a4a, 0xe8e8e8, 0xd96a1a, 0x7a3f9a, 0x1e8aa8, 0xb8325a, 0x2a2a30, 0xcdbd8a, 0x4a6a3a], CALCAS = [0x3a4a6a, 0x2a3a52, 0x8a7a5a, 0x1c1c1e, 0x4a5a3a, 0x5a4a3a, 0x6a6a72];
+const CAMISAS = [0xc97933,0xd8c9a7,0x52734d,0x527994,0x925e41,0xbca46e,0x55746c], CALCAS = [0x3a4a6a, 0x2a3a52, 0x8a7a5a, 0x1c1c1e, 0x4a5a3a, 0x5a4a3a, 0x6a6a72];
 const ang = (a) => { while(a > Math.PI) a -= 2 * Math.PI; while(a < -Math.PI) a += 2 * Math.PI; return a; };
 
 export function criarGente(M){
@@ -50,8 +50,9 @@ export function criarGente(M){
     const pele = pick(PELES), kid = tipo === "crianca" || tipo === "aluno", idoso = tipo === "idoso";
     P.esc = kid ? rnd(.6, .8) : idoso ? rnd(.92, .98) : rnd(.92, 1.08); P.role = tipo;
     const camisa = pick(CAMISAS), cor = P.cor = { pele, camisa, manga: camisa, calca: pick(CALCAS), cabelo: idoso ? 0xc8c8c8 : pick(CABELOS), bota: pick([0x2a1f18, 0x3a3128, 0x1c1c1e, 0x4a3a28]), chapeu: pick([0x2a2a2a, 0x3a5a8a, 0x8a2a2a, 0xd8d0b8, 0x4a5a35]), mochila: pick([0x3a4a2c, 0x2a3a6a, 0x8a2a1a, 0x2a2a2e, 0x6a5a2a]), garrafa: pick([0x2f7fb0, 0x8a8a8a, 0x3a8a4a]), bastao: 0x6a4a2a };
-    const a = P.acess = { cabelo: true, rabo: Math.random() < .2, chapeu: Math.random() < .35 ? (Math.random() < .5 ? 1 : 2) : 0, mochila: !kid && Math.random() < .35, garrafa: Math.random() < .25, bastao: !kid && Math.random() < (idoso ? .6 : .12) };
-    if(kid){ a.chapeu = Math.random() < .3 ? 2 : 0; a.mochila = Math.random() < .6; a.bastao = false; }
+    const a = P.acess = { turista: !["guia","prof"].includes(tipo),camera:true,cabelo: true, rabo: Math.random() < .2, chapeu: Math.random() < .35 ? (Math.random() < .5 ? 1 : 2) : 0, mochila: !kid && Math.random() < .72, garrafa: Math.random() < .25, bastao: !kid && Math.random() < (idoso ? .6 : .12) };
+    if(a.turista&&tipo!=="aluno"){a.colete=Math.random()<.45;cor.colete=pick([0x61754d,0x567d91,0xd1c9ab]);}
+    if(kid){ a.chapeu = Math.random() < .3 ? 2 : 0; a.mochila = Math.random() < .85;a.chapeu=Math.random()<.45?3:a.chapeu; a.bastao = false; }
   }
   function uniforme(P, tipo){                                   // alunos de uniforme (camiseta branca com listra azul), professores e guias (colete laranja/verde)
     const c = P.cor, a = P.acess;

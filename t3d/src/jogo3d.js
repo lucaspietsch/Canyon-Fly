@@ -1,3 +1,4 @@
+import { personalizaKrig } from "./mundo/personagens/krig-visual.js";
 import { Group, Mesh, CylinderGeometry, TorusGeometry, BoxGeometry, SphereGeometry, Vector3, Quaternion, MathUtils } from "three";
 import { mat, NIVEL } from "./lib.js";
 import { camera360, cadeirinhaZip } from "./midia.js";
@@ -31,6 +32,7 @@ export function criarJogo3D({ ag, cam, renderer, pessoa3d, M, pele, equipe, lanc
   const marcos = pessoa("MARCOS", { pele: pele.media, capacete: M(0xc22b2b, { roughness: .45, metalness: .1 }), barba: true });
   /* Krig, o coordenador (laranja e verde, mosquetão azul) e Carlos, o líder (bottom vermelho com 1 grau, mosquetão branco): ficam no lançamento */
   const krig = pessoa("KRIG", { pele: pele.clara, barba: true, camisa: M(0xe8731a, { roughness: .7 }), manga: M(0x56642d), pin: { barra: "#e8731a", pil: 1, mosq: "#3b82e0" } });
+  personalizaKrig(krig);
   const carlos = pessoa("CARLOS", { pele: pele.parda, barba: false, capacete: M(0x4a5d2f, { roughness: .5 }), pin: { barra: "#951c24", pil: 1, mosq: "#ece3cf" } });
   /* lançamento: Krig (coord.), Carlos (líder), Denilson (op. 4), Lorrany (op. 5), Jhonatan.   recebimento: Pit, Thaynara, Weslley, Renato (líder 3), Marcos (resgatista) */
   const op = { op4: equipe[3], op5: equipe[2], lider2: carlos, coord: krig, op8: equipe[4], op6: pit, op7: equipe[1], op9: equipe[0], lider3: renato, resg: marcos };
@@ -129,6 +131,7 @@ export function criarJogo3D({ ag, cam, renderer, pessoa3d, M, pele, equipe, lanc
       if(p.bD.rock) p.bD.rock.visible = false; p.bD.mao.children[0].scale.set(1.08, 1.08, 1.08);
       if(p.nome && p.nome.visible) p.nome.rotation.y = Math.atan2(cam.position.x - p.av.position.x, cam.position.z - p.av.position.z) - p.av.rotation.y;
     });
+    krig.krigVisual?.tick(dt);
   }
 
   /* cliente pendurado na via (v) ou na via intermediária; devolve a posição de pés e dos dois pontos da cadeirinha */
@@ -203,6 +206,7 @@ export function criarJogo3D({ ag, cam, renderer, pessoa3d, M, pele, equipe, lanc
     },
     /* a descida vista pela câmera 360 do bastão (pacote mídia): à frente do cliente, olhando para ele, grande-angular, cânion embaixo */
     descida(o){
+      API.musicaCena="tirolesa";window.CanyonMusic?.troca("tirolesa");
       clima("dia"); esc(); T.visible = true; if(trolleyModo) trolleyModo(true); lona.visible = false;
       const D = o.D, via = D.via, p = clamp(D.t / .86, 0, 1), x = lerp(LX + 3, D.xFim || 58, p), z = zVia(via), yC = yVia(via, x);
       capCli.color.set(D.cli.capaceteCor || "#F2F6FF"); av.scale.setScalar(.92 * (D.cli.escala || 1)); epi(epiTodo);
@@ -214,6 +218,7 @@ export function criarJogo3D({ ag, cam, renderer, pessoa3d, M, pele, equipe, lanc
     },
     /* o recebimento (23,6 s de roteiro): chega, freia nas molas, escada, dupla checagem, desequipagem e receptivo */
     recebimento(o){
+      API.musicaCena=null;window.CanyonMusic?.troca("ambiente");
       clima("poente"); esc(); T.visible = true; if(trolleyModo) trolleyModo(true); lona.visible = false;
       const R = o.R, t = R.t, via = R.via, z = zVia(via), ch = R.cli;
       capCli.color.set(ch.capaceteCor || "#F2F6FF"); av.scale.setScalar(.92 * (ch.escala || 1));
@@ -339,6 +344,7 @@ export function criarJogo3D({ ag, cam, renderer, pessoa3d, M, pele, equipe, lanc
   API.salvaMundo = () => { MODO.vis0 = { T: T.visible, lona: lona.visible }; POS0.clear(); [equipe[0], equipe[1], equipe[2], equipe[3], equipe[4], renato, marcos, krig, carlos].forEach(p => { if(p) POS0.set(p, { x: p.av.position.x, y: p.av.position.y, z: p.av.position.z, r: p.av.rotation.y }); }); };
   /* depois de uma cena de missão: tudo volta ao lugar do cenário (os atores voltam à pose parada) */
   API.restauraMundo = () => {
+    API.musicaCena=null;window.CanyonMusic?.troca("ambiente");
     estadoAtor.clear(); escondeTodos(); if(MODO.vis0){ T.visible = MODO.vis0.T; lona.visible = MODO.vis0.lona; }
     POS0.forEach((q, p) => { p.av.visible = true; p.av.position.set(q.x, q.y, q.z); p.av.rotation.y = q.r; andaVis(p, false); POSE.idle(p, 0); p.tronco.rotation.set(0, 0, 0); p.cab.rotation.x = 0; });
     cliente.av.visible = false; thaynara.av.visible = false; epi(epiTodo); av.scale.setScalar(.92);

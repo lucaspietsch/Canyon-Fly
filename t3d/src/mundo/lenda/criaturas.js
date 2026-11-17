@@ -32,7 +32,7 @@ export function criaGritador(M){
   const a = { id: "gritador", tipo: "inimigo", nome: "o Gritador", raioM: 1.1, alturaM: 1.6, hp: C.hp, g, x: 0, z: 0, estado: "parado", t: 0, vel: C.velMS, encantado: 0, mortoCb: null,
     pos: () => g.position,
     dano(q){ if(a.morto) return; a.hp -= q; luz.intensity = 3; a.estado = "ferido"; a.t = 0; if(a.hp <= 0){ a.morto = true; a.t = 0; if(M.terminal) M.terminal.msg("sobrenatural", "O Gritador se desfaz num último grito, que o vento leva embora."); gritoSom(0, .7); if(a.mortoCb) a.mortoCb(); } },
-    aoRaio(d){ a.dano(2); }, aoFlecha(d){ a.dano(1); }, aoOlhos(d){ a.encantado = d.duracaoS; if(M.terminal) M.terminal.msg("sobrenatural", "O Gritador congela, preso ao olhar de Atiara."); }, aoLabia(){ return false; },
+    aoRaio(d){ a.dano(2 * d.danoInimigo); }, aoFlecha(d){ a.dano(d.danoInimigo); }, aoOlhos(d){ a.encantado = d.duracaoS; if(M.terminal) M.terminal.msg("sobrenatural", "O Gritador congela, preso ao olhar de Atiara."); }, aoLabia(){ return false; },
     coloca(x, z){ g.position.set(x, M.cen.chao(x, z, 1e9), z); g.visible = true; },
     tick(dt, J){
       a.t += dt; if(luz.intensity > .5) luz.intensity -= dt * 4; if(!g.visible || !J || a.morto) return; const p = g.position;

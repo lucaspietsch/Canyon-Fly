@@ -69,7 +69,9 @@ export function criarVila(M, { poli, fabrica }){
     const campo = new Mesh(new PlaneGeometry(fw * U, fh * U), new MeshStandardMaterial({ map: tex, roughness: 1, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 })); campo.rotation.x = -pi / 2;
     const grp = new Group(); grp.position.set(x, Y(x, z) + .5, z); grp.rotation.y = Math.atan2(px, pz); grp.add(campo);
     for(const sd of [-1, 1]){ const tr = new Mesh(new BoxGeometry(.25 * U, 2.4 * U, 7.3 * U), matBranco); tr.position.set(sd * fw * U / 2, 1.2 * U, 0); grp.add(tr); for(const sz of [-1, 1]){ const po = new Mesh(new CylinderGeometry(.12 * U, .12 * U, 2.4 * U, 6), matBranco); po.position.set(sd * fw * U / 2, 1.2 * U, sz * 3.65 * U); grp.add(po); } }
-    G.add(grp);
+    G.add(grp);S.campo={x,z,larguraM:fw,alturaM:fh};
+    // Conversa contextual no campo, disponível com os operários visíveis.
+    if(M.H?.pessoa3d){S.operarios=[];for(let i=0;i<2;i++){const [wx,wz]=Lc((i?1:-1)*(fw/2+3),tb+85),m=M.H.M,pele=M.H.pele.media.clone(),rig=M.H.pessoa3d({nome:'Operário do campo',x:wx,y:Y(wx,wz),z:wz,yaw:Math.atan2(x-wx,z-wz),camisa:m(i?0x74705a:0x75654a),manga:m(i?0x74705a:0x75654a),calca:m(0x363d32),pele,cabelo:0x302217,barba:i===0,oculos:false});rig.capG.visible=false;rig.equip.forEach(o=>o.visible=false);G.add(rig.av);S.operarios.push(rig);const h={id:'ouro-verde-operario-'+i,x:wx,z:wz,r:4*U,rotulo:()=> 'Conversar com o operário',acao(){const carlao=M.personagens?.ativo==='carlao';M.terminal?.msg('info',carlao?'Operário: “Ô Carlão! Depois do turno tem jogo. Quero ver essa bola dourada no gol!”':'Operário: “Depois do turno, a gente se encontra aqui para jogar.”');if(carlao)M.terminal?.msg('info','Carlão: “Fechado! No campo é passe, ginga e amizade.”');M.ctx?.mostraAviso(carlao?'Carlão e os operários: partida combinada!':'Futebol depois do turno');}};S.hotspots.push(h);cen.hotspots.push(h);}}
   }
   /* ---------- postes e árvores ---------- */
   {
@@ -90,8 +92,8 @@ export function criarVila(M, { poli, fabrica }){
     const pl = placaLegivel(tex, 7.6 * U, 2.5 * U, { verso: tex, cor: 0x3a2a1a }); pl.position.set(0, 2.2 * U, 0); g.add(pl); G.add(g);
   }
 
-  function tick(dt){ S.t += dt; if(S.lampadas){ const h = M.ciclo.hora(), noite = h < 5.8 || h >= 18; S.lampadas.emissiveIntensity += ((noite ? 2.2 : .08) - S.lampadas.emissiveIntensity) * Math.min(1, dt * 1.5); } }
-  const dispose = () => { S.colisores.forEach(k => { const i = cen.colisores.indexOf(k); if(i >= 0) cen.colisores.splice(i, 1); }); };
+  function tick(dt){ if(G.userData.hack)return; S.t += dt; if(S.lampadas){ const h = M.ciclo.hora(), noite = h < 5.8 || h >= 18; S.lampadas.emissiveIntensity += ((noite ? 2.2 : .08) - S.lampadas.emissiveIntensity) * Math.min(1, dt * 1.5); } }
+  const dispose = () => {S.hotspots.forEach(h=>{const i=cen.hotspots.indexOf(h);if(i>=0)cen.hotspots.splice(i,1);}); S.colisores.forEach(k => { const i = cen.colisores.indexOf(k); if(i >= 0) cen.colisores.splice(i, 1); }); };
   S.colisores.forEach(k => cen.colisores.push(k));
   return { g: G, tick, dispose, S, centro: c0, casas: casas.length };
 }

@@ -47,7 +47,7 @@ export const ESPECIES = {
     anda: .9, trota: 5
   },
   graxaim: {
-    id: "graxaim", nome: "Graxaim", zona: "estacionamento", max: 2, fatorDist: .7,
+    id: "graxaim", nome: "Graxaim-do-campo", zona: "estacionamento", max: 2, fatorDist: .7,
     chance: .2, cooldown: [100, 220], duracao: [60, 120], dupla: .3,
     horas: [[0, .75], [4.5, .6], [6, .3], [8, .18], [15, .22], [17, .7], [19, 1], [22, .9], [24, .75]],
     anda: 1.5, trota: 5.4
@@ -260,8 +260,8 @@ export const TURFEIRA = {
 export const SAPINHOS = {
   ativo: true, raio: 25, max: 22, escalaVisual: 3.2, intervaloSpawn: .9,        // m: só existem e são simulados nesse raio · máximo de sapinhos ativos
   especies: {
-    cambaraensis: { ativo: true, peso: .7, nome: "Sapinho-de-Cambará", cientifico: "Melanophryniscus cambaraensis", dorso: [.06, .045, .04], listra: null, vermelho: [.86, .16, .08] },
-    dorsalis: { ativo: true, peso: .3, nome: "Sapinho Melanophryniscus dorsalis", cientifico: "Melanophryniscus dorsalis", dorso: [.1, .09, .05], listra: [.72, .52, .1], vermelho: [.9, .26, .06] }
+    cambaraensis: { ativo: true, peso: .7, nome: "Sapinho-verde-de-barriga-vermelha", cientifico: "Melanophryniscus cambaraensis", tamanhoM: [.03, .04], dorso: [.39, .46, .22], listra: null, vermelho: [.86, .16, .08] },
+    dorsalis: { ativo: true, peso: .3, nome: "Sapinho-de-barriga-vermelha", cientifico: "Melanophryniscus dorsalis", tamanhoM: [.02, .03], dorso: [.12, .15, .13], listra: null, vermelho: [.9, .26, .06] }
   },
   zonas: { meio: { ativo: true, peso: .5, casal: .65 }, borda: { ativo: true, peso: .25, casal: .8, ateM: 15 }, arroio: { ativo: true, peso: .25, casal: .15 } },
   arroioNome: /graxa/i,                                   // linha do KML que é o Arroio Graxaim; sem ela, vale o arroio do cenário
@@ -271,7 +271,7 @@ export const SAPINHOS = {
 };
 
 /* ============================================================================================================
-   AVES DA MATA E DO CAMPO (gralha-azul, papagaios, pica-pau, sabiá, passarinhos, tucano, quero-quero, curicaca, gavião) + coro do amanhecer
+   AVES DA MATA E DO CAMPO (gralha-azul, papagaios, pica-pau, sabiá, ticoticos, tucano, quero-quero, curicaca, gavião) + coro do amanhecer
    Só existem num raio em volta do jogador. Quantidade e densidade × QUALIDADE.aves. Tudo em metros / segundos reais.
    ============================================================================================================ */
 export const AVES = {
@@ -281,8 +281,8 @@ export const AVES = {
   intervaloSpawn: .6,          // s entre tentativas de aparecer uma ave/bando
   volume: .6,                  // volume geral das vozes (0–1)
   coro: { alvorada: 1, dia: .45, meioDia: .1, entardecer: .7, noite: 0 },   // intensidade do canto ao fundo por período (meio-dia fica quieto)
-  fuga: { gralha: 16, papagaio: 20, picapau: 11, sabia: 9, passarinho: 6, tucano: 18, queroquero: 7, curicaca: 15, gaviao: 30 },   // m: distância em que levantam voo
-  pesos: { gralha: 30, picapau: 9, sabia: 16, passarinho: 22, tucano: 2.2, queroquero: 20, curicaca: 11 },                         // sorteio de espécie no lugar (mata/campo)
+  fuga: { gralha: 16, papagaio: 20, picapau: 11, sabia: 9, ticotico: 6, tucano: 18, queroquero: 7, curicaca: 15, gaviao: 30 },   // m: distância em que levantam voo
+  pesos: { papagaio:6,papagaioRoxo:4,gralha: 30, picapau: 9, sabia: 16, ticotico: 22, tucano: 2.2, queroquero: 20, curicaca: 11 },                         // sorteio de espécie no lugar (mata/campo)
   papagaios: { porMinuto: .7, grupo: [4, 9], alturaM: [26, 60], velocidade: 17 },    // revoadas de passagem ao amanhecer e ao entardecer
   gaviao: { porMinuto: .22, duracaoSeg: [14, 24] },                                  // gavião sobrevoa; se há gralhas por perto elas o expulsam
   quero: { raioNinhoM: 13, mergulhoSeg: [3.2, 5.5], mostraNinho: true },             // defesa do ninho: rasantes sobre quem chegar perto

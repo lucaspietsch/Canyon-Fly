@@ -53,7 +53,7 @@ export async function confereLogin(login, senha){
   let id = null;
   for(const [k, e] of Object.entries(OPERADORES)){ if(e && e.login && normaliza(e.login) === l && e.salt && e.hash && await confereHash(senha, e)){ id = k; break; } }
   if(!id && modoDebug() && LOGIN_TESTE && normaliza(LOGIN_TESTE.login) === l && await confereHash(senha, LOGIN_TESTE)) id = LOGIN_TESTE.como;
-  if(!id && modoDebug() && LOGIN_TESTE){ const mt = /^([a-z]+)\.([a-z0-9-]+)$/.exec(l); if(mt && mt[1] === normaliza(LOGIN_TESTE.login) && await confereHash(senha, LOGIN_TESTE)) id = mt[2]; }      // debug: "teste.jackao" entra como o Jackão
+  if(!id && modoDebug() && LOGIN_TESTE){ const mt = /^([a-z]+)\.([a-z0-9-]+)$/.exec(l); if(mt && ["pit","krig","carlao","jackao","diully","mary","mohr","kauling"].includes(mt[2]) && mt[1] === normaliza(LOGIN_TESTE.login) && await confereHash(senha, LOGIN_TESTE)) id = mt[2]; }      // debug: "teste.jackao" entra como o Jackão
   if(!id && !l){ await hashSenha(senha || "", "x"); }                                                        // custo parecido mesmo com login vazio (não revela nada pelo tempo)
   if(id){ gravaEstado(LOGIN_ID, {}); return { ok: true, id, espera: 0, restam: SENHA_CFG.erros }; }
   return registraErro(LOGIN_ID);

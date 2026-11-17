@@ -12,19 +12,19 @@
 /* OPERADORES: a chave é o id do personagem (dados/personagens.js). `login` é o nome de login que a pessoa digita.
    Formato:  pit: { login: "…", salt: "…", iter: 100000, hash: "…" },   */
 export const OPERADORES = {
-  /* pit:     { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* krig:    { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* carlao:  { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* jackao:  { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* diully:  { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* mary:    { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* mohr:    { login: "", salt: "", iter: 100000, hash: "" }, */
-  /* kauling: { login: "", salt: "", iter: 100000, hash: "" }, */
+  pit: { login: "pit", salt: "", iter: 100000, hash: "" }, // Cole aqui o salt e hash gerados para o Pit.
+  krig: { login: "krig", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do coordenador.
+  carlao: { login: "carlao", salt: "", iter: 100000, hash: "" }, // Cole salt e hash próprios do Carlão.
+  jackao: { login: "jackao", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do Jackão.
+  diully: { login: "diully", salt: "", iter: 100000, hash: "" }, // Cole salt e hash próprios da Diully.
+  mary: { login: "mary", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios da Mary.
+  mohr: { login: "mohr", salt: "", iter: 100000, hash: "" }, // Cole o salt e o hash próprios do Mohr.
+  kauling: { login: "kauling", salt: "", iter: 100000, hash: "" }, // Cole salt e hash próprios do Kauling.
 };
 
 /* LOGIN DE TESTE (pedido pelo Lucas): só vale em MODO DEBUG — página aberta em localhost/127.0.0.1 ou com ?debug na URL.
    Entra como o operador `como` sem precisar das senhas reais. Login: "teste"; a senha é a combinada (também só hash aqui). */
-export const LOGIN_TESTE = { login: "teste", como: "krig", salt: "acdf93170b10a7588ad32181408b6db1", iter: 100000, hash: "f3e44fa5ffbbf03a5ab925e2bb764e8a3a538a9df44e28ebe3ff78b62b5921a1" };
+export const LOGIN_TESTE = { login: "teste", como: "pit", salt: "acdf93170b10a7588ad32181408b6db1", iter: 100000, hash: "f3e44fa5ffbbf03a5ab925e2bb764e8a3a538a9df44e28ebe3ff78b62b5921a1" };
 
 /* PORTÕES com senha única (sem login): portão da Vila Santana. Mesmo método PBKDF2. */
 export const SENHAS = {

@@ -1,3 +1,12 @@
+import { constroiCarlao } from './carlao-visual.js';
+import { constroiKauling } from './kauling-visual.js';
+import { constroiDiully } from './diully-visual.js';
+import { constroiMary } from "./mary-visual.js";
+import { constroiMohr } from "./mohr-visual.js";
+import { constroiKrig } from "./krig-visual.js";
+import { constroiJackao } from "./jackao-visual.js";
+import { visualPitDe } from "./pit-visual.js";
+import { PODERES } from "../../../../data/poderes.js";
 import { PERSONAGENS } from "../dados/personagens.js";
 import { Scene, Color, HemisphereLight, DirectionalLight, PerspectiveCamera, Vector2 } from "three";
 import { constroiSepe, constroiTupa, constroiAtiara, constroiOperador, constroiOperadora } from "./modelos.js";
@@ -25,14 +34,14 @@ export function criarPersonagens(M){
   /* rigs (bonecos) dos desbloqueados que não são do jogo base: criados na primeira vez que o jogador os escolhe */
   function rig(id){
     if(S.rigs[id]) return S.rigs[id]; const d = def(id); if(!d || d.hub) return null;
-    try{ const r = id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
+    try{ const r = id === "carlao" ? constroiCarlao(H,d) : id === "kauling" ? constroiKauling(H,d) : id === "diully" ? constroiDiully(H,d) : id === "mary" ? constroiMary(H,d) : id === "mohr" ? constroiMohr(H,d) : id === "krig" ? constroiKrig(H,d) : id === "jackao" ? constroiJackao(H,d) : id === "sepe" ? constroiSepe(H, d) : id === "tupa" ? constroiTupa(H, d) : id === "atiara" ? constroiAtiara(H, d) : d.operador ? (d.modelo && d.modelo.feminina ? constroiOperadora(H, d) : constroiOperador(H, d)) : null; if(r){ S.rigs[id] = r; } return r; }catch(e){ console.warn("personagem", id, e); return null; }
   }
   /* o modo andar pergunta quem existe (ver trolley3d.js → H.personagens): os desbloqueados com boneco entram na lista */
   H.extraPersonagens = () => PERSONAGENS.filter(p => !p.hub && desbloqueado(p.id)).map(p => rig(p.id)).filter(Boolean).map(r => ({ id: r.id, nome: r.nome, p: r.p }));
   H.abreTrocaPersonagem = () => { abreTela(); return true; };
 
   function desbloqueia(id, motivo){
-    const d = def(id); if(!d || d.emBreve || desbloqueado(id)) return false; S.desb[id] = Date.now(); salva();
+    const d = def(id); if(!d || d.emBreve || desbloqueado(id)) return false; S.desb[id] = Date.now(); salva();if(id==="sepe"||id==="tupa")M.trilha?.evento(id);
     if(M.terminal) M.terminal.msg("missao", "Personagem desbloqueado: " + d.nome + (motivo ? " (" + motivo + ")" : "")); if(M.ctx) M.ctx.mostraAviso("Personagem desbloqueado: " + d.nome); return true;
   }
   function escolhe(id){
@@ -52,7 +61,7 @@ export function criarPersonagens(M){
     const grade = document.createElement("div"); grade.style.cssText = "display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;"; cx.appendChild(grade);
     lista().forEach(p => { const c = document.createElement("div"); const novo = opc.destaque === p.id;
       c.style.cssText = "border:2px solid " + (p.ativo ? "#ffd36a" : p.desbloqueado ? "#5a6a2b" : "#3a3a3a") + ";border-radius:12px;padding:10px 12px;opacity:" + (p.desbloqueado ? 1 : .6) + ";" + (novo ? "box-shadow:0 0 18px #9fc8ff;" : "") + (p.desbloqueado ? "cursor:pointer;" : "");
-      c.innerHTML = "<div style='font-size:15px;color:" + (p.desbloqueado ? "#e9efc0" : "#9a9a8a") + "'>" + (p.desbloqueado ? "" : "🔒 ") + p.nome + (p.ativo ? "  · em uso" : "") + "</div><div style='opacity:.75;margin:3px 0'>" + p.epoca + "</div><div style='opacity:.85;font-size:12px;line-height:1.45'>" + (p.desbloqueado ? p.aparencia : (p.emBreve ? "Em breve." : (p.desbloqueio ? p.desbloqueio.texto : "Bloqueado."))) + "</div>" + (p.habilidades.length ? "" : "<div style='opacity:.5;font-size:11px;margin-top:4px'>Habilidades: (vazio por enquanto)</div>");
+      c.innerHTML = "<div style='font-size:15px;color:" + (p.desbloqueado ? "#e9efc0" : "#9a9a8a") + "'>" + (p.desbloqueado ? "" : "🔒 ") + p.nome + (p.ativo ? "  · em uso" : "") + "</div><div style='opacity:.75;margin:3px 0'>" + p.epoca + "</div><div style='opacity:.85;font-size:12px;line-height:1.45'>" + (p.desbloqueado ? p.aparencia : (p.emBreve ? "Em breve." : (p.desbloqueio ? p.desbloqueio.texto : "Bloqueado."))) + "</div>" + (PODERES[p.id] ? "<div style='color:#ffd36a;font-size:12px;line-height:1.45;margin-top:6px'><b>" + PODERES[p.id].nome + "</b><br>" + PODERES[p.id].texto + "</div>" : "");
       if(p.desbloqueado) c.onclick = () => { fechaTela(); escolhe(p.id); };
       else if(p.operador && !p.emBreve) c.onclick = async () => { c.style.cursor = "wait"; if(M.ctx && M.ctx.soltaTeclas) M.ctx.soltaTeclas(); const id = await pedeLogin(M.ui, { titulo: "Login do operador — " + p.nome, texto: "Entre com seu nome de login e a senha. A sessão vale até fechar a aba." }); c.style.cursor = ""; if(id){ fechaTela(); if(M.terminal) M.terminal.msg("info", "Operador logado: " + (def(id) || {}).nome); escolhe(id); } };
       grade.appendChild(c); });
@@ -61,25 +70,30 @@ export function criarPersonagens(M){
   /* RETRATO para aprovação (depuração): desenha o boneco de `id` numa cena neutra e devolve um PNG (dataURL). graus: 0 = frente, 90 = perfil.
      opc.transformado = com a roupa de poder. Uso no console: M.personagens.retrato("mary", 90, { transformado: true }). O boneco volta ao lugar depois. */
   function retrato(id, graus = 0, opc = {}){
-    const am = H.andarMod, r = opc.objeto ? { p: { av: opc.objeto } } : id === "pit" ? (am && am.avatar ? { p: am.avatar() } : (M.ctx && M.ctx.avatar ? { p: M.ctx.avatar() } : null)) : rig(id); if(!r || !r.p || !r.p.av) return null;
+    const am = H.andarMod, r = opc.objeto ? { p: { av: opc.objeto } } : id === "pit" ? (H.PIT_RIG ? { p: H.PIT_RIG } : null) : rig(id); if(!r || !r.p || !r.p.av) return null;
     const av = r.p.av, pai = av.parent, pos = av.position.clone(), rot = av.rotation.y, vis = av.visible, px = opc.px || 420;
-    const cena = new Scene(); cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
+    const pitVisual=id === "pit" ? visualPitDe(av) : null, pitArmado=pitVisual?.armado, posePit=pitVisual && r.p.bE ? [r.p.bE.pv.rotation.clone(),r.p.bE.co.rotation.clone()] : null; pitVisual?.forma(!!opc.transformado);
+    const cena = new Scene();cena.name="retrato-estudio"; cena.background = new Color(opc.fundo !== undefined ? opc.fundo : 0x2b3324); cena.add(new HemisphereLight(0xe6eeff, 0x4a4634, 1.2));
     const luz = new DirectionalLight(0xffffff, 1.7); luz.position.set(3, 8, 6); cena.add(luz); const luz2 = new DirectionalLight(0xffe0b0, .6); luz2.position.set(-4, 3, -3); cena.add(luz2);
     const esc0 = av.scale.x, esc = opc.escala || 1; cena.add(av); av.position.set(0, 0, 0); av.rotation.y = graus * Math.PI / 180; av.visible = true; if(esc !== 1) av.scale.setScalar(esc0 * esc);
+    let comparacao=null,comparacaoMats=[];if(opc.gigante&&id==='kauling'){comparacao=av.clone(true);comparacao.traverse(o=>{if(o.material&&!Array.isArray(o.material)){o.material=o.material.clone();comparacaoMats.push(o.material);}});comparacao.position.set(-4,0,0);comparacao.scale.setScalar(esc0);cena.add(comparacao);av.scale.setScalar(esc0*2.5);av.position.x=1;}
     if(opc.transformado && M.transformacao) M.transformacao.vesteEm(av, id); if(opc.transformado && id === "pit" && M.poderes && M.poderes.pit) M.poderes.pit.vesteEm(av); if(opc.transformado && r.fx){ r.fx.liga(); r.fx.tick(.4); r.fx.tick(.4); }
-    const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, 2.5 * esc, 12.5 * esc); cam.lookAt(0, 2.45 * esc, 0); }
+    const cam = new PerspectiveCamera(26, 1, .1, 100); if(opc.rosto){ cam.position.set(0, 4.15, 6.2); cam.lookAt(0, 3.95, 0); } else { cam.position.set(0, (id === "pit" ? 2.9 : 2.5) * esc, (id === "pit" ? 15 : id === "jackao" ? 15.5 : 12.5) * esc); cam.lookAt(0, (id === "pit" ? 2.85 : 2.45) * esc, 0); }
+    if(comparacao){cam.position.set(0,6.4,36);cam.lookAt(0,6.4,0);}
+    if(opc.alvoY!==undefined){cam.position.set(0,opc.alvoY+.15,opc.distancia||8);cam.lookAt(0,opc.alvoY,0);}
     const R = M.renderer, tam = new Vector2(); R.getSize(tam); const pr = R.getPixelRatio(); R.setPixelRatio(1); R.setSize(px, px, false); R.render(cena, cam);
     const url = R.domElement.toDataURL("image/png");
     R.setPixelRatio(pr); R.setSize(tam.x, tam.y, false);
     if(opc.transformado && M.transformacao && !(M.transformacao.ativa() && M.transformacao.S.id === id && S.ativo === id)) M.transformacao.despeEm(av); if(opc.transformado && r.fx && !(M.transformacao && M.transformacao.ativa() && M.transformacao.S.id === id)) r.fx.desliga();
     if(opc.transformado && id === "pit" && M.poderes && M.poderes.pit && !(M.transformacao && M.transformacao.ativa())) M.poderes.pit.despeEm(av);
-    cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; if(esc !== 1) av.scale.setScalar(esc0); return url;
+    if(pitVisual){pitVisual.forma(pitArmado);if(posePit){r.p.bE.pv.rotation.copy(posePit[0]);r.p.bE.co.rotation.copy(posePit[1]);}}
+    cena.remove(av); if(pai) pai.add(av); av.position.copy(pos); av.rotation.y = rot; av.visible = vis; if(esc !== 1 || comparacao) av.scale.setScalar(esc0);comparacaoMats.forEach(m=>m.dispose());return url;
   }
   function fechaTela(){ if(S.tela){ S.tela.remove(); S.tela = null; } }
   function tecla(e){ if(S.tela){ if(e.code === "Escape"){ fechaTela(); } e.preventDefault(); return true; } return false; }
   function tick(dt){ const r = S.rigs[S.ativo]; if(r && r.tick) r.tick(dt); }
   /* encerra a sessão do operador: volta ao Pit (ou ao primeiro desbloqueado) e desfaz a transformação */
-  function sai(){ const id = sessao.operador(); sessao.sai(); if(M.transformacao) M.transformacao.desliga(); if(S.ativo === id) escolhe("pit"); if(M.terminal) M.terminal.msg("info", "Sessão do operador encerrada."); if(M.ctx) M.ctx.mostraAviso("Você saiu"); }
+  function sai(){ const id = sessao.operador(); sessao.sai(); if(M.transformacao) M.transformacao.desliga(); if(S.ativo === id){ H.andarMod?.escolhePersonagem("pit"); S.ativo="pit"; salva(); } if(M.terminal) M.terminal.msg("info", "Sessão do operador encerrada."); if(M.ctx) M.ctx.mostraAviso("Você saiu"); }
   const operadorLogado = () => sessao.operador();
   return { lista, desbloqueado, desbloqueia, escolhe, abreTela, fechaTela, tecla, tick, rig, def, pertenceAoOutroTempo, sai, operadorLogado, retrato, S, get ativo(){ return S.ativo; }, info: () => "Personagem: " + S.ativo, desliga: fechaTela };
 }
