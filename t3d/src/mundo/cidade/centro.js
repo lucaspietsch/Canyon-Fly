@@ -39,7 +39,7 @@ function texTorre(){
   }, { repeat: [1, 1] });
 }
 /* UV da caixa 1×1×1 (faces ±x, ±x, ±y, ±y, ±z, ±z; 4 vértices cada): ladrilhos de MOD m; topo/fundo no canto (só cor) */
-function uvCaixa(g, wM, dM, hM){ const uv = g.attributes.uv; for(let f = 0; f < 6; f++) for(let k = 0; k < 4; k++){ const i = f * 4 + k, lado = f < 2 ? dM : f > 3 ? wM : 0;
+function uvCaixa(g, wM, dM, hM, soLongos = false){ const uv = g.attributes.uv; for(let f = 0; f < 6; f++) for(let k = 0; k < 4; k++){ const i = f * 4 + k; let lado = f < 2 ? dM : f > 3 ? wM : 0; if(soLongos && lado && lado < Math.max(wM, dM)) lado = 0;      /* igreja: janelas só nas laterais compridas */
   if(!lado){ uv.setXY(i, .02, .98); continue; } uv.setXY(i, uv.getX(i) * Math.max(1, Math.round(lado / MOD)), uv.getY(i) * Math.max(1, Math.round(hM / MOD))); } uv.needsUpdate = true; }
 
 export function criarCentro(M, u){
@@ -59,7 +59,7 @@ export function criarCentro(M, u){
     const W = w * le, D = d * le, H = alt * U, y0 = Math.min(Y(cx, cz), Y(cx + ex[0] * w / 2, cz + ex[1] * w / 2), Y(cx - ex[0] * w / 2, cz - ex[1] * w / 2)) - .3;
     const cTelha = (COR[tipo] || COR.casa)[1], cParede = corDe(nome, tipo);
     e.set(0, yaw, 0); q.setFromEuler(e);
-    const par = new BoxGeometry(1, 1, 1); uvCaixa(par, w, d, alt); par.applyMatrix4(m4.compose(v.set(cx, y0 + H / 2, cz), q, s.set(W, H, D))); add(cParede, par, tipo);
+    const par = new BoxGeometry(1, 1, 1); uvCaixa(par, w, d, alt, tipo === "igreja"); par.applyMatrix4(m4.compose(v.set(cx, y0 + H / 2, cz), q, s.set(W, H, D))); add(cParede, par, tipo);
     /* frente: lado do bloco virado para a rua mais próxima (a igreja: para a praça, ao sul) */
     const [fx, fy] = /Igreja/.test(nome) ? [x, y - 60] : [fx0, fy0], fp = mundo(fx, fy), vx = fp[0] - cx, vz = fp[1] - cz;
     const ux = [Math.cos(yaw), -Math.sin(yaw)], uz = [Math.sin(yaw), Math.cos(yaw)], px = vx * ux[0] + vz * ux[1], pz = vx * uz[0] + vz * uz[1];
@@ -69,7 +69,7 @@ export function criarCentro(M, u){
     const peca = (a, b, h, la, pb, ah, cor, tex) => { const [qx, qy, qz] = P(a, b, h + ah / 2), g = new BoxGeometry(1, 1, 1); if(tex) uvCaixa(g, la, pb, ah);
       g.applyMatrix4(m4.compose(v.set(qx, qy, qz), q, frenteX ? s.set(pb * le, ah * U, la * le) : s.set(la * le, ah * U, pb * le))); add(cor, g, tex || ""); };
     /* telhado: chalés e casas antigas com empena (duas águas, cumeeira perpendicular à rua); o resto 4 águas */
-    const empena = /Chalé|chalé|Galochas|mal-assombrada|trapeira|Casa histórica|tábuas/.test(nome);
+    const empena = /Chalé|chalé|Galochas|mal-assombrada|trapeira|Casa histórica|tábuas|Igreja/.test(nome);
     if(empena){ const rh = meioLarg * 1.15, g = new ConeGeometry(Math.SQRT1_2, 1, 4); g.rotateY(Math.PI / 4);
       const sx = frenteX ? W * 1.08 : W * 1.1, sz = frenteX ? D * 1.1 : D * 1.08; g.scale(1, 1, 1);
       /* duas águas = "pirâmide esticada" cortada: usa um prisma triangular */
@@ -82,7 +82,7 @@ export function criarCentro(M, u){
     /* ---- detalhes dos prédios principais (catálogo) ---- */
     if(/Du Perau/.test(nome)){ peca(0, 1.6, 0, w * .9, 3.2, 1.3, 0x9a9690); peca(0, 3.15, 1.3, w * .9, .12, 1.0, 0x5a3b24); peca(-w * .45 + .6, 4.2, 0, 1.2, 2.2, .45, 0xa8a49c); peca(-w * .45 + .6, 3.6, 0, 1.2, 1.2, .9, 0xa8a49c); }          // varanda elevada com guarda-corpo e escada de concreto
     if(/Sociedade/.test(nome)){ for(const lado of [-1, 1]){ peca(lado * 2.6, 1.4, 0, 2.2, 2.8, .5, 0xa8483a); peca(lado * 2.6, 1.0, 0, 2.2, 2.0, 1.0, 0xa8483a); } peca(0, 1.2, 3.4, 4.2, 2.4, .25, 0x7a4a2a); peca(0, .06, 3.1, w * .98, .1, .35, 0x7a4a2a); }     // escadaria dupla, marquise de cobre e faixa marrom
-    if(/Igreja/.test(nome)){ peca(0, 2.5, 0, 9, 5, .5, 0xd8d2c4); peca(0, 1.5, 0, 9, 3, 1.0, 0xd8d2c4); peca(0, .6, 0, 9, 1.2, 1.5, 0xd8d2c4); }                                      // escadaria na frente (praça)
+    if(/Igreja/.test(nome)){ peca(0, 6.5, 0, 9, 3, .5, 0xd8d2c4); peca(0, 5.5, 0, 9, 1.6, 1.0, 0xd8d2c4); peca(0, 4.6, 0, 9, 1.2, 1.5, 0xd8d2c4); for(const l of [-1, 1]){ peca(l * (w / 2 - .6), .25, 0, 1.0, .5, alt, 0xe0dacb); } peca(0, .25, alt - .6, w, .5, .6, 0xe0dacb); }       // escadaria diante da torre, pilastras e cornija na fachada                                      // escadaria na frente (praça)
     if(/mal-assombrada|histórica|trapeira/.test(nome)){ peca(-w * .3, 1.2, 0, 3.4, 2.4, 3.4, 0x9fc0d4); peca(meioLarg * .6, -meioFundo * .6, alt, .9, .9, 3.2, 0x8a4a34); }           // bay de vidro na ponta e chaminé de tijolo
     if(/amarela/.test(nome)){ peca(meioLarg * .5, -meioFundo * .5, alt, 1, 1, 5.5, 0x8a4a34); }                                                                                   // chaminé de tijolo muito alta
     if(/Supermercado/.test(nome)){ peca(0, .06, alt - 1.6, Math.min(8, w * .9), .15, 1.0, 0xffffff); }                                                                              // placa branca do letreiro (texto: só com autorização)

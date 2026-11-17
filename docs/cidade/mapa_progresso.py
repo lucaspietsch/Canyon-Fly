@@ -14,7 +14,7 @@ LUGARES = [
     ("Calçada em favos de mel", -15, 12, 0, 0, "parcial", "19 + fotos do Lucas"),
     ("Termômetro", -10, 30, 0, 0, "falta", "satélite"),
     ("Rua Coberta", -30, 0, 60, 6, "parcial", "01 02 14 19 21 + Lucas: 10 arcos-favo"),
-    ("Igreja Matriz São José", -24, 68, 14, 40, "parcial", "01-06 11"),
+    ("Igreja Matriz São José", -24, 71.5, 14, 40, "parcial", "01-06 11"),
     ("Rótula do Cambará", -42, 49, 0, 0, "falta", "11"),
     ("Casa paroquial (térrea)", -4, 75, 6, 30, "parcial", "04 05"),
     ("Prédio de concreto inacabado", -12, 95, 16, 14, "parcial", "05"),
@@ -115,7 +115,7 @@ def md():
     L += [f"**{ok} de {tot} prontos.**", "", "| | Lugar | Posição (x, y) m | Refs |", "|---|---|---|---|"]
     for nome, x, y, w, h, st, refs, *_ in LUGARES:
         nome = nome.lstrip("· ")
-        L.append(f"| {ic[st]} | {nome} | ({x:+d}, {y:+d}) | {refs} |")
+        L.append(f"| {ic[st]} | {nome} | ({x:+g}, {y:+g}) | {refs} |")
     return "\n".join(L) + "\n"
 
 if __name__ == "__main__":

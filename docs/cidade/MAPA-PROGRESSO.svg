@@ -22,8 +22,8 @@
 <text x="360" y="543" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Termômetro</text>
 <rect transform="rotate(0.0 280.0 660.0)" x="160" y="648" width="240" height="24" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Rua Coberta — em andamento (blocos) (refs 01 02 14 19 21 + Lucas: 10 arcos-favo)</title></rect>
 <text x="280" y="663" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Rua Coberta</text>
-<rect transform="rotate(-3.9 304.0 388.0)" x="276" y="308" width="56" height="160" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Igreja Matriz São José — em andamento (blocos) (refs 01-06 11)</title></rect>
-<text x="304" y="391" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Igreja Matriz São José</text>
+<rect transform="rotate(-3.9 304.0 374.0)" x="276" y="294" width="56" height="160" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Igreja Matriz São José — em andamento (blocos) (refs 01-06 11)</title></rect>
+<text x="304" y="377" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Igreja Matriz São José</text>
 <circle cx="232" cy="464" r="6" fill="#c9483f" stroke="#222" stroke-width=".6"><title>Rótula do Cambará — falta</title></circle>
 <text x="232" y="467" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Rótula do Cambará</text>
 <rect transform="rotate(-3.9 384.0 360.0)" x="372" y="300" width="24" height="120" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa paroquial (térrea) — em andamento (blocos) (refs 04 05)</title></rect>
