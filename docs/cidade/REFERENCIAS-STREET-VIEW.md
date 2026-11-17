@@ -610,6 +610,12 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
         - → **CONFIRMADO pelo Lucas:** **Trilha do Vértice** = centro de visitantes → **Mirante da Cachoeira das Andorinhas** (borda, curta); **Trilha da Casa do Vô Marçal** = sai da borda e vai **pelo campo para o sul** até a **CASA DO VÔ MARÇAL** (as construções no fim, ≈ (+6 603, −12 707)).
       - **Dúvida:** qual parte é a **Trilha do Vértice** e qual é a **Casa do Vô Marçal** (onde fica a casa)? E as pontas (2) e (3) são **mirantes**?
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
+- **BORDA COMPLETA DO CÂNION ITAIMBEZINHO** — arquivo `docs/cidade/kml/itaimbezinho-borda-completa.kml` (último "Caminho sem título"), **201 pontos, ≈ 21,7 km** de contorno desenhado.
+  - Área: x ≈ **+4 400 a +6 820**, y ≈ **−12 160 a −16 580** → o cânion corre de **norte (perto do centro de visitantes) para o SUL**, uns **4,4 km** de extensão e até ~2,4 km de largura no desenho (contando os recortes das duas bordas).
+  - O ponto mais ao norte da borda passa a **~85 m do Mirante das Andorinhas** e ~110 m do centro de visitantes ✔ (a borda faz a "cabeceira" do cânion ali — onde fica a **Cachoeira das Andorinhas**).
+  - A linha contorna **as duas bordas** (lado RS e lado SC, que a divisa separa pelo fundo do cânion), com muitos **recortes/reentrâncias** (vales laterais), indo e voltando — começa em ≈ (+6 697, −15 974) e termina em ≈ (+5 815, −16 467), no sul.
+  - **No jogo:** igual ao Fortaleza — usar como **linha de borda** (limite do terreno onde começa o paredão), com os **paredões de basalto** descritos no Mirante das Andorinhas.
+  - **A receber:** **Trilha do Cotovelo** (segue pela borda).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
 - **Escala no jogo (regra das estradas pela metade):** 24,4 km reais → **≈ 12,2 km** no jogo; a guarita fica a **≈ 8,5 km** da cidade.
 - **A receber:** **área do Itaimbezinho** (borda, trilhas, centro de visitantes); **mapa do município**.
