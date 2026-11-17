@@ -591,6 +591,13 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
 3. **Sudeste — RS-427**: sai na Pizza Retrô, passa Eco Hotel, Cabanas Imbuia, Pousada Cardoso e vira para o leste (B3).
 4. **Sudoeste — RS-020**: passa Casa Nostra e Pousada Oliveira (A0, B0).
 5. **Oeste/noroeste — estrada de terra**: pelo campo das lagoas até a sede de fazenda (Z0).
+
+#### Saída para o ITAIMBEZINHO (Lucas) — 360° da saída
+- **SV-I1** — **R. Tradição nº 1**, −29.04872496, −50.14213556 · 1023 m · rumo 134° · jul/2025 → local **(+297, +52)**, na esquina com a Av. Getúlio Vargas, olhando para o **sudeste** pela R. Tradição:
+  - **Caminho para o Itaimbezinho:** Av. Getúlio Vargas → **R. Tradição** (desce para o sul-sudeste) → Pizza Retrô → **RS-427** (B3). Confirma que a **RS-427 é a estrada do Itaimbezinho**.
+  - À esq.: **SABORES DA QUERÊNCIA — Geleias Artesanais** (≈ (+330, +37), batendo com o B2): **chalé de pedra e madeira escura** com **telhado verde (grama no telhado)**, empena em "A" envidraçada, varanda de vidros com caixilhos de madeira, porta de madeira; na frente **canteiros de lavanda** e placas de madeira; **postes coloniais de globos brancos**.
+  - Rua acima: **posto de combustível** (cobertura verde) mais adiante à esq.; à dir. sobrados claros e carros estacionados; **araucárias** no horizonte.
+  - [sugestão] o Sabores da Querência pode ser **parada de missão** (comprar geleia para levar ao cânion/pousada).
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
 ## Próximos envios do Lucas (anotado)
