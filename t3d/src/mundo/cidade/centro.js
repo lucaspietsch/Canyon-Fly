@@ -1,4 +1,4 @@
-import { Group, Mesh, BoxGeometry, ConeGeometry, TorusGeometry, MeshStandardMaterial, Matrix4, Quaternion, Vector3, Euler } from "three";
+import { Group, Mesh, BoxGeometry, ConeGeometry, TorusGeometry, MeshStandardMaterial, Matrix4, Quaternion, Vector3, Euler, BufferGeometry, Float32BufferAttribute, RepeatWrapping, DoubleSide } from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { U } from "../config.js";
 import { canvasTex } from "../../lib.js";
@@ -226,6 +226,28 @@ export function criarCentro(M, u){
     const Lr = Math.hypot(dx, dz), nx = -dz / Lr, nz = dx / Lr;
     for(const lado of [-1, 1]){ const off = R * .55 * lado, my = Y((a0[0] + a1[0]) / 2, (a0[1] + a1[1]) / 2) + R * 1.55;
       const b = new BoxGeometry(.35 * U, .35 * U, Lr); b.rotateY(yaw); b.translate((a0[0] + a1[0]) / 2 + nx * off, my, (a0[1] + a1[1]) / 2 + nz * off); add(0xa82b22, b); }
+    /* cobertura de VIDRO VERDE em favo de mel (pedido do Lucas): painéis sobre as faces de cima de cada hexágono, de um arco ao outro.
+       Textura de favos (lado .7 m); à noite as bordas dos favos acendem em dourado e o vidro brilha verde (M.ciclo.hora). */
+    const Rr = R + tubo * .9, X = [Math.cos(yaw), -Math.sin(yaw)], passoM = (xb - xa) / (N - 1), ladoM = Rr / U, tileU = 2.1, tileV = 1.2124;
+    const C = []; for(let k = 0; k < N; k++){ const t = k / (N - 1), px = a0[0] + dx * t, pz = a0[1] + dz * t; C.push([px, Y(px, pz) + R * .72, pz]); }
+    const P = (k, th) => { const c = C[k], r = Rr * Math.cos(th); return [c[0] + X[0] * r, c[1] + Rr * Math.sin(th), c[2] + X[1] * r]; };
+    const pos = [], uvs = [];
+    for(let j = 0; j < 6; j++){ const t0 = giro + j * Math.PI / 3, t1 = t0 + Math.PI / 3; if(Math.sin(t0 + Math.PI / 6) < .5) continue;   // só as faces de cima
+      for(let k = 0; k < N - 1; k++){ const A = P(k, t0), B = P(k, t1), Cc = P(k + 1, t1), D = P(k + 1, t0), u0 = k * passoM / tileU, u1 = (k + 1) * passoM / tileU, v1 = ladoM / tileV;
+        pos.push(...A, ...B, ...Cc, ...A, ...Cc, ...D); uvs.push(u0, 0, u0, v1, u1, v1, u0, 0, u1, v1, u1, 0); } }
+    const vg = new BufferGeometry(); vg.setAttribute("position", new Float32BufferAttribute(pos, 3)); vg.setAttribute("uv", new Float32BufferAttribute(uvs, 2)); vg.computeVertexNormals();
+    const favo = (cel, linha, ponto) => canvasTex(256, 148, (x, w, h) => { const s = w / 3, a = Math.sqrt(3) * s; x.fillStyle = cel; x.fillRect(0, 0, w, h);
+      x.strokeStyle = linha; x.lineWidth = 7; x.lineJoin = "round";
+      for(let i = -1; i <= 1; i++) for(let jj = -1; jj <= 1; jj++) for(const [ox, oy] of [[0, 0], [1.5 * s, a / 2]]){ const cx = i * w + ox, cy = jj * h + oy; x.beginPath();
+        for(let q = 0; q <= 6; q++){ const an = q * Math.PI / 3; x[q ? "lineTo" : "moveTo"](cx + s * Math.cos(an), cy + s * Math.sin(an)); } x.stroke();
+        if(ponto){ x.fillStyle = ponto; for(let q = 0; q < 6; q++){ const an = q * Math.PI / 3; x.beginPath(); x.arc(cx + s * Math.cos(an), cy + s * Math.sin(an), 5, 0, 7); x.fill(); } } } }, { repeat: [1, 1] });
+    const mapa = favo("#1f9e4e", "#b8893a", "#e9d9a0"), brilho = favo("#0b3d22", "#ffb83a", "#fff2c0");
+    for(const t of [mapa, brilho]){ t.wrapS = t.wrapT = RepeatWrapping; }
+    const vidro = new MeshStandardMaterial({ color: 0x6fe08e, map: mapa, emissive: 0xffffff, emissiveMap: brilho, emissiveIntensity: .05, metalness: .35, roughness: .12, transparent: true, opacity: .82, side: DoubleSide, depthWrite: false });
+    const telhado = new Mesh(vg, vidro); telhado.renderOrder = 2; telhado.name = "Rua Coberta — vidro verde";
+    telhado.onBeforeRender = () => { const h = M.ciclo && M.ciclo.hora ? M.ciclo.hora() : 12, noite = h < 5.8 || h >= 18, alvo = noite ? 1.7 : (h < 6.6 || h > 17.2 ? .6 : .05);
+      vidro.emissiveIntensity += (alvo - vidro.emissiveIntensity) * .04; vidro.opacity = noite ? .78 : .82; };
+    G.add(telhado);
   }
 
   /* ---------- malhas finais (uma por cor) ---------- */
