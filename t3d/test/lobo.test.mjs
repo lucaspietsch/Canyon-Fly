@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Box3,Vector3} from 'three';
+import {Animal} from '../src/mundo/fauna/animal.js';
+import {criarQuadrupede,SPEC} from '../src/mundo/fauna/modelos.js';
+import {DEF} from '../src/mundo/fauna/especies.js';
+import {ESPECIES,U} from '../src/mundo/config.js';
+const ctx={chao:()=>0,noite:0};
+test('lobo-guará: anatomia alta, pés apoiados, quatro pernas e orelhas grandes',()=>{const r=criarQuadrupede(SPEC.lobo);assert.equal(r.root.userData.especie,'Chrysocyon brachyurus');assert.equal(r.pernas.length,4);assert.equal(r.cauda.length,3);assert.equal(r.orelhas.length,2);r.root.updateMatrixWorld(true);const box=new Box3().setFromObject(r.root);assert.ok(Math.abs(box.min.y)<.005*U);assert.ok(box.max.y>1.3*U&&box.max.y<1.8*U);for(const p of r.pernas){const foot=new Vector3();p.pata.getWorldPosition(foot);assert.ok(Math.abs(foot.y-.025*U)<.0001);assert.ok(p.quadril.position.y>-U);}
+ for(const o of r.orelhas){const size=new Box3().setFromObject(o).getSize(new Vector3());assert.ok(size.y>.20*U);}
+ r.root.traverse(o=>{if(o.geometry)for(const key of ['position','normal'])if(o.geometry.attributes[key])assert.ok(o.geometry.attributes[key].array.every(Number.isFinite));});r.dispose();});
+test('lobo-guará: marcha, farejamento, alerta e fuga preservam o rig e a IA',()=>{const a=new Animal(DEF.lobo,ESPECIES.lobo,ctx,0,0,0);a.estado='natural';a.ativ='andar';a.vel=U;const r=a.rig;for(let i=0;i<60;i++){a.relogioAnim+=.05;a.anima(.05,ctx,false);a.aplica(ctx);}assert.notEqual(r.pernas[0].quadril.rotation.x,0);a.ativ='farejar';a.vel=0;for(let i=0;i<60;i++)a.anima(.05,ctx,false);assert.ok(Math.abs(a.p.pesc-DEF.lobo.pose.baixoPesc)<.01);a.alertar();for(let i=0;i<60;i++)a.anima(.05,ctx,false);assert.ok(Math.abs(a.p.pesc-DEF.lobo.pose.altoPesc)<.01);a.fugir({x:-U,z:0});assert.equal(a.estado,'fugindo');assert.ok(Number.isFinite(a.dirFuga));r.root.updateMatrixWorld(true);r.root.traverse(o=>assert.ok(o.matrixWorld.elements.every(Number.isFinite)));a.libera();});
+test('lobo-guará: materiais isolados, reflexão noturna e descarte dos recursos',()=>{const a=new Animal(DEF.lobo,ESPECIES.lobo,ctx,0,0,0),b=criarQuadrupede(SPEC.lobo);const old=b.materiais[0].color.getHex();a.rig.materiais[0].color.setHex(0xff0000);assert.equal(b.materiais[0].color.getHex(),old);a.anima(.1,{...ctx,noite:1},false);for(const e of a.rig.olhos)assert.equal(e.material.color.getHex(),e.userData.brilho.getHex());let disposed=0;const geo=a.rig.pernas[0].pata.geometry;geo.addEventListener('dispose',()=>disposed++);a.libera();assert.equal(disposed,1);b.dispose();});

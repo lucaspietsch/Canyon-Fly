@@ -20,7 +20,7 @@ function destinoLivre(a, c, rMin, rMax, zona, abertura = 1.7){
 export const DEF = {
   lobo: {
     spec: "lobo", alertaSeg: [3, 7], alertaMax: 12, aposAlerta: "natural",
-    pose: { neutroPesc: .95, neutroCab: .15, altoPesc: .62, baixoPesc: 2.2, cauda: -.55, caudaAlerta: -.1, caudaFuga: -.95, perna: .78 },
+    pose: { neutroPesc: .22, neutroCab: -.15, altoPesc: .08, baixoPesc: 1.45, cauda: -.85, caudaAlerta: -.5, caudaFuga: -.95, perna: .78 },
     atividades: () => [["andar", 40], ["farejar", 25], ["escutar", 20], ["parar", 10]],
     durs: { farejar: [3, 6], escutar: [3, 6], parar: [2, 4] },
     destino: (a, c) => destinoLivre(a, c, 8, 22, c.zonas.recebimento)

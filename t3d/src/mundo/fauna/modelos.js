@@ -1,3 +1,4 @@
+import { criarLoboGuara } from './lobo-visual.js';
 import { criarPuma } from './puma-visual.js';
 import { criarGraxaim } from './graxaim-visual.js';
 import { Group, Mesh, SphereGeometry, BoxGeometry, CylinderGeometry, ConeGeometry, MeshStandardMaterial, MeshBasicMaterial, Color } from "three";
@@ -19,6 +20,7 @@ const parte = (pai, geo, cor, sx, sy, sz, x = 0, y = 0, z = 0) => { const o = ne
 const esf = (pai, cor, rx, ry, rz, x, y, z) => parte(pai, geoEsf, cor, rx, ry, rz, x, y, z);
 
 export function criarQuadrupede(S, opts = {}){
+  if(S.visual === "lobo-guara")return criarLoboGuara(S,opts);
   if(S.visual === "puma")return criarPuma(S,opts);
   if(S.visual === "graxaim")return criarGraxaim(S,opts);
   MATF = opts.clonar ? ((hex) => new MeshStandardMaterial({ color: hex, roughness: 1, metalness: 0 })) : mat;
@@ -78,6 +80,7 @@ export function criarQuadrupede(S, opts = {}){
 /* ---- as três espécies ---- */
 export const SPEC = {
   lobo: {
+    visual: "lobo-guara",
     tronco: { comp: .98, alt: .30, larg: .20 }, perna: { sup: .38, inf: .40, esp: .045 }, pesc: { comp: .30, esp: .10 },
     cab: { comp: .21, alt: .115, larg: .125, focinho: { comp: .17, alt: .06, larg: .065 } }, orelha: { alt: .20, larg: .095 }, cauda: { comp: .42, esp: .07 },
     cor: { corpo: 0xc4551f, peito: 0xb84c1a, barriga: 0xd98a52, crina: 0x14100e, nuca: 0x14100e, pernaSup: 0x15110f, pernaInf: 0x100d0b, pata: 0x0b0908, pescoco: 0xc4551f, cabeca: 0xc9622a, focinhoCor: 0x1a1411, queixo: 0xf1e6d6, nariz: 0x0a0807,
