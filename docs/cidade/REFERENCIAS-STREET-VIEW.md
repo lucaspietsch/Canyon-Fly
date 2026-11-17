@@ -520,6 +520,7 @@ Arquivo: `docs/cidade/kml/avenida-principal-fortaleza-portico.kml` ("caminho, sa
   - Estrutura em **arco retangular sobre a pista**: **duas torres** com **base de pedra** (alvenaria de pedra irregular escura, ~2 m) e corpo de **madeira em tábuas verticais pintadas de AMARELO**, cada torre com **2 janelinhas de vidro em grade** (moldura escura) e **telhadinho próprio de duas águas** (telhas escuras) no topo.
   - **Viga/travessa amarela** ligando as torres, com o letreiro em **letras pretas**: **"BEM-VINDOS A CAMBARÁ DO SUL"**; em cima, **telhado escuro** com **2 frontões** (telhadinhos) ao longo da viga.
   - Em volta: **mata de araucárias** e **morros com mata** no vale; estrada estreita sem acostamento, barranco de capim à dir.
+  - **Vista a 114° (leste), ao lado do pórtico:** pátio de **terra batida** com o **CARRINHO DE PEDRA** — um **jipe/carro antigo esculpido em pedra branca** (formato de jipe com estepe), parado no gramado; **[Lucas] existe uma LENDA sobre ele** (fotos e história a receber). Atrás: **capelinha/oratório branco** de telhado de duas águas (porta verde) e uma **esfera escura** num pedestal; **outdoor branco** no alto do barranco; **araucárias** grandes e **palmeiras-anãs** à dir.; placa vermelha em forma de gota ("RS") junto à torre do pórtico.
   - **[Lucas] REMOVER OS PINGUINS** — os bonecos de pinguim (de boina) que ficam ao pé do pórtico **não entram no jogo**; o mesmo vale para o **pinguim do letreiro** "CAMBARÁ DO SUL" na entrada sudoeste.
 
 ## Regras do mapa do jogo (Lucas)

@@ -72,10 +72,14 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - **Casa histórica da esquina Dona Úrsula × Vinte de Setembro** (branca com alpendre vermelho — Refs 49–51) — **[Lucas]** "histórica também".
   - **[sugestão]** ponto de uma missão de turismo histórico (roteiro das casas antigas com a Secretaria de Turismo e o Sr. Gesmar).
 
+- **Carrinho de pedra** (jipe antigo esculpido em pedra, ao lado do **pórtico "Bem-vindos a Cambará do Sul"**, junto a uma capelinha) — **[Lucas] tem uma lenda**; vai enviar fotos e a história.
+  - **[sugestão]** missão de lenda na chegada: descobrir a história do carrinho; ligar com a capelinha ao lado.
+
 ## Pendências (a receber do Lucas)
 - [ ] Fotos do interior do Du Perau (mesas, balcão).
 - [ ] Cardápio, fotos dos hambúrgueres e do chopp.
 - [ ] Foto do Rodrigo + autorização de uso de nome e imagem.
 - [ ] Brentano (material de construção e supermercado): fotos do interior, nome do dono e autorização (quando houver acordo).
 - [ ] Loja Thewes: fotos do interior e autorização.
+- [ ] Fotos e lenda do **carrinho de pedra** (pórtico).
 - [ ] Lista de outros estabelecimentos interessados em patrocinar.
