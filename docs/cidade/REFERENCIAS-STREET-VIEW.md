@@ -652,6 +652,7 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - "R. Ouro Verde" pintado no asfalto; **faixa de pedestres**, **tachões amarelos** no meio; calçada de **laje de pedra irregular** com **piso tátil** do lado direito.
   - **PLACA DE DIREÇÃO TURÍSTICA** (marrom, ↑ em frente): **Balneário Nassuca · Cachoeira Ouro Verde · Cânion Pinheirinho** → confirma que esta é a estrada para a **Vila Ouro Verde** e o **Cânion Pinheirinho**.
   - Placa da **"Pousada das Corucacas"** (turismo rural) e placa de **"Vende-se"** num campo cercado; **galpão de madeira** ao fundo.
+  - **297° (oeste-noroeste):** cruzamento com **zebrado amarelo** e tachões (ilha de canalização); na esquina **sobrado lilás/lavanda** de 2 pavimentos (térreo de concreto com portas de enrolar, em obra — **monte de terra** na calçada) com **muro de concreto**; casas de madeira **verde-água** e **rosa** com chaminé, casa amarela; **terreno de grama em aclive** com trilha de terra e o **cano grande** de bueiro; bairro de casas simples ao fundo (R. Cancha Reta / bairro norte).
   - À esq.: barranco de grama, **cano grande** de concreto/bueiro, placa de curva, casas e um **ponto de ônibus** coberto mais à frente; **eucaliptos** altos dos dois lados.
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
