@@ -600,6 +600,13 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
 - **SV-I2** — mesmo ponto, rumo **212°** (sudoeste): à esq. a **R. Tradição descendo para o sul** (asfalto com **tachões amarelos** no meio, carros estacionados, galpão branco e casas ao fundo); à dir. a **Av. Getúlio Vargas** rumo à praça (postes coloniais ao longe).
   - **Esquina sudoeste** (Tradição × Getúlio Vargas): **galpão comprido branco com faixa cinza embaixo** e **janelas basculantes azuis** (comércio; ponta com vitrine azul e cobertura de chapa); depois **prédio amarelo de 2 pavimentos** com **painel de azulejos azuis** e portas de garagem amarelas; depois **prédio de 4 pavimentos** branco/rosado com **sacadas** (provável hotel/apartamentos — confirmar).
 - **SV-I3** — mesmo ponto, rumo **262°** (oeste), pela **Av. Getúlio Vargas** rumo à praça: à esq. o galpão branco de janelas azuis, o prédio amarelo e o prédio de 4 pavimentos; à dir. (**lado norte**) **sobrado bege/rosado de 2 pavimentos** com **confeitaria e café** no térreo (letreiro marrom comprido; nome a confirmar), janelas de madeira em cima, e placa amarela **"Estacionamento exclusivo →"**; mais adiante casas e sobrados, faixa de pedestres e **postes coloniais** no canteiro.
+- **SV-I4** — mesmo ponto, rumo **300°** (noroeste): o sobrado da confeitaria inteiro na **esquina noroeste**, com **muro rosado** e estacionamento atrás; à dir., na **esquina nordeste**, loja com **toldo azul-marinho "Shopping D…"** (nome cortado) e vitrine de roupas.
+- **SV-I5** — **"99 RS-427"**, −29.04869937, −50.14224497 · rumo 303° → local **(+287, +54)**: **"RS-427" pintado no asfalto** — ou seja, **a RS-427 começa aqui**, nesse trecho da avenida a leste da praça, e desce pela R. Tradição. Sobrado de **2 pavimentos** bege com **faixas marrons** no beiral, sacada recuada, janelas de madeira.
+- **SV-I6** — −29.04870902, −50.14234998 · rumo 322° → local **(+277, +53)**, de frente:
+  - **DOIS IRMÃOS — confeitaria e café** (letreiro cinza-escuro com letras brancas e ramos de trigo; vitrine grande com poltronas e mesinhas; porta de vidro com **adesivos coloridos**; vasinhos na calçada) — ≈ **(+270, +65)**, lado norte.
+  - Ao lado (oeste): **HAMBURGUERIA ROTA 44** — "lanche saboroso, bem feito e rápido" (placa redonda roxa/laranja, sacada de madeira em cima, rampa com corrimão).
+  - Calçada de **pedra irregular (laje de basalto)** — típica da cidade.
+  - No jogo: nomes reais só com autorização; telefone **não** registrado.
   - [sugestão] o Sabores da Querência pode ser **parada de missão** (comprar geleia para levar ao cânion/pousada).
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
