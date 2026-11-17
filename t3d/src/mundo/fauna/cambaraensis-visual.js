@@ -21,9 +21,9 @@ export function geometriasCambaraensis(){
  for(const [parts,n]of [[arm,4],[leg,5]]){parts.push(oval(.14,-.18,.16,.07,.025,.075,vermelho));for(let j=0;j<n;j++)parts.push(oval(.09+j*.025,-.19,.21+(j%2)*.02,.012,.012,.068,vermelho));for(let j=0;j<8;j++)parts.push(oval(.07+(j%3)*.035,-.023-Math.floor(j/3)*.025,.04,.007,.006,.006,j%2?claro:0x8a9553,6));}
  return{corpo:junta(body),cabeca:junta(head),olhos:junta(eyes),braco:junta(arm),coxa:junta(leg)};
 }
-export function criarCambaraensis(pai,max=22){
- const geo=geometriasCambaraensis(),group=new Group();group.name='sapinho-verde-de-barriga-vermelha';group.userData.especie='Melanophryniscus cambaraensis';pai.add(group);
- const mat=new MeshStandardMaterial({vertexColors:true,roughness:.57,metalness:0}),G={};
+export function criarCambaraensis(pai,max=22,opcao={}){
+ const geo=opcao.geo||geometriasCambaraensis(),group=new Group();group.name=opcao.nome||'sapinho-verde-de-barriga-vermelha';group.userData.especie=opcao.especie||'Melanophryniscus cambaraensis';pai.add(group);
+ const mat=new MeshStandardMaterial({vertexColors:true,roughness:opcao.rugosidade??.57,metalness:0}),G={};
  const make=(g,n=max)=>{const im=new InstancedMesh(g,mat,n);im.count=0;im.frustumCulled=false;im.instanceMatrix.setUsage(DynamicDrawUsage);group.add(im);return im;};
  G.corpo=make(geo.corpo);G.cabeca=make(geo.cabeca);G.olhos=make(geo.olhos);
  // Geometria espelhada com faces corrigidas permite instâncias sem escala negativa.

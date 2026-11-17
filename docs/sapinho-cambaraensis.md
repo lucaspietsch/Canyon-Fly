@@ -9,7 +9,7 @@ Modelo procedural em 3D de **Melanophryniscus cambaraensis**, baseado nas refer�
 - Na postura de alerta existente, o corpo se arqueia e as patas sobem para mostrar as superfícies vermelhas.
 - Comprimento nominal sorteado entre **3 e 4 cm** no mundo, sem aplicar a ampliação visual genérica dos outros sapinhos. As capturas são aproximações para mostrar os detalhes.
 
-O nome foi atualizado na configuração da espécie, na galeria e na dica de fotografia. O identificador `cambaraensis` permanece compatível com as fotos salvas. Os comportamentos de casais, turfeiras, bordas e arroio são preservados. A outra espécie de sapinho e as pererecas mantêm seus modelos existentes.
+O nome foi atualizado na configuração da espécie, na galeria e na dica de fotografia. O identificador `cambaraensis` permanece compatível com as fotos salvas. Os comportamentos de casais, turfeiras, bordas e arroio são preservados. O *M. dorsalis* possui [seu próprio modelo escuro](sapinho-dorsalis.md); as pererecas mantêm o modelo existente.
 
 ![Dorso e ventre do sapinho](media/sapinhos/cambaraensis.jpg)
 
