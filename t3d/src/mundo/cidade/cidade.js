@@ -3,6 +3,8 @@ import { canvasTex, placaLegivel, texPlacaHD } from "../../lib.js";
 import { U, CIDADE as C, DEM as CD } from "../config.js";
 import { normaliza } from "../resgate/kml.js";
 import { criarCentro } from "./centro.js";
+import { RUAS_OK, PREDIOS_OK, ORIGEM_OK } from "../dados/vila-ok.js";
+import { latLonParaMundo } from "../resgate/kml.js";
 
 /* ============================================================================================================
    ÁREA URBANA (Cambará do Sul e vilas): terreno em escala real em volta do polígono do KML, ruas provisórias em grade simples (até chegarem as ruas do KML) e o marcador
@@ -85,13 +87,15 @@ export function criarCidade(M){
   function constroi(u){
     const g = new Group(); g.add(terreno(u));
     if(comGrade(u)){
-      const comRuasKML = u.tipo === "cidade" && M.kml.lista("rua").length > 0; /* ruas reais (dados/kml-cidade.js) só na sede; vilas seguem com a grade provisória */ let ruas = comRuasKML ? M.kml.lista("rua").filter(e => e.geom === "LineString").map(e => Z.mundoPts(e)) : gradeRuas(u);
+      const vilaOK = u.tipo !== "cidade" && /oswaldo/.test(normaliza(u.nome)), T = u.T || [0, 0];       /* Vila Oswaldo Kroeff: ruas e casas reais (dados/vila-ok.js, prints do Lucas) */
+      const comRuasKML = u.tipo === "cidade" && M.kml.lista("rua").length > 0; /* ruas reais (dados/kml-cidade.js) só na sede; vilas seguem com a grade provisória */ let ruas = comRuasKML ? M.kml.lista("rua").filter(e => e.geom === "LineString").map(e => Z.mundoPts(e)) : vilaOK ? Object.values(RUAS_OK).map(L => L.map(([la, lo]) => { const p = latLonParaMundo(la, lo); return [p[0] + T[0], p[1] + T[1]]; })) : gradeRuas(u);
       const L = M.lugares;
-      if(u.pracaPoli && L && !comRuasKML){                                                                   /* com as ruas reais, a praça já fica entre elas (sem cortar nem duplicar ruas) */                                                                                  // praça real: a grade não cruza a praça; ruas nos 4 lados fecham o quarteirão
+      if(u.pracaPoli && L && !comRuasKML && !vilaOK){                                                                   /* com as ruas reais, a praça já fica entre elas (sem cortar nem duplicar ruas) */                                                                                  // praça real: a grade não cruza a praça; ruas nos 4 lados fecham o quarteirão
         const cortadas = []; ruas.forEach(run => { let at = []; run.forEach(p => { if(L.naPraca(u, p[0], p[1])){ if(at.length > 2) cortadas.push(at); at = []; } else at.push(p); }); if(at.length > 2) cortadas.push(at); });
         ruas = [...cortadas, ...L.ruasEntorno(u)];
       }
-      fitaRuas(ruas).forEach(m => g.add(m)); if(!u.pracaPoli) g.add(praca(u)); u.ruas = ruas;
+      fitaRuas(ruas).forEach(m => g.add(m)); if(!u.pracaPoli && !vilaOK) g.add(praca(u)); u.ruas = ruas;
+      if(vilaOK){ try{ g.add(criarCentro(M, u, { predios: PREDIOS_OK, origem: ORIGEM_OK, extras: false, ruasMundo: ruas })); }catch(err){ console.warn("Vila Oswaldo Kroeff:", err); } }   // casas, igrejas, escola e comércios da vila
       if(u.tipo === "cidade"){ try{ g.add(criarCentro(M, u)); }catch(err){ console.warn("centro da cidade:", err); } }       // prédios do centro (blocos), igreja e Rua Coberta
     }
     return g;
