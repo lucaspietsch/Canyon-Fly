@@ -1,3 +1,5 @@
+import {coralNoLocal,locaisCorais,texturaCoralPonto} from './corais-visual.js';
+import {perfilVibora,texturaVibora,criarRostoVibora} from './viboras-visual.js';
 import { Mesh, BufferGeometry, Float32BufferAttribute, Uint16BufferAttribute, MeshStandardMaterial, MeshBasicMaterial, DoubleSide, BoxGeometry, Vector3, Frustum, Matrix4 } from "three";
 import { U, SERPENTES, pesoHora } from "../config.js";
 import { canvasTex } from "../../lib.js";
@@ -12,26 +14,11 @@ import { canvasTex } from "../../lib.js";
 
 const sstep = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const rnd = (a, b) => a + Math.random() * (b - a);
-const N = 34, MR = 8;                                                    // pontos ao longo do corpo × lados da seção
+const N = 68, MR = 16;                                                    // pontos ao longo do corpo × lados da seção
 
 /* ---- texturas (u ao longo do corpo, cabeça em u = 0; v em volta: 0 = dorso, .5 = ventre) ---- */
-function texJararaca(){
-  return canvasTex(1024, 128, (c, w, h) => {
-    const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#7d6e48"); g.addColorStop(.18, "#6f6244"); g.addColorStop(.36, "#5e533c"); g.addColorStop(.46, "#c7bc94"); g.addColorStop(.54, "#d6ccA6"); g.addColorStop(.64, "#5e533c"); g.addColorStop(.82, "#6f6244"); g.addColorStop(1, "#7d6e48"); c.fillStyle = g; c.fillRect(0, 0, w, h);
-    for(let i = 0; i < 40; i++){ [.22, .78].forEach(v => { const x = 70 + i * 22 + (v > .5 ? 11 : 0), y = h * v; c.fillStyle = "rgba(40,30,22,.9)"; c.beginPath(); c.moveTo(x - 9, y + 18); c.lineTo(x, y - 18); c.lineTo(x + 9, y + 18); c.lineTo(x + 4, y + 18); c.lineTo(x, y - 8); c.lineTo(x - 4, y + 18); c.closePath(); c.fill(); c.strokeStyle = "rgba(225,214,170,.85)"; c.lineWidth = 2; c.stroke(); }); }
-    for(let i = 0; i < 380; i++){ c.fillStyle = `rgba(30,24,18,${Math.random() * .18})`; c.fillRect(Math.random() * w, Math.random() * h, 3, 2); }
-    c.fillStyle = "rgba(35,28,20,.85)"; c.fillRect(0, h * .1, 62, h * .18); c.fillRect(0, h * .72, 62, h * .18);      // faixa pós-ocular escura na cabeça
-  }, { hd: 1, aniso: 4 });
-}
-function texUrutu(){
-  return canvasTex(1024, 128, (c, w, h) => {
-    const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "#6a573c"); g.addColorStop(.3, "#5d4c36"); g.addColorStop(.46, "#c9bf9a"); g.addColorStop(.54, "#d8cfae"); g.addColorStop(.7, "#5d4c36"); g.addColorStop(1, "#6a573c"); c.fillStyle = g; c.fillRect(0, 0, w, h);
-    for(let i = 0; i < 18; i++){ [.17, .83].forEach(v => { const x = 90 + i * 49 + (v > .5 ? 22 : 0), y = h * v; c.lineWidth = 7; c.strokeStyle = "#e9dec2"; c.fillStyle = "#2a2018"; c.beginPath(); c.ellipse(x, y, 20, 22, 0, .8, Math.PI * 2 - .8); c.stroke(); c.lineWidth = 11; c.strokeStyle = "#2a2018"; c.beginPath(); c.ellipse(x, y, 15, 17, 0, .85, Math.PI * 2 - .85); c.stroke(); }); }
-    for(let i = 0; i < 300; i++){ c.fillStyle = `rgba(25,20,14,${Math.random() * .16})`; c.fillRect(Math.random() * w, Math.random() * h, 3, 2); }
-    /* cruz clara no alto da cabeça (u 0–.06, dorso v ≈ 0 e 1) */
-    c.fillStyle = "#efe6cc"; [[28, h * .02], [28, h * .96]].forEach(([x, y]) => { c.fillRect(x - 3, y - 12, 6, 24); c.fillRect(x - 14, y - 3, 28, 6); });
-  }, { hd: 1, aniso: 4 });
-}
+const texJararaca=()=>texturaVibora('jararaca');
+const texUrutu=()=>texturaVibora('urutu');
 function texCoral(){
   return canvasTex(1024, 64, (c, w, h) => {
     c.fillStyle = "#e8e2c4"; c.fillRect(0, 0, w, h);
@@ -43,7 +30,7 @@ function texCoral(){
 }
 const TEX = {}; const textura = (id) => TEX[id] || (TEX[id] = id === "jararaca" ? texJararaca() : id === "urutu" ? texUrutu() : texCoral());
 
-class Serpente {
+export class Serpente {
   constructor(esp, M, x, z, yaw, fim){
     this.esp = esp; this.id = esp.id; this.nome = esp.nome; this.M = M; this.cen = M.cen; this.x = x; this.z = z; this.yaw = yaw; this.fimXZ = fim;
     this.L = esp.comp * U; this.R = esp.raio * U; this.v = esp.v * U; this.estado = "cruzando"; this.t = 0; this.fase = Math.random() * 6; this.pausa = 0; this.tPausa = rnd(2, 5); this.def = 0; this.tDef = 0;
@@ -57,8 +44,9 @@ class Serpente {
     for(let i = 0; i < N - 1; i++) for(let k = 0; k < MR; k++){ const a = i * MR + k, b = i * MR + (k + 1) % MR, c = (i + 1) * MR + k, d = (i + 1) * MR + (k + 1) % MR; idx.push(a, b, c, b, d, c); }
     for(let k = 0; k < MR; k++){ idx.push(N * MR, (k + 1) % MR, k); idx.push(N * MR + 1, (N - 1) * MR + k, (N - 1) * MR + (k + 1) % MR); }                // tampas: focinho e ponta da cauda
     g.setAttribute("position", new Float32BufferAttribute(pos, 3).setUsage(35048)); g.setAttribute("uv", new Float32BufferAttribute(uv, 2)); g.setAttribute("normal", new Float32BufferAttribute(nor, 3).setUsage(35048)); g.setIndex(new Uint16BufferAttribute(new Uint16Array(idx), 1));
-    this.mat = new MeshStandardMaterial({ map: textura(esp.id), roughness: .55, metalness: 0, side: DoubleSide }); this.malha = new Mesh(g, this.mat); this.malha.frustumCulled = false; this.malha.castShadow = true; this.cen.grupo.add(this.malha);
+    this.mat = new MeshStandardMaterial({ map: esp.id==="coral" ? (()=>{this.variante=coralNoLocal(M,x,z);const k="coral:"+this.variante.id;return TEX[k]||(TEX[k]=texturaCoralPonto(this.variante));})() : textura(esp.id), roughness: .55, metalness: 0, side: DoubleSide }); this.malha = new Mesh(g, this.mat); this.malha.frustumCulled = false; this.malha.castShadow = true; this.cen.grupo.add(this.malha);
     this.lingMesh = new Mesh(new BoxGeometry(.12 * U, .02 * U, .5 * U), new MeshBasicMaterial({ color: esp.id === "coral" ? 0xcc2020 : 0x1a1010 })); this.lingMesh.visible = false; this.cen.grupo.add(this.lingMesh);
+    if(esp.id!=="coral"){this.rosto=criarRostoVibora();this.cen.grupo.add(this.rosto.g);}
     this.atualizaMalha(0);
   }
   /* ---- pontos do corpo a partir do histórico da cabeça ---- */
@@ -86,9 +74,9 @@ class Serpente {
       const u = i / (N - 1), c = P[i];
       /* perfil do raio: cabeça triangular destacada do pescoço (jararaca/urutu), cabeça pequena e arredondada (coral), afina na cauda */
       let rw = this.R, rh = this.R;
-      if(this.id !== "coral"){ const cab = sstep(.0, .035, u) * (1 - sstep(.035, .085, u)); rw *= .75 + 1.15 * cab - .22 * sstep(.06, .12, u) * (1 - sstep(.12, .2, u)); rh *= .7 + .35 * cab; }
+      if(this.id !== "coral"){const p=perfilVibora(u,this.id);rw*=p.largura;rh*=p.altura;}
       else { rw *= .8 + .15 * sstep(0, .06, u); rh = rw; }
-      const corpo = Math.sin(Math.min(1, u * 1.02 + .08) * Math.PI * .5), cauda = 1 - sstep(.62, 1, u) * .85; rw *= (u < .1 ? 1 : corpo * .35 + .65) * cauda; rh *= (u < .1 ? 1 : corpo * .35 + .65) * cauda;
+      const corpo = Math.sin(Math.min(1, u * 1.02 + .08) * Math.PI * .5), cauda = 1 - sstep(.62, 1, u) * .85; if(this.id==="coral"){rw *= (u < .1 ? 1 : corpo * .35 + .65) * cauda; rh *= (u < .1 ? 1 : corpo * .35 + .65) * cauda;}
       const y = c.y;
       const a = P[Math.max(0, i - 1)], b = P[Math.min(N - 1, i + 1)]; tan.set(b.x - a.x, b.y - a.y, b.z - a.z); if(tan.lengthSq() < 1e-8) tan.set(0, 0, 1); tan.normalize();
       if(i === 0){ up.set(0, 1, 0); rig.crossVectors(tan, up); if(rig.lengthSq() < 1e-6) rig.set(1, 0, 0); } else rig.addScaledVector(tan, -rig.dot(tan));      // transporte paralelo: sem torção nem inversão ao erguer a cauda
@@ -100,6 +88,7 @@ class Serpente {
       tmp.set(h.x - h1.x, h.y - h1.y, h.z - h1.z).normalize(); pos.array[q] = h.x + tmp.x * rh0 * 1.1; pos.array[q + 1] = h.y + tmp.y * rh0 * 1.1; pos.array[q + 2] = h.z + tmp.z * rh0 * 1.1; nor.array[q] = tmp.x; nor.array[q + 1] = tmp.y; nor.array[q + 2] = tmp.z;
       tmp.set(t0.x - t1.x, t0.y - t1.y, t0.z - t1.z).normalize(); pos.array[q + 3] = t0.x + tmp.x * this.R * .3; pos.array[q + 4] = t0.y + tmp.y * this.R * .3; pos.array[q + 5] = t0.z + tmp.z * this.R * .3; nor.array[q + 3] = tmp.x; nor.array[q + 4] = tmp.y; nor.array[q + 5] = tmp.z; }
     pos.needsUpdate = true; nor.needsUpdate = true;
+    if(this.rosto){const a=P[2],b=P[1],dir=new Vector3(b.x-a.x,b.y-a.y,b.z-a.z);this.rosto.g.position.copy(b);this.rosto.g.scale.setScalar(this.R);this.rosto.g.rotation.set(-Math.atan2(dir.y,Math.hypot(dir.x,dir.z)),Math.atan2(dir.x,dir.z),0);}
     /* língua */
     this.tLingua -= dt; if(this.tLingua < 0){ this.lingua = .28; this.tLingua = rnd(1.2, 2.8); } this.lingua -= dt; const h0 = P[0], h1 = P[2];
     this.lingMesh.visible = this.lingua > 0 && this.estado !== "capturada"; if(this.lingMesh.visible){ const d = Math.atan2(h0.x - h1.x, h0.z - h1.z); this.lingMesh.position.set(h0.x + Math.sin(d) * this.R * 2.6, h0.y, h0.z + Math.cos(d) * this.R * 2.6); this.lingMesh.rotation.y = d; }
@@ -151,7 +140,7 @@ class Serpente {
         a.p.x += dx * df * fa; a.p.y += dy * df * fa; a.p.z += dz * df * fa; b.p.x -= dx * df * fb; b.p.y -= dy * df * fb; b.p.z -= dz * df * fb; } C[this.pino].p.copy(gp); }
     C.forEach((n, i) => { this.pts[i].copy(n.p); });
   }
-  libera(){ this.malha.parent && this.malha.parent.remove(this.malha); this.lingMesh.parent && this.lingMesh.parent.remove(this.lingMesh); this.malha.geometry.dispose(); this.mat.dispose(); }
+  libera(){ this.rosto?.dispose();this.lingMesh.geometry.dispose();this.lingMesh.material.dispose();this.malha.parent && this.malha.parent.remove(this.malha); this.lingMesh.parent && this.lingMesh.parent.remove(this.lingMesh); this.malha.geometry.dispose(); this.mat.dispose(); }
   get posCentro(){ return this.pts[Math.floor(N * .4)]; }
 }
 
@@ -198,8 +187,9 @@ export function criarSerpentes(M, ctx, Z){
     relogio += dt; cam_();
     if(J){
       acc += dt; if(acc >= SERPENTES.intervalo && relogio > cooldown && lista.length < SERPENTES.maxAtivas){ acc = 0;
-        Object.values(SERPENTES.especies).forEach(esp => { if(lista.length >= SERPENTES.maxAtivas) return; const p = esp.chance * SERPENTES.intervalo * pesoHora(esp.horas, E.h); if(Math.random() < p){ const ob = M.gente && M.gente.observadores ? M.gente.observadores(J, 60 * U) : []; const alvo = ob.length && Math.random() < .5 ? ob[Math.floor(Math.random() * ob.length)] : null; if(tenta(esp.id, J, false, alvo)) cooldown = relogio + rnd(SERPENTES.cooldown[0], SERPENTES.cooldown[1]); } }); }
+        Object.values(SERPENTES.especies).filter(esp=>M.zonas?.atual===undefined||M.zonas.atual==="parque").forEach(esp => { if(lista.length >= SERPENTES.maxAtivas) return; const p = esp.chance * SERPENTES.intervalo * pesoHora(esp.horas, E.h); if(Math.random() < p){ const ob = M.gente && M.gente.observadores ? M.gente.observadores(J, 60 * U) : []; const alvo = ob.length && Math.random() < .5 ? ob[Math.floor(Math.random() * ob.length)] : null; if(tenta(esp.id, J, false, alvo)) cooldown = relogio + rnd(SERPENTES.cooldown[0], SERPENTES.cooldown[1]); } }); }
     }
+    if(J&&M.zonas?.atual!=="parque"&&relogio>cooldown&&lista.length<SERPENTES.maxAtivas&&Math.random()<dt*.025){const a=Math.random()*6.283,d=(12+Math.random()*18)*U,x=J.x+Math.sin(a)*d,z=J.z+Math.cos(a)*d;const tipo=M.vegetacao?.base.tipoEm(x,z);if(tipo==="mata"||tipo==="mataBaixa"||M.ancestral?.ativo()){cria("coral",{x,z,tx:Math.cos(a),tz:-Math.sin(a),li:-1},J,false);cooldown=relogio+40;}}
     for(let i = lista.length - 1; i >= 0; i--){ const s = lista[i], dj = J ? Math.hypot(s.x - J.x, s.z - J.z) / U : 1e9;
       vv.set(s.x, s.pts[0].y, s.z); s.visivel = fr.containsPoint(vv); if(s.visivel && dj < 40) s.avistadoT = performance.now();
       if(!J || dj > (s.forcada ? 260 : 120)) s.fim = true;
@@ -208,5 +198,5 @@ export function criarSerpentes(M, ctx, Z){
   }
   function cam_(){ M.cam.updateMatrixWorld(); pm.multiplyMatrices(M.cam.projectionMatrix, new Matrix4().copy(M.cam.matrixWorld).invert()); fr.setFromProjectionMatrix(pm); }
   const emPonto = (id, x, z, tx, tz, li = 0) => cria(id, { x, z, tx, tz, li }, null, true);                // depuração: cruza exatamente neste ponto da trilha
-  return { lista, tick, tenta, frente, emPonto, cands, remove(s){ s.fim = true; }, info: () => (lista.length ? "Serpente: " + lista.map(s => s.nome + " " + s.estado + " " + (s.dmin !== undefined ? s.dmin.toFixed(0) + " m" : "")).join(", ") : "Serpentes: nenhuma") };
+  return { coraisPorPonto:()=>locaisCorais(M),lista, tick, tenta, frente, emPonto, cands, remove(s){ s.fim = true; }, info: () => (lista.length ? "Serpente: " + lista.map(s => s.nome + " " + s.estado + " " + (s.dmin !== undefined ? s.dmin.toFixed(0) + " m" : "")).join(", ") : "Serpentes: nenhuma") };
 }

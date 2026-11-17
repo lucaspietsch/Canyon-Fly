@@ -1,0 +1,6 @@
+import * as T from 'three';
+import {criarPererecas} from '../../src/mundo/fauna/perereca-visual.js';
+const renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(1000,900);const scene=new T.Scene();scene.background=new T.Color(0x273d36);scene.add(new T.HemisphereLight(0xe8f1e4,0x8b7958,2));const light=new T.DirectionalLight(0xfff0d9,2.6);light.position.set(5,8,6);scene.add(light);const cam=new T.PerspectiveCamera(32,1000/900,.01,100);
+const r=criarPererecas(scene,2),f={x:0,y:0,z:0,esc:1,pitch:0,yaw:0,alerta:0,estado:'para',fase:0,cabeca:0,piscada:1};
+function shot(name,frogs,angle=40,below=false){r.inicia();frogs.forEach(a=>r.escreve(a));r.fim();r.group.rotation.set(below?-.9:0,angle*Math.PI/180,0);r.group.updateMatrixWorld(true);r.group.traverse(o=>{if(o.isInstancedMesh){o.boundingBox=null;o.computeBoundingBox();}});const b=new T.Box3().setFromObject(r.group),c=b.getCenter(new T.Vector3()),s=b.getSize(new T.Vector3()),d=Math.max(s.x/(1000/900),s.y,s.z)*2.1;cam.position.set(c.x,c.y+d*.15,c.z+d);cam.lookAt(c);renderer.render(scene,cam);return{name,url:renderer.domElement.toDataURL()};}
+window.studio={all:()=>[shot('perereca-dorso',[f],55),shot('perereca-salto',[{...f,y:.5,pitch:-.16,estado:'foge',fase:.8}],25),shot('perereca-ventre',[f],0,true),shot('casal-perereca',[f,{...f,x:1.1,z:.2,esc:.86,yaw:-.2}],30)]};

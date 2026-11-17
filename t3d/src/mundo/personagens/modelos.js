@@ -101,48 +101,7 @@ const peleCoral = () => { const t = canvasTex(128, 32, (c, w, h) => { c.fillStyl
 
 /** ATIARA — indígena kaingang dos anos 1950: cabelo crespo, cocar de penas escuras com duas brancas, bandana vermelha, alargadores nas orelhas, osso atravessando o nariz,
     olhos luminosos e colar de cobra-coral. Peito nu, calça de pano rústico. (Cores e brilho dos olhos: dados/personagens.js → modelo.) */
-export function constroiAtiara(H, def){
-  const m = def.modelo, M = H.M, tinta = M(m.pele, { roughness: .8 });
-  const rig = H.pessoa3d({ nome: def.nome, x: 0, y: -50, z: 0, yaw: 0, camisa: tinta, manga: tinta, calca: M(m.calca, { roughness: .95 }), pele: M(m.pele, { roughness: .75 }), cabelo: m.cabelo, barba: false, rabo: false, olhos: m.luz });
-  rig.capG.visible = false; rig.ocG.visible = false; rig.equip.forEach(o => { o.visible = false; });
-  const cab = rig.cab, preto = new MeshStandardMaterial({ color: 0x0a0807, roughness: 1 });
-  /* cabelo crespo: calota preta com cachos */
-  const calota = new Mesh(new SphereGeometry(1.07, 24, 14, 0, Math.PI * 2, 0, Math.PI * .5), preto); calota.position.set(0, .1, -.04); cab.add(calota);
-  for(let i = 0; i < 46; i++){ const a = i * 2.399, r = Math.sqrt(i / 46), c = new Mesh(new SphereGeometry(.17 + (i % 3) * .02, 8, 6), preto); c.position.set(Math.sin(a) * r * .95, .2 + Math.cos(r * 1.5) * .86 * (1 - r * .15), Math.cos(a) * r * .95 - .05); cab.add(c); }
-  /* bandana vermelha na testa, com nó e pontas atrás */
-  const pano = new MeshStandardMaterial({ color: m.bandana, roughness: .85 });
-  const banda = new Mesh(new TorusGeometry(1.03, .13, 8, 36), pano); banda.rotation.x = Math.PI / 2; banda.position.y = .38; banda.scale.set(1, 1, 1.02); cab.add(banda);
-  const no = new Mesh(new SphereGeometry(.2, 10, 8), pano); no.position.set(0, .38, -1.05); cab.add(no);
-  for(const sx of [-1, 1]){ const p = new Mesh(new BoxGeometry(.2, .75, .04), pano); p.position.set(sx * .13, -.0, -1.12); p.rotation.z = sx * .18; cab.add(p); }
-  /* olhos luminosos */
-  const brilho = new MeshBasicMaterial({ color: m.luz }), halos = [];
-  for(const sx of [-1, 1]){ const o = new Mesh(new SphereGeometry(.13, 12, 8), brilho); o.position.set(sx * .33, .08, .9); o.scale.set(1.3, .8, .5); cab.add(o);
-    const h = new Mesh(new SphereGeometry(.27, 12, 8), new MeshBasicMaterial({ color: m.luz, transparent: true, opacity: .35, blending: AdditiveBlending, depthWrite: false })); h.position.copy(o.position); h.position.z += .03; cab.add(h); halos.push(h); }
-  /* alargadores de madeira nas orelhas */
-  const madeira = new MeshStandardMaterial({ color: 0x7a4a24, roughness: .7 });
-  for(const sx of [-1, 1]){ const a = new Mesh(new TorusGeometry(.17, .06, 8, 18), madeira); a.rotation.y = Math.PI / 2; a.position.set(sx * 1.05, -.22, .02); cab.add(a); const d = new Mesh(new CylinderGeometry(.13, .13, .05, 14), preto); d.rotation.z = Math.PI / 2; d.position.set(sx * 1.05, -.22, .02); cab.add(d); }
-  /* osso atravessando o nariz */
-  const osso = new Mesh(new CylinderGeometry(.045, .045, 1.15, 8), new MeshStandardMaterial({ color: 0xf1ead6, roughness: .55 })); osso.rotation.z = Math.PI / 2; osso.position.set(0, -.17, 1.0); cab.add(osso);
-  for(const sx of [-1, 1]){ const pt = new Mesh(new SphereGeometry(.055, 8, 6), new MeshStandardMaterial({ color: 0xf1ead6, roughness: .55 })); pt.position.set(sx * .58, -.17, 1.0); cab.add(pt); }
-  /* cocar: leque de penas escuras barradas em volta da cabeça, com duas penas brancas no alto */
-  const barrada = new MeshStandardMaterial({ map: penaBarrada(), roughness: .9, side: DoubleSide }), branca = new MeshStandardMaterial({ color: 0xf5f0e2, roughness: .8, side: DoubleSide });
-  const cocar = new Group(); cocar.position.set(0, .35, -.55); cocar.rotation.x = -.42; cab.add(cocar); const penas = [];
-  for(let fila = 0; fila < 2; fila++){ const n = fila ? 17 : 21, comp = fila ? 2.6 : 2.1;
-    for(let i = 0; i < n; i++){ const f = (i / (n - 1) - .5) * Math.PI * 1.45, pena = new Group(), corpo = new Mesh(new SphereGeometry(1, 10, 8), barrada); corpo.scale.set(.28, comp / 2, .05); corpo.position.y = comp / 2 + .9; pena.add(corpo);
-      pena.rotation.z = -f; pena.position.z = -fila * .12; cocar.add(pena); penas.push({ g: pena, rz: -f, fase: Math.random() * 6 }); } }
-  for(const sx of [-1, 1]){ const b = new Mesh(new SphereGeometry(1, 10, 8), branca); b.scale.set(.2, 1.5, .05); b.position.set(sx * .3, 3.25, .12); b.rotation.z = -sx * .18; cocar.add(b); }
-  /* colar de cobra-coral: enrolada ao pescoço, a cabeça descansa no peito */
-  const pts = [], N = 26;
-  for(let i = 0; i < N; i++){ const t = (i / N) * Math.PI * 2, fr = Math.max(0, Math.cos(t)), x = Math.sin(t) * (.66 + .1 * fr), z = Math.cos(t) * (.5 + .27 * fr) + (fr > 0 ? 0 : -.02);
-    const sup = 1.72 + .48 * Math.sqrt(Math.max(0, 1 - (x / .92) ** 2 - (z / .66) ** 2)); pts.push(new Vector3(x, Math.max(1.5 - .7 * fr ** 1.2 + .5, fr > .2 ? 2.02 - .75 * fr ** 1.4 : sup + .05), z)); }
-  const cobra = new Mesh(new TubeGeometry(new CatmullRomCurve3(pts, true), 140, .09, 8, true), new MeshStandardMaterial({ map: peleCoral(), roughness: .45 })); rig.tronco.add(cobra);
-  const cabeca = new Mesh(new SphereGeometry(1, 12, 8), new MeshStandardMaterial({ color: 0x0c0b0b, roughness: .4 })); cabeca.scale.set(.12, .09, .2); cabeca.position.set(.12, 1.3, .84); cabeca.rotation.x = .35; rig.tronco.add(cabeca);
-  const anel = new Mesh(new CylinderGeometry(.115, .115, .05, 10), new MeshStandardMaterial({ color: 0xe9c92a, roughness: .4 })); anel.rotation.x = Math.PI / 2 + .35; anel.position.set(.12, 1.35, .72); rig.tronco.add(anel);
-  /* luz própria suave */
-  const luz = new PointLight(m.luz, .5, 14); luz.position.set(0, 4.6, 1.6); rig.av.add(luz);
-  let t = 0;
-  return { id: def.id, nome: def.nome, p: rig, tick(dt){ t += dt; const k = .85 + .15 * Math.sin(t * 2.4); halos.forEach(h => { h.material.opacity = .28 + .2 * k; }); luz.intensity = .35 + .25 * k; penas.forEach(p => { p.g.rotation.z = p.rz + Math.sin(t * 1.4 + p.fase) * .012; }); } };
-}
+export {constroiAtiara} from './atiara-visual.js';
 
 /* OPERADOR (vaga genérica, aparência padrão da equipe até a pessoa autorizar e enviar os dados): farda verde-oliva, capacete laranja, sem barba. */
 /* duas tranças caindo pela frente dos ombros até o peito (Mary): tubo ao longo de uma curva + "gomos" (esferas) + elástico colorido na ponta.

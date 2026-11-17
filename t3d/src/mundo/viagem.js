@@ -84,7 +84,7 @@ export function criarViagem(M){
     return true;
   }
   /* ---------- menu de destinos (no marco) ---------- */
-  function abreMenu(){if(M.ancestral?.ativo()){M.ctx?.mostraAviso("Use o portal dourado para voltar às vilas");return;}
+  function abreMenu(){if(M.ancestral?.ativo()||M.futuro?.ativo()){M.ctx?.mostraAviso(M.futuro?.ativo()?"2071 · continue o epílogo de Atiara pela estrada":"Use o portal dourado para voltar às vilas");return;}
     if(S.menu || S.viajando) return; const J = M.jogador(); if(!J) return;
     S.menu = document.createElement("div"); S.menu.style.cssText = "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:80;background:rgba(18,19,14,.94);border:2px solid #8a9a3b;border-radius:14px;padding:14px 18px;min-width:280px;font:600 14px ui-monospace,Consolas,monospace;color:#e9efc0;pointer-events:auto;";
     const t = document.createElement("div"); t.textContent = "Viagem rápida"; t.style.cssText = "font-size:17px;margin-bottom:10px;color:#ffd36a;"; S.menu.appendChild(t);

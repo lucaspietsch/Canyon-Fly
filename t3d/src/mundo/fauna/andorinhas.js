@@ -1,3 +1,4 @@
+import {geometriaAndorinhaVoo} from './andorinha-visual.js';
 import { InstancedMesh, BufferGeometry, Float32BufferAttribute, InstancedBufferAttribute, MeshStandardMaterial, DoubleSide, DynamicDrawUsage } from "three";
 import { U, ANDORINHAS as C, qualidade } from "../config.js";
 import { PORT, Y_COMUM } from "../../portico.js";
@@ -13,23 +14,6 @@ import { PORT, Y_COMUM } from "../../portico.js";
 
 const rnd = (a, b) => a + Math.random() * (b - a), cl = (v, a, b) => Math.max(a, Math.min(b, v));
 const sst = (a, b, x) => { const t = cl((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
-
-function geometria(){
-  const pos = [], cor = [], idx = []; const dorso = [.05, .08, .17], ventre = [.88, .86, .8], garg = [.62, .3, .2];
-  const v = (x, y, z, c) => { pos.push(x, y, z); cor.push(...c); return pos.length / 3 - 1; };
-  const tri = (a, b, c) => idx.push(a, b, c);
-  /* corpo: fuso de 6 lados do bico (z+) à cauda (z−) */
-  const sec = [[.5, 0], [.3, .07], [.1, .12], [-.1, .115], [-.3, .07], [-.46, .02]], n = 6, anel = [];
-  sec.forEach(([z, r]) => { const a = []; for(let k = 0; k < n; k++){ const t = k / n * Math.PI * 2, y = Math.sin(t) * r, x = Math.cos(t) * r; a.push(v(x, y * .8, z, y < -.01 ? (z > .1 ? garg : ventre) : dorso)); } anel.push(a); });
-  for(let i = 0; i < sec.length - 1; i++) for(let k = 0; k < n; k++){ const a = anel[i][k], b = anel[i][(k + 1) % n], c = anel[i + 1][k], d = anel[i + 1][(k + 1) % n]; tri(a, c, b); tri(b, c, d); }
-  /* cauda bifurcada */
-  const t0 = v(0, 0, -.42, dorso), tl = v(-.14, 0, -.78, dorso), tr = v(.14, 0, -.78, dorso), tn = v(0, 0, -.6, dorso); tri(t0, tl, tn); tri(t0, tn, tr);
-  /* asas em foice (cada uma com 3 triângulos: raiz larga, curva para trás, ponta fina) */
-  for(const s of [-1, 1]){ const r0 = v(s * .06, .02, .2, dorso), r1 = v(s * .06, .02, -.12, ventre), m0 = v(s * .38, .06, .14, dorso), m1 = v(s * .38, .06, -.14, ventre), p0 = v(s * .78, .1, -.2, dorso), p1 = v(s * .66, .08, -.04, dorso);
-    tri(r0, m0, r1); tri(r1, m0, m1); tri(m0, p1, m1); tri(m1, p1, p0); tri(r0, r1, m0); tri(m1, p0, p1); }
-  const g = new BufferGeometry(); g.setAttribute("position", new Float32BufferAttribute(pos, 3)); g.setAttribute("color", new Float32BufferAttribute(cor, 3)); g.setIndex(idx); g.computeVertexNormals();
-  return g;
-}
 
 export function criarAndorinhas(M){
   const { cen } = M, Q = qualidade(), N = Math.round(C.quantidade * Math.min(1, Q.aves));
@@ -53,12 +37,12 @@ export function criarAndorinhas(M){
   const px = new Float32Array(N), py = new Float32Array(N), pz = new Float32Array(N), vx = new Float32Array(N), vy = new Float32Array(N), vz = new Float32Array(N), gid = new Uint8Array(N), ativa = new Uint8Array(N), sai = new Uint8Array(N), kick = new Float32Array(N), bank = new Float32Array(N);
   const alvoG = []; for(let g = 0; g < C.subgrupos; g++) alvoG.push([0, 0, 0]);
   const vmin = C.velocidadeM[0] * U, vmax = C.velocidadeM[1] * U, perc = C.percepcaoM * U, sep = C.separacaoM * U;
-  const geo = geometria(), fase = new Float32Array(N * 2); for(let i = 0; i < N; i++){ fase[i * 2] = Math.random() * 6.283; fase[i * 2 + 1] = rnd(22, 30); }
+  const geo = geometriaAndorinhaVoo(), fase = new Float32Array(N * 2); for(let i = 0; i < N; i++){ fase[i * 2] = Math.random() * 6.283; fase[i * 2 + 1] = rnd(22, 30); }
   geo.setAttribute("aFase", new InstancedBufferAttribute(fase, 2));
-  const mat = new MeshStandardMaterial({ vertexColors: true, side: DoubleSide, roughness: .8, metalness: 0 }), uT = { value: 0 };
-  mat.onBeforeCompile = (sh) => { sh.uniforms.uT = uT; sh.vertexShader = "attribute vec2 aFase; uniform float uT;\n" + sh.vertexShader.replace("#include <begin_vertex>", `
+  const mat = new MeshStandardMaterial({ vertexColors: true, side: DoubleSide, roughness: .58, metalness: .12 }), uT = { value: 0 };
+  mat.onBeforeCompile = (sh) => { sh.uniforms.uT = uT; sh.vertexShader = "attribute vec2 aFase; attribute float aAsa; uniform float uT;\n" + sh.vertexShader.replace("#include <begin_vertex>", `
     vec3 transformed = vec3(position);
-    float asa = smoothstep(0.1, 0.35, abs(position.x));
+    float asa = aAsa;
     float planar = smoothstep(-0.4, 0.5, sin(uT * 0.5 + aFase.x * 3.0));                        // de vez em quando plana
     float bate = sin(uT * aFase.y + aFase.x) * mix(0.15, 1.0, planar);
     transformed.y += bate * abs(position.x) * 0.8 * asa;

@@ -52,8 +52,8 @@ export function registraCenasTupa(M){
     const G = S.gritador = criaGritador(M), q = frente(j, 55, 10); G.coloca(q.x, q.z); G.estado = "parado";
     const grita = (intens = 1) => { const J1 = J(), dx = G.pos().x - J1.x, dz = G.pos().z - J1.z, lado = Math.sin(Math.atan2(dx, dz) - J1.yaw); gritoSom(-lado, intens); tremor(500); msg("sobrenatural", "AAAAAAAAAAH! — o grito vem " + (lado > .3 ? "da esquerda" : lado < -.3 ? "da direita" : "de frente") + ", cada vez mais perto."); };
     await X.espera(1); grita(.7);
-    const r = await X.escolhe("O grito vem da escuridão…", ["Gritar de volta", "Ficar em silêncio"], { etiqueta: "NUNCA RESPONDA AO GRITADOR", corpo: ["Dizem que quem responde ao Gritador é levado por ele."] });
-    if(r === 0){ G.vel = 7; G.estado = "aproxima"; X.msg("emergencia", "Você respondeu! O Gritador corre na sua direção."); gritoSom(0, 1.3); tremor(900); await X.espera(4); M.missoes.falha("Você respondeu ao Gritador"); G.some(); S.gritador = null; return; }
+    const r = await X.escolhe("O grito vem da escuridão…", ["Gritar de volta", "Ficar em silêncio"], { etiqueta: "NUNCA RESPONDA AO GRITADOR", corpo: ["Na lenda da maldição da mãe, um tropeiro cruel é condenado a vagar após maltratá-la por ter soltado seu cavalo Malacara.", "Outra versão fala de um guardião de riquezas jesuíticas preso à terra após morrer. Os moradores avisam: nunca responda ao grito; a cada resposta ele se aproxima."] });
+    if(r === 0){ G.responde(); X.msg("emergencia", "Você respondeu! O Gritador corre na sua direção."); gritoSom(0, 1.3); tremor(900); await X.espera(4); M.missoes.falha("Você respondeu ao Gritador"); G.some(); S.gritador = null; return; }
     X.msg("sobrenatural", "Você prende a respiração. O vulto se vira, procurando de onde veio a resposta que nunca vem."); X.dica("[V] Raio de Tupã — mire de frente para o Gritador"); G.estado = "aproxima";
     let prox = 12, t = 0; const aoMorrer = new Promise(ok => { G.mortoCb = ok; });
     while(!G.morto){ await X.espera(.5); t += .5; prox -= .5; const J1 = J(), d = Math.hypot(G.pos().x - J1.x, G.pos().z - J1.z) / U;

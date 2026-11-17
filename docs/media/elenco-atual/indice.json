@@ -1,0 +1,413 @@
+{
+  "personagens": [
+    {
+      "nome": "Pit · normal",
+      "arquivo": "personagens-01.png"
+    },
+    {
+      "nome": "Pit · poder",
+      "arquivo": "personagens-02.png"
+    },
+    {
+      "nome": "Sepé Tiarajú",
+      "arquivo": "personagens-03.png"
+    },
+    {
+      "nome": "Tupã",
+      "arquivo": "personagens-04.png"
+    },
+    {
+      "nome": "Atiara",
+      "arquivo": "personagens-05.png"
+    },
+    {
+      "nome": "Atiara · 2071",
+      "arquivo": "personagens-06.png"
+    },
+    {
+      "nome": "Krig · normal",
+      "arquivo": "personagens-07.png"
+    },
+    {
+      "nome": "Krig · poder",
+      "arquivo": "personagens-08.png"
+    },
+    {
+      "nome": "Carlão · normal",
+      "arquivo": "personagens-09.png"
+    },
+    {
+      "nome": "Carlão · poder",
+      "arquivo": "personagens-10.png"
+    },
+    {
+      "nome": "Jackão · normal",
+      "arquivo": "personagens-11.png"
+    },
+    {
+      "nome": "Jackão · poder",
+      "arquivo": "personagens-12.png"
+    },
+    {
+      "nome": "Diully · normal",
+      "arquivo": "personagens-13.png"
+    },
+    {
+      "nome": "Diully · poder",
+      "arquivo": "personagens-14.png"
+    },
+    {
+      "nome": "Mary · normal",
+      "arquivo": "personagens-15.png"
+    },
+    {
+      "nome": "Mary · poder",
+      "arquivo": "personagens-16.png"
+    },
+    {
+      "nome": "Mohr · normal",
+      "arquivo": "personagens-17.png"
+    },
+    {
+      "nome": "Mohr · poder",
+      "arquivo": "personagens-18.png"
+    },
+    {
+      "nome": "Kauling · normal",
+      "arquivo": "personagens-19.png"
+    },
+    {
+      "nome": "Kauling · poder",
+      "arquivo": "personagens-20.png"
+    }
+  ],
+  "npcs": [
+    {
+      "nome": "Turista adulto",
+      "arquivo": "npcs-01.png"
+    },
+    {
+      "nome": "Turista com câmera",
+      "arquivo": "npcs-02.png"
+    },
+    {
+      "nome": "Criança · gorro",
+      "arquivo": "npcs-03.png"
+    },
+    {
+      "nome": "Visitante idoso",
+      "arquivo": "npcs-04.png"
+    },
+    {
+      "nome": "Aluno",
+      "arquivo": "npcs-05.png"
+    },
+    {
+      "nome": "Professor(a)",
+      "arquivo": "npcs-06.png"
+    },
+    {
+      "nome": "Guia de trilha",
+      "arquivo": "npcs-07.png"
+    },
+    {
+      "nome": "Helena Rocha",
+      "arquivo": "npcs-08.png"
+    },
+    {
+      "nome": "Rogério Tavares",
+      "arquivo": "npcs-09.png"
+    },
+    {
+      "nome": "Márcio Bittencourt",
+      "arquivo": "npcs-10.png"
+    },
+    {
+      "nome": "Joana Prestes",
+      "arquivo": "npcs-11.png"
+    },
+    {
+      "nome": "Tiago Fagundes",
+      "arquivo": "npcs-12.png"
+    },
+    {
+      "nome": "Camila Dorneles",
+      "arquivo": "npcs-13.png"
+    },
+    {
+      "nome": "Jair Scheffer",
+      "arquivo": "npcs-14.png"
+    },
+    {
+      "nome": "Luciana Meirelles",
+      "arquivo": "npcs-15.png"
+    },
+    {
+      "nome": "Eduardo Zanella",
+      "arquivo": "npcs-16.png"
+    },
+    {
+      "nome": "Patrícia Mondadori",
+      "arquivo": "npcs-17.png"
+    },
+    {
+      "nome": "Rafael Moreira · bombeiro",
+      "arquivo": "npcs-18.png"
+    },
+    {
+      "nome": "Carla Brandão · enfermagem",
+      "arquivo": "npcs-19.png"
+    },
+    {
+      "nome": "Diego Salvador · resgate",
+      "arquivo": "npcs-20.png"
+    },
+    {
+      "nome": "Marta Quevedo · enfermagem",
+      "arquivo": "npcs-21.png"
+    },
+    {
+      "nome": "Paulo Werner · resgate",
+      "arquivo": "npcs-22.png"
+    },
+    {
+      "nome": "Inês Padilha · resgate",
+      "arquivo": "npcs-23.png"
+    },
+    {
+      "nome": "Dona Lurdes · Moradora",
+      "arquivo": "npcs-24.png"
+    },
+    {
+      "nome": "Raul · Comerciante",
+      "arquivo": "npcs-25.png"
+    },
+    {
+      "nome": "Lia · Guia local",
+      "arquivo": "npcs-26.png"
+    },
+    {
+      "nome": "Bento · Artesão",
+      "arquivo": "npcs-27.png"
+    },
+    {
+      "nome": "Íris · Estudante",
+      "arquivo": "npcs-28.png"
+    },
+    {
+      "nome": "Vítor · Visitante",
+      "arquivo": "npcs-29.png"
+    },
+    {
+      "nome": "Guardião do recanto",
+      "arquivo": "npcs-30.png"
+    },
+    {
+      "nome": "Operário do campo",
+      "arquivo": "npcs-31.png"
+    },
+    {
+      "nome": "Motorista",
+      "arquivo": "npcs-32.png"
+    },
+    {
+      "nome": "Praça · adulto",
+      "arquivo": "npcs-33.png"
+    },
+    {
+      "nome": "Praça · criança",
+      "arquivo": "npcs-34.png"
+    },
+    {
+      "nome": "Anhangá · cervo",
+      "arquivo": "npcs-35.png"
+    },
+    {
+      "nome": "Anhangá · tatu",
+      "arquivo": "npcs-36.png"
+    },
+    {
+      "nome": "Anhangá · boi",
+      "arquivo": "npcs-37.png"
+    },
+    {
+      "nome": "Anhangá · pirarucu",
+      "arquivo": "npcs-38.png"
+    },
+    {
+      "nome": "Anhangá · humano",
+      "arquivo": "npcs-39.png"
+    },
+    {
+      "nome": "Gritador",
+      "arquivo": "npcs-40.png"
+    },
+    {
+      "nome": "Boitatá",
+      "arquivo": "npcs-41.png"
+    },
+    {
+      "nome": "THAYNARA",
+      "arquivo": "npcs-42.png"
+    },
+    {
+      "nome": "WESLLEY",
+      "arquivo": "npcs-43.png"
+    },
+    {
+      "nome": "LORRANY",
+      "arquivo": "npcs-44.png"
+    },
+    {
+      "nome": "DENILSON",
+      "arquivo": "npcs-45.png"
+    },
+    {
+      "nome": "JHONATAN",
+      "arquivo": "npcs-46.png"
+    }
+  ],
+  "animais": [
+    {
+      "nome": "Lobo-guará",
+      "arquivo": "animais-01.png"
+    },
+    {
+      "nome": "Leão-baio · puma",
+      "arquivo": "animais-02.png"
+    },
+    {
+      "nome": "Graxaim · cinza",
+      "arquivo": "animais-03.png"
+    },
+    {
+      "nome": "Graxaim · ruivo",
+      "arquivo": "animais-04.png"
+    },
+    {
+      "nome": "Capivara",
+      "arquivo": "animais-05.png"
+    },
+    {
+      "nome": "Capivara · filhote",
+      "arquivo": "animais-06.png"
+    },
+    {
+      "nome": "Veado-campeiro",
+      "arquivo": "animais-07.png"
+    },
+    {
+      "nome": "Quati",
+      "arquivo": "animais-08.png"
+    },
+    {
+      "nome": "Gambá",
+      "arquivo": "animais-09.png"
+    },
+    {
+      "nome": "Lontra",
+      "arquivo": "animais-10.png"
+    },
+    {
+      "nome": "Gralha-azul",
+      "arquivo": "animais-11.png"
+    },
+    {
+      "nome": "Papagaio-charão",
+      "arquivo": "animais-12.png"
+    },
+    {
+      "nome": "Pica-pau-do-campo",
+      "arquivo": "animais-13.png"
+    },
+    {
+      "nome": "Sabiá-laranjeira",
+      "arquivo": "animais-14.png"
+    },
+    {
+      "nome": "Tico-tico",
+      "arquivo": "animais-15.png"
+    },
+    {
+      "nome": "Tucano-de-bico-verde",
+      "arquivo": "animais-16.png"
+    },
+    {
+      "nome": "Quero-quero",
+      "arquivo": "animais-17.png"
+    },
+    {
+      "nome": "Curicaca",
+      "arquivo": "animais-18.png"
+    },
+    {
+      "nome": "Gavião-de-rabo-branco",
+      "arquivo": "animais-19.png"
+    },
+    {
+      "nome": "Papagaio-de-peito-roxo",
+      "arquivo": "animais-20.png"
+    },
+    {
+      "nome": "Sapinho-verde-de-barriga-vermelha",
+      "arquivo": "animais-21.png"
+    },
+    {
+      "nome": "Sapinho-de-barriga-vermelha",
+      "arquivo": "animais-22.png"
+    },
+    {
+      "nome": "Perereca",
+      "arquivo": "animais-23.png"
+    },
+    {
+      "nome": "Libélula azul",
+      "arquivo": "animais-24.png"
+    },
+    {
+      "nome": "Libélula verde",
+      "arquivo": "animais-25.png"
+    },
+    {
+      "nome": "Libélula vermelha",
+      "arquivo": "animais-26.png"
+    },
+    {
+      "nome": "Libélula amarela",
+      "arquivo": "animais-27.png"
+    },
+    {
+      "nome": "Jararaca",
+      "arquivo": "animais-28.png"
+    },
+    {
+      "nome": "Urutu-cruzeiro",
+      "arquivo": "animais-29.png"
+    },
+    {
+      "nome": "Coral · anéis largos e claros",
+      "arquivo": "animais-30.png"
+    },
+    {
+      "nome": "Coral · vermelho amplo",
+      "arquivo": "animais-31.png"
+    },
+    {
+      "nome": "Coral · tríades escuras",
+      "arquivo": "animais-32.png"
+    },
+    {
+      "nome": "Coral · anéis pretos amplos",
+      "arquivo": "animais-33.png"
+    },
+    {
+      "nome": "Andorinha",
+      "arquivo": "animais-34.png"
+    },
+    {
+      "nome": "Gralha Ancestral e seis protetoras",
+      "arquivo": "animais-35.png"
+    }
+  ],
+  "errors": []
+}

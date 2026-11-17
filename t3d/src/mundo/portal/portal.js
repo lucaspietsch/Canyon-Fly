@@ -47,7 +47,7 @@ export function criarPortal(M){
     S.p = constroi(x, z, Math.atan2(J.x - x, J.z - z), "ida"); msg("sobrenatural", "O ar se rasga à sua frente: um portal violeta se abre. Do outro lado, o passado."); M.ctx && M.ctx.mostraAviso("Portal violeta: atravesse para o passado"); return true;
   }
   function aoEscolher(d){
-    if(!d || !M.andando()||M.ancestral?.ativo()) return;
+    if(!d || !M.andando()||M.ancestral?.ativo()||M.futuro?.ativo()) return;
     if(d.tempo === "outro"){ if(M.lugares && M.lugares.S.antigo) return; remove("p"); abre(); } else remove("p");
   }
 

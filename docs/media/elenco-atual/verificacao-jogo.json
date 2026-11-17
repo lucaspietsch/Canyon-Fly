@@ -1,0 +1,21 @@
+{
+  "cidade": {
+    "n": 6,
+    "coral": 22
+  },
+  "futuro": {
+    "epoca": "2071",
+    "roupa": true,
+    "ator": "atiara",
+    "ruinas": 385
+  },
+  "retorno": {
+    "epoca": "2026",
+    "ruinas": false
+  },
+  "persistencia": {
+    "salvo": true,
+    "restaurou": true
+  },
+  "errors": []
+}
