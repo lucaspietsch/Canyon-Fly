@@ -30,6 +30,7 @@ jobs:
           mkdir -p _site/t3d
           cp index.html manifest.webmanifest _site/
           cp -r icones data jogo _site/
+          [ -d audio ] && cp -r audio _site/ || true
           cp -r t3d/dist _site/t3d/
           touch _site/.nojekyll
           du -sh _site
