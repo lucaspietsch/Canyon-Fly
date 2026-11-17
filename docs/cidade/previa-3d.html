@@ -1,0 +1,45 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#cfe3f2}canvas{display:block}#t{position:fixed;left:14px;top:10px;font:600 18px sans-serif;color:#223;background:#ffffffcc;padding:6px 10px;border-radius:6px}</style></head><body><div id="t">Ideia em 3D (blocos) — centro de Cambará do Sul a partir do catálogo</div>
+<script type="module">
+import * as T from '../../t3d/node_modules/three/build/three.module.min.js';
+const D = await (await fetch('previa-3d-dados.json')).json();
+const W=innerWidth,H=innerHeight, r=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); r.setSize(W,H); r.shadowMap.enabled=true; document.body.appendChild(r.domElement);
+const s=new T.Scene(); s.background=new T.Color(0xcfe3f2); s.fog=new T.Fog(0xcfe3f2,350,700);
+const vista=new URLSearchParams(location.search).get('v')||'3d';
+const cam = vista==='topo' ? new T.OrthographicCamera(-150,150,105,-105,1,1000) : new T.PerspectiveCamera(42,W/H,1,2000);
+if(vista==='topo'){ cam.position.set(25,400,-60); cam.up.set(0,0,-1); cam.lookAt(25,0,-60); } else { cam.position.set(-140,140,120); cam.lookAt(30,0,-55); if(vista==='praca'){ cam.position.set(-82,7,9); cam.lookAt(-20,5,-3); } }
+s.add(new T.HemisphereLight(0xffffff,0x6b7a4a,1.1)); const sol=new T.DirectionalLight(0xffffff,1.6); sol.position.set(-120,220,80); sol.castShadow=true; sol.shadow.mapSize.set(2048,2048); Object.assign(sol.shadow.camera,{left:-250,right:250,top:250,bottom:-250}); s.add(sol);
+const chao=new T.Mesh(new T.PlaneGeometry(1200,1200),new T.MeshLambertMaterial({color:0x8fae6a})); chao.rotation.x=-Math.PI/2; chao.receiveShadow=true; s.add(chao);
+// x = leste, y = norte  →  three: x = x, z = -y
+D.R.forEach(([n,pts])=>{ for(let i=1;i<pts.length;i++){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i]; const L=Math.hypot(x1-x0,y1-y0); const m=new T.Mesh(new T.BoxGeometry(L,0.3,9),new T.MeshLambertMaterial({color:0x8d8a84})); m.position.set((x0+x1)/2,0.15,-(y0+y1)/2); m.rotation.y=Math.atan2(y1-y0,x1-x0); m.receiveShadow=true; s.add(m);} });
+// ângulo da rua mais próxima (para a frente da casa ficar paralela à rua)
+const SEG=[]; D.R.forEach(([n,pts])=>{ for(let i=1;i<pts.length;i++) SEG.push([pts[i-1],pts[i]]); });
+function anguloRua(x,y){ let best=1e9, ang=0; for(const [[x0,y0],[x1,y1]] of SEG){ const vx=x1-x0, vy=y1-y0, L2=vx*vx+vy*vy; let t=((x-x0)*vx+(y-y0)*vy)/L2; t=Math.max(0,Math.min(1,t)); const d=Math.hypot(x0+t*vx-x, y0+t*vy-y); if(d<best){ best=d; ang=Math.atan2(vy,vx); } }
+  const q=Math.PI/2; ang=(((ang+q/2)%q)+q)%q-q/2; return ang; }  // só o desvio da rua (±45°): o prédio mantém o lado comprido onde estava
+const tipo=n=>/Igreja/.test(n)?'igreja':/Praça/.test(n)?'praca':/Rua Coberta/.test(n)?'coberta':/Sequoia|Cambará|araucária/.test(n)?'arvore':/Urna|Termômetro|favos/.test(n)?'marco':/Prefeitura|Salão|Sociedade|Centro Cultural/.test(n)?'publico':/★|Loja|Supermercado|Pub|Material|Restaurante|Galochas|Advocacia|Pioneiro/.test(n)?'comercio':'casa';
+const cor={casa:0xf1e6d2,publico:0xf3ead0,comercio:0xffffff,igreja:0xf7f4ec}, telha={casa:0xb04a32,publico:0x8b4a2b,comercio:0x6b6b70,igreja:0x8e9196};
+D.L.forEach(([n,x,y,w,h,st])=>{ const t=tipo(n); n=n.replace(/^· /,'');
+  if(t==='praca'){ const m=new T.Mesh(new T.BoxGeometry(w,0.4,h),new T.MeshLambertMaterial({color:0x5f9a4a})); m.position.set(x,0.2,-y); m.receiveShadow=true; s.add(m);
+    // calçada em favos de mel: faixa de hexágonos cinza em volta da praça e nos caminhos em cruz
+    const R=1.15, hx=new T.CylinderGeometry(R*.93,R*.93,0.12,6), mats=[0x9a9a96,0xa8a7a2,0x8e8d89].map(c=>new T.MeshLambertMaterial({color:c}));
+    const dx=R*Math.sqrt(3), dz=R*1.5, x0=x-w/2, z0=-y-h/2;
+    for(let j=0;j*dz<=h;j++) for(let i=0;i*dx<=w;i++){ const px=x0+i*dx+(j%2?dx/2:0), pz=z0+j*dz; const u=px-x0, v=pz-z0;
+      const borda = u<4.5||u>w-4.5||v<4.5||v>h-4.5, cruz = Math.abs(u-w/2)<2.2||Math.abs(v-h/2)<2.2;
+      if(!(borda||cruz)) continue; const t=new T.Mesh(hx,mats[(i*7+j*3)%3]); t.position.set(px,0.47,pz); t.receiveShadow=true; s.add(t); }
+    for(let i=0;i<14;i++){ const a=i/14*6.28, tr=new T.Mesh(new T.SphereGeometry(3.2,10,8),new T.MeshLambertMaterial({color:0x3f7a35})); tr.position.set(x+Math.cos(a)*w*.32,5,-y+Math.sin(a)*h*.32); tr.castShadow=true; s.add(tr);} return; }
+  if(t==='coberta'){ // 10 arcos em forma de favo (hexágono), girados alguns graus e cravados no solo, só na frente da praça
+    const N=10, Rh=6.5, mat=new T.MeshLambertMaterial({color:0xb3261e});
+    for(let k=0;k<N;k++){ const px=x-w/2+3+k*(w-6)/(N-1); const g=new T.TorusGeometry(Rh,0.35,4,6); const a=new T.Mesh(g,mat);
+      a.rotation.y=Math.PI/2; a.rotation.x=0; a.rotateZ(Math.PI/6+0.18); a.position.set(px,Rh*0.62,-y); a.castShadow=true; s.add(a); }
+    for(const dz of [-Rh*0.8,Rh*0.8]){ const v=new T.Mesh(new T.BoxGeometry(w-6,0.3,0.3),mat); v.position.set(x,Rh*1.35,-y+dz*0.45); s.add(v); }
+    return; }
+  if(t==='arvore'){ const tr=new T.Mesh(new T.ConeGeometry(n.includes('Sequoia')?5:3.5,n.includes('Sequoia')?38:14,10),new T.MeshLambertMaterial({color:0x2f5d2a})); tr.position.set(x,n.includes('Sequoia')?19:7,-y); tr.castShadow=true; s.add(tr); return; }
+  if(t==='marco' || !w){ const m=new T.Mesh(new T.CylinderGeometry(1.4,1.4,4,12),new T.MeshLambertMaterial({color:0xe0b84a})); m.position.set(x,2,-y); s.add(m); return; }
+  const alt = t==='igreja'?12: /Sociedade|Supermercado|Thewes|Pioneiro|Prédio|sobrado|Sobrado|Brentano/.test(n)?7: 4.2;
+  const g0=new T.Group(); g0.position.set(x,0,-y); g0.rotation.y=anguloRua(x,y); s.add(g0); x=0; y=0; const s0=s; { const s=g0;
+  const b=new T.Mesh(new T.BoxGeometry(w,alt,h),new T.MeshLambertMaterial({color: st==='falta'?cor[t]:0xbfe0ff})); b.position.set(x,alt/2,-y); b.castShadow=b.receiveShadow=true; s.add(b);
+  const tg=new T.ConeGeometry(Math.hypot(w,h)/2*1.02,Math.min(w,h)*.45,4); tg.rotateY(Math.PI/4); tg.scale(w/Math.hypot(w,h)*1.41,1,h/Math.hypot(w,h)*1.41);
+  const tt=new T.Mesh(tg,new T.MeshLambertMaterial({color:telha[t]})); tt.position.set(x,alt+Math.min(w,h)*.225,-y); tt.castShadow=true; s.add(tt);
+  }
+  if(t==='igreja'){ const s=s0; const tor=new T.Mesh(new T.BoxGeometry(6,25,6),new T.MeshLambertMaterial({color:0xf7f4ec})); tor.position.set(-24,12.5,-51.5); tor.castShadow=true; s.add(tor); const pt=new T.Mesh(new T.ConeGeometry(4.3,6,4),new T.MeshLambertMaterial({color:0x8e9196})); pt.position.set(-24,28,-51.5); pt.rotation.y=Math.PI/4; s.add(pt); } });
+r.render(s,cam); window.PRONTO=1;
+</script></body></html>

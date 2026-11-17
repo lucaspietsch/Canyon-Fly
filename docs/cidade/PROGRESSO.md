@@ -11,7 +11,7 @@ Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.s
 | 🔵 | Urna do Tempo | (-2, +23) | KML |
 | 🔴 | Calçada em favos de mel | (-15, +12) | 19 + fotos do Lucas |
 | 🔴 | Termômetro | (-10, +30) | satélite |
-| 🔴 | Rua Coberta | (-10, +0) | 01 02 14 19 21 |
+| 🔴 | Rua Coberta | (-30, +0) | 01 02 14 19 21 + Lucas: 10 arcos-favo |
 | 🔴 | Igreja Matriz São José | (-24, +68) | 01-06 11 |
 | 🔴 | Rótula do Cambará | (-42, +49) | 11 |
 | 🔴 | Casa paroquial (térrea) | (-4, +75) | 04 05 |

@@ -8,12 +8,12 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 
 # (nome, x, y, largura, altura, status, refs)  — retângulo centrado em (x, y); largura/altura 0 = ponto
 LUGARES = [
-    ("Praça (área)", -30, 25, 50, 40, "jogo", "KML"),
+    ("Praça (área)", -30, 25, 60, 42, "jogo", "KML"),
     ("Sequoia Lunar", -27, 18, 0, 0, "jogo", "KML"),
     ("Urna do Tempo", -2, 23, 0, 0, "jogo", "KML"),
     ("Calçada em favos de mel", -15, 12, 0, 0, "falta", "19 + fotos do Lucas"),
     ("Termômetro", -10, 30, 0, 0, "falta", "satélite"),
-    ("Rua Coberta", -10, 0, 90, 6, "falta", "01 02 14 19 21"),
+    ("Rua Coberta", -30, 0, 60, 6, "falta", "01 02 14 19 21 + Lucas: 10 arcos-favo"),
     ("Igreja Matriz São José", -24, 68, 14, 40, "falta", "01-06 11"),
     ("Rótula do Cambará", -42, 49, 0, 0, "falta", "11"),
     ("Casa paroquial (térrea)", -4, 75, 6, 30, "falta", "04 05"),
@@ -68,6 +68,18 @@ X0, X1, Y0, Y1, E = -100, 160, -45, 165, 4.0
 px = lambda x: (x - X0) * E
 py = lambda y: (Y1 - y) * E
 
+import math
+def angulo_rua(x, y):
+    """Ângulo (graus, sentido anti-horário a partir do leste) da rua mais próxima — a frente da casa fica paralela a ela."""
+    best, ang = 1e9, 0.0
+    for _, pts in RUAS:
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            vx, vy = x1 - x0, y1 - y0; L2 = vx * vx + vy * vy
+            t = max(0, min(1, ((x - x0) * vx + (y - y0) * vy) / L2)); d = math.hypot(x0 + t * vx - x, y0 + t * vy - y)
+            if d < best: best, ang = d, math.degrees(math.atan2(vy, vx))
+    ang = (ang + 45) % 90 - 45   # só o desvio da rua: o prédio mantém o lado comprido onde estava
+    return ang
+
 def svg():
     W, H = (X1 - X0) * E, (Y1 - Y0) * E + 70
     o = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W:.0f}" height="{H:.0f}" font-family="sans-serif" font-size="10">',
@@ -80,7 +92,8 @@ def svg():
         dy = dy[0] if dy else 0
         c = COR[st]
         if w and h:
-            o.append(f'<rect x="{px(x - w/2):.0f}" y="{py(y + h/2):.0f}" width="{w*E:.0f}" height="{h*E:.0f}" rx="3" fill="{c}" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>{html.escape(nome)} — {NOME[st]} (refs {refs})</title></rect>')
+            rot = 0 if "Praça" in nome or "Rua Coberta" in nome else -angulo_rua(x, y)
+            o.append(f'<rect transform="rotate({rot:.1f} {px(x):.1f} {py(y):.1f})" x="{px(x - w/2):.0f}" y="{py(y + h/2):.0f}" width="{w*E:.0f}" height="{h*E:.0f}" rx="3" fill="{c}" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>{html.escape(nome)} — {NOME[st]} (refs {refs})</title></rect>')
         else:
             o.append(f'<circle cx="{px(x):.0f}" cy="{py(y):.0f}" r="6" fill="{c}" stroke="#222" stroke-width=".6"><title>{html.escape(nome)} — {NOME[st]}</title></circle>')
         if nome.startswith("·"): continue
@@ -108,4 +121,6 @@ def md():
 if __name__ == "__main__":
     open(os.path.join(AQUI, "MAPA-PROGRESSO.svg"), "w", encoding="utf-8").write(svg())
     open(os.path.join(AQUI, "PROGRESSO.md"), "w", encoding="utf-8").write(md())
+    import json
+    json.dump({"L": [list(l[:7]) for l in LUGARES], "R": RUAS}, open(os.path.join(AQUI, "previa-3d-dados.json"), "w", encoding="utf-8"), ensure_ascii=False)
     print("ok:", len(LUGARES), "lugares")

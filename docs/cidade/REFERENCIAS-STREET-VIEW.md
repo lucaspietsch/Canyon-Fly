@@ -366,8 +366,9 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
 ### Rua Coberta (Refs 01, 02, 14, 19)
 - **É o projeto da Rua Coberta, montado em frente à praça** (informação do Lucas): por isso a estrutura aparece **sem cobertura** nos prints de jul/2025.
 - **Decisão pendente:** no jogo, mostrar como está hoje (só a armação vermelha) ou já com a cobertura do projeto pronta?
-- **Sequência longa de pórticos de aço vermelho**: cada pórtico tem **duas pernas inclinadas** e **viga horizontal no topo** (formato de trapézio), ligados por **vigas longitudinais** — um "túnel" aberto, **sem cobertura**.
-- Corre **quase leste–oeste (~85°)**, ao lado da **RS-020**, no **lado sul da praça**: de ≈ x −45 (ponta oeste, perto da Quinze de Março) até depois da Ref 01 (x 0) para o leste.
+- **[Lucas] CORREÇÃO:** são **exatamente 10 pórticos**, e a Rua Coberta vai **só até a esquina da praça** (não passa dela). Cada pórtico é um **ARCO EM FORMA DE FAVO DE MEL (HEXÁGONO)**, **alguns graus girado** e **cravado no solo** (o hexágono fica com a parte de baixo enterrada) — tema do **mel** (Cambará do Sul = capital do mel do RS).
+- Pórticos de aço **vermelho**, ligados por **vigas longitudinais** — um "túnel" aberto, **sem cobertura** (a leitura antiga de "trapézio" era o hexágono visto de lado).
+- Corre **quase leste–oeste (~85°)**, ao lado da **RS-020**, no **lado sul da praça**: da **esquina sudoeste** da praça (Quinze de Março, x ≈ −60) até a **esquina sudeste** (Laurindo, x ≈ 0) — **só na frente da praça**.
 - Dimensões estimadas: pórticos de ~6–8 m de altura, ~12 m de largura, espaçados ~5 m.
 - Por baixo: passeio de **pedra**, **bancos de concreto**, **floreiras cúbicas de concreto**, **postes brancos cilíndricos com topo preto**; mureta curva de pedra com o nome "RUA COBERTA".
 - **Fileira de quiosques debaixo da Rua Coberta** (Refs 01 e 21), perto da ponta oeste:
@@ -376,6 +377,7 @@ Rumo de um ponto na foto = rumo da câmera + atan((x − 683) / 683 × 1,683).
   - frente virada para o **sul** (RS-020); ≈ x −32 a −17, y +3 a +10; ~15 m × ~7 m × ~3,5 m de altura.
 
 ### Praça
+- **[Lucas] Calçada em FAVOS DE MEL:** a parte **cinza** da calçada da praça (vista na imagem aérea) tem **desenho hexagonal** — piso de **hexágonos** (favo de mel). Referência de forma enviada pelo Lucas: hexágonos lado a lado, juntas finas.
 - Fica **ao sul da igreja**, entre a fachada e a Rua Coberta.
 - Gramado com canteiros; caminhos de pedra com **meio-fio branco**; bancos; poste preto; pinheiro grande (provável araucária ou cipreste), palmeira, árvores caducas grandes (sem folhas no inverno).
 

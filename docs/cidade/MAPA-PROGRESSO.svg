@@ -10,7 +10,7 @@
 <text x="374" y="34" fill="#7a705c" text-anchor="end" font-style="italic">Rua Laurindo F. de Macedo</text>
 <polyline points="860,820 780,420 752,20" fill="none" stroke="#cfc8b8" stroke-width="22" stroke-linecap="round"/>
 <text x="746" y="34" fill="#7a705c" text-anchor="end" font-style="italic">Rua Vinte de Setembro</text>
-<rect x="180" y="480" width="200" height="160" rx="3" fill="#2e7dd7" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Praça (área) — já no jogo (refs KML)</title></rect>
+<rect transform="rotate(0.0 280.0 560.0)" x="160" y="476" width="240" height="168" rx="3" fill="#2e7dd7" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Praça (área) — já no jogo (refs KML)</title></rect>
 <text x="280" y="563" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Praça (área)</text>
 <circle cx="292" cy="588" r="6" fill="#2e7dd7" stroke="#222" stroke-width=".6"><title>Sequoia Lunar — já no jogo</title></circle>
 <text x="292" y="591" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sequoia Lunar</text>
@@ -20,80 +20,80 @@
 <text x="340" y="615" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Calçada em favos de mel</text>
 <circle cx="360" cy="540" r="6" fill="#c9483f" stroke="#222" stroke-width=".6"><title>Termômetro — falta</title></circle>
 <text x="360" y="543" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Termômetro</text>
-<rect x="180" y="648" width="360" height="24" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Rua Coberta — falta (refs 01 02 14 19 21)</title></rect>
-<text x="360" y="663" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Rua Coberta</text>
-<rect x="276" y="308" width="56" height="160" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Igreja Matriz São José — falta (refs 01-06 11)</title></rect>
+<rect transform="rotate(0.0 280.0 660.0)" x="160" y="648" width="240" height="24" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Rua Coberta — falta (refs 01 02 14 19 21 + Lucas: 10 arcos-favo)</title></rect>
+<text x="280" y="663" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Rua Coberta</text>
+<rect transform="rotate(-3.9 304.0 388.0)" x="276" y="308" width="56" height="160" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Igreja Matriz São José — falta (refs 01-06 11)</title></rect>
 <text x="304" y="391" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Igreja Matriz São José</text>
 <circle cx="232" cy="464" r="6" fill="#c9483f" stroke="#222" stroke-width=".6"><title>Rótula do Cambará — falta</title></circle>
 <text x="232" y="467" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Rótula do Cambará</text>
-<rect x="372" y="300" width="24" height="120" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa paroquial (térrea) — falta (refs 04 05)</title></rect>
+<rect transform="rotate(-3.9 384.0 360.0)" x="372" y="300" width="24" height="120" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa paroquial (térrea) — falta (refs 04 05)</title></rect>
 <text x="384" y="363" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa paroquial (térrea)</text>
-<rect x="320" y="252" width="64" height="56" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio de concreto inacabado — falta (refs 05)</title></rect>
+<rect transform="rotate(-12.1 352.0 280.0)" x="320" y="252" width="64" height="56" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio de concreto inacabado — falta (refs 05)</title></rect>
 <text x="352" y="283" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio de concreto inacabado</text>
-<rect x="156" y="308" width="48" height="136" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Salão Paroquial — falta (refs 06 09 10 11)</title></rect>
+<rect transform="rotate(-1.2 180.0 376.0)" x="156" y="308" width="48" height="136" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Salão Paroquial — falta (refs 06 09 10 11)</title></rect>
 <text x="180" y="379" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Salão Paroquial</text>
-<rect x="224" y="144" width="112" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prefeitura — falta (refs 07 08)</title></rect>
+<rect transform="rotate(-12.1 280.0 168.0)" x="224" y="144" width="112" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prefeitura — falta (refs 07 08)</title></rect>
 <text x="280" y="171" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prefeitura</text>
-<rect x="70" y="520" width="60" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Centro Cultural Dr. Santo Bornéo — falta (refs 13 14 15)</title></rect>
+<rect transform="rotate(-1.2 100.0 540.0)" x="70" y="520" width="60" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Centro Cultural Dr. Santo Bornéo — falta (refs 13 14 15)</title></rect>
 <text x="100" y="543" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Centro Cultural Dr. Santo Bornéo</text>
-<rect x="80" y="364" width="32" height="128" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas oeste da Quinze de Março — falta (refs 12 13 16 17)</title></rect>
+<rect transform="rotate(-1.2 96.0 428.0)" x="80" y="364" width="32" height="128" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas oeste da Quinze de Março — falta (refs 12 13 16 17)</title></rect>
 <text x="96" y="431" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casas oeste da Quinze de Março</text>
-<rect x="192" y="720" width="32" height="32" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa histórica do Sr. Gesmar — falta (refs 18)</title></rect>
+<rect transform="rotate(-1.2 208.0 736.0)" x="192" y="720" width="32" height="32" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa histórica do Sr. Gesmar — falta (refs 18)</title></rect>
 <text x="208" y="739" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa histórica do Sr. Gesmar</text>
-<rect x="492" y="516" width="120" height="96" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sociedade XV de Março — falta (refs 23 26-28 80)</title></rect>
+<rect transform="rotate(-10.4 552.0 564.0)" x="492" y="516" width="120" height="96" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sociedade XV de Março — falta (refs 23 26-28 80)</title></rect>
 <text x="552" y="567" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sociedade XV de Março</text>
-<rect x="464" y="396" width="48" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Du Perau Gastro Pub ★ — falta (refs 29 30)</title></rect>
+<rect transform="rotate(-3.9 488.0 420.0)" x="464" y="396" width="48" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Du Perau Gastro Pub ★ — falta (refs 29 30)</title></rect>
 <text x="488" y="423" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Du Perau Gastro Pub ★</text>
-<rect x="520" y="432" width="40" height="32" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea c/ bandeirinhas — falta (refs 29)</title></rect>
+<rect transform="rotate(-3.9 540.0 448.0)" x="520" y="432" width="40" height="32" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea c/ bandeirinhas — falta (refs 29)</title></rect>
 <text x="540" y="451" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa térrea c/ bandeirinhas</text>
-<rect x="512" y="680" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado cinza nº 1152 — falta (refs 26 81)</title></rect>
+<rect transform="rotate(-10.4 536.0 700.0)" x="512" y="680" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado cinza nº 1152 — falta (refs 26 81)</title></rect>
 <text x="536" y="703" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado cinza nº 1152</text>
-<rect x="432" y="700" width="56" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio 3 pav. canto sudeste — falta (refs 25)</title></rect>
+<rect transform="rotate(-3.9 460.0 724.0)" x="432" y="700" width="56" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio 3 pav. canto sudeste — falta (refs 25)</title></rect>
 <text x="460" y="727" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio 3 pav. canto sudeste</text>
-<rect x="468" y="222" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas sul da Dona Úrsula — falta (refs 37-39)</title></rect>
+<rect transform="rotate(-20.8 480.0 236.0)" x="468" y="222" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas sul da Dona Úrsula — falta (refs 37-39)</title></rect>
 <text x="480" y="275" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casas sul da Dona Úrsula</text>
-<rect x="496" y="214" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 2 — falta (refs 37-39)</title></rect>
-<rect x="524" y="206" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 3 — falta (refs 37-39)</title></rect>
-<rect x="552" y="198" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 4 — falta (refs 37-39)</title></rect>
-<rect x="582" y="190" width="28" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 5 — falta (refs 37-39)</title></rect>
-<rect x="624" y="174" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 6 — falta (refs 37-39)</title></rect>
-<rect x="476" y="122" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas norte da Dona Úrsula — falta (refs 38 40-44)</title></rect>
+<rect transform="rotate(-20.8 508.0 228.0)" x="496" y="214" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 2 — falta (refs 37-39)</title></rect>
+<rect transform="rotate(-20.8 536.0 220.0)" x="524" y="206" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 3 — falta (refs 37-39)</title></rect>
+<rect transform="rotate(-20.8 564.0 212.0)" x="552" y="198" width="24" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 4 — falta (refs 37-39)</title></rect>
+<rect transform="rotate(-20.8 596.0 204.0)" x="582" y="190" width="28" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 5 — falta (refs 37-39)</title></rect>
+<rect transform="rotate(-20.8 640.0 188.0)" x="624" y="174" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 6 — falta (refs 37-39)</title></rect>
+<rect transform="rotate(-20.8 492.0 136.0)" x="476" y="122" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas norte da Dona Úrsula — falta (refs 38 40-44)</title></rect>
 <text x="492" y="99" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casas norte da Dona Úrsula</text>
-<rect x="520" y="114" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· norte D. Úrsula 2 — falta (refs 40-44)</title></rect>
-<rect x="564" y="94" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· norte D. Úrsula 3 — falta (refs 40-44)</title></rect>
-<rect x="624" y="50" width="48" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa mal-assombrada — falta (refs 45 47 48)</title></rect>
+<rect transform="rotate(-20.8 536.0 128.0)" x="520" y="114" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· norte D. Úrsula 2 — falta (refs 40-44)</title></rect>
+<rect transform="rotate(-20.8 580.0 108.0)" x="564" y="94" width="32" height="28" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· norte D. Úrsula 3 — falta (refs 40-44)</title></rect>
+<rect transform="rotate(-20.8 648.0 68.0)" x="624" y="50" width="48" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa mal-assombrada — falta (refs 45 47 48)</title></rect>
 <text x="648" y="71" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa mal-assombrada</text>
-<rect x="872" y="128" width="56" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa histórica da esquina (alpendre vermelho) — falta (refs 49-51)</title></rect>
+<rect transform="rotate(-11.9 900.0 152.0)" x="872" y="128" width="56" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa histórica da esquina (alpendre vermelho) — falta (refs 49-51)</title></rect>
 <text x="900" y="155" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa histórica da esquina (alpendre vermelho)</text>
-<rect x="684" y="176" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado madeira escura — falta (refs 52 53)</title></rect>
+<rect transform="rotate(-4.0 708.0 196.0)" x="684" y="176" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado madeira escura — falta (refs 52 53)</title></rect>
 <text x="708" y="199" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado madeira escura</text>
-<rect x="828" y="200" width="40" height="80" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Chalé branco + casa vermelha — falta (refs 55)</title></rect>
+<rect transform="rotate(-4.0 848.0 240.0)" x="828" y="200" width="40" height="80" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Chalé branco + casa vermelha — falta (refs 55)</title></rect>
 <text x="848" y="243" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Chalé branco + casa vermelha</text>
-<rect x="708" y="316" width="40" height="88" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Ed. Pioneiro + vizinhos — falta (refs 54 57)</title></rect>
+<rect transform="rotate(-4.0 728.0 360.0)" x="708" y="316" width="40" height="88" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Ed. Pioneiro + vizinhos — falta (refs 54 57)</title></rect>
 <text x="728" y="363" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Ed. Pioneiro + vizinhos</text>
-<rect x="868" y="296" width="64" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Material de Construções Brentano ★ — falta (refs 56)</title></rect>
+<rect transform="rotate(-4.0 900.0 320.0)" x="868" y="296" width="64" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Material de Construções Brentano ★ — falta (refs 56)</title></rect>
 <text x="900" y="323" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Material de Construções Brentano ★</text>
-<rect x="868" y="376" width="64" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Pátio de materiais + araucária — falta (refs 58)</title></rect>
+<rect transform="rotate(-4.0 900.0 400.0)" x="868" y="376" width="64" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Pátio de materiais + araucária — falta (refs 58)</title></rect>
 <text x="900" y="403" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Pátio de materiais + araucária</text>
-<rect x="720" y="420" width="48" height="120" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Supermercado Brentano ★ — falta (refs 59-61 66)</title></rect>
+<rect transform="rotate(-11.3 744.0 480.0)" x="720" y="420" width="48" height="120" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Supermercado Brentano ★ — falta (refs 59-61 66)</title></rect>
 <text x="744" y="483" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Supermercado Brentano ★</text>
-<rect x="856" y="520" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Restaurante esquina NE — falta (refs 63)</title></rect>
+<rect transform="rotate(-11.3 880.0 540.0)" x="856" y="520" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Restaurante esquina NE — falta (refs 63)</title></rect>
 <text x="880" y="543" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Restaurante esquina NE</text>
-<rect x="668" y="554" width="40" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa de madeira rosa — falta (refs 68 78 79)</title></rect>
+<rect transform="rotate(-11.3 688.0 572.0)" x="668" y="554" width="40" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa de madeira rosa — falta (refs 68 78 79)</title></rect>
 <text x="688" y="611" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa de madeira rosa</text>
-<rect x="624" y="554" width="32" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Advocacia — falta (refs 78 79)</title></rect>
+<rect transform="rotate(-11.3 640.0 572.0)" x="624" y="554" width="32" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Advocacia — falta (refs 78 79)</title></rect>
 <text x="640" y="539" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Advocacia</text>
-<rect x="748" y="624" width="56" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja Thewes ★ — falta (refs 64 65 69 71 72)</title></rect>
+<rect transform="rotate(-11.3 776.0 648.0)" x="748" y="624" width="56" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja Thewes ★ — falta (refs 64 65 69 71 72)</title></rect>
 <text x="776" y="691" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Loja Thewes ★</text>
-<rect x="876" y="640" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa de trapeira (nº 96) — falta (refs 62 70)</title></rect>
+<rect transform="rotate(-11.3 900.0 660.0)" x="876" y="640" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa de trapeira (nº 96) — falta (refs 62 70)</title></rect>
 <text x="900" y="663" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa de trapeira (nº 96)</text>
-<rect x="896" y="700" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado de madeira amarela — falta (refs 72 73)</title></rect>
+<rect transform="rotate(-11.3 920.0 720.0)" x="896" y="700" width="48" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado de madeira amarela — falta (refs 72 73)</title></rect>
 <text x="920" y="723" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado de madeira amarela</text>
-<rect x="712" y="660" width="32" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Galpão de madeira — falta (refs 69 74)</title></rect>
+<rect transform="rotate(-11.3 728.0 680.0)" x="712" y="660" width="32" height="40" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Galpão de madeira — falta (refs 69 74)</title></rect>
 <text x="728" y="719" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Galpão de madeira</text>
-<rect x="664" y="662" width="40" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa de tábuas cinza — falta (refs 74 75)</title></rect>
+<rect transform="rotate(-11.3 684.0 680.0)" x="664" y="662" width="40" height="36" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa de tábuas cinza — falta (refs 74 75)</title></rect>
 <text x="684" y="647" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa de tábuas cinza</text>
-<rect x="614" y="660" width="36" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja Galochas — falta (refs 76 77)</title></rect>
+<rect transform="rotate(-10.4 632.0 684.0)" x="614" y="660" width="36" height="48" rx="3" fill="#c9483f" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Loja Galochas — falta (refs 76 77)</title></rect>
 <text x="632" y="727" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Loja Galochas</text>
 <rect x="20" y="860.0" width="14" height="14" fill="#2e7dd7"/><text x="40" y="871.0" font-size="12">já no jogo (3)</text>
 <rect x="220" y="860.0" width="14" height="14" fill="#2e9e4f"/><text x="240" y="871.0" font-size="12">feito (0)</text>
