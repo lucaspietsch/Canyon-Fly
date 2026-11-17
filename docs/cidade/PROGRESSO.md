@@ -2,7 +2,7 @@
 
 Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.svg). Status: 🔵 já no jogo · 🟢 feito · 🟡 em andamento · 🔴 falta.
 
-**3 de 96 prontos.**
+**3 de 107 prontos.**
 
 | | Lugar | Posição (x, y) m | Refs |
 |---|---|---|---|
@@ -79,6 +79,17 @@ Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.s
 | 🟡 | Prédio de 4 pavimentos com sacadas | (+254, +36) | SV-I2 |
 | 🟡 | Casa do Turista | (+580, +128) | SV-L2 |
 | 🟡 | Templo Assembleia de Deus | (+919, +258) | SV-L |
+| 🟡 | Templo Missionário | (-265, +472) | sat Z0 |
+| 🟡 | Escola do bairro norte | (-148, +637) | sat Z0 |
+| 🟡 | Empório (bairro norte) | (-273, +531) | sat Z0 |
+| 🟡 | Flor de Anis Cafeteria e Bistrô | (-298, -74) | sat A0 |
+| 🟡 | Restaurante e Pousada Casa Nostra | (-572, -241) | sat A0 |
+| 🟡 | Pousada Bem Estar | (+417, -68) | sat B2 |
+| 🟡 | Pousada Aparados | (+468, -206) | sat B2 B3 |
+| 🟡 | Churrasco no Galpão (madeira) | (+427, -896) | sat B3 |
+| 🟡 | Pousada Cambará Eco Hotel | (+1046, -405) | sat A3 B3 |
+| 🟡 | Pousada Oliveira | (-757, -749) | sat B0 |
+| 🟡 | Galpão da madeireira (pátio de toras) | (+946, +634) | sat Z2 Z3 |
 | 🟡 | Pousada Bela Vista | (-500, +196) | sat A1 |
 | 🟡 | Pousada Fazenda Pindorama (sede) | (-863, +27) | sat A1 A0 |
 | 🟡 | Posto de Saúde UBS | (-474, +75) | sat A1 |
