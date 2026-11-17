@@ -36,6 +36,7 @@ import { criarCenaEstrada } from "./resgate/estradaCena.js";
 import { criarResgate } from "./resgate/emergencia.js";
 import { EMERGENCIA } from "./config.js";
 import { KML_VEGETACAO, KML_DETALHES } from "./dados/kml-vegetacao.js";
+import { KML_CIDADE } from "./dados/kml-cidade.js";
 import { KML as KMLCFG, ZONAS } from "./config.js";
 import { criarVento } from "./vento.js";
 import { criarCascata } from "./cascata.js";
@@ -139,11 +140,11 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.kml.aoCarregar(relatorioTirolesa);                                                              // (o DEM, criado logo abaixo, chama de novo quando a elevação chega)
   M.viagem = criarViagem(M); M.registra({ tecla: (e) => M.viagem.tecla(e), info: () => M.viagem.info(), desliga: () => M.viagem.desliga() });
   M.dem = criarDEM(M); M.dem.aoCarregar(() => { M.cidade.refaz(); M.estrada.aplicaDEM(); M.cidade.refaz(); M.lugares.refaz(); }); M.dem.aoCarregar(relatorioTirolesa);                  // (a cidade zera o cache dos platôs antes de a pista ser refeita)
-  try{ M.kml.carrega([KML_VEGETACAO, KML_DETALHES]); }catch(e){ console.warn("KML padrão:", e); }
+  try{ M.kml.carrega([KML_VEGETACAO, KML_DETALHES, KML_CIDADE]); }catch(e){ console.warn("KML padrão:", e); }
   M.dem.carrega();                                                                                    // elevação real (data/terrain): chega em segundo plano e refaz a estrada/cidade
   /* o arquivo data/kml/parque.kml (se o servidor entregar) tem prioridade sobre a cópia embutida: troque o arquivo e recarregue a página */
   try{ if(typeof fetch === "function" && /^https?:/.test(location.protocol)){ const ler = (u) => fetch(u, { cache: "no-cache" }).then(r => r.ok ? r.text() : null).catch(() => null);
-      Promise.all([ler(KMLCFG.arquivoPadrao), ler(KMLCFG.arquivoDetalhes)]).then(([a, b]) => { const ta = a && a.length > 200 ? a : KML_VEGETACAO, tb = b && b.length > 200 ? b : KML_DETALHES; if(ta.trim() !== KML_VEGETACAO.trim() || tb.trim() !== KML_DETALHES.trim()){ try{ M.kml.carrega([ta, tb]); }catch(e){ console.warn("KML arquivo:", e); } } }); } }catch(_){ /* sem fetch */ }
+      Promise.all([ler(KMLCFG.arquivoPadrao), ler(KMLCFG.arquivoDetalhes)]).then(([a, b]) => { const ta = a && a.length > 200 ? a : KML_VEGETACAO, tb = b && b.length > 200 ? b : KML_DETALHES; if(ta.trim() !== KML_VEGETACAO.trim() || tb.trim() !== KML_DETALHES.trim()){ try{ M.kml.carrega([ta, tb, KML_CIDADE]); }catch(e){ console.warn("KML arquivo:", e); } } }); } }catch(_){ /* sem fetch */ }
   M.vento = criarVento(M); M.registra({ tick: (dt, J, E) => M.vento.tick(dt, J, E), info: () => M.vento.info(), desliga: () => M.vento.parar() });
   M.cascata = criarCascata(M, M.vento); M.registra({ zona: "parque", tick: (dt, J, E) => M.cascata.tick(dt, J, E), info: () => M.cascata.info(), desliga: () => M.cascata.desliga() });
   M.vegetacao = criarVegetacao(M, M.vento); M.registra({ tick: (dt, J, E) => M.vegetacao.tick(dt, J, E), info: () => M.vegetacao.info(), tecla: (e) => M.vegetacao.placas.tecla(e), desliga: () => M.vegetacao.placas.desliga() }); M.kml.aoCarregar(() => M.vegetacao.regenera());

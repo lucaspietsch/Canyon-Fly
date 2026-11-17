@@ -38,6 +38,10 @@ export function criarPraca(M, { poli, seq, urna, carona }){
   const cal = C.praca.calcadaM * U, camL = C.praca.caminhoM * U;
   const matGrama = mat(0x6f9440), matCalc = mat(0xc9c4b6, { roughness: 1 }), matPiso = mat(0xb4ad9c, { roughness: .95 }), matPedra = mat(0x8c877b), matTerra = mat(0x4a3322), matMadeira = mat(0x6b4a2c), matFerro = mat(0x24282c, { roughness: .6, metalness: .4 });
   for(const m of [matGrama, matCalc, matPiso]){ m.polygonOffset = true; m.polygonOffsetFactor = -2; m.polygonOffsetUnits = -2; }
+  /* calçada e caminhos em FAVO DE MEL (bloquetes sextavados — Cambará do Sul, capital do mel do RS); UV = mundo ÷ 40 u (util.js) */
+  { const R = C.praca.favoM, per = 40 / U, tex = canvasTex(104, 180, (c, w, h) => { c.fillStyle = "#6f6b62"; c.fillRect(0, 0, w, h); const r = h / 3, hx = (x, y, k) => { c.beginPath(); for(let i = 0; i < 6; i++){ const a = Math.PI / 6 + i * Math.PI / 3; c.lineTo(x + Math.cos(a) * (r - 2.2), y + Math.sin(a) * (r - 2.2)); } c.closePath(); c.fillStyle = ["#c9c4b6", "#bdb7a8", "#d2cdc0"][k % 3]; c.fill(); };
+      let k = 0; for(const [x, y] of [[0, 0], [w, 0], [w / 2, 1.5 * r], [0, 3 * r], [w, 3 * r], [w / 2, -1.5 * r], [-w / 2, 1.5 * r], [w * 1.5, 1.5 * r]]) hx(x, y, k++); }, { repeat: [per / (Math.sqrt(3) * R), per / (3 * R)] });
+    tex.wrapS = tex.wrapT = 1000; for(const m of [matCalc, matPiso]){ m.map = tex; m.color.set(0xffffff); m.needsUpdate = true; } }
   const hub = seq ? centroide(aberto(seq)) : q.c, In = inset(P, cal + .3 * U), S = { t: 0, caminhos: [], bancos: [], lampadas: null, npc: [], urna: null, raio: null, colisores: [], hotspots: [] };
   const topo = (x, z) => Y(x, z);
 

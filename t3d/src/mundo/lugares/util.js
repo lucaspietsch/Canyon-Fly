@@ -56,17 +56,19 @@ export function anel(P, d0, d1, yf, dy, material){
   const y = (x, z) => (typeof yf === "function" ? yf(x, z) : yf) + dy;
   for(let i = 0; i < n; i++){ pos.push(A[i][0], y(A[i][0], A[i][1]), A[i][1], B[i][0], y(B[i][0], B[i][1]), B[i][1]); }
   for(let i = 0; i < n; i++){ const j = (i + 1) % n, a = i * 2, b = i * 2 + 1, c = j * 2, d = j * 2 + 1; idx.push(a, c, b, b, c, d); }
-  const g = new BufferGeometry(); g.setAttribute("position", new Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+  const g = new BufferGeometry(); g.setAttribute("position", new Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); uvMundo(g);
   if(g.attributes.normal.getY(0) < 0){ const ix = g.index.array; for(let i = 0; i < ix.length; i += 3){ const t = ix[i + 1]; ix[i + 1] = ix[i + 2]; ix[i + 2] = t; } g.computeVertexNormals(); }
   const m = new Mesh(g, material); m.receiveShadow = true; return m;
 }
+/** UV pela posição no mundo (x, z) ÷ 40 — igual a malhaPoli: texturas de piso (ex.: favo de mel) ficam contínuas entre peças */
+function uvMundo(g){ const p = g.attributes.position, uv = []; for(let i = 0; i < p.count; i++) uv.push(p.getX(i) / 40, p.getZ(i) / 40); g.setAttribute("uv", new Float32BufferAttribute(uv, 2)); }
 
 /** faixa reta de largura `w` entre dois pontos do mundo, acompanhando o terreno (subdividida a cada ~`passo` u) */
 export function fitaReta(a, b, w, yf, dy, material, passo = 24){
   const L = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(L / passo)), tx = (b[0] - a[0]) / (L || 1), tz = (b[1] - a[1]) / (L || 1), nx = -tz * w / 2, nz = tx * w / 2, pos = [], idx = [];
   for(let i = 0; i <= n; i++){ const x = a[0] + (b[0] - a[0]) * i / n, z = a[1] + (b[1] - a[1]) * i / n; pos.push(x + nx, yf(x + nx, z + nz) + dy, z + nz, x - nx, yf(x - nx, z - nz) + dy, z - nz); }
   for(let i = 0; i < n; i++){ const k = i * 2; idx.push(k, k + 2, k + 1, k + 1, k + 2, k + 3); }
-  const g = new BufferGeometry(); g.setAttribute("position", new Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+  const g = new BufferGeometry(); g.setAttribute("position", new Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); uvMundo(g);
   if(g.attributes.normal.getY(0) < 0){ const ix = g.index.array; for(let i = 0; i < ix.length; i += 3){ const t = ix[i + 1]; ix[i + 1] = ix[i + 2]; ix[i + 2] = t; } g.computeVertexNormals(); }
   const m = new Mesh(g, material); m.receiveShadow = true; return m;
 }

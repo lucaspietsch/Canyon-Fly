@@ -308,7 +308,7 @@ export const CONFLITOS = {
    Até chegar o trecho real entre o fim do KML da estrada e a cidade, uma estrada PROVISÓRIA reta liga os dois (com a mesma compressão).
    ============================================================================================================ */
 export const CIDADE = {
-  ruas: { larguraM: 9, quadraM: 110, calcadaM: 2.2 },                   // ruas provisórias em grade (até chegarem as ruas do KML)
+  ruas: { larguraM: 12, quadraM: 110, calcadaM: 2.2 },                  // todas asfaltadas: 2 pistas + faixa de estacionamento (regra do Lucas); grade provisória só nas vilas sem ruas no KML
   praca: { nome: "Praça central (em construção)", ladoM: 48 },
   cargaU: 4200, descargaU: 6000,                                        // a cidade só existe (malha, ruas) quando o jogador está a menos de cargaU do polígono
   margemU: 500                                                          // terreno em volta do polígono; o jogador pode andar até aí
@@ -375,8 +375,8 @@ export const ANDORINHAS = {
 export const LUGARES = {
   cargaU: { praca: 3200, fabrica: 4200, vila: 3600 }, descargaFator: 1.35,           // distância (u) até o polígono para o lugar existir; descarrega a descargaFator × isso
   praca: {
-    calcadaM: 3, caminhoM: 3, concavoM: 12,                                          // calçada ao redor, largura dos caminhos, raio do piso em volta da Sequoia
-    ruaLarguraM: 9, ruaCalcadaM: 2.2,                                                // ruas provisórias dos 4 lados
+    calcadaM: 4, caminhoM: 3, concavoM: 12, favoM: .45,                              // calçada ao redor, largura dos caminhos, raio do piso em volta da Sequoia, raio do bloquete sextavado (favo de mel)
+    ruaLarguraM: 12, ruaCalcadaM: 2.2,                                                // ruas provisórias dos 4 lados
     lampadaCadaM: 24, bancos: 14, arvores: 10,
     npcs: { manha: 4, dia: 10, tarde: 8, noite: 2 }                                  // pessoas passeando (6–9 h · 9–17 h · 17–22 h · resto)
   },

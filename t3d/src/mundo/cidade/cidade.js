@@ -2,6 +2,7 @@ import { Group, Mesh, BufferGeometry, Float32BufferAttribute, MeshStandardMateri
 import { canvasTex, placaLegivel, texPlacaHD } from "../../lib.js";
 import { U, CIDADE as C, DEM as CD } from "../config.js";
 import { normaliza } from "../resgate/kml.js";
+import { criarCentro } from "./centro.js";
 
 /* ============================================================================================================
    ÁREA URBANA (Cambará do Sul e vilas): terreno em escala real em volta do polígono do KML, ruas provisórias em grade simples (até chegarem as ruas do KML) e o marcador
@@ -84,17 +85,18 @@ export function criarCidade(M){
   function constroi(u){
     const g = new Group(); g.add(terreno(u));
     if(comGrade(u)){
-      const comRuasKML = M.kml.lista("rua").length > 0; let ruas = comRuasKML ? M.kml.lista("rua").filter(e => e.geom === "LineString").map(e => Z.mundoPts(e)) : gradeRuas(u);
+      const comRuasKML = u.tipo === "cidade" && M.kml.lista("rua").length > 0; /* ruas reais (dados/kml-cidade.js) só na sede; vilas seguem com a grade provisória */ let ruas = comRuasKML ? M.kml.lista("rua").filter(e => e.geom === "LineString").map(e => Z.mundoPts(e)) : gradeRuas(u);
       const L = M.lugares;
       if(u.pracaPoli && L){                                                                                  // praça real: a grade não cruza a praça; ruas nos 4 lados fecham o quarteirão
         const cortadas = []; ruas.forEach(run => { let at = []; run.forEach(p => { if(L.naPraca(u, p[0], p[1])){ if(at.length > 2) cortadas.push(at); at = []; } else at.push(p); }); if(at.length > 2) cortadas.push(at); });
         ruas = [...cortadas, ...L.ruasEntorno(u)];
       }
       fitaRuas(ruas).forEach(m => g.add(m)); if(!u.pracaPoli) g.add(praca(u)); u.ruas = ruas;
+      if(u.tipo === "cidade"){ try{ g.add(criarCentro(M, u)); }catch(err){ console.warn("centro da cidade:", err); } }       // prédios do centro (blocos), igreja e Rua Coberta
     }
     return g;
   }
-  function descarta(g){ g.traverse(o => { if(o.geometry) o.geometry.dispose(); }); }
+  function descarta(g){ g.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.userData && o.userData.descartar) o.userData.descartar(); }); }
   function atualiza(J){
     Z.urbano.forEach(u => { const b = u.bb, dx = Math.max(b[0] - J.x, 0, J.x - b[1]), dz = Math.max(b[2] - J.z, 0, J.z - b[3]), d = Math.hypot(dx, dz), c = S.zonas.get(u.nome);
       if(!c && d < C.cargaU){ const g = constroi(u); S.zonas.set(u.nome, g); grupo.add(g); } else if(c && d > C.descargaU){ grupo.remove(c); descarta(c); S.zonas.delete(u.nome); } });
