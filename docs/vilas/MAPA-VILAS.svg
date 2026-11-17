@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1545" height="2059" font-family="sans-serif">
+<rect width="100%" height="100%" fill="#f6f4ee"/>
+<text x="20" y="30" font-size="20" font-weight="bold" fill="#333">Vilas de Cambará do Sul — quadrantes de 250 m para prints</text>
+<text x="20" y="54" font-size="13" fill="#555">Letra = coluna (oeste→leste) · número = linha (norte→sul) · links em QUADRANTES.md · norte para cima</text>
+<polygon points="794.8,1016.6 805.5,1031.9 855.6,976.9 868.7,901.6 885.4,850.0 887.8,801.6 843.6,794.1 802.6,750.1 756.4,638.6 674.4,618.0 601.9,569.9 506.2,669.6 388.8,860.5 405.5,1048.8 538.0,1191.0 794.8,1016.6" fill="#6b8f3a" fill-opacity=".12" stroke="#6b8f3a" stroke-dasharray="6 4"/>
+<text x="713.1" y="563.9" font-size="12" fill="#6b8f3a" text-anchor="middle" font-style="italic">Antiga Floresta da Olaria</text>
+<polygon points="760.9,637.6 795.4,740.4 837.4,796.1 972.0,818.3 1053.5,840.8 1106.9,801.4 1114.3,644.2 1192.5,589.6 1171.1,502.2 1295.4,469.9 1470.5,444.9 1454.5,265.0 1315.2,141.9 1170.1,178.0 917.5,223.9 725.0,304.0 691.2,478.8 668.0,586.8 760.9,637.6" fill="#999" fill-opacity=".12" stroke="#999" stroke-dasharray="6 4"/>
+<text x="1024.8" y="135.9" font-size="12" fill="#999" text-anchor="middle" font-style="italic">Parque Industrial (Celulose)</text>
+<polygon points="955.7,682.5 788.1,678.7 813.4,767.3 965.2,768.3 955.7,682.5" fill="#a33" fill-opacity=".12" stroke="#a33" stroke-dasharray="6 4"/>
+<text x="895.6" y="672.7" font-size="12" fill="#a33" text-anchor="middle" font-style="italic">Cambará S/A</text>
+<polygon points="640.9,1326.8 594.2,1249.9 252.2,1624.7 74.5,1829.3 98.6,1893.4 210.2,1957.1 243.1,1916.0 640.9,1326.8" fill="#3a8fd8" fill-opacity=".18" stroke="#3a8fd8" stroke-width="2"/>
+<rect x="74.5" y="1739.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="109.5" y="1777.9" font-size="9" fill="#3a8fd8" text-anchor="middle">A8</text>
+<rect x="74.5" y="1809.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="109.5" y="1847.9" font-size="9" fill="#3a8fd8" text-anchor="middle">A9</text>
+<rect x="74.5" y="1879.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="109.5" y="1917.9" font-size="9" fill="#3a8fd8" text-anchor="middle">A10</text>
+<rect x="144.5" y="1599.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="179.5" y="1637.9" font-size="9" fill="#3a8fd8" text-anchor="middle">B6</text>
+<rect x="144.5" y="1669.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="179.5" y="1707.9" font-size="9" fill="#3a8fd8" text-anchor="middle">B7</text>
+<rect x="144.5" y="1739.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="179.5" y="1777.9" font-size="9" fill="#3a8fd8" text-anchor="middle">B8</text>
+<rect x="144.5" y="1809.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="179.5" y="1847.9" font-size="9" fill="#3a8fd8" text-anchor="middle">B9</text>
+<rect x="144.5" y="1879.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="179.5" y="1917.9" font-size="9" fill="#3a8fd8" text-anchor="middle">B10</text>
+<rect x="144.5" y="1949.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="179.5" y="1987.9" font-size="9" fill="#3a8fd8" text-anchor="middle">B11</text>
+<rect x="214.5" y="1529.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="249.5" y="1567.9" font-size="9" fill="#3a8fd8" text-anchor="middle">C5</text>
+<rect x="214.5" y="1599.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="249.5" y="1637.9" font-size="9" fill="#3a8fd8" text-anchor="middle">C6</text>
+<rect x="214.5" y="1669.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="249.5" y="1707.9" font-size="9" fill="#3a8fd8" text-anchor="middle">C7</text>
+<rect x="214.5" y="1739.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="249.5" y="1777.9" font-size="9" fill="#3a8fd8" text-anchor="middle">C8</text>
+<rect x="214.5" y="1809.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="249.5" y="1847.9" font-size="9" fill="#3a8fd8" text-anchor="middle">C9</text>
+<rect x="214.5" y="1879.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="249.5" y="1917.9" font-size="9" fill="#3a8fd8" text-anchor="middle">C10</text>
+<rect x="214.5" y="1949.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="249.5" y="1987.9" font-size="9" fill="#3a8fd8" text-anchor="middle">C11</text>
+<rect x="284.5" y="1459.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="319.5" y="1497.9" font-size="9" fill="#3a8fd8" text-anchor="middle">D4</text>
+<rect x="284.5" y="1529.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="319.5" y="1567.9" font-size="9" fill="#3a8fd8" text-anchor="middle">D5</text>
+<rect x="284.5" y="1599.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="319.5" y="1637.9" font-size="9" fill="#3a8fd8" text-anchor="middle">D6</text>
+<rect x="284.5" y="1669.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="319.5" y="1707.9" font-size="9" fill="#3a8fd8" text-anchor="middle">D7</text>
+<rect x="284.5" y="1739.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="319.5" y="1777.9" font-size="9" fill="#3a8fd8" text-anchor="middle">D8</text>
+<rect x="284.5" y="1809.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="319.5" y="1847.9" font-size="9" fill="#3a8fd8" text-anchor="middle">D9</text>
+<rect x="354.5" y="1389.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="389.5" y="1427.9" font-size="9" fill="#3a8fd8" text-anchor="middle">E3</text>
+<rect x="354.5" y="1459.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="389.5" y="1497.9" font-size="9" fill="#3a8fd8" text-anchor="middle">E4</text>
+<rect x="354.5" y="1529.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="389.5" y="1567.9" font-size="9" fill="#3a8fd8" text-anchor="middle">E5</text>
+<rect x="354.5" y="1599.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="389.5" y="1637.9" font-size="9" fill="#3a8fd8" text-anchor="middle">E6</text>
+<rect x="354.5" y="1669.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="389.5" y="1707.9" font-size="9" fill="#3a8fd8" text-anchor="middle">E7</text>
+<rect x="354.5" y="1739.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="389.5" y="1777.9" font-size="9" fill="#3a8fd8" text-anchor="middle">E8</text>
+<rect x="424.5" y="1319.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="459.5" y="1357.9" font-size="9" fill="#3a8fd8" text-anchor="middle">F2</text>
+<rect x="424.5" y="1389.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="459.5" y="1427.9" font-size="9" fill="#3a8fd8" text-anchor="middle">F3</text>
+<rect x="424.5" y="1459.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="459.5" y="1497.9" font-size="9" fill="#3a8fd8" text-anchor="middle">F4</text>
+<rect x="424.5" y="1529.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="459.5" y="1567.9" font-size="9" fill="#3a8fd8" text-anchor="middle">F5</text>
+<rect x="424.5" y="1599.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="459.5" y="1637.9" font-size="9" fill="#3a8fd8" text-anchor="middle">F6</text>
+<rect x="494.5" y="1249.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="529.5" y="1287.9" font-size="9" fill="#3a8fd8" text-anchor="middle">G1</text>
+<rect x="494.5" y="1319.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="529.5" y="1357.9" font-size="9" fill="#3a8fd8" text-anchor="middle">G2</text>
+<rect x="494.5" y="1389.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="529.5" y="1427.9" font-size="9" fill="#3a8fd8" text-anchor="middle">G3</text>
+<rect x="494.5" y="1459.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="529.5" y="1497.9" font-size="9" fill="#3a8fd8" text-anchor="middle">G4</text>
+<rect x="494.5" y="1529.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="529.5" y="1567.9" font-size="9" fill="#3a8fd8" text-anchor="middle">G5</text>
+<rect x="564.5" y="1249.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="599.5" y="1287.9" font-size="9" fill="#3a8fd8" text-anchor="middle">H1</text>
+<rect x="564.5" y="1319.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="599.5" y="1357.9" font-size="9" fill="#3a8fd8" text-anchor="middle">H2</text>
+<rect x="564.5" y="1389.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="599.5" y="1427.9" font-size="9" fill="#3a8fd8" text-anchor="middle">H3</text>
+<rect x="634.5" y="1249.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="669.5" y="1287.9" font-size="9" fill="#3a8fd8" text-anchor="middle">I1</text>
+<rect x="634.5" y="1319.9" width="70.0" height="70.0" fill="none" stroke="#3a8fd8" stroke-opacity=".55" stroke-width=".8"/>
+<text x="669.5" y="1357.9" font-size="9" fill="#3a8fd8" text-anchor="middle">I2</text>
+<text x="344.3" y="1239.9" font-size="15" font-weight="bold" fill="#3a8fd8" text-anchor="middle">Vila Oswaldo Kroeff</text>
+<polygon points="798.2,1020.1 552.1,1211.1 605.5,1266.7 631.1,1285.1 776.5,1222.9 866.1,1158.6 798.2,1020.1" fill="#c8792a" fill-opacity=".18" stroke="#c8792a" stroke-width="2"/>
+<rect x="552.1" y="1090.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="587.1" y="1128.1" font-size="9" fill="#c8792a" text-anchor="middle">A2</text>
+<rect x="552.1" y="1160.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="587.1" y="1198.1" font-size="9" fill="#c8792a" text-anchor="middle">A3</text>
+<rect x="552.1" y="1230.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="587.1" y="1268.1" font-size="9" fill="#c8792a" text-anchor="middle">A4</text>
+<rect x="622.1" y="1090.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="657.1" y="1128.1" font-size="9" fill="#c8792a" text-anchor="middle">B2</text>
+<rect x="622.1" y="1160.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="657.1" y="1198.1" font-size="9" fill="#c8792a" text-anchor="middle">B3</text>
+<rect x="622.1" y="1230.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="657.1" y="1268.1" font-size="9" fill="#c8792a" text-anchor="middle">B4</text>
+<rect x="692.1" y="1020.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="727.1" y="1058.1" font-size="9" fill="#c8792a" text-anchor="middle">C1</text>
+<rect x="692.1" y="1090.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="727.1" y="1128.1" font-size="9" fill="#c8792a" text-anchor="middle">C2</text>
+<rect x="692.1" y="1160.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="727.1" y="1198.1" font-size="9" fill="#c8792a" text-anchor="middle">C3</text>
+<rect x="692.1" y="1230.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="727.1" y="1268.1" font-size="9" fill="#c8792a" text-anchor="middle">C4</text>
+<rect x="762.1" y="1020.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="797.1" y="1058.1" font-size="9" fill="#c8792a" text-anchor="middle">D1</text>
+<rect x="762.1" y="1090.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="797.1" y="1128.1" font-size="9" fill="#c8792a" text-anchor="middle">D2</text>
+<rect x="762.1" y="1160.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="797.1" y="1198.1" font-size="9" fill="#c8792a" text-anchor="middle">D3</text>
+<rect x="832.1" y="1020.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="867.1" y="1058.1" font-size="9" fill="#c8792a" text-anchor="middle">E1</text>
+<rect x="832.1" y="1090.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="867.1" y="1128.1" font-size="9" fill="#c8792a" text-anchor="middle">E2</text>
+<rect x="832.1" y="1160.1" width="70.0" height="70.0" fill="none" stroke="#c8792a" stroke-opacity=".55" stroke-width=".8"/>
+<text x="867.1" y="1198.1" font-size="9" fill="#c8792a" text-anchor="middle">E3</text>
+<text x="718.2" y="1010.1" font-size="15" font-weight="bold" fill="#c8792a" text-anchor="middle">Vila Santana (1950)</text>
+<polygon points="966.5,765.8 832.6,760.1 805.6,678.0 775.5,684.7 804.3,778.1 832.3,802.2 1094.9,806.6 1103.4,718.0 1087.3,681.0 1083.3,663.7 1071.5,648.2 1056.5,665.3 1068.6,690.5 1064.7,721.6 1059.8,742.4 986.2,737.3 966.5,765.8" fill="#2f9e57" fill-opacity=".18" stroke="#2f9e57" stroke-width="2"/>
+<rect x="775.5" y="648.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="810.5" y="686.2" font-size="9" fill="#2f9e57" text-anchor="middle">A1</text>
+<rect x="775.5" y="718.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="810.5" y="756.2" font-size="9" fill="#2f9e57" text-anchor="middle">A2</text>
+<rect x="775.5" y="788.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="810.5" y="826.2" font-size="9" fill="#2f9e57" text-anchor="middle">A3</text>
+<rect x="845.5" y="718.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="880.5" y="756.2" font-size="9" fill="#2f9e57" text-anchor="middle">B2</text>
+<rect x="845.5" y="788.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="880.5" y="826.2" font-size="9" fill="#2f9e57" text-anchor="middle">B3</text>
+<rect x="915.5" y="718.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="950.5" y="756.2" font-size="9" fill="#2f9e57" text-anchor="middle">C2</text>
+<rect x="915.5" y="788.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="950.5" y="826.2" font-size="9" fill="#2f9e57" text-anchor="middle">C3</text>
+<rect x="985.5" y="718.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="1020.5" y="756.2" font-size="9" fill="#2f9e57" text-anchor="middle">D2</text>
+<rect x="985.5" y="788.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="1020.5" y="826.2" font-size="9" fill="#2f9e57" text-anchor="middle">D3</text>
+<rect x="1055.5" y="648.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="1090.5" y="686.2" font-size="9" fill="#2f9e57" text-anchor="middle">E1</text>
+<rect x="1055.5" y="718.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="1090.5" y="756.2" font-size="9" fill="#2f9e57" text-anchor="middle">E2</text>
+<rect x="1055.5" y="788.2" width="70.0" height="70.0" fill="none" stroke="#2f9e57" stroke-opacity=".55" stroke-width=".8"/>
+<text x="1090.5" y="826.2" font-size="9" fill="#2f9e57" text-anchor="middle">E3</text>
+<text x="980.0" y="638.2" font-size="15" font-weight="bold" fill="#2f9e57" text-anchor="middle">Vila Ouro Verde</text>
+<line x1="20" y1="2041" x2="160" y2="2041" stroke="#333" stroke-width="2"/><text x="166" y="2045" font-size="12" fill="#333">500 m</text>
+</svg>
