@@ -59,3 +59,8 @@ cd t3d && npm run build
 ## Pendências conhecidas
 - Prédios são blocos (sem degraus de verdade); posições de satélite com erro de ~15 m; não foi verificado se algum prédio encosta em outro.
 - Interiores provisórios; nomes reais só com autorização.
+
+## Música da Atiara (só no branch `integracao/cidade-e-codex`)
+- `audio/atiara.mp3` — faixa enviada pelo Lucas (indígena instrumental, 1689–1700), reafinada para A = 432 Hz (−24,8 cents; a original estava em ~438 Hz).
+- `audio/trilha.js`: `nomes.atiara`. `t3d/src/mundo/trilha.js`: `personagem==='atiara'` → `'atiara'` (mesma prioridade de Tupã/Sepé: terror, tirolesa e eventos continuam acima).
+- Testes: `t3d/test/trilha.test.mjs` e `t3d/test/browser/musica-mobile.cjs` incluem a nova faixa.

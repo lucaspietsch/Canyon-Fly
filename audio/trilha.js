@@ -1,7 +1,7 @@
 /* Arquivos fornecidos pelo usuário. Só a faixa solicitada é carregada após um gesto. */
 (function(g){
  const script=document.currentScript,base=new URL('.',script?.src||new URL('audio/trilha.js',location.href));
- const nomes={ambiente:'Campo e floresta',tirolesa:'Aventura na tirolesa',personagens:'Personagens',sepe:'Sepé Tiarajú',tupa:'Tupã',terror:'Floresta sombria'};
+ const nomes={ambiente:'Campo e floresta',tirolesa:'Aventura na tirolesa',personagens:'Personagens',sepe:'Sepé Tiarajú',tupa:'Tupã',atiara:'Atiara (1689–1700)',terror:'Floresta sombria'};
  const players=[new Audio(),new Audio()];players.forEach(a=>{a.preload='none';a.loop=true;});
  let ativo=0,faixa='ambiente',liberado=false,mudo=false,volume=.35,frame=0,transicao=0,dialogo=null,estadoEl=null;
  try{const p=JSON.parse(localStorage.getItem('canyonfly:musica')||'{}');volume=Number.isFinite(p.volume)?Math.max(0,Math.min(1,p.volume)):.35;mudo=!!p.mudo;}catch(_){}
