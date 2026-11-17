@@ -1,3 +1,4 @@
+import {criarTrilha} from './trilha.js';
 import { criarCoordenacao } from "./personagens/coordenacao.js";
 import { ehToque } from "../modo.js";
 import { criarAnhangaMundo } from "./lenda/mundo.js";
@@ -99,6 +100,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.fotos = criarFotos(M); M.registra(M.fotos); M.fovFoto = () => M.fotos.fovFoto();
     M.horizonte = criarHorizonte(M, luzes); M.registra({ tick: (dt, J, E) => M.horizonte.tick(dt, J, E), info: () => M.horizonte.info() });
   M.mapa = criarMinimapa(M); M.registra(M.mapa);
+  M.trilha=criarTrilha(M);M.registra({tick:()=>M.trilha.tick(),desliga:()=>M.trilha.desliga()});
   M.personagens = criarPersonagens(M); M.registra({ tick: (dt) => M.personagens.tick(dt), tecla: (e) => M.personagens.tecla(e), info: () => M.personagens.info(), desliga: () => M.personagens.desliga() });
   M.transformacao = criarTransformacao(M); M.registra({ semCongelar: true, tick: (dt) => M.transformacao.tick(dt), info: () => M.transformacao.info(), desliga: () => M.transformacao.desligaTudo() }); M.cen.extraChao.velMult = () => M.transformacao.velMult(); M.cen.extraChao.alturaExtra = () => M.transformacao.alturaExtra(); M.cen.extraChao.escalaJogador = () => (M.poderes && M.poderes.kauling ? M.poderes.kauling.escala() : 1);
   M.login = { sessao, confereLogin, modoDebug };                                                                       // depuração no console: M.login.confereLogin("login", "senha")

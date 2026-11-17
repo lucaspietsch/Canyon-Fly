@@ -1,4 +1,4 @@
-import { InstancedMesh, MeshStandardMaterial, MeshBasicMaterial, Matrix4, Color, DynamicDrawUsage } from "three";
+import { InstancedMesh, MeshStandardMaterial, MeshBasicMaterial, Matrix4, Color, DataTexture, RGBAFormat, RepeatWrapping, DynamicDrawUsage } from "three";
 import { criarGeometriasPessoas } from "./geometrias.js";
 import { texLogo, LOGO_ASPECTO } from "../icmbio/logo.js";
 import { texTag } from "../resgate/tags.js";
@@ -18,9 +18,11 @@ const tagMat = (t, l) => new MeshBasicMaterial({ map: texTag(t, l), transparent:
 
 export function criarPessoas(pai, MAX){
   const mk = (geo, { material = std(), sombra = false, n = MAX } = {}) => { const im = new InstancedMesh(geo, material, n); im.instanceMatrix.setUsage(DynamicDrawUsage); im.count = 0; im.frustumCulled = false; im.castShadow = sombra; im.setColorAt(0, new Color(1, 1, 1)); im.instanceColor.setUsage(DynamicDrawUsage); pai.add(im); return im; };
+  const dados=new Uint8Array(64*64*4);for(let i=0;i<64*64;i++){const v=240+((i*37+(i>>6)*17)%15);dados.set([v,v,v,255],i*4);}const trama=new DataTexture(dados,64,64,RGBAFormat);trama.wrapS=trama.wrapT=RepeatWrapping;trama.repeat.set(3,3);trama.needsUpdate=true;const tecido=()=>std({map:trama,bumpMap:trama,bumpScale:.003});
   const IM = {
-    perna: mk(GEO.perna, { sombra: true, n: MAX * 2 }), canela: mk(GEO.canela, { sombra: true, n: MAX * 2 }), bota: mk(GEO.bota, { n: MAX * 2 }), tronco: mk(GEO.tronco, { sombra: true }), colete: mk(GEO.colete), braco: mk(GEO.braco, { sombra: true, n: MAX * 2 }), antebraco: mk(GEO.antebraco, { sombra: true, n: MAX * 2 }), mao: mk(GEO.mao, { n: MAX * 2 }),
-    cabeca: mk(GEO.cabeca, { sombra: true }), pescoco: mk(GEO.pescoco), rosto: mk(GEO.rosto, { material: std({ vertexColors: true, roughness: .72 }) }), cabelo: mk(GEO.cabelo), rabo: mk(GEO.rabo), chapeu: mk(GEO.chapeu), bone: mk(GEO.bone), mochila: mk(GEO.mochila), garrafa: mk(GEO.garrafa), bastao: mk(GEO.bastao),
+    perna: mk(GEO.perna, { sombra: true, n: MAX * 2 }), canela: mk(GEO.canela, { sombra: true, n: MAX * 2 }), bota: mk(GEO.bota, { n: MAX * 2 }), tronco: mk(GEO.tronco, { sombra: true,material:tecido() }), colete: mk(GEO.colete), braco: mk(GEO.braco, { sombra: true, n: MAX * 2 }), antebraco: mk(GEO.antebraco, { sombra: true, n: MAX * 2 }), mao: mk(GEO.mao, { n: MAX * 2 }),
+    cabeca: mk(GEO.cabeca, { sombra: true }), pescoco: mk(GEO.pescoco), rosto: mk(GEO.rosto, { material: std({ vertexColors: true, roughness: .72 }) }), cabelo: mk(GEO.cabelo), rabo: mk(GEO.rabo), chapeu: mk(GEO.chapeu), bone: mk(GEO.bone), mochila: mk(GEO.mochila,{material:tecido()}), garrafa: mk(GEO.garrafa), bastao: mk(GEO.bastao),
+    jaqueta:mk(GEO.jaqueta,{material:tecido()}),alcas:mk(GEO.alcas,{material:tecido()}),fecho:mk(GEO.fecho,{material:std({color:0xbfc4b8,metalness:.3})}),gorro:mk(GEO.gorro,{material:tecido()}),camera:mk(GEO.camera,{material:std({vertexColors:true,roughness:.55})}),
     celular: mk(GEO.celular, { material: std({ color: 0x15171a, roughness: .3 }) }), binoculo: mk(GEO.binoculo, { material: std({ color: 0x222426 }) }), prancheta: mk(GEO.prancheta), radio: mk(GEO.radio, { material: std({ color: 0x1b1c1e }) }),
     logoCostas: mk(GEO.logo, { material: new MeshBasicMaterial({ map: texLogo("branco"), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 }) }),
     capacete: mk(GEO.capacete, { material: std({ color: 0xffffff, roughness: .25, metalness: .1 }) }),
@@ -61,11 +63,11 @@ export function criarPessoas(pai, MAX){
     put("tronco", loc(alto, 0, 0, 0).clone(), c.camisa);
     put("pescoco", alto, c.pele);
     if(detalhe){
-      if(o.colete) put("colete", loc(alto, 0, 0, 0).clone(), c.colete || 0x1a1b1d);
+      if(o.colete) put(o.turista?"jaqueta":"colete", loc(alto, 0, 0, 0).clone(), c.colete || 0x1a1b1d);
       const zf = o.colete ? .5 : .43;
       if(o.logoCostas) put("logoCostas", loc(alto, 0, 1.12, -zf - .012, 0, Math.PI, LOGO_COSTAS_W, LOGO_COSTAS_W * LOGO_ASPECTO, 1).clone(), 0xffffff);
       if(o.logoPeito) put("logoPeito", loc(alto, .42, 1.42, zf + .012, 0, 0, LOGO_PEITO_W, LOGO_PEITO_W * LOGO_ASPECTO, 1).clone(), 0xffffff);
-      if(o.mochila) put("mochila", loc(alto, 0, .95, -.7).clone(), c.mochila || 0x3a4a2c);
+      if(o.mochila){put("mochila", loc(alto,0,.95,-.68).clone(),c.mochila||0x3a4a2c);put("alcas",alto,c.mochila||0x3a4a2c);put("fecho",loc(alto,0,.95,-.68).clone(),0xffffff);}
       if(o.radio) put("radio", loc(alto, -.45, 1.5, zf + .1).clone(), 0xffffff);
       if(o.faixas){ put("faixa", loc(alto, 0, .52, 0, 0, 0, 1.18, .18, .76).clone(), 0xc9ccd0); put("faixa", loc(alto, 0, 1.58, 0, 0, 0, 1.44, .16, .82).clone(), 0xc9ccd0); }
       if(o.tag){ const T = o.tag === "bomb" ? ["tagCostasBomb", "tagPeitoBomb"] : o.tag === "resg" ? ["tagCostasResg", "tagPeitoResg"] : ["tagCostasEnf", "tagPeitoEnf"];
@@ -82,17 +84,18 @@ export function criarPessoas(pai, MAX){
       if(o.faixas) put("faixa", cotoveloM.clone().multiply(t2.makeTranslation(0, -.25, 0)).multiply(t3.makeScale(.36, .17, .40)), 0xc9ccd0);
       t1.makeTranslation(0, -.88, .02); out.copy(cotoveloM).multiply(t1); put("mao", out.clone().multiply(t2.makeRotationY(s < 0 ? Math.PI : 0)), c.luva !== undefined ? c.luva : c.pele);
       /* itens na mão */
-      if(!esquerdo){ if(po.celular) put("celular", out.clone().multiply(t2.makeTranslation(0, .1, .2)).multiply(t3.makeRotationX(.2)), 0xffffff); if(o.bastao) put("bastao", out.clone().multiply(t2.makeTranslation(0, -.3, .1)).multiply(t3.makeRotationX(-rx)), c.bastao || 0x6a4a2a); }
+      if(!esquerdo){ if(po.celular) put(o.camera?"camera":"celular", out.clone().multiply(t2.makeTranslation(0, .1, .2)).multiply(t3.makeRotationX(.2)), 0xffffff); if(o.bastao) put("bastao", out.clone().multiply(t2.makeTranslation(0, -.3, .1)).multiply(t3.makeRotationX(-rx)), c.bastao || 0x6a4a2a); }
       else { if(o.garrafa && !po.prancheta) put("garrafa", out.clone().multiply(t2.makeTranslation(0, .15, .15)), c.garrafa || 0x2f7fb0); if(po.prancheta) put("prancheta", out.clone().multiply(t2.makeTranslation(.1, .45, .35)).multiply(t3.makeRotationX(-.2)), 0xb59a6a); }
     }
     /* cabeça, cabelo, chapéu, óculos de binóculo */
     cabM.copy(alto).multiply(pr(t1, 0, 2.55, 0)).multiply(t2.makeRotationY(po.headYaw)).multiply(t3.makeRotationX(po.headPitch));
-    if(P.role === "crianca" || P.role === "aluno" || e < .8) cabM.multiply(t1.makeScale(1.12, 1.12, 1.12));
+    if(P.role === "crianca" || P.role === "aluno" || e < .8) cabM.multiply(t1.makeScale(1.16,1.16,1.16));else if(o.turista)cabM.multiply(t1.makeScale(1.08,1.08,1.08));
     put("cabeca", cabM, c.pele);
     if(detalhe) put("rosto", cabM, 0xffffff);
     if(o.cabelo) put("cabelo", cabM.clone(), c.cabelo);
     if(o.rabo) put("rabo", cabM, c.cabelo);
     if(o.capacete) put("capacete", cabM.clone().multiply(t1.makeTranslation(0, .12, 0)), c.capacete || 0xc0141a);
+    if(o.chapeu===3)put("gorro",cabM,c.chapeu||0x9bb6c5);
     if(o.chapeu === 1) put("chapeu", cabM, c.chapeu || 0x4a5a35);
     else if(o.chapeu === 2) put("bone", cabM, c.chapeu || 0x2a2a2a);
     if(po.binoculo) put("binoculo", cabM.clone().multiply(t1.makeTranslation(0, .05, .58)), 0xffffff);

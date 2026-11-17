@@ -45,7 +45,7 @@ export function criarTransformacao(M){
 
   function liga(id){
     const d = def(id), T = d && d.transformacao, av = avatarDe(); if(!T || !av || operadorLogado() !== id || M.lugares?.epoca?.() !== "1950") return false;
-    S.ativa = true; S.id = id; S.cor = T.cor; veste(av, T); clarao(av, T.cor);
+    M.trilha?.transformou();S.ativa = true; S.id = id; S.cor = T.cor; veste(av, T); clarao(av, T.cor);
     const r = M.personagens.rig(id); if(r && r.fx) r.fx.liga(T); S.alvoAlt = (T.flutuaM || 0) * U; S.velMultExtra = 1;                                 // partículas/luzes do rig e flutuação (Diully: 2 m)
     if(M.terminal) M.terminal.msg("sobrenatural", d.nome + " se transforma: " + T.nome + ". " + (T.texto || ""));
     if(M.ctx) M.ctx.mostraAviso(T.nome + " — poderes ativos");

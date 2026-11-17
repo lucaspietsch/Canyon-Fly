@@ -41,7 +41,7 @@ export function criarPersonagens(M){
   H.abreTrocaPersonagem = () => { abreTela(); return true; };
 
   function desbloqueia(id, motivo){
-    const d = def(id); if(!d || d.emBreve || desbloqueado(id)) return false; S.desb[id] = Date.now(); salva();
+    const d = def(id); if(!d || d.emBreve || desbloqueado(id)) return false; S.desb[id] = Date.now(); salva();if(id==="sepe"||id==="tupa")M.trilha?.evento(id);
     if(M.terminal) M.terminal.msg("missao", "Personagem desbloqueado: " + d.nome + (motivo ? " (" + motivo + ")" : "")); if(M.ctx) M.ctx.mostraAviso("Personagem desbloqueado: " + d.nome); return true;
   }
   function escolhe(id){

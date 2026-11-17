@@ -178,8 +178,8 @@ export function criarMissoes(M){
   /* ---------- cartão do objetivo (topo) e [E] ---------- */
   function monta(ui){
     S.ui = ui;
-    S.tracker = document.createElement("div"); S.tracker.style.cssText = "position:absolute;left:12px;top:" + MISSOES_CFG.cartaoTopoPx + "px;z-index:30;max-width:min(300px,56vw);background:rgba(10,12,8,.72);border:1.5px solid #4c6a2a;border-left:5px solid #7ddc6a;border-radius:10px;padding:6px 10px;color:#e6efd8;font:600 12px/1.35 system-ui,sans-serif;pointer-events:none;display:none;";
-    S.dicaEl = document.createElement("div"); S.dicaEl.style.cssText = "position:absolute;left:50%;bottom:" + MISSOES_CFG.dicaBaixoPx + "px;transform:translateX(-50%);z-index:31;background:rgba(10,12,8,.82);border:2px solid #9fd37a;border-radius:12px;padding:8px 16px;color:#f2f7e8;font:700 14px system-ui,sans-serif;pointer-events:none;display:none;white-space:nowrap;";
+    S.tracker = document.createElement("div");S.tracker.dataset.hud="extra"; S.tracker.style.cssText = "position:absolute;left:12px;top:" + MISSOES_CFG.cartaoTopoPx + "px;z-index:30;max-width:min(300px,56vw);background:rgba(10,12,8,.72);border:1.5px solid #4c6a2a;border-left:5px solid #7ddc6a;border-radius:10px;padding:6px 10px;color:#e6efd8;font:600 12px/1.35 system-ui,sans-serif;pointer-events:none;display:none;";
+    S.dicaEl = document.createElement("div");S.dicaEl.dataset.hud="extra"; S.dicaEl.style.cssText = "position:absolute;left:50%;bottom:" + MISSOES_CFG.dicaBaixoPx + "px;transform:translateX(-50%);z-index:31;background:rgba(10,12,8,.82);border:2px solid #9fd37a;border-radius:12px;padding:8px 16px;color:#f2f7e8;font:700 14px system-ui,sans-serif;pointer-events:none;display:none;white-space:nowrap;";
     ui.append(S.tracker, S.dicaEl); montaMarcador(); desenhaTracker();
   }
   function desenhaTracker(){

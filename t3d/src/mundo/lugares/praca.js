@@ -210,7 +210,7 @@ export function criarPraca(M, { poli, seq, urna, carona }){
     if(bolt){ cen.grupo.remove(bolt); bolt.geometry.dispose(); }
     bolt = new Mesh(mergeGeometries(geos), new MeshBasicMaterial({ color: 0xe8f2ff, transparent: true, opacity: 1, blending: AdditiveBlending, depthWrite: false })); bolt.frustumCulled = false; cen.grupo.add(bolt);
     geos.forEach(g => g.dispose());
-    S.raio = { t: 0, bolt, ceu: false }; flash.style.opacity = "1"; som("trovao");
+    M.trilha?.evento("tupa",14);S.raio = { t: 0, bolt, ceu: false }; flash.style.opacity = "1"; som("trovao");
     sequoia.mats.forEach(m => { m.emissive = new Color(0x9fc0ff); m.emissiveIntensity = 1.2; }); S.raioVisto = (S.raioVisto || 0) + 1;
     if(M.terminal) M.terminal.msg("sobrenatural", "Um raio atinge a Sequoia Lunar!"); if(M.ctx) M.ctx.mostraAviso("⚡ Um raio cai sobre a Sequoia Lunar");
     const novo = M.personagens && M.personagens.desbloqueia(C.raio.desbloqueia, "Raio da Sequoia"); if(novo && M.terminal) M.terminal.msg("sobrenatural", "A tempestade responde: o personagem Tupã agora pode ser escolhido.");
