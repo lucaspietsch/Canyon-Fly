@@ -607,6 +607,11 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - Ao lado (oeste): **HAMBURGUERIA ROTA 44** — "lanche saboroso, bem feito e rápido" (placa redonda roxa/laranja, sacada de madeira em cima, rampa com corrimão).
   - Calçada de **pedra irregular (laje de basalto)** — típica da cidade.
   - No jogo: nomes reais só com autorização; telefone **não** registrado.
+- **SV-I7** — **"97 RS-020"**, −29.04864797, −50.14200723 · rumo 337° → local **(+310, +60)**, olhando para o **norte** (lado norte da avenida, a leste da confeitaria):
+  - **SHOPPING DA MODA LÉIA** (= o "Shopping D…" do SV-I4): fachada cinza-escura com letreiro claro, porta gradeada e escadinha; ao lado, **loja branca/cinza com 2 vitrines** de roupas (manequins) e escada lateral descendo.
+  - **SICREDI** (cooperativa de crédito): faixa **verde** com logo, **parede de pedra** clara, porta e vitrines de vidro, rampa — no jogo: **letreiro genérico "Cooperativa de crédito"** (marca de rede → regra das redes).
+  - **Caminhonete branca antiga** (tipo C-10/D-20) estacionada — bom **objeto de cena**.
+  - O endereço diz **RS-020** e o asfalto do SV-I5 diz **RS-427**: nesse trecho as duas rodovias **compartilham a avenida**; a RS-427 segue pela R. Tradição.
   - [sugestão] o Sabores da Querência pode ser **parada de missão** (comprar geleia para levar ao cânion/pousada).
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
