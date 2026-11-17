@@ -574,6 +574,12 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
         3. volta por **outro caminho a oeste** com uma ponta em ≈ (+6 350, −12 369) (outro mirante?);
         4. ponta curta em ≈ (+6 504, −12 239);
         5. **fecha o laço** em ≈ (+6 630, −12 215), juntando com o caminho da ida.
+      - **INÍCIO DAS TRILHAS** (Photo Sphere set/2022) — −29.15834559, −50.07983753 · 923 m · rumo 314° → local **(+6 360, −12 066)**, a ~15 m do começo da linha ✔:
+        - **caminho de pedra** (lajotas irregulares com borda de tijolo/paralelepípedo) no meio de um **gramado aparado**;
+        - **placa de madeira** baixa com setas de direção (estilo rústico, poste de madeira);
+        - **2 painéis verdes** informativos do parque (mapa/regras das trilhas) e um **monólito/totem escuro de pedra** alto ao fundo (marco do parque — confirmar);
+        - à esq. **cercadinho de troncos/estacas de madeira** com placa branca (proteção de alguma muda/objeto — confirmar) e **estação meteorológica** pequena (poste com sensores);
+        - em volta, **mata de araucária** densa e capoeira; campo aberto.
       - **Dúvida:** qual parte é a **Trilha do Vértice** e qual é a **Casa do Vô Marçal** (onde fica a casa)? E as pontas (2) e (3) são **mirantes**?
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
