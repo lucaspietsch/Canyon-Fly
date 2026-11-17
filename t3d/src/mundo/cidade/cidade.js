@@ -49,8 +49,8 @@ export function criarCidade(M){
     const W = C.ruas.larguraM * U / 2, K = C.ruas.calcadaM * U, pos = [], uv = [], idx = [], pc = [], ic = []; let base = 0, baseC = 0;
     ruas.forEach(L => { let acc = 0;
       for(let i = 0; i < L.length; i++){ const a = L[Math.max(0, i - 1)], b = L[Math.min(L.length - 1, i + 1)], tx = b[0] - a[0], tz = b[1] - a[1], l = Math.hypot(tx, tz) || 1, nx = -tz / l, nz = tx / l; if(i) acc += Math.hypot(L[i][0] - L[i - 1][0], L[i][1] - L[i - 1][1]);
-        for(const s of [-1, 1]){ const x = L[i][0] + nx * W * s, z = L[i][1] + nz * W * s; pos.push(x, cen.relevo(x, z) + .12, z); uv.push(s < 0 ? 0 : 1, acc / (10 * U)); }
-        for(const s of [-1, 1]) for(const o of [W, W + K]){ const x = L[i][0] + nx * o * s, z = L[i][1] + nz * o * s; pc.push(x, cen.relevo(x, z) + .22, z); }
+        for(const s of [-1, 1]){ const x = L[i][0] + nx * W * s, z = L[i][1] + nz * W * s; pos.push(x, cen.relevo(x, z) + .5, z); uv.push(s < 0 ? 0 : 1, acc / (10 * U)); }
+        for(const s of [-1, 1]) for(const o of [W, W + K]){ const x = L[i][0] + nx * o * s, z = L[i][1] + nz * o * s; pc.push(x, cen.relevo(x, z) + .62, z); }
         if(i){ const a0 = base + (i - 1) * 2; idx.push(a0, a0 + 1, a0 + 2, a0 + 1, a0 + 3, a0 + 2); const c0 = baseC + (i - 1) * 4; ic.push(c0 + 1, c0, c0 + 5, c0, c0 + 4, c0 + 5, c0 + 2, c0 + 3, c0 + 6, c0 + 3, c0 + 7, c0 + 6); } }
       base += L.length * 2; baseC += L.length * 4; });
     const g1 = new BufferGeometry(); g1.setAttribute("position", new Float32BufferAttribute(pos, 3)); g1.setAttribute("uv", new Float32BufferAttribute(uv, 2)); g1.setIndex(idx); g1.computeVertexNormals();
@@ -87,7 +87,7 @@ export function criarCidade(M){
     if(comGrade(u)){
       const comRuasKML = u.tipo === "cidade" && M.kml.lista("rua").length > 0; /* ruas reais (dados/kml-cidade.js) só na sede; vilas seguem com a grade provisória */ let ruas = comRuasKML ? M.kml.lista("rua").filter(e => e.geom === "LineString").map(e => Z.mundoPts(e)) : gradeRuas(u);
       const L = M.lugares;
-      if(u.pracaPoli && L){                                                                                  // praça real: a grade não cruza a praça; ruas nos 4 lados fecham o quarteirão
+      if(u.pracaPoli && L && !comRuasKML){                                                                   /* com as ruas reais, a praça já fica entre elas (sem cortar nem duplicar ruas) */                                                                                  // praça real: a grade não cruza a praça; ruas nos 4 lados fecham o quarteirão
         const cortadas = []; ruas.forEach(run => { let at = []; run.forEach(p => { if(L.naPraca(u, p[0], p[1])){ if(at.length > 2) cortadas.push(at); at = []; } else at.push(p); }); if(at.length > 2) cortadas.push(at); });
         ruas = [...cortadas, ...L.ruasEntorno(u)];
       }

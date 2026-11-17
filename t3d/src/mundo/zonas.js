@@ -42,7 +42,7 @@ export function criarZonas(M){
     const Tde = {};
     if(R) ancoras.forEach(a => { const r = amostraR(a.s), g = M.estrada.jogoEm(a.s); Tde[a.id] = [g.x - r[0], g.z - r[1]]; S.blocos.push({ id: a.id, T: Tde[a.id], sAncora: a.s, dist: a.dist }); });
     S.T = Tde.cidade || Tde.complexo || [0, 0];
-    const blocoDe = (e) => (["cidade", "praca", "sequoia", "urna"].includes(e.tipo) ? "cidade" : "complexo");
+    const blocoDe = (e) => (["cidade", "praca", "sequoia", "urna", "rua"].includes(e.tipo) ? "cidade" : "complexo");                /* ruas do KML = ruas da sede (dados/kml-cidade.js) */
     /* itens urbanos ganham coordenadas do mundo (deslocadas); os demais ficam como vieram */
     const todos = [...K.S.poligonos, ...K.S.linhas, ...K.S.pontos];
     todos.forEach(e => { const T = URBANOS.has(e.tipo) ? Tde[blocoDe(e)] : null; if(T){ e.T = T; if(e.pts) e.mundoPts = e.pts.map(p => [p[0] + T[0], p[1] + T[1]]); if(e.pt) e.mundoPt = [e.pt[0] + T[0], e.pt[1] + T[1]]; } else { e.mundoPts = e.pts; e.mundoPt = e.pt; } });
