@@ -64,6 +64,11 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - **Casa do Turista** (pé do Morro das Antenas, Av. Getúlio Vargas nº 595) — [sugestão] centro de informações do jogo: pegar o mapa, receber missões de turismo, falar com o atendente.
 - **Morro das Antenas** — [sugestão] subir pela estrada de terra até o topo para uma vista da cidade (mirante urbano; colecionável lá em cima).
 
+## Itaimbezinho (Parque Nacional de Aparados da Serra)
+- **Guarita Gralha Azul** — [sugestão] guarda-parque do ICMBio na cancela explica as regras.
+- **Trilha do Vértice** → **Mirante da Cachoeira das Andorinhas** — [sugestão] missão de foto da cachoeira; colecionável no mirante.
+- **Casa do Vô Marçal** (fim da trilha pelo campo, ao sul) — [sugestão] personagem/história do Vô Marçal (morador antigo da borda do cânion); serve muito bem para as **viagens no tempo** (a casa no passado). Aguardo do Lucas fotos e a história.
+
 ## Lugares de lenda na cidade
 - **Casa antiga mal-assombrada** (Rua Dona Úrsula, lado norte, a leste da Laurindo — Ref 45 do catálogo) — **[Lucas]** a casa é tida como mal-assombrada.
   - **[sugestão]** missões noturnas: barulhos, luzes acendendo sozinhas, vulto na janela do bay de vidro; o holograma de assombração do Pit reage; trilha "floresta sombria"; **sem sangue**.
