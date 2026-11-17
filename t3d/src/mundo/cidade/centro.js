@@ -16,7 +16,7 @@ import { PREDIOS_CENTRO, ORIGEM_CENTRO as O } from "../dados/cidade-centro.js";
 
 const COR = { casa: [0xefe4cf, 0xb04a32], publico: [0xf2ead2, 0x8b4a2b], comercio: [0xf7f5f0, 0x64666c], igreja: [0xf6f2e8, 0x8e9196] };
 /* cor da parede pelo que o catálogo diz de cada prédio (nome) */
-const CORES_NOME = [[/rosa/i, 0xe9b7b9], [/amarel/i, 0xf0d77e], [/verde/i, 0xa9c4a0], [/lil[aá]s/i, 0xc3b1dc], [/vermelh/i, 0xc0554a], [/cinza|t[aá]buas/i, 0xa9a49a], [/madeira escura/i, 0x6e5440], [/Prefeitura/i, 0xf0d77e], [/Sociedade/i, 0xf1e3c2], [/Thewes/i, 0xf3d6d6], [/Pioneiro/i, 0xd9776a], [/concreto/i, 0xb8b4ac]];
+const CORES_NOME = [[/alpendre vermelho|Chalé branco/i, 0xf4f4f0], [/rosa/i, 0xe9b7b9], [/amarel/i, 0xf0d77e], [/verde/i, 0xa9c4a0], [/lil[aá]s/i, 0xc3b1dc], [/vermelh/i, 0xc0554a], [/cinza|t[aá]buas/i, 0xa9a49a], [/madeira escura/i, 0x6e5440], [/Prefeitura/i, 0xf0d77e], [/Sociedade/i, 0xf1e3c2], [/Thewes/i, 0xf3d6d6], [/Pioneiro/i, 0xd9776a], [/concreto/i, 0xb8b4ac]];
 const corDe = (nome, tipo) => { for(const [re, c] of CORES_NOME) if(re.test(nome)) return c; return (COR[tipo] || COR.casa)[0]; };
 /* texturas de fachada (1 ladrilho = 3,2 m de largura × 1 pavimento de 3,2 m): fundo BRANCO (a cor vem do material), janelas/portas por cima */
 const MOD = 3.2;
@@ -24,6 +24,7 @@ function texFachada(tipo){
   return canvasTex(64, 64, (c, w, h) => {
     c.fillStyle = "#ffffff"; c.fillRect(0, 0, w, h); c.fillStyle = "rgba(0,0,0,.06)"; c.fillRect(0, h - 4, w, 4);            // rodapé
     if(tipo === "igreja"){ c.fillStyle = "#3f5f7a"; c.beginPath(); c.moveTo(22, 58); c.lineTo(22, 22); c.arc(32, 22, 10, Math.PI, 0); c.lineTo(42, 58); c.fill(); c.strokeStyle = "#f4f1e8"; c.lineWidth = 2; c.stroke(); c.fillStyle = "#d9d3c2"; c.fillRect(0, 0, 4, h); c.fillRect(w - 4, 0, 4, h); return; }
+    if(tipo === "madeira"){ c.fillStyle = "rgba(0,0,0,.16)"; for(let x = 0; x < w; x += 8) c.fillRect(x, 0, 1.5, h); c.fillStyle = "#6a8aa0"; c.fillRect(22, 18, 20, 24); c.strokeStyle = "#f4f1e8"; c.lineWidth = 3; c.strokeRect(22, 18, 20, 24); return; }   // tábua e mata-junta
     if(tipo === "comercio"){ c.fillStyle = "#53697a"; c.fillRect(8, 18, 48, 36); c.strokeStyle = "#2c2c2c"; c.lineWidth = 2; c.strokeRect(8, 18, 48, 36); c.beginPath(); c.moveTo(32, 18); c.lineTo(32, 54); c.stroke(); return; }
     if(tipo === "publico"){ c.fillStyle = "#5a3b24"; c.fillRect(20, 12, 24, 40); c.fillStyle = "#7a9ab0"; c.fillRect(23, 15, 18, 20); c.strokeStyle = "#f4f1e8"; c.lineWidth = 3; c.strokeRect(19, 11, 26, 42); return; }
     c.fillStyle = "#6a8aa0"; c.fillRect(22, 18, 20, 24); c.strokeStyle = "#f4f1e8"; c.lineWidth = 2; c.strokeRect(22, 18, 20, 24); c.beginPath(); c.moveTo(32, 18); c.lineTo(32, 42); c.moveTo(22, 30); c.lineTo(42, 30); c.stroke();
@@ -49,8 +50,8 @@ export function criarCentro(M, u){
   /* eixo local (metros) → vetor no mundo (u por metro) */
   const eixo = (x, y, ang) => { const a = mundo(x, y), b = mundo(x + Math.cos(ang), y + Math.sin(ang)); return [b[0] - a[0], b[1] - a[1]]; };
   const geos = new Map(), add = (cor, g, tex = "") => { const k = tex + "|" + cor; if(!geos.has(k)) geos.set(k, []); geos.get(k).push(g); };
-  const TEX = { casa: texFachada("casa"), comercio: texFachada("comercio"), publico: texFachada("publico"), igreja: texFachada("igreja"), torre: texTorre() };
-  for(const t of ["casa", "comercio", "publico", "igreja"]){ TEX[t].wrapS = TEX[t].wrapT = 1000; }
+  const TEX = { madeira: texFachada("madeira"), casa: texFachada("casa"), comercio: texFachada("comercio"), publico: texFachada("publico"), igreja: texFachada("igreja"), torre: texTorre() };
+  for(const t of ["casa", "comercio", "publico", "igreja", "madeira"]){ TEX[t].wrapS = TEX[t].wrapT = 1000; }
   const colisores = [], m4 = new Matrix4(), q = new Quaternion(), e = new Euler(), v = new Vector3(), s = new Vector3();
 
   /* ---------- prédios em blocos ---------- */
@@ -58,10 +59,10 @@ export function criarCentro(M, u){
     const a = angG * Math.PI / 180, [cx, cz] = mundo(x, y), ex = eixo(x, y, a), le = Math.hypot(ex[0], ex[1]), yaw = Math.atan2(-ex[1], ex[0]);
     const W = w * le, D = d * le, H = alt * U, ey = [-ex[1], ex[0]], amostra = [[0, 0], [1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]].map(([i, j]) => Y(cx + (ex[0] * w * i + ey[0] * d * j) / 2, cz + (ex[1] * w * i + ey[1] * d * j) / 2));
     const temInterior = /Du Perau|Brentano|Thewes/.test(nome), y0 = temInterior ? Math.max(...amostra) + .05 : Math.min(...amostra.slice(0, 3)) - .3;   /* com interior: piso acima do terreno mais alto (o gramado não atravessa o chão) */
-    const cTelha = (COR[tipo] || COR.casa)[1], cParede = corDe(nome, tipo);
+    const cTelha = /Galpão/.test(nome) ? 0x9a9a96 : (COR[tipo] || COR.casa)[1], cParede = corDe(nome, tipo), texP = tipo === "casa" && /madeira|tábuas|Chalé|chalé|Galpão/.test(nome) ? "madeira" : tipo;
     e.set(0, yaw, 0); q.setFromEuler(e);
     const oco = /Du Perau|Brentano|Thewes/.test(nome);                                                                    /* prédios com interior visitável: paredes ocas e porta aberta */
-    if(!oco){ const par = new BoxGeometry(1, 1, 1); uvCaixa(par, w, d, alt, tipo === "igreja"); par.applyMatrix4(m4.compose(v.set(cx, y0 + H / 2, cz), q, s.set(W, H, D))); add(cParede, par, tipo); }
+    if(!oco){ const par = new BoxGeometry(1, 1, 1); uvCaixa(par, w, d, alt, tipo === "igreja"); par.applyMatrix4(m4.compose(v.set(cx, y0 + H / 2, cz), q, s.set(W, H, D))); add(cParede, par, texP); }
     /* frente: lado do bloco virado para a rua mais próxima (a igreja: para a praça, ao sul) */
     const [fx, fy] = /Igreja/.test(nome) ? [x, y - 60] : /Thewes/.test(nome) ? [x, y + 20] : [fx0, fy0], fp = mundo(fx, fy), vx = fp[0] - cx, vz = fp[1] - cz;
     const ux = [Math.cos(yaw), -Math.sin(yaw)], uz = [Math.sin(yaw), Math.cos(yaw)], px = vx * ux[0] + vz * ux[1], pz = vx * uz[0] + vz * uz[1];
@@ -72,7 +73,8 @@ export function criarCentro(M, u){
       g.applyMatrix4(m4.compose(v.set(qx, qy, qz), q, frenteX ? s.set(pb * le, ah * U, la * le) : s.set(la * le, ah * U, pb * le))); add(cor, g, tex || ""); };
     /* telhado: chalés e casas antigas com empena (duas águas, cumeeira perpendicular à rua); o resto 4 águas */
     const empena = /Chalé|chalé|Galochas|mal-assombrada|trapeira|Casa histórica|tábuas|Igreja/.test(nome);
-    if(empena){ const rh = meioLarg * 1.15, g = new ConeGeometry(Math.SQRT1_2, 1, 4); g.rotateY(Math.PI / 4);
+    if(/concreto/.test(nome)){ for(const [i, j] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) peca(i * (meioLarg - .3), j * (meioFundo - .3) - meioFundo, alt, .4, .4, 2.6, 0x8a8a86); peca(0, -meioFundo, alt, 2 * meioLarg, 2 * meioFundo, .25, 0x9a9a96); }   // laje vazia em cima, pilares à mostra
+    else if(empena){ const rh = meioLarg * 1.15, g = new ConeGeometry(Math.SQRT1_2, 1, 4); g.rotateY(Math.PI / 4);
       const sx = frenteX ? W * 1.08 : W * 1.1, sz = frenteX ? D * 1.1 : D * 1.08; g.scale(1, 1, 1);
       /* duas águas = "pirâmide esticada" cortada: usa um prisma triangular */
       const t = new BoxGeometry(1, 1, 1), pos = t.attributes.position; for(let i = 0; i < pos.count; i++){ if(pos.getY(i) > 0){ if(frenteX) pos.setZ(i, 0); else pos.setX(i, 0); } } pos.needsUpdate = true; t.computeVertexNormals();
@@ -127,10 +129,29 @@ export function criarCentro(M, u){
 
     if(/Sociedade/.test(nome)){ for(const lado of [-1, 1]){ peca(lado * 2.6, 1.4, 0, 2.2, 2.8, .5, 0xa8483a); peca(lado * 2.6, 1.0, 0, 2.2, 2.0, 1.0, 0xa8483a); } peca(0, 1.2, 3.4, 4.2, 2.4, .25, 0x7a4a2a); peca(0, .06, 3.1, w * .98, .1, .35, 0x7a4a2a); }     // escadaria dupla, marquise de cobre e faixa marrom
     if(/Igreja/.test(nome)){ peca(0, 6.5, 0, 9, 3, .5, 0xd8d2c4); peca(0, 5.5, 0, 9, 1.6, 1.0, 0xd8d2c4); peca(0, 4.6, 0, 9, 1.2, 1.5, 0xd8d2c4); for(const l of [-1, 1]){ peca(l * (w / 2 - .6), .25, 0, 1.0, .5, alt, 0xe0dacb); } peca(0, .25, alt - .6, w, .5, .6, 0xe0dacb); }       // escadaria diante da torre, pilastras e cornija na fachada                                      // escadaria na frente (praça)
-    if(/mal-assombrada|histórica|trapeira/.test(nome)){ peca(-w * .3, 1.2, 0, 3.4, 2.4, 3.4, 0x9fc0d4); peca(meioLarg * .6, -meioFundo * .6, alt, .9, .9, 3.2, 0x8a4a34); }           // bay de vidro na ponta e chaminé de tijolo
+    if(/mal-assombrada/.test(nome)) peca(-w * .3, 1.2, 0, 3.4, 2.4, 3.4, 0x9fc0d4); if(/mal-assombrada|trapeira/.test(nome)) peca(meioLarg * .6, -meioFundo * .6, alt, .9, .9, 3.2, 0x8a4a34);           // bay de vidro na ponta e chaminé de tijolo
     if(/amarela/.test(nome)){ peca(meioLarg * .5, -meioFundo * .5, alt, 1, 1, 5.5, 0x8a4a34); }                                                                                   // chaminé de tijolo muito alta
     if(/Supermercado/.test(nome)){ peca(0, .06, alt - 1.6, Math.min(8, w * .9), .15, 1.0, 0xffffff); }                                                                              // placa branca do letreiro (texto: só com autorização)
-    if(/Thewes|Galochas|Material|Restaurante/.test(nome)){ peca(0, .7, 2.7, w * .7, 1.4, .15, 0x2a2a2a); }                                                                          // toldo/marquise sobre a vitrine
+    if(/Thewes|Galochas|Material|Restaurante/.test(nome)){ peca(0, .7, 2.7, w * .7, 1.4, .15, 0x2a2a2a); }
+    /* ---- demais prédios do catálogo ---- */
+    if(/Salão Paroquial/.test(nome)){ peca(0, 1.4, 2.8, meioLarg * 1.6, 2.8, .2, 0x7a4a2a); for(const l of [-1, 1]) peca(l * meioLarg * .7, 2.6, 0, .3, .3, 2.8, 0xf2ead2); }        // alpendre na frente (sul, para a rótula)
+    if(/Prefeitura/.test(nome)){ peca(0, 1.2, 0, 6, 2.4, .5, 0xd8d2c4); peca(0, .7, .5, 6, 1.4, .5, 0xd8d2c4); for(const k of [-1, 0, 1]){ peca(k * 1.2 + meioLarg * .55, 4, 0, .12, .12, 7, 0xd8d8d8); peca(k * 1.2 + meioLarg * .55 + .45, 4, 6.2, .8, .05, .5, [0x1c8a3a, 0xc0392b, 0xf1c40f][k + 1]); } }   // escadaria e 3 mastros com bandeiras
+    if(/Centro Cultural/.test(nome)){ peca(0, .9, 0, 4, 1.8, .4, 0xd8d2c4); peca(0, 1.6, 3.0, 4.4, 3.2, .2, 0x8a4a2b); for(const l of [-1, 1]) peca(l * 2, 3.0, 0, .3, .3, 3.0, 0xf2ead2); }      // escadinha e varanda de entrada
+    if(/alpendre vermelho/.test(nome)){ peca(meioLarg * .55, -.9, 0, meioLarg * .8, 1.8, 2.8, 0xc0554a); peca(meioLarg * .2, .1, 0, .35, .35, 2.8, 0xffffff); peca(0, 2.5, 0, 2 * meioLarg + 3, .3, 1.0, 0xf4f4f0); }   // alpendre recuado vermelho com coluna e muro branco
+    if(/madeira escura/.test(nome)){ for(const a of [-meioLarg * .5, meioLarg * .5]){ peca(a, .7, 3.4, 2.4, 1.4, .15, 0x5a3b24); peca(a, 1.35, 3.55, 2.4, .1, 1.0, 0x5a3b24); } peca(0, 0, 0, 2 * meioLarg, .05, 3.2, 0xf4f4f0); }   // 2 varandas de madeira no andar de cima, térreo branco
+    if(/Pioneiro/.test(nome)){ peca(0, .02, 0, 2 * meioLarg, .1, 3.3, 0xa8c8dc); peca(0, .08, alt - 1.2, 2 * meioLarg * .7, .1, .7, 0xffffff); for(let k = 0; k < 3; k++) peca(0, .9 - k * .3, k * .2, 2.2, .6, .2, 0xb03a2a); }   // térreo azul-claro, faixa do nome, escadinha vermelha
+    if(/Restaurante/.test(nome)){ peca(0, .03, .4, 2 * meioLarg * .85, .08, 2.2, 0x6a8aa0); peca(meioLarg * .7, 1.5, 0, 1.2, 3.0, .3, 0xbcb8b0); }    // janelões de vidro e rampa
+    if(/madeira rosa/.test(nome)){ peca(0, 0, -1.6, 2 * meioLarg, 2 * meioFundo, 1.6, 0x8a847a); peca(0, 1.6, -.6, 3.2, 3.2, .6, 0x8a847a); peca(0, 1.0, 0, 3.2, 2.0, .6, 0x8a847a); }   // porão e escadaria larga de pedra
+    if(/Advocacia/.test(nome)){ peca(0, .06, 2.6, 3.0, .1, .6, 0x3a3a3a); }                                                                       // placa cinza-escura (genérica)
+    if(/trapeira/.test(nome)){ for(const l of [-1, 1]) peca(l * meioLarg * .4, -meioFundo * .4, alt + .4, 1.4, 1.2, 1.4, 0xffffff); for(let k = 0; k < 3; k++) peca(0, .9 - k * .3, k * .25, 2.0, .6, .25, 0xb03a2a); }   // 2 trapeiras e escada de degraus vermelhos
+    if(/amarela/.test(nome)){ peca(meioLarg + 1.6, -meioFundo, 0, 3.0, 4.0, .15, 0x8a6a44); for(const [i, j] of [[0, -1], [0, 1]]) peca(meioLarg + 2.9, -meioFundo + j * 1.8, 0, .2, .2, 2.6, 0x5a3b24); peca(meioLarg + 1.6, -meioFundo, 2.6, 3.2, 4.2, .1, 0xb8b8b4); }   // pergolado com fibrocimento
+    if(/Galpão/.test(nome)){ peca(0, -.05, 0, 2 * meioLarg * .7, .1, 2.6, 0x2a2622); }                                                           // garagem aberta
+    if(/tábuas cinza/.test(nome)){ peca(0, 0, -.8, 2 * meioLarg + .2, 2 * meioFundo + .2, .8, 0x7a756c); }                                     // base de pedras empilhadas
+    if(/Galochas/.test(nome)){ for(const l of [-1, 1]){ peca(l * meioLarg * .55, .05, .4, 1.6, .1, 1.8, 0x53697a); peca(l * meioLarg * .25, .2, 2.4, .2, .2, .35, 0x2a2a2a); } peca(0, 1.4, 0, 3.0, 1.4, .3, 0x8a847a); }   // 2 vitrines, lampiões, degraus de pedra
+    if(/bandeirinhas/.test(nome)){ for(const l of [-1, 1]){ peca(l * 1.4, 1.2, 0, .08, .08, 3.0, 0xd8d8d8); peca(l * 1.4 + .35, 1.2, 2.5, .6, .04, .4, l < 0 ? 0x1c8a3a : 0xc0392b); } }   // duas bandeirinhas na entrada
+    if(/1152/.test(nome)){ peca(0, .06, alt - .2, 1.6, .15, 1.6, 0xf4f4f0); peca(0, .1, alt + .2, 1.0, .1, 1.0, 0x8a6a44); for(const l of [-1, 1]) peca(l * meioLarg * .5, .03, .3, meioLarg * .8, .08, 2.2, 0x53697a); }   // frontão com emblema redondo e 2 lojas de vidro
+    if(/Chalé branco/.test(nome)){ peca(-meioLarg * .4, .5, 0, meioLarg, 1.0, 2.8, 0x2a2a2a); peca(-meioLarg * .4, 1.0, 2.8, meioLarg * 1.1, 1.2, .12, 0x1a1a1a); }   // comercinho no térreo com toldo preto
+    if(/Casa histórica do Sr/.test(nome)){ peca(meioLarg * .5, -meioFundo * .5, alt, .9, .9, 3.0, 0x8a4a34); peca(0, 1.5, 0, 2 * meioLarg + 2, .25, .9, 0xf4f4f0); }   // chaminé e muro                                                                          // toldo/marquise sobre a vitrine
     /* colisor: caixa alinhada aos eixos que cobre o bloco girado (um pouco menor para não travar nas quinas) */
     const c = Math.abs(Math.cos(yaw)), sn = Math.abs(Math.sin(yaw)), hx = (W * c + D * sn) / 2 * .86, hz = (W * sn + D * c) / 2 * .86;
     if(!oco) colisores.push({ x0: cx - hx, x1: cx + hx, z0: cz - hz, z1: cz + hz, peca: "predio:" + nome });
