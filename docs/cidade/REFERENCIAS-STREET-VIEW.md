@@ -612,6 +612,7 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **SICREDI** (cooperativa de crédito): faixa **verde** com logo, **parede de pedra** clara, porta e vitrines de vidro, rampa — no jogo: **letreiro genérico "Cooperativa de crédito"** (marca de rede → regra das redes).
   - **Caminhonete branca antiga** (tipo C-10/D-20) estacionada — bom **objeto de cena**.
   - O endereço diz **RS-020** e o asfalto do SV-I5 diz **RS-427**: nesse trecho as duas rodovias **compartilham a avenida**; a RS-427 segue pela R. Tradição.
+- **SV-I8** — mesmo ponto do SV-I7, rumo **54°** (nordeste), pela avenida rumo ao **leste** ("RS-020" pintado no asfalto, tachões no meio): à esq. o Sicredi e uma **casa bege elevada sobre pilares** (palafita, terreno em declive), sobrados e casas; à dir. (**lado sul**) **comércio com letreiro verde "…Tio …"** (nome a confirmar) e **chalé branco** com **varanda de madeira**, corrimão de madeira e **placas de madeira** penduradas (cardápio/artesanato); ao fundo a avenida desce e sobe para **morros com mata** — começo da **estrada leste** (a do parque, no jogo).
   - [sugestão] o Sabores da Querência pode ser **parada de missão** (comprar geleia para levar ao cânion/pousada).
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
