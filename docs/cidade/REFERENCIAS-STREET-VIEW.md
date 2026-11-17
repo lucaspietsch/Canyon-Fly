@@ -616,12 +616,12 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
   - A linha contorna **as duas bordas** (lado RS e lado SC, que a divisa separa pelo fundo do cânion), com muitos **recortes/reentrâncias** (vales laterais), indo e voltando — começa em ≈ (+6 697, −15 974) e termina em ≈ (+5 815, −16 467), no sul.
   - **No jogo:** igual ao Fortaleza — usar como **linha de borda** (limite do terreno onde começa o paredão), com os **paredões de basalto** descritos no Mirante das Andorinhas.
 - **TRILHA DO COTOVELO** — arquivo `docs/cidade/kml/itaimbezinho-trilha-do-cotovelo.kml` ("cotovelo"), 52 pontos, **≈ 3,2 km** (só ida):
-  - Começa perto do **retorno/estacionamento** (+6 465, −12 041) (~120 m do centro de visitantes), vai para o **oeste-sudoeste acompanhando a borda** do cânion pelo **lado RS** — em média **~60 m da borda** (máx. ~190 m) — e termina em **≈ (+4 525, −13 413)**, numa ponta da borda: o **MIRANTE DO COTOVELO** (onde o cânion faz a curva em "cotovelo" — confirmar).
-  - Bem mais longa que a do Vértice (~3,2 km × poucos metros); no jogo vale a regra das trilhas/estradas (confirmar se fica **pela metade**).
+  - Começa perto do **retorno/estacionamento** (+6 465, −12 041) (~120 m do centro de visitantes), vai para o **oeste-sudoeste acompanhando a borda** do cânion pelo **lado RS** — em média **~60 m da borda** (máx. ~190 m) — e termina em **≈ (+4 525, −13 413)**, numa ponta da borda: o **MIRANTE DO COTOVELO**, onde o cânion faz a curva em "cotovelo" (**confirmado pelo Lucas**).
+  - Bem mais longa que a do Vértice (~3,2 km × poucos metros); no jogo fica **pela metade** (~1,6 km).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
 - **Escala no jogo (regra das estradas pela metade):** 24,4 km reais → **≈ 12,2 km** no jogo; a guarita fica a **≈ 8,5 km** da cidade.
 - **A receber:** **área do Itaimbezinho** (borda, trilhas, centro de visitantes); **mapa do município**.
-- **Dúvida:** a estrada interna (2,2 km) fica em **escala real** (como a cidade) ou também **pela metade**?
+- Estrada interna: **pela metade** no jogo (~1,1 km).
 
 ## MAPA DO MUNICÍPIO DE CAMBARÁ DO SUL (2 prints do Lucas — mapa base e mapa ambiental)
 Só anotações (as imagens são de publicação de terceiros, não vão para o repositório). Escala gráfica de 10 km; norte para cima. (As coordenadas impressas nos cantos do mapa parecem trocadas/erradas — usar a escala e a posição da cidade.)
@@ -636,6 +636,7 @@ Só anotações (as imagens são de publicação de terceiros, não vão para o 
 - **Escala no jogo:** pela regra do Lucas, as estradas entre a cidade e esses lugares ficam **pela metade**.
 
 ## Regras do mapa do jogo (Lucas)
+- **[Lucas] TRILHAS TAMBÉM PELA METADE (−50%)** — Vértice, Casa do Vô Marçal, Cotovelo e as do Fortaleza que vierem; a **estrada interna** do Itaimbezinho também. Só a **cidade** (ruas, casas, praça) e as **áreas dos lugares** ficam em escala real.
 - **[Lucas] TODAS AS RUAS E ESTRADAS ASFALTADAS** no jogo — cidade, estradas entre lugares e **estrada interna do Itaimbezinho** — com **DUAS PISTAS + faixa lateral de ESTACIONAMENTO**, mesmo onde a real é de terra ou paralelepípedo (os prints guardam como é de verdade, para referência).
 - **[Lucas] VIAGENS NO TEMPO:** nos **próximos capítulos** o jogo vai **voltar no tempo nesta região por DUAS vezes** → as referências de hoje (2025) são a **época atual**; guardar também o que for **antigo** (casas históricas, estradas de terra, paralelepípedo, casarão, lendas) porque vai servir para montar **as épocas passadas**. (O jogo já tem seletor de época — `lugares.epoca()`.)
 - **[Lucas] Estradas até os cânions, vilas e outras cidades são reduzidas pela METADE** no jogo, para encurtar o caminho do jogador. A **cidade em si** (ruas, casas, praça) fica em **escala real**; só os trechos de estrada **entre** lugares são comprimidos.
