@@ -597,6 +597,8 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **Caminho para o Itaimbezinho:** Av. Getúlio Vargas → **R. Tradição** (desce para o sul-sudeste) → Pizza Retrô → **RS-427** (B3). Confirma que a **RS-427 é a estrada do Itaimbezinho**.
   - À esq.: **SABORES DA QUERÊNCIA — Geleias Artesanais** (≈ (+330, +37), batendo com o B2): **chalé de pedra e madeira escura** com **telhado verde (grama no telhado)**, empena em "A" envidraçada, varanda de vidros com caixilhos de madeira, porta de madeira; na frente **canteiros de lavanda** e placas de madeira; **postes coloniais de globos brancos**.
   - Rua acima: **posto de combustível** (cobertura verde) mais adiante à esq.; à dir. sobrados claros e carros estacionados; **araucárias** no horizonte.
+- **SV-I2** — mesmo ponto, rumo **212°** (sudoeste): à esq. a **R. Tradição descendo para o sul** (asfalto com **tachões amarelos** no meio, carros estacionados, galpão branco e casas ao fundo); à dir. a **Av. Getúlio Vargas** rumo à praça (postes coloniais ao longe).
+  - **Esquina sudoeste** (Tradição × Getúlio Vargas): **galpão comprido branco com faixa cinza embaixo** e **janelas basculantes azuis** (comércio; ponta com vitrine azul e cobertura de chapa); depois **prédio amarelo de 2 pavimentos** com **painel de azulejos azuis** e portas de garagem amarelas; depois **prédio de 4 pavimentos** branco/rosado com **sacadas** (provável hotel/apartamentos — confirmar).
   - [sugestão] o Sabores da Querência pode ser **parada de missão** (comprar geleia para levar ao cânion/pousada).
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
