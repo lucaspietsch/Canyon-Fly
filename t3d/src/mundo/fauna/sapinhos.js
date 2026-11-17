@@ -1,3 +1,4 @@
+import {criarCambaraensis,COMPRIMENTO_CAMBARAENSIS} from './cambaraensis-visual.js';
 import { Group, InstancedMesh, IcosahedronGeometry, SphereGeometry, BoxGeometry, CylinderGeometry, MeshStandardMaterial, DynamicDrawUsage, Color, Matrix4, Quaternion, Vector3, Euler } from "three";
 import { U, SAPINHOS as C } from "../config.js";
 
@@ -17,6 +18,7 @@ const pick = (L) => L[Math.floor(Math.random() * L.length)];
 export function criarSapinhos(M){
   const { cen } = M, V = M.vegetacao, base = V.base, T = V.turfeira, Z = M.fauna.zonas, grupo = new Group(); cen.grupo.add(grupo);
   const CAP = C.max + (C.peregrecas.ativo ? C.peregrecas.max : 0), PARTES = 14;
+  const cambaraensis=criarCambaraensis(grupo,CAP);
   const mat = new MeshStandardMaterial({ roughness: .65, metalness: 0, vertexColors: false });
   const mk = (geo, n = CAP) => { const im = new InstancedMesh(geo, mat, n); im.instanceMatrix.setUsage(DynamicDrawUsage); im.count = 0; im.frustumCulled = false; im.setColorAt(0, new Color(1, 1, 1)); im.instanceColor.setUsage(DynamicDrawUsage); im.castShadow = false; grupo.add(im); return im; };
   const G = {
@@ -48,7 +50,7 @@ export function criarSapinhos(M){
   }
   const chao = (x, z) => base.alturaNo(x, z);
   function novo(esp, x, z, zona, par){
-    const e = ESP[esp], f = { esp, zona, x, z, y: chao(x, z), yaw: Math.random() * 6.283, estado: "para", t: rnd(1, 3), fase: Math.random() * 6, hop: 0, hopV: 0, pitch: 0, alerta: 0, vida: rnd(C.vidaSeg[0], C.vidaSeg[1]), par: par || null, alvo: null, esc: C.escalaVisual * .12 * (e.grande || 1) * rnd(.9, 1.1), piscada: rnd(1, 4), cabeca: 0, vis: 1, tem: false };
+    const e = ESP[esp], f = { esp, zona, x, z, y: chao(x, z), yaw: Math.random() * 6.283, estado: "para", t: rnd(1, 3), fase: Math.random() * 6, hop: 0, hopV: 0, pitch: 0, alerta: 0, vida: rnd(C.vidaSeg[0], C.vidaSeg[1]), par: par || null, alvo: null, esc: e.tamanhoM ? rnd(...e.tamanhoM)*U/COMPRIMENTO_CAMBARAENSIS : C.escalaVisual * .12 * (e.grande || 1) * rnd(.9, 1.1), piscada: rnd(1, 4), cabeca: 0, vis: 1, tem: false };
     lista.push(f); return f;
   }
   function tentaSpawn(J, alvoN, E){
@@ -85,8 +87,8 @@ export function criarSapinhos(M){
   /* ---------- desenho ---------- */
   const corD = new Color(), corV = new Color(), corP = new Color();
   function desenha(){
-    let n = 0, ne = 0, nl = 0, nPt = 0; const B = new Matrix4();
-    lista.forEach(f => { const e = ESP[f.esp], ci = n; Qn.setFromEuler(E.set(f.pitch, f.yaw, 0, "YXZ")); Vt.set(f.x, f.y + .3 * f.esc * 1.0, f.z); Sc.set(f.esc, f.esc, f.esc); B.compose(Vt, Qn, Sc); const al = f.alerta, abre = al * .55;
+    cambaraensis.inicia();let n = 0, ne = 0, nl = 0, nPt = 0; const B = new Matrix4();
+    lista.forEach(f => { if(f.esp==="cambaraensis"){if(f.piscada<-.12)f.piscada=rnd(1.5,5);cambaraensis.escreve(f);return;}const e = ESP[f.esp], ci = n; Qn.setFromEuler(E.set(f.pitch, f.yaw, 0, "YXZ")); Vt.set(f.x, f.y + .3 * f.esc * 1.0, f.z); Sc.set(f.esc, f.esc, f.esc); B.compose(Vt, Qn, Sc); const al = f.alerta, abre = al * .55;
       corD.setRGB(...e.dorso); corV.setRGB(...e.vermelho); corP.setRGB(...(e.listra || e.dorso));
       const dorso = corD.clone().multiplyScalar(.85 + .3 * ((f.fase * 7) % 1 > 2 ? 1 : 1));
       parte(G.corpo, n, B, 0, .25 + al * .2, 0, 1, .62, .85, 0, 0, 0, dorso);
@@ -102,7 +104,7 @@ export function criarSapinhos(M){
         parte(G.pe, n * 4 + q, B, px + s * (.05 + al * .12), py - .08 + lev * .3, pz + (frente ? .26 : .3), 1.2 + al * .5, .7, 1.7, rx * .5, 0, 0, corV); });
       for(let k = 0; k < 6; k++){ const a = k * 1.9, rr = .3 + (k % 3) * .08; parte(G.pontos, n * 6 + k, B, Math.cos(a) * rr * .8, .5 + al * .2, Math.sin(a) * rr * .6 - .05, 1, 1, 1, 0, 0, 0, e.listra ? corP.setRGB(.9, .8, .5) : corP.setRGB(.55, .5, .42)); }
       n++; nPt += 6; void ci; });
-    G.corpo.count = G.cabeca.count = G.barriga.count = G.listra.count = n; G.olho.count = n * 2; G.perna.count = G.pe.count = n * 4; G.pontos.count = n * 6;
+    cambaraensis.fim();G.corpo.count = G.cabeca.count = G.barriga.count = G.listra.count = n; G.olho.count = n * 2; G.perna.count = G.pe.count = n * 4; G.pontos.count = n * 6;
     Object.values(G).forEach(im => { im.instanceMatrix.needsUpdate = true; if(im.instanceColor) im.instanceColor.needsUpdate = true; }); void ne; void nl; void nPt;
   }
   /* ---------- libélulas (horas quentes, sobre poças e nascentes) ---------- */
@@ -136,5 +138,5 @@ export function criarSapinhos(M){
   }
   const maisPerto = (x, z) => { let b = null, bd = 1e18; lista.forEach(f => { if(f.esp === "perereca") return; const d = Math.hypot(f.x - x, f.z - z) / U; if(d < bd){ bd = d; b = f; } }); return b ? { x: b.x, z: b.z, d: bd * U, f: b } : null; };
   const info = () => "Sapinhos " + lista.filter(f => f.esp !== "perereca").length + " · pererecas " + lista.filter(f => f.esp === "perereca").length + " · umidade " + S.umido.toFixed(2) + (S.forcaUmido ? " (forçada)" : "");
-  return { lista, S, tick, maisPerto, info, forcaUmido(on){ S.forcaUmido = on === undefined ? !S.forcaUmido : on; return S.forcaUmido; }, ESP, desliga(){ lista.length = 0; } };
+  return { cambaraensis,desenha,lista, S, tick, maisPerto, info, forcaUmido(on){ S.forcaUmido = on === undefined ? !S.forcaUmido : on; return S.forcaUmido; }, ESP, desliga(){ lista.length = 0; desenha(); } };
 }

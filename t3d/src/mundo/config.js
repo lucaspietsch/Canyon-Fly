@@ -260,7 +260,7 @@ export const TURFEIRA = {
 export const SAPINHOS = {
   ativo: true, raio: 25, max: 22, escalaVisual: 3.2, intervaloSpawn: .9,        // m: só existem e são simulados nesse raio · máximo de sapinhos ativos
   especies: {
-    cambaraensis: { ativo: true, peso: .7, nome: "Sapinho-de-Cambará", cientifico: "Melanophryniscus cambaraensis", dorso: [.06, .045, .04], listra: null, vermelho: [.86, .16, .08] },
+    cambaraensis: { ativo: true, peso: .7, nome: "Sapinho-verde-de-barriga-vermelha", cientifico: "Melanophryniscus cambaraensis", tamanhoM: [.03, .04], dorso: [.39, .46, .22], listra: null, vermelho: [.86, .16, .08] },
     dorsalis: { ativo: true, peso: .3, nome: "Sapinho Melanophryniscus dorsalis", cientifico: "Melanophryniscus dorsalis", dorso: [.1, .09, .05], listra: [.72, .52, .1], vermelho: [.9, .26, .06] }
   },
   zonas: { meio: { ativo: true, peso: .5, casal: .65 }, borda: { ativo: true, peso: .25, casal: .8, ateM: 15 }, arroio: { ativo: true, peso: .25, casal: .15 } },
