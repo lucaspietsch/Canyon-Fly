@@ -230,10 +230,17 @@ export function criarCentro(M, u){
        Textura de favos (lado .7 m); à noite as bordas dos favos acendem em dourado e o vidro brilha verde (M.ciclo.hora). */
     const Rr = R + tubo * .9, X = [Math.cos(yaw), -Math.sin(yaw)], passoM = (xb - xa) / (N - 1), ladoM = Rr / U, tileU = 2.1, tileV = 1.2124;
     const C = []; for(let k = 0; k < N; k++){ const t = k / (N - 1), px = a0[0] + dx * t, pz = a0[1] + dz * t; C.push([px, Y(px, pz) + R * .72, pz]); }
-    const P = (k, th) => { const c = C[k], r = Rr * Math.cos(th); return [c[0] + X[0] * r, c[1] + Rr * Math.sin(th), c[2] + X[1] * r]; };
+    /* ponto do hexágono por coordenadas locais (r = horizontal no plano do arco, h = altura a partir do centro) */
+    const Q = (k, r, h) => { const c = C[k]; return [c[0] + X[0] * r, c[1] + h, c[2] + X[1] * r]; };
     const pos = [], uvs = [];
-    for(let j = 0; j < 6; j++){ const t0 = giro + j * Math.PI / 3, t1 = t0 + Math.PI / 3; if(Math.sin(t0 + Math.PI / 6) < .5) continue;   // só as faces de cima
-      for(let k = 0; k < N - 1; k++){ const A = P(k, t0), B = P(k, t1), Cc = P(k + 1, t1), D = P(k + 1, t0), u0 = k * passoM / tileU, u1 = (k + 1) * passoM / tileU, v1 = ladoM / tileV;
+    const hMin = -R * .72 + 2.6 * U;   // laterais descem até ~2,6 m do chão (dá para passar por baixo)
+    for(let j = 0; j < 6; j++){ const t0 = giro + j * Math.PI / 3, t1 = t0 + Math.PI / 3; if(Math.sin(t0 + Math.PI / 6) < -.5) continue;   // todas as faces menos as de baixo
+      let r0 = Rr * Math.cos(t0), h0 = Rr * Math.sin(t0), r1 = Rr * Math.cos(t1), h1 = Rr * Math.sin(t1);
+      if(h0 < hMin && h1 < hMin) continue;
+      if(h0 < hMin){ const f = (hMin - h1) / (h0 - h1); r0 = r1 + (r0 - r1) * f; h0 = hMin; }
+      if(h1 < hMin){ const f = (hMin - h0) / (h1 - h0); r1 = r0 + (r1 - r0) * f; h1 = hMin; }
+      const v1 = Math.hypot(r1 - r0, h1 - h0) / U / tileV;
+      for(let k = 0; k < N - 1; k++){ const A = Q(k, r0, h0), B = Q(k, r1, h1), Cc = Q(k + 1, r1, h1), D = Q(k + 1, r0, h0), u0 = k * passoM / tileU, u1 = (k + 1) * passoM / tileU;
         pos.push(...A, ...B, ...Cc, ...A, ...Cc, ...D); uvs.push(u0, 0, u0, v1, u1, v1, u0, 0, u1, v1, u1, 0); } }
     const vg = new BufferGeometry(); vg.setAttribute("position", new Float32BufferAttribute(pos, 3)); vg.setAttribute("uv", new Float32BufferAttribute(uvs, 2)); vg.computeVertexNormals();
     const favo = (cel, linha, ponto) => canvasTex(256, 148, (x, w, h) => { const s = w / 3, a = Math.sqrt(3) * s; x.fillStyle = cel; x.fillRect(0, 0, w, h);
