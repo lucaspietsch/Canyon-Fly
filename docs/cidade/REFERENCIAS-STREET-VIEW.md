@@ -556,10 +556,13 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
       - No jogo: placas educativas como esta ao longo da estrada interna (combina com as regras do ICMBio que a equipe já fala no Fortaleza).
     - **Estrada interna, ~55 m adiante** — −29.15671016, −50.06348569 · 953 m (começa a **descer**) · rumo 242° → local ≈ (+7 954, −11 886): estrada estreita com **calçamento claro/asfalto gasto** (aqui já não é terra), fazendo **curva à dir.** e subindo ao fundo; à esq. o terreno **cai** e abre vista para o **vale/campo** (borda de mata com araucárias); à dir. **barranco de mata** com **samambaias e xaxins**; **araucárias** na crista do morro adiante.
     - [sugestão] no jogo: **portão/cancela** e um **guarda-parque NPC** (ICMBio) dando as regras do parque, como na equipe do Fortaleza.
-  - **[Lucas]** depois da guarita há uma **estrada interna** do parque (a receber).
+  - **ESTRADA INTERNA** — arquivo `docs/cidade/kml/itaimbezinho-estrada-interna.kml` ("internita"), 24 pontos, **≈ 2,2 km reais**:
+    - começa **na guarita** (+8 226, −11 697), segue para **oeste-sudoeste** pelo túnel de araucárias (os prints da estrada interna caem a **5–60 m** da linha ✔), passa (+7 904, −11 903), (+7 492, −12 020), (+7 133, −12 041), (+6 630, −12 039) e termina num **LAÇO/RETORNO** em ≈ **(+6 420…+6 625, −12 040…−12 110)** — provável **estacionamento / centro de visitantes** de onde saem as trilhas (confirmar).
+    - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
 - **Escala no jogo (regra das estradas pela metade):** 24,4 km reais → **≈ 12,2 km** no jogo; a guarita fica a **≈ 8,5 km** da cidade.
-- **A receber:** marcação da **guarita** e da **estrada interna** no Earth; **área do Itaimbezinho**; **mapa do município**.
+- **A receber:** **área do Itaimbezinho** (borda, trilhas, centro de visitantes); **mapa do município**.
+- **Dúvida:** a estrada interna (2,2 km) fica em **escala real** (como a cidade) ou também **pela metade**?
 
 ## Regras do mapa do jogo (Lucas)
 - **[Lucas] TODAS AS RUAS E ESTRADAS ASFALTADAS** no jogo — cidade, estradas entre lugares e **estrada interna do Itaimbezinho** — com **DUAS PISTAS + faixa lateral de ESTACIONAMENTO**, mesmo onde a real é de terra ou paralelepípedo (os prints guardam como é de verdade, para referência).
