@@ -533,6 +533,12 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
 - **Traçado:** começa na **esquina da Av. Getúlio Vargas com a R. Tradição** (+289, +59) (a ~10 m do SV-I1 ✔), desce a Tradição, passa a **Pizza Retrô** (~26 m ✔), segue a **RS-427** para o **sudeste** passando ao sul do Eco Hotel, faz zigue-zagues pelo campo e termina em **≈ (+12 505, −14 722)** (≈ 12,5 km a leste e 14,7 km ao sul da praça).
 - **GUARITA GRALHA AZUL — entrada do Cânion Itaimbezinho** (foto do Lucas): −29.15459854, −50.06015192 · **952 m** · jul/2025 → local **(+8 276, −11 652)**, **a ~30 m da linha** ✔, a **≈ 17,0 km** da cidade pela estrada.
   - Na foto (rumo 296°, olhando de volta para a cidade): estrada **de terra/cascalho** marrom ("RS-427" pintado), **totem/marco alto cinza-escuro** do **Parque Nacional de Aparados da Serra** à esq. (placa vertical com o logo), **vegetação de campo e capoeira** baixa (arbustos de vassoura, capim) e **araucárias** ao fundo.
+  - **A GUARITA em si** (Photo Sphere, set/2022): −29.15493998, −50.06070662 · 954 m → local **(+8 222, −11 690)**, ~65 m a sudoeste do totem:
+    - **casinha de guarita** térrea **branca**, com **base de pedra** cinza (pedra cortada em placas) na cabine; **cabine envidraçada** de esquina (vidros escuros com caixilho marrom) voltada para a estrada; **telhado de telha colonial** marrom-avermelhada de **duas águas**, com **estrutura de madeira aparente** (tesouras/mãos-francesas) e **beiral largo** que avança sobre a pista como **cobertura**, apoiado em **pilares brancos**;
+    - **piso de lajota** cerâmica na varanda, **calçada de paralelepípedo**, **gramado**;
+    - **ilha de canteiro** com meio-fio branco separando as pistas, **cones laranja**, **placas pequenas** marrons (parque) na beira;
+    - em volta: **barranco de capim dourado**, **araucárias** e mata no horizonte; estrada de **terra batida** (no jogo: **asfalto, pista dupla**).
+    - [sugestão] no jogo: **portão/cancela** e um **guarda-parque NPC** (ICMBio) dando as regras do parque, como na equipe do Fortaleza.
   - **[Lucas]** depois da guarita há uma **estrada interna** do parque (a receber).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
 - **Escala no jogo (regra das estradas pela metade):** 24,4 km reais → **≈ 12,2 km** no jogo; a guarita fica a **≈ 8,5 km** da cidade.
