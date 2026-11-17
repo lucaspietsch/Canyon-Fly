@@ -59,3 +59,8 @@ cd t3d && npm run build
 ## Pendências conhecidas
 - Prédios são blocos (sem degraus de verdade); posições de satélite com erro de ~15 m; não foi verificado se algum prédio encosta em outro.
 - Interiores provisórios; nomes reais só com autorização.
+
+## Vila Oswaldo Kroeff (ruas e casas reais)
+- `docs/vilas/ok_prints.py` (leitura dos prints do Google Earth do Lucas, calibrada) → `docs/vilas/gera_vila_ok.py` → **`t3d/src/mundo/dados/vila-ok.js`** (GERADO: `RUAS_OK`, `PREDIOS_OK`, `ORIGEM_OK`).
+- `cidade/cidade.js`: na vila "oswaldo" a grade provisória e a praça de obra saem; entram as ruas de `RUAS_OK` e `criarCentro(M, u, { predios, origem, extras:false, ruasMundo })`.
+- `cidade/centro.js`: `criarCentro(M, u, dados)` — sem `dados` = cidade (com igreja, antenas, Rua Coberta); com `dados` = vila: sem os extras da cidade, **não põe casa em cima da estrada do jogo** (`M.estrada.ocupa`) e registra em `M.vegetacao.base.excluir` um mapa de células (casas +6 m, ruas ±14 m) para o capim/samambaias/árvores não nascerem nas ruas e quintais (removido no `descartar`).

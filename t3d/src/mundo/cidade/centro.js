@@ -3,7 +3,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { U } from "../config.js";
 import { canvasTex } from "../../lib.js";
 import { latLonParaMundo } from "../resgate/kml.js";
-import { PREDIOS_CENTRO, ORIGEM_CENTRO as O } from "../dados/cidade-centro.js";
+import { PREDIOS_CENTRO, ORIGEM_CENTRO as O0 } from "../dados/cidade-centro.js";
 
 /* ============================================================================================================
    CENTRO DE CAMBARÁ DO SUL — primeira montagem (blocos) a partir do catálogo dos prints do Lucas (docs/cidade/REFERENCIAS-STREET-VIEW.md):
@@ -43,7 +43,9 @@ function texTorre(){
 function uvCaixa(g, wM, dM, hM, soLongos = false){ const uv = g.attributes.uv; for(let f = 0; f < 6; f++) for(let k = 0; k < 4; k++){ const i = f * 4 + k; let lado = f < 2 ? dM : f > 3 ? wM : 0; if(soLongos && lado && lado < Math.max(wM, dM)) lado = 0;      /* igreja: janelas só nas laterais compridas */
   if(!lado){ uv.setXY(i, .02, .98); continue; } uv.setXY(i, uv.getX(i) * Math.max(1, Math.round(lado / MOD)), uv.getY(i) * Math.max(1, Math.round(hM / MOD))); } uv.needsUpdate = true; }
 
-export function criarCentro(M, u){
+export function criarCentro(M, u, dados = null){
+  /* dados (opcional): { predios, origem, extras:false } — mesmo montador para as VILAS (ex.: dados/vila-ok.js); sem dados = centro da cidade com igreja, antenas e Rua Coberta */
+  const PRED = dados ? dados.predios : PREDIOS_CENTRO, O = dados ? dados.origem : O0, EXTRAS = !dados || dados.extras;
   const { cen } = M, G = new Group(), T = u.T || [0, 0];
   const mundo = (x, y) => { const p = latLonParaMundo(O.lat + y / O.mLat, O.lon + x / O.mLon); return [p[0] + T[0], p[1] + T[1]]; };
   const Y = (x, z) => cen.relevo(x, z);
@@ -55,8 +57,10 @@ export function criarCentro(M, u){
   const pisos = [], colisores = [], m4 = new Matrix4(), q = new Quaternion(), e = new Euler(), v = new Vector3(), s = new Vector3();
 
   /* ---------- prédios em blocos ---------- */
-  for(const [nome, x, y, w, d, alt, tipo, angG, fx0, fy0] of PREDIOS_CENTRO){
+  let pulados = 0;
+  for(const [nome, x, y, w, d, alt, tipo, angG, fx0, fy0] of PRED){
     const a = angG * Math.PI / 180, [cx, cz] = mundo(x, y), ex = eixo(x, y, a), le = Math.hypot(ex[0], ex[1]), yaw = Math.atan2(-ex[1], ex[0]);
+    if(dados && M.estrada && M.estrada.ocupa){ const ey0 = [-ex[1], ex[0]]; if([[0, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]].some(([i, j]) => M.estrada.ocupa(cx + (ex[0] * w * i + ey0[0] * d * j) / 2, cz + (ex[1] * w * i + ey0[1] * d * j) / 2))){ pulados++; continue; } }   // vila: nada em cima da estrada do jogo
     const W = w * le, D = d * le, H = alt * U, ey = [-ex[1], ex[0]], amostra = [[0, 0], [1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]].map(([i, j]) => Y(cx + (ex[0] * w * i + ey[0] * d * j) / 2, cz + (ex[1] * w * i + ey[1] * d * j) / 2));
     const temInterior = /Du Perau|Brentano|Thewes/.test(nome), y0 = temInterior ? Math.max(...amostra) + .05 : Math.min(...amostra.slice(0, 3)) - .3;   /* com interior: piso acima do terreno mais alto (o gramado não atravessa o chão) */
     const cTelha = /Sabores/.test(nome) ? 0x5f8a3a : /Galpão|rosa-avermelhada/.test(nome) ? 0x8f9296 : /tábuas brancas/.test(nome) ? 0x6a2a2a : (COR[tipo] || COR.casa)[1], cParede = corDe(nome, tipo), texP = tipo === "casa" && /madeira|tábuas|Chalé|chalé|Galpão/.test(nome) ? "madeira" : tipo;
@@ -202,13 +206,13 @@ export function criarCentro(M, u){
   }
 
   /* ---------- Morro das Antenas: 2 torres (uma de concreto listrada vermelho e branco, outra treliçada) — marco visual a leste ---------- */
-  for(const [mx, my, Hm, listrada] of [[712, -52, 42, true], [726, -44, 36, false]]){ const [tx, tz] = mundo(mx, my), y0 = Y(tx, tz) - .3;
+  if(EXTRAS) for(const [mx, my, Hm, listrada] of [[712, -52, 42, true], [726, -44, 36, false]]){ const [tx, tz] = mundo(mx, my), y0 = Y(tx, tz) - .3;
     if(listrada){ for(let k = 0; k < 8; k++){ const h = Hm / 8, g = new BoxGeometry(2 * U, h * U, 2 * U); g.translate(tx, y0 + (k + .5) * h * U, tz); add(k % 2 ? 0xf4f4f4 : 0xc0392b, g); } }
     else { for(const [dx, dz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]){ const g = new BoxGeometry(.25 * U, Hm * U, .25 * U); g.translate(tx + dx * .9 * U, y0 + Hm * U / 2, tz + dz * .9 * U); add(0xb8bcc2, g); } for(let k = 1; k < 10; k++){ const g = new BoxGeometry(2 * U, .15 * U, 2 * U); g.translate(tx, y0 + k * Hm / 10 * U, tz); add(0xb8bcc2, g); } }
     colisores.push({ x0: tx - 1.2 * U, x1: tx + 1.2 * U, z0: tz - 1.2 * U, z1: tz + 1.2 * U, peca: "antena" }); }
 
   /* ---------- torre da Igreja Matriz São José (−24, +51,5) ---------- */
-  { const [tx, tz] = mundo(-24, 51.5), ex = eixo(-24, 51.5, 3.9 * Math.PI / 180), le = Math.hypot(ex[0], ex[1]), yaw = Math.atan2(-ex[1], ex[0]), y0 = Y(tx, tz) - .3, L = 6 * le, H = 25 * U;
+  if(EXTRAS){ const [tx, tz] = mundo(-24, 51.5), ex = eixo(-24, 51.5, 3.9 * Math.PI / 180), le = Math.hypot(ex[0], ex[1]), yaw = Math.atan2(-ex[1], ex[0]), y0 = Y(tx, tz) - .3, L = 6 * le, H = 25 * U;
     e.set(0, yaw, 0); q.setFromEuler(e);
     const tor = new BoxGeometry(1, 1, 1); tor.applyMatrix4(m4.compose(v.set(tx, y0 + H / 2, tz), q, s.set(L, H, L))); add(COR.igreja[0], tor, "torre");
     const pt = new ConeGeometry(Math.SQRT1_2, 1, 4); pt.rotateY(Math.PI / 4); pt.applyMatrix4(m4.compose(v.set(tx, y0 + H + 3 * U, tz), q, s.set(L * 1.1, 6 * U, L * 1.1))); add(COR.igreja[1], pt);
@@ -218,7 +222,7 @@ export function criarCentro(M, u){
   }
 
   /* ---------- Rua Coberta: 10 arcos-favo (hexágonos) na frente da praça, da esquina da Quinze de Março (x −56) à da Laurindo (x −2), y ≈ +6 (faixa entre a avenida e o gramado) ---------- */
-  { const N = 10, xa = -56, xb = -2, yr = 10.5, R = 5.2 * U, tubo = .32 * U, giro = Math.PI / 6 + .17;   // ~10° de giro sobre o próprio plano
+  if(EXTRAS){ const N = 10, xa = -56, xb = -2, yr = 10.5, R = 5.2 * U, tubo = .32 * U, giro = Math.PI / 6 + .17;   // ~10° de giro sobre o próprio plano
     const a0 = mundo(xa, yr), a1 = mundo(xb, yr), dx = a1[0] - a0[0], dz = a1[1] - a0[1], yaw = Math.atan2(dx, dz);
     for(let k = 0; k < N; k++){ const t = k / (N - 1), px = a0[0] + dx * t, pz = a0[1] + dz * t, py = Y(px, pz) + R * .72;   // centro baixo: a ponta de baixo do hexágono fica enterrada
       const g = new TorusGeometry(R, tubo, 4, 6); g.rotateZ(giro); g.rotateY(yaw); g.translate(px, py, pz); add(0xa82b22, g); }
@@ -269,8 +273,18 @@ export function criarCentro(M, u){
       if(Math.abs(a) <= 1.6 && b > 0 && b <= 3){ const t = Y(x, z); return Math.max(t + .3, p.y + (t - p.y) * (b / 3)); } }
     return Y(x, z) + .3; };
   const EX = cen.extraChao; if(EX && EX.superficies) EX.superficies.push(superficie);
+  /* VILAS: o mato do parque (capim, samambaias, árvores) não nasce nas ruas nem nos quintais — mapa de células de 4 m ocupadas por casas (+6 m) e ruas (±14 m) */
+  let semMato = null; const VB = M.vegetacao && M.vegetacao.base;
+  if(dados && VB && VB.excluir){ const CS = 4 * U, occ = new Set(), marca = (x, z) => occ.add(Math.floor(x / CS) + "," + Math.floor(z / CS));
+    const caixa = (x0, x1, z0, z1) => { for(let x = x0; x <= x1; x += CS * .5) for(let z = z0; z <= z1; z += CS * .5) marca(x, z); };
+    colisores.forEach(k => { if(/^predio:/.test(k.peca || "")) caixa(k.x0 - 6 * U, k.x1 + 6 * U, k.z0 - 6 * U, k.z1 + 6 * U); });
+    (dados.ruasMundo || []).forEach(L => { for(let i = 1; i < L.length; i++){ const [ax, az] = L[i - 1], [bx, bz] = L[i], n = Math.max(1, Math.ceil(Math.hypot(bx - ax, bz - az) / CS));
+      for(let j = 0; j <= n; j++){ const x = ax + (bx - ax) * j / n, z = az + (bz - az) * j / n; caixa(x - 14 * U, x + 14 * U, z - 14 * U, z + 14 * U); } } });
+    semMato = (x, z) => occ.has(Math.floor(x / CS) + "," + Math.floor(z / CS)); VB.excluir.push(semMato);
+    try{ ["capim", "samambaias", "arvores"].forEach(k => { const p = M.vegetacao[k]; if(p && p.regenera) p.regenera(); }); }catch(err){ console.warn("vila: mato", err); } }
   /* colisores entram no cenário enquanto o centro existir */
   colisores.forEach(k => cen.colisores.push(k));
-  G.userData.descartar = () => { colisores.forEach(k => { const i = cen.colisores.indexOf(k); if(i >= 0) cen.colisores.splice(i, 1); }); if(EX && EX.superficies){ const i = EX.superficies.indexOf(superficie); if(i >= 0) EX.superficies.splice(i, 1); } };
+  G.userData.descartar = () => { colisores.forEach(k => { const i = cen.colisores.indexOf(k); if(i >= 0) cen.colisores.splice(i, 1); }); if(EX && EX.superficies){ const i = EX.superficies.indexOf(superficie); if(i >= 0) EX.superficies.splice(i, 1); } if(semMato && VB){ const i = VB.excluir.indexOf(semMato); if(i >= 0) VB.excluir.splice(i, 1); } };
+  G.userData.pulados = pulados;
   return G;
 }
