@@ -27,7 +27,7 @@ export function criarGralhas(pai,max=96,opcao={}){
  function inicia(){n=0;}
  function escreve(b,t=0,sagrado=.15){if(n>=max)return;const i=n++,flying=['voa','sobrevoo','plana','foge','assedia','mergulha','guia'].includes(b.estado),s=b.s||1;
  q.setFromEuler(e.set((b.pitch||0)+(flying?0:(opcao.pousoPitch??-.52)),b.yaw||0,b.roll||0,'YXZ'));base.compose(v.set(b.x,b.y,b.z),q,scale.setScalar(s));put(G.corpo,i,0,0,0);put(G.cab,i,0,.25+(flying?-.05:0),.28,b.cabP||0,b.cabY||0);put(G.cauda,i,0,-.02,-.28,.12);put(G.pernas,i,0,-.18,.08,flying?1.3:.15,0,0,1,flying?.4:1,1);
- const bat=flying?Math.sin((b.fase||t*8)*6.283)*.75:0;for(const side of [-1,1])put(side>0?G.asaD:G.asaE,i,side*.13,.03,0,0,side*(flying?.15:1.4),side*bat,1,1,1);
+ const bat=flying&&!(opcao.planaSemBater&&b.estado==='plana')?Math.sin((b.fase||t*8)*6.283)*.75:0;for(const side of [-1,1])put(side>0?G.asaD:G.asaE,i,side*.13,.03,0,0,side*(flying?.15:1.4),side*bat,flying?1:(opcao.asaDobradaEscala??1),1,1);
  const pulse=.9+.1*Math.sin(t*2+i);put(G.halo,i,0,.08,0,0,0,0,pulse,1.2*pulse,pulse);const a=t*.65+i*2.4;put(G.fagulha,i,Math.cos(a)*.43,.1+((t*.12+i*.23)%1)*.65,Math.sin(a)*.43,0,0,0,sagrado*2,sagrado*2,sagrado*2);
  }
  function fim(epoca='2026'){Object.values(G).forEach(g=>{g.count=n;g.instanceMatrix.needsUpdate=true;});haloMat.opacity=epoca==='1689-1700'?.15:epoca==='1950'?.085:.05;mat.emissiveIntensity=epoca==='1689-1700'?.24:.10;if(opcao.sagrado===false){G.halo.count=G.fagulha.count=0;mat.emissiveIntensity=0;}}

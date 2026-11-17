@@ -1,3 +1,5 @@
+import {criarGavioesRaboBranco} from './gaviao-rabo-branco-visual.js';
+import {criarCuricacas} from './curicaca-visual.js';
 import {criarQueroQueros} from './quero-quero-visual.js';
 import {criarTucanos} from './tucano-visual.js';
 import {criarAveCampo} from './aves-campo-visual.js';
@@ -28,8 +30,8 @@ const ESP = {
   ticotico: { nome: "Tico-tico", cientifico:"Zonotrichia capensis", c: .15, p: { corpo: [.55, .42, .28], peito: [.86, .8, .7], cab: [.5, .35, .22], asa: [.4, .3, .2], cauda: [.35, .27, .2], bico: [.35, .3, .25] }, bico: .08, perna: .14, vo: 8, bat: 22, voz: "ticotico", cad: [3, 9] },
   tucano: { nome: "Tucano-de-bico-verde", cientifico:"Ramphastos dicolorus", c: .48, p: { corpo: [.04, .04, .05], peito: [.96, .95, .88], cab: [.04, .04, .05], asa: [.04, .04, .06], cauda: [.04, .04, .05], bico: [.95, .66, .1] }, bico: .36, bicoR: 2.3, perna: .11, vo: 10, bat: 8, voz: "tucano", cad: [9, 18] },
   queroquero: { nome: "Quero-quero", cientifico:"Vanellus chilensis", c: .35, p: { corpo: [.52, .45, .34], peito: [.95, .95, .92], cab: [.3, .28, .26], asa: [.5, .45, .34], cauda: [.1, .1, .1], bico: [.8, .35, .3], crista: [.07, .07, .07] }, crista: .16, bico: .09, perna: .48, vo: 13, bat: 10, voz: "queroquero", cad: [5, 12] },
-  curicaca: { nome: "Curicaca", c: .72, p: { corpo: [.5, .48, .43], peito: [.82, .62, .36], cab: [.82, .66, .4], asa: [.34, .33, .31], cauda: [.2, .2, .2], bico: [.1, .1, .1] }, bico: .24, perna: .46, pescoco: .2, vo: 13, bat: 5, voz: "curicaca", cad: [8, 18] },
-  gaviao: { nome: "Gavião", c: .52, p: { corpo: [.34, .24, .16], peito: [.86, .8, .72], cab: [.3, .22, .15], asa: [.3, .22, .15], cauda: [.38, .32, .24], bico: [.1, .1, .1] }, bico: .1, perna: .12, vo: 11, bat: 4, asa: 2.2, voz: "gaviao", cad: [6, 12] }
+  curicaca: { nome: "Curicaca", cientifico:"Theristicus caudatus", c: .72, p: { corpo: [.5, .48, .43], peito: [.82, .62, .36], cab: [.82, .66, .4], asa: [.34, .33, .31], cauda: [.2, .2, .2], bico: [.1, .1, .1] }, bico: .24, perna: .46, pescoco: .2, vo: 13, bat: 5, voz: "curicaca", cad: [8, 18] },
+  gaviao: { nome: "Gavião-de-rabo-branco", cientifico:"Geranoaetus albicaudatus", c: .52, p: { corpo: [.34, .24, .16], peito: [.86, .8, .72], cab: [.3, .22, .15], asa: [.3, .22, .15], cauda: [.38, .32, .24], bico: [.1, .1, .1] }, bico: .1, perna: .12, vo: 11, bat: 4, asa: 2.2, voz: "gaviao", cad: [6, 12] }
 };
 ESP.papagaioRoxo={...ESP.papagaio,nome:'Papagaio-de-peito-roxo',cientifico:'Amazona vinacea'};
 const ALC = { gralha: 170, papagaio: 280, picapau: 120, sabia: 95, ticotico: 55, tucano: 160, queroquero: 170, curicaca: 230, gaviao: 250, coruja: 170, alarme: 130, ra: 90 };
@@ -38,7 +40,7 @@ const PARTES = ["corpo", "peito", "cab", "bico", "cauda", "asaD", "asaE", "crist
 export function criarAves(M){
   const { cen } = M, V = M.vegetacao, base = V.base, Q = qualidade(), grupo = new Group(); cen.grupo.add(grupo);
   const CAP = Math.max(96,Math.round(C.max * Q.aves) + 48), lista = [], ninhos = [], S = { t: 0, spawn: 0, papa: 0, gav: 0, hawk: null, sil: null, fundoT: 0, corujaT: 8, raT: 3, ultSom: 0, ac: null, ameacas: [], ameacaT: 0, forcaQuero: null };
-  const queroQueros=criarQueroQueros(grupo,CAP);const tucanos=criarTucanos(grupo,CAP);const picaCampo=criarAveCampo(grupo,CAP,"picapau"),sabias=criarAveCampo(grupo,CAP,"sabia");const ticoTicos=criarTicoTicos(grupo,CAP);const gralhas=criarGralhas(grupo,CAP),charao=criarPapagaios(grupo,CAP,"charao"),peitoRoxo=criarPapagaios(grupo,CAP,"peito-roxo");
+  const gavioesRaboBranco=criarGavioesRaboBranco(grupo,CAP);const curicacas=criarCuricacas(grupo,CAP);const queroQueros=criarQueroQueros(grupo,CAP);const tucanos=criarTucanos(grupo,CAP);const picaCampo=criarAveCampo(grupo,CAP,"picapau"),sabias=criarAveCampo(grupo,CAP,"sabia");const ticoTicos=criarTicoTicos(grupo,CAP);const gralhas=criarGralhas(grupo,CAP),charao=criarPapagaios(grupo,CAP,"charao"),peitoRoxo=criarPapagaios(grupo,CAP,"peito-roxo");
   const mat = new MeshStandardMaterial({ roughness: .85, metalness: 0 });
   const mk = (geo, n) => { const im = new InstancedMesh(geo, mat, n); im.instanceMatrix.setUsage(DynamicDrawUsage); im.count = 0; im.frustumCulled = false; im.setColorAt(0, new Color(1, 1, 1)); im.instanceColor.setUsage(DynamicDrawUsage); im.castShadow = false; grupo.add(im); return im; };
   const alongaZ = (g, ini) => { g.rotateX(Math.PI / 2); g.translate(0, 0, ini); return g; };
@@ -280,9 +282,9 @@ export function criarAves(M){
   /* ---------- desenho ---------- */
   function parte(im, k, x, y, z, rx, ry, rz, sx, sy, sz, cor){ Eu.set(rx, ry, rz, "YXZ"); Qn.setFromEuler(Eu); Vt.set(x, y, z); Sc.set(sx, sy, sz); L4.compose(Vt, Qn, Sc); M4.multiplyMatrices(B4, L4); im.setMatrixAt(k, M4); if(cor) im.setColorAt(k, cor); }
   function desenha(){
-    let n = 0, np = 0;queroQueros.inicia();tucanos.inicia();picaCampo.inicia();sabias.inicia();ticoTicos.inicia();gralhas.inicia();charao.inicia();peitoRoxo.inicia();
+    let n = 0, np = 0;gavioesRaboBranco.inicia();curicacas.inicia();queroQueros.inicia();tucanos.inicia();picaCampo.inicia();sabias.inicia();ticoTicos.inicia();gralhas.inicia();charao.inicia();peitoRoxo.inicia();
     lista.forEach(b => {
-      if(b.fim) return;if(b.esp==="queroquero"){queroQueros.escreve(b,S.t,0);return;}if(b.esp==="tucano"){tucanos.escreve(b,S.t,0);return;}if(b.esp==="picapau"||b.esp==="sabia"){(b.esp==="picapau"?picaCampo:sabias).escreve(b,S.t,0);return;}if(b.esp==="ticotico"){ticoTicos.escreve(b,S.t,0);return;}if(b.esp==="papagaio"||b.esp==="papagaioRoxo"){(b.esp==="papagaio"?charao:peitoRoxo).escreve(b,S.t,0);return;}if(b.esp==="gralha"){gralhas.escreve(b,S.t,M.ancestral?.ativo?.()?.5:.18);return;} const e = b.e, P = e.p, s = b.s; Eu.set(b.pitch, b.yaw, b.roll, "YXZ"); Qn.setFromEuler(Eu); Vt.set(b.x, b.y, b.z); Sc.set(s, s, s); B4.compose(Vt, Qn, Sc);
+      if(b.fim) return;if(b.esp==="gaviao"){gavioesRaboBranco.escreve(b,S.t,0);return;}if(b.esp==="curicaca"){curicacas.escreve(b,S.t,0);return;}if(b.esp==="queroquero"){queroQueros.escreve(b,S.t,0);return;}if(b.esp==="tucano"){tucanos.escreve(b,S.t,0);return;}if(b.esp==="picapau"||b.esp==="sabia"){(b.esp==="picapau"?picaCampo:sabias).escreve(b,S.t,0);return;}if(b.esp==="ticotico"){ticoTicos.escreve(b,S.t,0);return;}if(b.esp==="papagaio"||b.esp==="papagaioRoxo"){(b.esp==="papagaio"?charao:peitoRoxo).escreve(b,S.t,0);return;}if(b.esp==="gralha"){gralhas.escreve(b,S.t,M.ancestral?.ativo?.()?.5:.18);return;} const e = b.e, P = e.p, s = b.s; Eu.set(b.pitch, b.yaw, b.roll, "YXZ"); Qn.setFromEuler(Eu); Vt.set(b.x, b.y, b.z); Sc.set(s, s, s); B4.compose(Vt, Qn, Sc);
       const cj = (c) => col.setRGB(c[0] * b.j, c[1] * b.j, c[2] * b.j);
       const voando = b.estado === "voa" || b.estado === "sobrevoo" || b.estado === "plana" || b.estado === "foge" || b.estado === "assedia" || b.estado === "mergulha";
       const pesc = e.pescoco || 0, hp = b.cabP * .5 + (b.bate > 0 ? Math.sin(S.t * 38) * .35 : 0), cabH = .2 + pesc * (voando ? .2 : 1);
@@ -301,7 +303,7 @@ export function criarAves(M){
       const pl = voando ? .1 : e.perna; for(const lado of [1, -1]){ parte(G.perna, np++, lado * .08, -.15, .05, voando ? .8 : 0, 0, 0, .04, pl, .04, col.setRGB(.2, .17, .14)); }
       n++;
     });
-    queroQueros.fim();tucanos.fim();picaCampo.fim();sabias.fim();ticoTicos.fim();charao.fim();peitoRoxo.fim();gralhas.fim(M.lugares?.epoca?.()||"2026");
+    gavioesRaboBranco.fim();curicacas.fim();queroQueros.fim();tucanos.fim();picaCampo.fim();sabias.fim();ticoTicos.fim();charao.fim();peitoRoxo.fim();gralhas.fim(M.lugares?.epoca?.()||"2026");
     PARTES.forEach(k => { const im = G[k]; im.count = k === "perna" ? np : n; im.instanceMatrix.needsUpdate = true; if(im.instanceColor) im.instanceColor.needsUpdate = true; });
     /* ninhos */
     let nn = 0, ne = 0; if(C.quero.mostraNinho) ninhos.forEach(nt => { Eu.set(0, 0, 0); Qn.identity(); Vt.set(nt.x, chao(nt.x, nt.z) + .03 * U, nt.z); Sc.set(.8 * U, .8 * U, .8 * U); M4.compose(Vt, Qn, Sc); nin.cova.setMatrixAt(nn, M4); nin.cova.setColorAt(nn, col.setRGB(.32, .26, .18)); nn++;
@@ -351,5 +353,5 @@ export function criarAves(M){
   }
   const info = () => { const c = {}; lista.forEach(b => { c[b.esp] = (c[b.esp] || 0) + 1; }); return "Aves " + lista.length + " (" + Object.keys(c).map(k => k[0] + c[k]).join(" ") + ") · " + S.per + (S.sil ? " · silêncio " + S.sil.t.toFixed(0) + " s" : "") + (S.hawk ? " · gavião×gralhas" : ""); };
   const maisPerto = (x, z) => { let m = null, d = 1e18; lista.forEach(b => { const q = Math.hypot(b.x - x, b.z - z); if(q < d){ d = q; m = b; } }); return m ? { b: m, d } : null; };
-  return { queroQueros,tucanos,picaCampo,sabias,ticoTicos,charao,peitoRoxo,revoadaGralhas,gralhas,desenha,lista, ninhos, S, ESP, tick, info, somExt: som, silencio, alarme, guiar:(x,z)=>{let g=lista.find(b=>b.esp==="gralha"&&!b.fim)?.g;if(!g)return false;g.mem.forEach((b,i)=>{b.estado="voa";b.alvo={x:x+Math.cos(i*2.4)*3*U,z:z+Math.sin(i*2.4)*3*U,y:chao(x,z)+2*U};b.espera=i*.035;b.vm=.6;b.asa=1;});return true;},iniciaGaviao, lugarPerto, revoada: (J) => revoada(J, true), forcaQuero, maisPerto, spawn: (k, J) => (SPAWN[k] ? SPAWN[k](J) : null), desliga(){ lista.length = 0; ninhos.length = 0; S.hawk = null; S.sil = null; desenha(); } };
+  return { gavioesRaboBranco,curicacas,queroQueros,tucanos,picaCampo,sabias,ticoTicos,charao,peitoRoxo,revoadaGralhas,gralhas,desenha,lista, ninhos, S, ESP, tick, info, somExt: som, silencio, alarme, guiar:(x,z)=>{let g=lista.find(b=>b.esp==="gralha"&&!b.fim)?.g;if(!g)return false;g.mem.forEach((b,i)=>{b.estado="voa";b.alvo={x:x+Math.cos(i*2.4)*3*U,z:z+Math.sin(i*2.4)*3*U,y:chao(x,z)+2*U};b.espera=i*.035;b.vm=.6;b.asa=1;});return true;},iniciaGaviao, lugarPerto, revoada: (J) => revoada(J, true), forcaQuero, maisPerto, spawn: (k, J) => (SPAWN[k] ? SPAWN[k](J) : null), desliga(){ lista.length = 0; ninhos.length = 0; S.hawk = null; S.sil = null; desenha(); } };
 }

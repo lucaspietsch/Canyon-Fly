@@ -4,6 +4,8 @@ Modelos procedurais em 3D, com formas e cores baseadas nas referências fornecid
 
 ## Espécies
 
+- **Gavião-de-rabo-branco — Geranoaetus albicaudatus:** cabeça cinzenta, peito branco, ombros castanhos, bico curvo, pernas amarelas, asas largas com primárias destacadas e cauda branca com faixa escura. O gavião genérico do sistema de aves passa a representar esta espécie, inclusive nas fotos; mantém a interação existente com as gralhas. O planeio mantém as asas abertas sem bater.
+- **Curicaca — Theristicus caudatus:** bico longo, afilado e curvado para baixo; pescoço creme e dourado, coroa castanha, máscara escura e olhos vermelhos; asas cinzentas com camadas de penas e pernas rosadas. Mantém a ocorrência em casais no campo e na turfeira, alimentação no chão e voo.
 - **Quero-quero — Vanellus chilensis:** pernas longas rosadas, peito preto, barriga clara, asas acinzentadas com tons bronzeados, olhos vermelhos e penacho fino voltado para trás. Mantém os casais, ninhos e rasantes de defesa existentes.
 - **Tucano-de-bico-verde — Ramphastos dicolorus:** bico verde-claro grande e curvo com base escura, garganta amarela, ventre e região sob a cauda vermelhos, plumagem escura e pele vermelha com anel verde-azulado ao redor dos olhos. Mantém a ocorrência rara no alto das árvores, com poses de voo e pouso próprias do renderizador.
 - **Tico-tico — Zonotrichia capensis:** substitui a identificação genérica “Passarinho”, incluindo geração, inspeção e fotografia. Cabeça cinzenta com faixas escuras, colar ferrugem, garganta clara, dorso e asas marrons rajados, bico curto e pernas rosadas. Mantém os saltos e bandos pequenos no chão. O canto permanece uma síntese de notas, sem gravação da espécie.
@@ -18,6 +20,10 @@ Modelos procedurais em 3D, com formas e cores baseadas nas referências fornecid
 ![Tucano-de-bico-verde](media/pinheirais/tucano-de-bico-verde.png)
 
 ![Quero-quero](media/pinheirais/quero-quero.png)
+
+![Curicaca](media/pinheirais/curicaca.png)
+
+![Gavião-de-rabo-branco](media/pinheirais/gaviao-de-rabo-branco-planando.png)
 
 ## Corte sagrada
 
