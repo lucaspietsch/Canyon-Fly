@@ -86,3 +86,5 @@ Os scripts de navegador aceitam `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. Os testes do m
 ## Ajuste complementar — aparência do Pit
 
 Após o repasse inicial, o usuário enviou novas referências para o rosto do Pit. A barba cheia foi substituída por bigode marcado com pontas levantadas e cavanhaque curto. Foram adicionados óculos escuros de armação preta, lentes arredondadas e barra superior reta. Os acessórios ficam no grupo da cabeça normal, preservando o capacete integral da armadura. Arquivos: `pit-barba.js`, `pit-oculos.js` e integração em `pit-visual.js`. O bundle foi reconstruído e as capturas do modelo real foram conferidas sem erros JavaScript.
+
+Revisão seguinte dos óculos: altura reduzida, largura ampliada e contorno reforçado com aro mais espesso e filete frontal de realce, conforme solicitado. Capturas e galeria atualizadas.
