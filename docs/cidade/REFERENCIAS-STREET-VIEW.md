@@ -634,6 +634,13 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - Na frente: avenida com **canteiro gramado** e meio-fio branco.
   - [sugestão] a Casa do Turista é o **ponto de informação** do jogo (mapa, dicas, missões de turismo); o "C" e os mastros são ótimos marcos de chegada.
   - Clima do lugar: **fim da cidade**, casas de madeira, mata de pinus/eucalipto e araucárias — transição para a estrada do parque.
+#### Saída SUDOESTE (RS-020) — entrada da cidade
+- **SV-SO1** — **RS-020 nº 470**, −29.05207524, −50.15122049 · **1004 m** (≈ 23 m abaixo da praça) · rumo 47° · jul/2025 → local **(−587, −329)** (bate com a RS-020 do B0 ✔), olhando para o **nordeste**, subindo para a cidade:
+  - **LETREIRO GIGANTE "CAMBARÁ DO SUL"** (letras brancas em 3D, "DO SUL" menor) num **canteiro em curva** com **muro de pedra** e grama, e uma **escultura/boneco** branco e preto ao lado (confirmar o que é) — **portal de entrada** da cidade por quem vem do sudoeste.
+  - A RS-020 faz **curva à esquerda subindo** para o centro; meio-fio pintado de branco.
+  - À esq.: **Restaurante Sabor da Serra** e prédios de **pousada** (sobrado de tijolo aparente com placas "POUSADA"), casas.
+  - À dir.: **barranco alto de grama** com **cerca branca de madeira** no topo; mais à frente casas de telhado vermelho e um **portal/caramanchão de telhas** na esquina.
+  - [sugestão] **ponto de chegada** do jogador vindo do sudoeste: o letreiro "CAMBARÁ DO SUL" é o cartão-postal da entrada.
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
 ## Próximos envios do Lucas (anotado)
