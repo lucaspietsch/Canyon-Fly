@@ -647,6 +647,12 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **SV-SO2** — −29.05201689, −50.1511416 · rumo 132° → local **(−579, −323)**, poucos metros à frente: o **sobrado de madeira** de frente, no alto do barranco — **2 pavimentos**, tábuas **salmão/cor de tijolo**, **telhado vermelho de várias águas** com beiral largo, **varanda grande de madeira** com **pilares e guarda-corpo verdes** (com mãos-francesas em "V"), janelas de moldura verde, **chaminé de metal**, base de **tijolo/pedra**; outro telhado vermelho à esq.; **barranco de capim alto e seco** com a **cerca branca de 3 tábuas** no topo; pinus atrás. Provável **pousada/chalé** (confirmar).
   - O boneco ao lado do letreiro parece um **pinguim** (branco e preto, nariz laranja) — brincadeira com o **frio** de Cambará (confirmar).
   - [sugestão] **ponto de chegada** do jogador vindo do sudoeste: o letreiro "CAMBARÁ DO SUL" é o cartão-postal da entrada.
+#### Saída NORTE (RS-020 / R. Ouro Verde)
+- **SV-N1** — **RS-020 / R. Ouro Verde**, −29.04529742, −50.13986632 · **1015 m** · rumo 31° · jul/2025 → local **(+518, +431)** (bate com a R. Ouro Verde do Z1 ✔), olhando para o **nor-nordeste**, saindo da cidade:
+  - "R. Ouro Verde" pintado no asfalto; **faixa de pedestres**, **tachões amarelos** no meio; calçada de **laje de pedra irregular** com **piso tátil** do lado direito.
+  - **PLACA DE DIREÇÃO TURÍSTICA** (marrom, ↑ em frente): **Balneário Nassuca · Cachoeira Ouro Verde · Cânion Pinheirinho** → confirma que esta é a estrada para a **Vila Ouro Verde** e o **Cânion Pinheirinho**.
+  - Placa da **"Pousada das Corucacas"** (turismo rural) e placa de **"Vende-se"** num campo cercado; **galpão de madeira** ao fundo.
+  - À esq.: barranco de grama, **cano grande** de concreto/bueiro, placa de curva, casas e um **ponto de ônibus** coberto mais à frente; **eucaliptos** altos dos dois lados.
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
 ## Próximos envios do Lucas (anotado)
