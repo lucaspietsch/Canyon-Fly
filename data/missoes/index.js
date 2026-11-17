@@ -1,3 +1,4 @@
+import { missoesPinheirais } from './pinheirais.js';
 /* Registro das missões do CanyonFly. Um arquivo por missão (ou por grupo); aqui só se juntam. Sem missão "chumbada" no código do jogo. */
 import { missoesEmBreve } from "./em-breve.js";
 import { m01 } from "./m01-descer.js";
@@ -16,4 +17,4 @@ export const MISSOES_CFG = {
   viagemSempre: ["estacionamento", "cidade", "vila"]           // destinos que a viagem rápida sempre oferece
 };
 
-export const MISSOES = [m01, m02, m03, m04, m05, m06, m07, ...missoesTupa, ...missoesEmBreve];
+export const MISSOES = [m01, m02, m03, m04, m05, m06, m07, ...missoesTupa, ...missoesPinheirais, ...missoesEmBreve.filter(m=>m.id!=="v04-atiara")];

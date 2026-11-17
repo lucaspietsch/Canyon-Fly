@@ -49,6 +49,7 @@ export function criarMissoes(M){
   /* ---------- locais ---------- */
   function resolve(l){
     if(!l) return null;
+    if(l.espirito)return M.espiritoGralha?.pontoOlaria(l.espirito)||null;
     if(l.ref){ const d = M.viagem && M.viagem.todos().find(q => q.id === l.ref); return d ? { x: d.pos.x + (l.dx || 0) * U, z: d.pos.z + (l.dz || 0) * U } : null; }
     if(isFinite(l.x)) return { x: l.x, z: l.z };
     if(typeof l.fn === "function") return l.fn();

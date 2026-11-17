@@ -1,0 +1,14 @@
+import {criarAveCampo} from '../../src/mundo/fauna/aves-campo-visual.js';
+import {criarTicoTicos} from '../../src/mundo/fauna/tico-tico-visual.js';
+import * as T from 'three';
+import {criarGralhas} from '../../src/mundo/fauna/gralha-visual.js';
+import {criarPapagaios} from '../../src/mundo/fauna/papagaios-visual.js';
+import {geometriasProtetora,criarCorteSagrada} from '../../src/mundo/ancestral/guarda-sagrada.js';
+import {criarGralhaEspiritual} from '../../src/mundo/ancestral/gralha-espiritual.js';
+import {criarAves} from '../../src/mundo/fauna/aves.js';
+const renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(1000,900);const scene=new T.Scene();scene.background=new T.Color(0x273d36);scene.add(new T.HemisphereLight(0xe9f4ff,0x8b7958,2));const light=new T.DirectionalLight(0xfff0da,2.8);light.position.set(5,8,6);scene.add(light);const cam=new T.PerspectiveCamera(32,1000/900,.01,1000);
+function shot(obj,angle=35){scene.add(obj);obj.rotation.y=angle*Math.PI/180;obj.updateMatrixWorld(true);obj.traverse(o=>{if(o.isInstancedMesh){o.boundingBox=null;o.computeBoundingBox();}});const b=new T.Box3().setFromObject(obj),c=b.getCenter(new T.Vector3()),s=b.getSize(new T.Vector3()),d=Math.max(s.x/(1000/900),s.y,s.z)*2.3;cam.position.set(c.x,c.y+d*.10,c.z+d);cam.lookAt(c);renderer.render(scene,cam);scene.remove(obj);return renderer.domElement.toDataURL();}
+function bird(r,flying=false){r.inicia();r.escreve({x:0,y:0,z:0,yaw:0,s:1,estado:flying?'voa':'pousa',fase:.18,cabP:0,cabY:0},2,.5);r.fim('1689-1700');return r.group;}
+window.studio={shot,all(){const tt=criarTicoTicos(new T.Group(),1),shots=[{name:'tico-tico',url:shot(bird(tt),65)}];tt.dispose();for(const [tipo,name]of [['picapau','pica-pau-do-campo'],['sabia','sabia-laranjeira']]){const a=criarAveCampo(new T.Group(),1,tipo);shots.push({name,url:shot(bird(a),65)});a.dispose();}const r=criarGralhas(new T.Group(),40);for(const [f,name]of [[false,'gralha-pousada'],[true,'gralha-voando']])shots.push({name,url:shot(bird(r,f),40)});const q=criarGralhaEspiritual();q.tick(1);shots.push({name:'gralha-ancestral',url:shot(q.g,40)});const prot=criarGralhas(new T.Group(),6,{geo:geometriasProtetora()});shots.push({name:'protetora-sagrada',url:shot(bird(prot,false),40)});const corte=criarCorteSagrada();corte.tick(1.2);shots.push({name:'rainha-e-guarda',url:shot(corte.g,15)});
+ for(const tipo of ['charao','peito-roxo']){const p=criarPapagaios(new T.Group(),6,tipo);for(const[f,name]of [[false,tipo],[true,tipo+'-voando']])shots.push({name,url:shot(bird(p,f),40)});p.dispose();}
+ for(const n of [6,12,40]){r.inicia();for(let i=0;i<n;i++)r.escreve({x:(i%8-3.5)*1.5,y:Math.floor(i/8)*1.2,z:Math.sin(i)*.15,s:1,estado:'voa',fase:.1+i*.03,yaw:0},1,.5);r.fim(n===6?'2026':n===12?'1950':'1689-1700');shots.push({name:'bando-'+n,url:shot(r.group,0)});}r.dispose();prot.dispose();q.dispose();corte.dispose();return shots;}};

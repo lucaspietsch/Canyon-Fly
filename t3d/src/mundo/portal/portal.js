@@ -1,3 +1,4 @@
+import {progressoPinheirais} from '../../../../data/missoes/pinheirais.js';
 import { Group, Mesh, TorusGeometry, CircleGeometry, SphereGeometry, ShaderMaterial, MeshBasicMaterial, PointLight, Points, PointsMaterial, BufferGeometry, Float32BufferAttribute, AdditiveBlending, DoubleSide, Color } from "three";
 import { U } from "../config.js";
 
@@ -10,7 +11,7 @@ import { U } from "../config.js";
 export const PORTAL = { distFrenteM: 9, raioM: 2.6, alturaM: 5.4, gatilhoM: 1.9, cor: 0xa24dff, corNucleo: 0x4b1a9e, sumirLongeM: 140 };
 
 export function criarPortal(M){
-  const S = { p: null, volta: null, t: 0, viajando: false, cortina: null };
+  const S = { p: null, volta: null, t: 0, viajando: false, cortina: null, oferecido:false };
   const msg = (t, s) => M.terminal && M.terminal.msg(t, s);
   const chao = (x, z) => M.cen.chao(x, z, 1e9);
 
@@ -40,12 +41,13 @@ export function criarPortal(M){
   }
 
   /* ---------- abre um portal de ida à frente do jogador ---------- */
-  function abre(){
+  function abre(opc={}){
+    if(!progressoPinheirais(M.missoes?.S.prog.concl).passado&&!(opc.debug&&M.opts?.debug)){M.ctx?.mostraAviso("Conclua as missões do centro para abrir o portal de 1950");return false;}S.oferecido=true;
     const J = M.jogador(); if(!J || S.p) return false; const d = PORTAL.distFrenteM * U, x = J.x + Math.sin(J.yaw) * d, z = J.z + Math.cos(J.yaw) * d;
     S.p = constroi(x, z, Math.atan2(J.x - x, J.z - z), "ida"); msg("sobrenatural", "O ar se rasga à sua frente: um portal violeta se abre. Do outro lado, o passado."); M.ctx && M.ctx.mostraAviso("Portal violeta: atravesse para o passado"); return true;
   }
   function aoEscolher(d){
-    if(!d || !M.andando()) return;
+    if(!d || !M.andando()||M.ancestral?.ativo()) return;
     if(d.tempo === "outro"){ if(M.lugares && M.lugares.S.antigo) return; remove("p"); abre(); } else remove("p");
   }
 
@@ -55,7 +57,8 @@ export function criarPortal(M){
     const dx = it.centro[0] - (it.chegada ? it.chegada.x : it.centro[0]), dz = it.centro[1] - (it.chegada ? it.chegada.z : it.centro[1]), l = Math.hypot(dx, dz) || 1;
     return { x: it.centro[0], z: it.centro[1], yaw: Math.atan2(dx / l, dz / l) };
   }
-  function entra(){
+  function entra(opc={}){
+    if(!progressoPinheirais(M.missoes?.S.prog.concl).passado&&!(opc.debug&&M.opts?.debug))return false;
     if(S.viajando) return false; const dst = destinoPassado(); if(!dst){ msg("info", "O portal vibra, mas o KML ainda não trouxe as vilas."); return false; }
     S.viajando = true; msg("sobrenatural", "Você atravessa o portal. O tempo gira ao redor.");
     cortina(800, () => {
@@ -75,11 +78,12 @@ export function criarPortal(M){
   }
 
   function tick(dt, J){
+    if(J&&!S.oferecido&&!M.lugares.S.antigo&&!M.ancestral?.ativo()&&progressoPinheirais(M.missoes?.S.prog.concl).passado)abre();
     for(const k of ["p", "volta"]){ const o = S[k]; if(!o) continue; o.anim(dt); if(!J || S.viajando) continue; const d = Math.hypot(J.x - o.x, J.z - o.z);
       if(d < PORTAL.gatilhoM * U){ if(k === "p") entra(); else volta(); return; }
       if(k === "p" && d > PORTAL.sumirLongeM * U){ remove("p"); msg("info", "O portal violeta se fecha. Escolha o personagem de novo para abri-lo."); } }
     /* o sépia do passado fica ligado enquanto durar */
     if(M.lugares && M.lugares.S.antigo){ const el = M.renderer && M.renderer.domElement; if(el && !el.style.filter) el.style.filter = "sepia(.65) contrast(.95) saturate(.8)"; }
   }
-  return { abre, aoEscolher, entra, volta, tick, S, desliga(){ remove("p"); remove("volta"); if(S.cortina) S.cortina.remove(); } };
+  return { fechaIda:()=>remove("p"),abre, aoEscolher, entra, volta, tick, S, desliga(){ remove("p"); remove("volta"); if(S.cortina) S.cortina.remove(); } };
 }

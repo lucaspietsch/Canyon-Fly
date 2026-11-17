@@ -151,7 +151,7 @@ export function criarAndorinhas(M){
     if(S.presenca <= 0 && S.alvo <= 0){ if(im.count){ im.count = 0; ativa.fill(0); n = 0; } return; }
     void alvo; passo(Math.min(dt, .05), J); desenha();
     /* gorjeio perto do bando */
-    S.ultSom -= dt; if(S.ultSom <= 0 && M.fauna.aves && n){ S.ultSom = rnd(.3, .9); const k = Math.floor(Math.random() * N); if(ativa[k]) M.fauna.aves.somExt("passarinho", px[k], py[k], pz[k], .7); }
+    S.ultSom -= dt; if(S.ultSom <= 0 && M.fauna.aves && n){ S.ultSom = rnd(.3, .9); const k = Math.floor(Math.random() * N); if(ativa[k]) M.fauna.aves.somExt("ticotico", px[k], py[k], pz[k], .7); }
   }
   /** chega o bando: dura `seg` segundos reais */
   function chega(seg){ S.alvo = 1; S.fim = seg || rnd(110, 220); if(M.gente) M.gente.reageCeu("andorinhas", { dur: 12 }); }

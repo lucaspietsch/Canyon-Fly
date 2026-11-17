@@ -1,8 +1,12 @@
+import {criarAveCampo} from './aves-campo-visual.js';
+import {criarTicoTicos} from './tico-tico-visual.js';
+import {criarPapagaios} from './papagaios-visual.js';
+import { criarGralhas,tamanhoBando } from './gralha-visual.js';
 import { Group, InstancedMesh, SphereGeometry, ConeGeometry, BoxGeometry, CylinderGeometry, MeshStandardMaterial, DynamicDrawUsage, Color, Matrix4, Quaternion, Vector3, Euler } from "three";
 import { U, AVES as C, CONFLITOS, qualidade } from "../config.js";
 
 /* ============================================================================================================
-   AVES: gralha-azul (bandos barulhentos, saltam de árvore em árvore), papagaios (revoadas ao amanhecer/entardecer), pica-pau (no tronco), sabiá e passarinhos
+   AVES: gralha-azul (bandos barulhentos, saltam de árvore em árvore), papagaios (revoadas ao amanhecer/entardecer), pica-pau (no tronco), sabiá e ticoticos
    (chão e arbustos), tucano (raro, topo das árvores), quero-quero (ninho no campo, rasantes em quem chegar perto), curicacas (casais no campo) e gavião
    (sobrevoa; as gralhas o expulsam). Coro forte ao amanhecer, mata quieta ao meio-dia, corujas e anfíbios à noite. Levantam voo quando alguém se aproxima.
    • Só existem num raio em volta do jogador (C.raio); quantidade × qualidade.aves. Instancing: um mesh por parte do corpo.
@@ -16,21 +20,23 @@ const sorteia = (L) => { let t = Math.random() * L.reduce((s, o) => s + o[1], 0)
 /* aparência e voz de cada espécie. c = comprimento do corpo (m); p = cores por parte; asa = envergadura de cada asa (em comprimentos de corpo) */
 const ESP = {
   gralha: { nome: "Gralha-azul", c: .42, p: { corpo: [.12, .22, .72], peito: [.2, .3, .8], cab: [.04, .05, .1], asa: [.1, .2, .66], cauda: [.08, .16, .56], bico: [.03, .03, .03], crista: [.03, .04, .08] }, crista: .2, bico: .13, perna: .13, vo: 12, bat: 9, voz: "gralha", cad: [3, 8] },
-  papagaio: { nome: "Papagaio", c: .34, p: { corpo: [.1, .55, .17], peito: [.35, .66, .2], cab: [.1, .5, .18], asa: [.08, .46, .16], cauda: [.1, .4, .17], bico: [.88, .76, .45] }, bico: .1, perna: .08, vo: 17, bat: 14, voz: "papagaio", cad: [2, 5] },
-  picapau: { nome: "Pica-pau", c: .27, p: { corpo: [.07, .07, .08], peito: [.86, .85, .8], cab: [.1, .1, .1], asa: [.07, .07, .08], cauda: [.05, .05, .05], bico: [.38, .38, .4], crista: [.82, .1, .08] }, crista: .2, bico: .17, perna: .06, vo: 10, bat: 12, voz: "picapau", cad: [6, 14] },
-  sabia: { nome: "Sabiá", c: .22, p: { corpo: [.42, .32, .22], peito: [.82, .5, .25], cab: [.34, .26, .18], asa: [.38, .29, .2], cauda: [.3, .23, .16], bico: [.9, .7, .2] }, bico: .09, perna: .15, vo: 9, bat: 15, voz: "sabia", cad: [6, 16] },
-  passarinho: { nome: "Passarinho", c: .13, p: { corpo: [.55, .42, .28], peito: [.86, .8, .7], cab: [.5, .35, .22], asa: [.4, .3, .2], cauda: [.35, .27, .2], bico: [.35, .3, .25] }, bico: .08, perna: .14, vo: 8, bat: 22, voz: "passarinho", cad: [3, 9] },
+  papagaio: { nome: "Papagaio-charão",cientifico:"Amazona pretrei", c: .34, p: { corpo: [.1, .55, .17], peito: [.35, .66, .2], cab: [.1, .5, .18], asa: [.08, .46, .16], cauda: [.1, .4, .17], bico: [.88, .76, .45] }, bico: .1, perna: .08, vo: 17, bat: 14, voz: "papagaio", cad: [2, 5] },
+  picapau: { nome: "Pica-pau-do-campo", cientifico:"Colaptes campestris", c: .30, p: { corpo: [.07, .07, .08], peito: [.86, .85, .8], cab: [.1, .1, .1], asa: [.07, .07, .08], cauda: [.05, .05, .05], bico: [.38, .38, .4], crista: [.82, .1, .08] }, crista: .2, bico: .17, perna: .06, vo: 10, bat: 12, voz: "picapau", cad: [6, 14] },
+  sabia: { nome: "Sabiá-laranjeira", cientifico:"Turdus rufiventris", c: .25, p: { corpo: [.42, .32, .22], peito: [.82, .5, .25], cab: [.34, .26, .18], asa: [.38, .29, .2], cauda: [.3, .23, .16], bico: [.9, .7, .2] }, bico: .09, perna: .15, vo: 9, bat: 15, voz: "sabia", cad: [6, 16] },
+  ticotico: { nome: "Tico-tico", cientifico:"Zonotrichia capensis", c: .15, p: { corpo: [.55, .42, .28], peito: [.86, .8, .7], cab: [.5, .35, .22], asa: [.4, .3, .2], cauda: [.35, .27, .2], bico: [.35, .3, .25] }, bico: .08, perna: .14, vo: 8, bat: 22, voz: "ticotico", cad: [3, 9] },
   tucano: { nome: "Tucano", c: .48, p: { corpo: [.04, .04, .05], peito: [.96, .95, .88], cab: [.04, .04, .05], asa: [.04, .04, .06], cauda: [.04, .04, .05], bico: [.95, .66, .1] }, bico: .36, bicoR: 2.3, perna: .11, vo: 10, bat: 8, voz: "tucano", cad: [9, 18] },
   queroquero: { nome: "Quero-quero", c: .35, p: { corpo: [.52, .45, .34], peito: [.95, .95, .92], cab: [.3, .28, .26], asa: [.5, .45, .34], cauda: [.1, .1, .1], bico: [.8, .35, .3], crista: [.07, .07, .07] }, crista: .16, bico: .09, perna: .34, vo: 13, bat: 10, voz: "queroquero", cad: [5, 12] },
   curicaca: { nome: "Curicaca", c: .72, p: { corpo: [.5, .48, .43], peito: [.82, .62, .36], cab: [.82, .66, .4], asa: [.34, .33, .31], cauda: [.2, .2, .2], bico: [.1, .1, .1] }, bico: .24, perna: .46, pescoco: .2, vo: 13, bat: 5, voz: "curicaca", cad: [8, 18] },
   gaviao: { nome: "Gavião", c: .52, p: { corpo: [.34, .24, .16], peito: [.86, .8, .72], cab: [.3, .22, .15], asa: [.3, .22, .15], cauda: [.38, .32, .24], bico: [.1, .1, .1] }, bico: .1, perna: .12, vo: 11, bat: 4, asa: 2.2, voz: "gaviao", cad: [6, 12] }
 };
-const ALC = { gralha: 170, papagaio: 280, picapau: 120, sabia: 95, passarinho: 55, tucano: 160, queroquero: 170, curicaca: 230, gaviao: 250, coruja: 170, alarme: 130, ra: 90 };
+ESP.papagaioRoxo={...ESP.papagaio,nome:'Papagaio-de-peito-roxo',cientifico:'Amazona vinacea'};
+const ALC = { gralha: 170, papagaio: 280, picapau: 120, sabia: 95, ticotico: 55, tucano: 160, queroquero: 170, curicaca: 230, gaviao: 250, coruja: 170, alarme: 130, ra: 90 };
 const PARTES = ["corpo", "peito", "cab", "bico", "cauda", "asaD", "asaE", "crista", "perna", "pescoco"];
 
 export function criarAves(M){
   const { cen } = M, V = M.vegetacao, base = V.base, Q = qualidade(), grupo = new Group(); cen.grupo.add(grupo);
-  const CAP = Math.round(C.max * Q.aves) + 26, lista = [], ninhos = [], S = { t: 0, spawn: 0, papa: 0, gav: 0, hawk: null, sil: null, fundoT: 0, corujaT: 8, raT: 3, ultSom: 0, ac: null, ameacas: [], ameacaT: 0, forcaQuero: null };
+  const CAP = Math.max(96,Math.round(C.max * Q.aves) + 48), lista = [], ninhos = [], S = { t: 0, spawn: 0, papa: 0, gav: 0, hawk: null, sil: null, fundoT: 0, corujaT: 8, raT: 3, ultSom: 0, ac: null, ameacas: [], ameacaT: 0, forcaQuero: null };
+  const picaCampo=criarAveCampo(grupo,CAP,"picapau"),sabias=criarAveCampo(grupo,CAP,"sabia");const ticoTicos=criarTicoTicos(grupo,CAP);const gralhas=criarGralhas(grupo,CAP),charao=criarPapagaios(grupo,CAP,"charao"),peitoRoxo=criarPapagaios(grupo,CAP,"peito-roxo");
   const mat = new MeshStandardMaterial({ roughness: .85, metalness: 0 });
   const mk = (geo, n) => { const im = new InstancedMesh(geo, mat, n); im.instanceMatrix.setUsage(DynamicDrawUsage); im.count = 0; im.frustumCulled = false; im.setColorAt(0, new Color(1, 1, 1)); im.instanceColor.setUsage(DynamicDrawUsage); im.castShadow = false; grupo.add(im); return im; };
   const alongaZ = (g, ini) => { g.rotateX(Math.PI / 2); g.translate(0, 0, ini); return g; };
@@ -43,7 +49,7 @@ export function criarAves(M){
   const nin = { cova: mk(new CylinderGeometry(.5, .6, .12, 10), 6), ovo: mk(new SphereGeometry(.5, 7, 6), 18) };
   const M4 = new Matrix4(), L4 = new Matrix4(), B4 = new Matrix4(), Qn = new Quaternion(), Vt = new Vector3(), Sc = new Vector3(), Eu = new Euler(), col = new Color();
   const ctxF = () => M.fauna.ctx;
-  const chao = (x, z) => base.alturaNo(x, z);
+  const chao = (x, z) => M.ancestral?.ativo?.()?M.cen.chao(x,z):base.alturaNo(x, z);
 
   /* ---------- tempo: período do dia → intensidade do canto ---------- */
   function periodo(E){ if(E.alt < -8) return "noite"; if(E.h < 10 && E.alt < 14) return "alvorada"; if(E.h >= 10.5 && E.h < 15.3) return "meioDia"; if(E.h >= 16 && E.alt < 18) return "entardecer"; return "dia"; }
@@ -64,7 +70,7 @@ export function criarAves(M){
     papagaio: (a, d, t, k) => { const n = 3 + Math.floor(rnd(0, 3)); for(let i = 0; i < n; i++) nota(a, d, t + i * .15, "square", rnd(1400, 1700), 1000, .12, .17, 1800, 1.6, 42); },
     picapau: (a, d, t, k) => { if(k > .5){ for(let i = 0; i < 9; i++) toque(a, d, t + i * .046, 1700 + rnd(-200, 200), .03, .5); } else for(let i = 0; i < 3; i++) nota(a, d, t + i * .11, "sawtooth", 2400, 1900, .09, .09, 2600, 2); },
     sabia: (a, d, t) => { const n = 5 + Math.floor(rnd(0, 4)); let tt = t; for(let i = 0; i < n; i++){ const f = rnd(1800, 3200); nota(a, d, tt, "sine", f, f * rnd(.8, 1.25), rnd(.12, .3), .17, 0, 1, 7); tt += rnd(.14, .28); } },
-    passarinho: (a, d, t) => { const n = 2 + Math.floor(rnd(0, 3)); for(let i = 0; i < n; i++) nota(a, d, t + i * .09, "sine", rnd(4200, 5800), rnd(4800, 6200), .06, .1); },
+    ticotico: (a, d, t) => { const n = 2 + Math.floor(rnd(0, 3)); for(let i = 0; i < n; i++) nota(a, d, t + i * .09, "sine", rnd(4200, 5800), rnd(4800, 6200), .06, .1); },
     tucano: (a, d, t) => { for(let i = 0; i < 3; i++){ nota(a, d, t + i * .42, "sawtooth", 430, 270, .28, .3, 720, .8); nota(a, d, t + i * .42, "square", 215, 135, .28, .1, 400, .8); } },
     queroquero: (a, d, t, k) => { const n = k > .7 ? 5 : 3; for(let i = 0; i < n; i++){ nota(a, d, t + i * (k > .7 ? .17 : .26), "sawtooth", 2300, 1950, .1, .2, 2100, 2); nota(a, d, t + i * (k > .7 ? .17 : .26) + .09, "sawtooth", 1850, 1450, .11, .22, 1900, 2); } },
     curicaca: (a, d, t) => { for(let i = 0; i < 3; i++) nota(a, d, t + i * .62, "sawtooth", 1250 - i * 60, 720, i ? .5 : .36, .28, 1000, 1.1, 18); },
@@ -87,6 +93,7 @@ export function criarAves(M){
   const ARV = () => V.arvores.T;
   /* devolve um ponto de pouso numa árvore perto de (x,z): espécies de árvore, faixa de altura (fração do tronco) e se é no tronco (pica-pau) */
   function achaPouso(x, z, r, tipos, f0, f1, tronco){
+    const especial=M.ancestral?.ativo?.()&&M.ancestral.pouso?.(x,z);if(especial)return especial;
     const T = ARV(), r2 = r * r, cand = [];
     for(const k of tipos){ const t = T[k]; if(!t) continue; for(let i = 0; i < t.n; i++){ const dx = t.x[i] - x, dz = t.z[i] - z; if(dx * dx + dz * dz < r2){ cand.push([k, i]); if(cand.length > 70) break; } } if(cand.length > 70) break; }
     if(!cand.length) return null; const [k, i] = pick(cand), t = T[k], px = t.x[i], pz = t.z[i], y0 = chao(px, pz), h = t.h[i];
@@ -110,15 +117,19 @@ export function criarAves(M){
   /* ---------- spawns por espécie ---------- */
   function ponto(J, dMin, dMax){ const a = rnd(0, 6.283), d = rnd(dMin, dMax) * U; return [J.x + Math.cos(a) * d, J.z + Math.sin(a) * d]; }
   function bando(esp, n, J, mkPouso, hab){
-    let p0 = null; for(let k = 0; k < 40 && !p0; k++){ const q = ponto(J, 24, C.raio * .92); if(hab.includes(habitat(q[0], q[1])) && planoOk(q[0], q[1], J)) p0 = q; } if(!p0) return null;
+    if(lista.length+n>CAP)return null;
+    let p0 = null; for(let k = 0; k < 40 && !p0; k++){ const q = ponto(J, 24, C.raio * .92); if((M.ancestral?.ativo?.()||M.lugares?.epoca?.()==="1950"||hab.includes(habitat(q[0], q[1]))) && planoOk(q[0], q[1], J)) p0 = q; } if(!p0) return null;
     const g = { esp, mem: [], alarme: 0, id: Math.random() }; const base0 = mkPouso(p0[0], p0[1], 0); if(!base0) return null;
-    for(let i = 0; i < n; i++){ const p = i === 0 ? base0 : mkPouso(base0.x, base0.z, i); if(!p) continue; const b = nova(esp, p.x, p.y, p.z, "pousa", { g }); if(!b) break; if(p.chao){ b.x = p.x; b.z = p.z; paraChao(b); b.casa = { x: p.x, z: p.z }; } else pousaEm(b, p); g.mem.push(b); }
+    for(let i = 0; i < n; i++){ let p = i === 0 ? base0 : mkPouso(base0.x, base0.z, i); if(!p&&esp==="gralha")p={...base0,x:base0.x+Math.cos(i*2.4)*U*2,z:base0.z+Math.sin(i*2.4)*U*2};if(!p) continue; const b = nova(esp, p.x, p.y, p.z, "pousa", { g }); if(!b) break; if(p.chao){ b.x = p.x; b.z = p.z; paraChao(b); b.casa = { x: p.x, z: p.z }; } else pousaEm(b, p); g.mem.push(b); }
     return g.mem.length ? g : null;
   }
-  const spawnGralha = (J) => bando("gralha", 4 + Math.floor(rnd(0, 5)), J, (x, z, i) => { if(i > 1 && Math.random() < .3){ const a = rnd(0, 6.283), d = rnd(2, 8) * U; return { x: x + Math.cos(a) * d, z: z + Math.sin(a) * d, y: chao(x, z), chao: true }; } return achaPouso(x, z, 14 * U, CHAVES_ALTAS, .5, .96); }, ["mata"]);
-  const spawnPica = (J) => bando("picapau", 1, J, (x, z) => achaPouso(x, z, 16 * U, ["araucaria", "folhosa", "medio"], 0, 0, true), ["mata"]);
+  function spawnGralha(J){
+    const g=bando('gralha',tamanhoBando(M.lugares?.epoca?.()||'2026'),J,(x,z,i)=>{if(i>1&&Math.random()<.3){const a=rnd(0,6.283),d=rnd(2,8)*U;return{x:x+Math.cos(a)*d,z:z+Math.sin(a)*d,y:chao(x,z),chao:true};}const p=achaPouso(x,z,14*U,CHAVES_ALTAS,.5,.96)||(M.lugares?.epoca?.()==='1950'?{x,z,y:chao(x,z)+9*U}:null);if(p&&M.ancestral?.ativo?.()){p.x+=Math.sin(i*2.4)*(2+i%3)*U;p.z+=Math.cos(i*2.4)*(2+i%3)*U;p.y+=i%4*.3*U;}return p;},['mata']);
+    if(g){const yaw=J.yaw||0;g.mem.forEach((b,i)=>{const p=b.pouso||{x:b.x,z:b.z,y:b.y,chao:true};b.alvo={...p};b.estado='voa';b.espera=i*.035;b.vm=.65;b.asa=1;b.pouso=null;b.x-=Math.sin(yaw)*18*U;b.z-=Math.cos(yaw)*18*U;b.y+=4*U;});}return g;
+  }
+  const spawnPica = (J) => bando("picapau", Math.random()<.35?2:1, J, (x,z)=>Math.random()<.65?{x,z,y:chao(x,z),chao:true}:achaPouso(x,z,16*U,["araucaria","folhosa","medio"],0,0,true), ["campo","mataBaixa","mata"]);
   const spawnSabia = (J) => bando("sabia", Math.random() < .4 ? 2 : 1, J, (x, z, i) => { const t = habitat(x, z); if(t === "campo" || Math.random() < .35){ const a = rnd(0, 6.283), d = rnd(0, 5) * U; return { x: x + Math.cos(a) * d, z: z + Math.sin(a) * d, y: chao(x, z), chao: true }; } return achaPouso(x, z, 14 * U, CHAVES_BAIXAS, .55, .98); }, ["mata", "mataBaixa", "campo"]);
-  const spawnPasserinho = (J) => bando("passarinho", 3 + Math.floor(rnd(0, 4)), J, (x, z) => { const a = rnd(0, 6.283), d = rnd(0, 5) * U; return { x: x + Math.cos(a) * d, z: z + Math.sin(a) * d, y: chao(x, z), chao: true }; }, ["campo", "mataBaixa", "turfeira"]);
+  const spawnTicoTico = (J) => bando("ticotico", 3 + Math.floor(rnd(0, 4)), J, (x, z) => { const a = rnd(0, 6.283), d = rnd(0, 5) * U; return { x: x + Math.cos(a) * d, z: z + Math.sin(a) * d, y: chao(x, z), chao: true }; }, ["campo", "mataBaixa", "turfeira"]);
   const spawnTucano = (J) => { if(lista.some(b => b.esp === "tucano")) return null; const g = bando("tucano", 1, J, (x, z) => achaPouso(x, z, 18 * U, ["araucaria", "folhosa"], .9, 1), ["mata"]); if(g) g.mem[0].vida = rnd(50, 110); return g; };
   function spawnQuero(J, forca){
     if(ninhos.length >= 2 && !forca) return null; let p0 = null;
@@ -128,12 +139,12 @@ export function criarAves(M){
     return g;
   }
   function spawnCuricaca(J){ return bando("curicaca", 2, J, (x, z, i) => ({ x: x + rnd(-3, 3) * U, z: z + rnd(-3, 3) * U, y: chao(x, z), chao: true }), ["campo", "turfeira"]); }
-  const SPAWN = { gralha: spawnGralha, picapau: spawnPica, sabia: spawnSabia, passarinho: spawnPasserinho, tucano: spawnTucano, queroquero: spawnQuero, curicaca: spawnCuricaca };
+  const SPAWN = { gralha: spawnGralha, picapau: spawnPica, sabia: spawnSabia, ticotico: spawnTicoTico, tucano: spawnTucano, queroquero: spawnQuero, curicaca: spawnCuricaca,papagaio:(J)=>bando("papagaio",4+Math.floor(rnd(0,4)),J,(x,z)=>achaPouso(x,z,20*U,CHAVES_ALTAS,.5,.9),["mata"]),papagaioRoxo:(J)=>bando("papagaioRoxo",4+Math.floor(rnd(0,4)),J,(x,z)=>achaPouso(x,z,20*U,CHAVES_ALTAS,.5,.9),["mata"]) };
 
   /* revoada de papagaios passando alto (ao amanhecer e ao entardecer) */
-  function revoada(J, forca){
-    const P = C.papagaios, n = Math.round(rnd(P.grupo[0], P.grupo[1])), a = rnd(0, 6.283), d = (C.raio + 25) * U, ox = J.x + Math.cos(a) * d, oz = J.z + Math.sin(a) * d, ya = a + Math.PI + rnd(-.35, .35), alt = rnd(P.alturaM[0], P.alturaM[1]) * U, g = { esp: "papagaio", mem: [], alarme: 0 };
-    for(let i = 0; i < n; i++){ const lat = rnd(-6, 6) * U, at = rnd(0, 10) * U, b = nova("papagaio", ox - Math.sin(ya) * at + Math.cos(ya) * lat, J.y + alt + rnd(-3, 3) * U, oz - Math.cos(ya) * at - Math.sin(ya) * lat, "sobrevoo", { g, rumo: ya, vm: rnd(.92, 1.08), vida: 90, alt }); if(!b) break; b.yaw = ya; b.asa = 1; g.mem.push(b); }
+  function revoada(J, forca,especie=Math.random()<.5?"papagaio":"papagaioRoxo"){
+    const P = C.papagaios, n = Math.round(rnd(P.grupo[0], P.grupo[1])), a = rnd(0, 6.283), d = (C.raio + 25) * U, ox = J.x + Math.cos(a) * d, oz = J.z + Math.sin(a) * d, ya = a + Math.PI + rnd(-.35, .35), alt = rnd(P.alturaM[0], P.alturaM[1]) * U, g = { esp: especie, mem: [], alarme: 0 };
+    for(let i = 0; i < n; i++){ const lat = rnd(-6, 6) * U, at = rnd(0, 10) * U, b = nova(especie, ox - Math.sin(ya) * at + Math.cos(ya) * lat, J.y + alt + rnd(-3, 3) * U, oz - Math.cos(ya) * at - Math.sin(ya) * lat, "sobrevoo", { g, rumo: ya, vm: rnd(.92, 1.08), vida: 90, alt }); if(!b) break; b.yaw = ya; b.asa = 1; g.mem.push(b); }
     if(g.mem.length && forca) g.mem.forEach(b => { b.x = J.x - Math.sin(ya) * 70 * U + (Math.random() - .5) * 10 * U; b.z = J.z - Math.cos(ya) * 70 * U + (Math.random() - .5) * 10 * U; });
     return g.mem.length ? g : null;
   }
@@ -151,11 +162,11 @@ export function criarAves(M){
     const g = b.g, mem = g ? g.mem.filter(q => q.estado === "pousa" || q.estado === "chao") : (b.estado === "pousa" || b.estado === "chao" ? [b] : []); if(!mem.length) return;
     const dir = Math.atan2(b.x - de.x, b.z - de.z) + rnd(-.8, .8), dist = rnd(26, 52) * U, dx = b.x + Math.sin(dir) * dist, dz = b.z + Math.cos(dir) * dist;
     mem.forEach((q, i) => {
-      let p = null; if(q.esp !== "queroquero" && q.esp !== "curicaca" && q.esp !== "passarinho"){ const tp = q.esp === "picapau" ? ["araucaria", "folhosa", "medio"] : q.esp === "tucano" ? ["araucaria", "folhosa"] : (q.esp === "sabia" ? CHAVES_BAIXAS : CHAVES_ALTAS); p = achaPouso(dx, dz, 16 * U, tp, q.esp === "tucano" ? .9 : .5, .96, q.esp === "picapau"); }
+      let p = null; if(q.esp !== "queroquero" && q.esp !== "curicaca" && q.esp !== "ticotico"){ const tp = q.esp === "picapau" ? ["araucaria", "folhosa", "medio"] : q.esp === "tucano" ? ["araucaria", "folhosa"] : (q.esp === "sabia" ? CHAVES_BAIXAS : CHAVES_ALTAS); p = achaPouso(dx, dz, 16 * U, tp, q.esp === "tucano" ? .9 : .5, .96, q.esp === "picapau"); }
       if(!p){ const px = dx + rnd(-4, 4) * U, pz = dz + rnd(-4, 4) * U; p = { x: px, z: pz, y: chao(px, pz), chao: true }; }
       q.pouso = null; q.alvo = p; q.estado = "voa"; q.vm = rnd(1.1, 1.4); q.t = i * rnd(.05, .25); q.espera = q.t; q.yaw = dir + rnd(-.4, .4); q.asa = 1; q.q = null;
     });
-    if(alarme && Math.random() < .85) som(b.esp === "passarinho" ? "passarinho" : "alarme", b.x, b.y, b.z, .9);
+    if(alarme && Math.random() < .85) som(b.esp === "ticotico" ? "ticotico" : "alarme", b.x, b.y, b.z, .9);
   }
 
   /* ---------- atualização de cada ave ---------- */
@@ -190,9 +201,9 @@ export function criarAves(M){
         b.t -= dt; const cas = b.casa || { x: b.x, z: b.z };
         if(A.d < fuga && b.esp !== "gaviao"){ if(b.esp === "queroquero" && b.g && b.g.ninho && Math.hypot(A.m.x - b.g.ninho.x, A.m.z - b.g.ninho.z) / U < C.quero.raioNinhoM){ iniciaMergulho(b); break; } espanta(b, A.m); break; }
         if(b.modo === "para"){ b.cabY += ((Math.sin(S.t * .7 + b.j * 9)) * .7 - b.cabY) * Math.min(1, dt * 3); b.cabP += ((b.esp === "sabia" || b.esp === "gralha" || b.esp === "curicaca") && Math.sin(S.t * 1.9 + b.j * 7) > .7 ? .5 : 0 - b.cabP) * Math.min(1, dt * 6); if(b.t <= 0){ b.modo = "anda"; b.t = rnd(1.5, 4.5); b.yawA = b.yaw + rnd(-1.4, 1.4); } b.vel *= 1 - Math.min(1, dt * 6); }
-        else { const v = (b.esp === "passarinho" ? .5 : b.esp === "curicaca" ? .5 : b.esp === "queroquero" ? .7 : b.esp === "gralha" ? .55 : .45) * U; const dc = Math.hypot(b.x - cas.x, b.z - cas.z); if(dc > (b.esp === "curicaca" ? 22 : 11) * U) b.yawA = Math.atan2(cas.x - b.x, cas.z - b.z); b.yaw += ang(b.yawA - b.yaw) * Math.min(1, dt * 4); const nx = b.x + Math.sin(b.yaw) * v * dt, nz = b.z + Math.cos(b.yaw) * v * dt;
+        else { const v = (b.esp === "ticotico" ? .5 : b.esp === "curicaca" ? .5 : b.esp === "queroquero" ? .7 : b.esp === "gralha" ? .55 : .45) * U; const dc = Math.hypot(b.x - cas.x, b.z - cas.z); if(dc > (b.esp === "curicaca" ? 22 : 11) * U) b.yawA = Math.atan2(cas.x - b.x, cas.z - b.z); b.yaw += ang(b.yawA - b.yaw) * Math.min(1, dt * 4); const nx = b.x + Math.sin(b.yaw) * v * dt, nz = b.z + Math.cos(b.yaw) * v * dt;
           if(base.naAgua(nx, nz) || V.turfeira.dentro(nx, nz) && b.esp !== "curicaca"){ b.yawA = b.yaw + Math.PI * .7; } else { b.x = nx; b.z = nz; } b.vel = v; b.cabP += (.05 - b.cabP) * Math.min(1, dt * 4); if(b.t <= 0){ b.modo = "para"; b.t = rnd(1, 3.5); } }
-        const hop = b.esp === "passarinho" || b.esp === "sabia" ? Math.abs(Math.sin(S.t * 9 + b.j * 20)) * (b.modo === "anda" ? .5 : 0) * b.s : 0;
+        const hop = b.esp === "ticotico" || b.esp === "sabia" ? Math.abs(Math.sin(S.t * 9 + b.j * 20)) * (b.modo === "anda" ? .5 : 0) * b.s : 0;
         b.y = chao(b.x, b.z) + (.15 + e.perna) * b.s + hop; b.pitch += ((b.modo === "para" ? .12 : .02) - b.pitch) * Math.min(1, dt * 5); b.roll *= 1 - Math.min(1, dt * 6); b.asa *= 1 - Math.min(1, dt * 10);
         break; }
       case "voa": {
@@ -259,7 +270,7 @@ export function criarAves(M){
     const s = seg || rnd(...CONFLITOS.silencio.duracaoSeg); S.sil = { T: s, t: s, x, z };
     /* uns poucos dão o alarme antes de calar */
     const L = lista.filter(b => (b.estado === "pousa" || b.estado === "chao") && Math.hypot(b.x - x, b.z - z) / U < CONFLITOS.silencio.raioAlarmeM).sort(() => Math.random() - .5).slice(0, 5);
-    L.forEach((b, i) => setTimeout(() => som(b.esp === "passarinho" ? "passarinho" : "alarme", b.x, b.y, b.z, 1), i * 220 + 120));
+    L.forEach((b, i) => setTimeout(() => som(b.esp === "ticotico" ? "ticotico" : "alarme", b.x, b.y, b.z, 1), i * 220 + 120));
     const G = {}; L.forEach(b => { if(b.g && !G[b.g.id]){ G[b.g.id] = 1; if(b.esp !== "queroquero") espanta(b, { x, z }, false); } });
   }
   const alarme = (x, z, r) => { lista.forEach(b => { if((b.estado === "pousa" || b.estado === "chao") && Math.hypot(b.x - x, b.z - z) / U < r) espanta(b, { x, z }, true); }); };
@@ -267,9 +278,9 @@ export function criarAves(M){
   /* ---------- desenho ---------- */
   function parte(im, k, x, y, z, rx, ry, rz, sx, sy, sz, cor){ Eu.set(rx, ry, rz, "YXZ"); Qn.setFromEuler(Eu); Vt.set(x, y, z); Sc.set(sx, sy, sz); L4.compose(Vt, Qn, Sc); M4.multiplyMatrices(B4, L4); im.setMatrixAt(k, M4); if(cor) im.setColorAt(k, cor); }
   function desenha(){
-    let n = 0, np = 0;
+    let n = 0, np = 0;picaCampo.inicia();sabias.inicia();ticoTicos.inicia();gralhas.inicia();charao.inicia();peitoRoxo.inicia();
     lista.forEach(b => {
-      if(b.fim) return; const e = b.e, P = e.p, s = b.s; Eu.set(b.pitch, b.yaw, b.roll, "YXZ"); Qn.setFromEuler(Eu); Vt.set(b.x, b.y, b.z); Sc.set(s, s, s); B4.compose(Vt, Qn, Sc);
+      if(b.fim) return;if(b.esp==="picapau"||b.esp==="sabia"){(b.esp==="picapau"?picaCampo:sabias).escreve(b,S.t,0);return;}if(b.esp==="ticotico"){ticoTicos.escreve(b,S.t,0);return;}if(b.esp==="papagaio"||b.esp==="papagaioRoxo"){(b.esp==="papagaio"?charao:peitoRoxo).escreve(b,S.t,0);return;}if(b.esp==="gralha"){gralhas.escreve(b,S.t,M.ancestral?.ativo?.()?.5:.18);return;} const e = b.e, P = e.p, s = b.s; Eu.set(b.pitch, b.yaw, b.roll, "YXZ"); Qn.setFromEuler(Eu); Vt.set(b.x, b.y, b.z); Sc.set(s, s, s); B4.compose(Vt, Qn, Sc);
       const cj = (c) => col.setRGB(c[0] * b.j, c[1] * b.j, c[2] * b.j);
       const voando = b.estado === "voa" || b.estado === "sobrevoo" || b.estado === "plana" || b.estado === "foge" || b.estado === "assedia" || b.estado === "mergulha";
       const pesc = e.pescoco || 0, hp = b.cabP * .5 + (b.bate > 0 ? Math.sin(S.t * 38) * .35 : 0), cabH = .2 + pesc * (voando ? .2 : 1);
@@ -281,13 +292,14 @@ export function criarAves(M){
       parte(G.cauda, n, 0, .02, -.38, voando ? .08 : .45, 0, 0, .22, .03, .42, cj(P.cauda));
       if(e.crista) parte(G.crista, n, 0, cabH + .1, .42, -.6 + hp, b.cabY * .5, 0, .09, e.crista, .1, cj(P.crista || P.cab)); else parte(G.crista, n, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
       /* asas: abertas (bater) ou dobradas ao longo do corpo */
-      const ab = voando ? b.asa : b.asa * .0, bat = voando ? (b.estado === "plana" || (b.estado === "voa" && b.vm < .7 && b.esp !== "passarinho") ? Math.sin(b.fase * 1.1) * .15 : Math.sin(b.fase * 6.283) * .85) : 0, sp = (e.asa || 1.55) * (voando ? 1 : 0), fold = (1 - Math.min(1, ab)) * Math.PI / 2;
+      const ab = voando ? b.asa : b.asa * .0, bat = voando ? (b.estado === "plana" || (b.estado === "voa" && b.vm < .7 && b.esp !== "ticotico") ? Math.sin(b.fase * 1.1) * .15 : Math.sin(b.fase * 6.283) * .85) : 0, sp = (e.asa || 1.55) * (voando ? 1 : 0), fold = (1 - Math.min(1, ab)) * Math.PI / 2;
       for(const lado of [1, -1]){ const im = lado === 1 ? G.asaD : G.asaE, lo = voando ? Math.max(.4, sp * .9) : .55;
         parte(im, n, lado * .12, .07, .06, 0, lado * fold * .98, lado * (voando ? bat : -.35), lo, .03, .5 + (e.asa ? .15 : 0), cj(P.asa)); }
       /* pernas: penduradas do corpo; quando voam, encolhidas */
       const pl = voando ? .1 : e.perna; for(const lado of [1, -1]){ parte(G.perna, np++, lado * .08, -.15, .05, voando ? .8 : 0, 0, 0, .04, pl, .04, col.setRGB(.2, .17, .14)); }
       n++;
     });
+    picaCampo.fim();sabias.fim();ticoTicos.fim();charao.fim();peitoRoxo.fim();gralhas.fim(M.lugares?.epoca?.()||"2026");
     PARTES.forEach(k => { const im = G[k]; im.count = k === "perna" ? np : n; im.instanceMatrix.needsUpdate = true; if(im.instanceColor) im.instanceColor.needsUpdate = true; });
     /* ninhos */
     let nn = 0, ne = 0; if(C.quero.mostraNinho) ninhos.forEach(nt => { Eu.set(0, 0, 0); Qn.identity(); Vt.set(nt.x, chao(nt.x, nt.z) + .03 * U, nt.z); Sc.set(.8 * U, .8 * U, .8 * U); M4.compose(Vt, Qn, Sc); nin.cova.setMatrixAt(nn, M4); nin.cova.setColorAt(nn, col.setRGB(.32, .26, .18)); nn++;
@@ -298,7 +310,7 @@ export function criarAves(M){
   /* ---------- sons de fundo: coro do amanhecer, silêncio do meio-dia, corujas e anfíbios à noite ---------- */
   function fundo(dt, J, E, per){
     const sf = silF(), nv = C.coro[per] * (1 - sf * .98);
-    S.fundoT -= dt; if(S.fundoT <= 0 && nv > .03){ S.fundoT = rnd(.35, 1.2) / nv; const a = rnd(0, 6.283), d = rnd(24, 110) * U, x = J.x + Math.cos(a) * d, z = J.z + Math.sin(a) * d, t = habitat(x, z), L = t === "mata" ? [["gralha", 12], ["sabia", 24], ["passarinho", 20], ["picapau", 8], ["tucano", per === "alvorada" ? 3 : 1]] : [["sabia", 18], ["passarinho", 24], ["queroquero", 12], ["curicaca", 8]]; if(per === "alvorada" || per === "entardecer") L.push(["papagaio", 10]); som(sorteia(L), x, J.y + rnd(2, 10) * U, z, .55 + .35 * nv, .2); }
+    S.fundoT -= dt; if(S.fundoT <= 0 && nv > .03){ S.fundoT = rnd(.35, 1.2) / nv; const a = rnd(0, 6.283), d = rnd(24, 110) * U, x = J.x + Math.cos(a) * d, z = J.z + Math.sin(a) * d, t = habitat(x, z), L = t === "mata" ? [["gralha", 12], ["sabia", 24], ["ticotico", 20], ["picapau", 8], ["tucano", per === "alvorada" ? 3 : 1]] : [["sabia", 18], ["ticotico", 24], ["queroquero", 12], ["curicaca", 8]]; if(per === "alvorada" || per === "entardecer") L.push(["papagaio", 10]); som(sorteia(L), x, J.y + rnd(2, 10) * U, z, .55 + .35 * nv, .2); }
     if(per === "noite"){
       S.corujaT -= dt; if(C.noite.coruja && S.corujaT <= 0){ S.corujaT = rnd(7, 18); const a = rnd(0, 6.283), d = rnd(35, 120) * U; som("coruja", J.x + Math.cos(a) * d, J.y + 8 * U, J.z + Math.sin(a) * d, .9); }
       S.raT -= dt; if(C.noite.anfibios && S.raT <= 0){ S.raT = rnd(.8, 2.6); const T = V.turfeira, nas = T.nascentes(), ref = nas.length && Math.random() < .5 ? pick(nas) : (() => { const A = cen.rios.ARROIO, q = A[Math.floor(Math.random() * A.length)]; return { x: q[0], z: q[1] }; })(); som("ra", ref.x + rnd(-10, 10) * U, chao(ref.x, ref.z), ref.z + rnd(-10, 10) * U, .8); }
@@ -312,9 +324,11 @@ export function criarAves(M){
     S.ameacaT -= dt; if(S.ameacaT <= 0){ S.ameacaT = .1; atualizaAmeacas(J); }
     /* leão-baio por perto: alarme e mata calada */
     M.fauna.animais.forEach(a => { if(a.id === "puma" && !a.sil && Math.hypot(a.x - J.x, a.z - J.z) / U < CONFLITOS.silencio.alcanceM){ a.sil = true; silencio(a.x, a.z); if(M.fauna.conflitos) M.fauna.conflitos.avisaGuias("silencio", a.x, a.z, "Silêncio da mata"); } });
+    const epoca=M.lugares?.epoca?.()||"2026";if(S.epoca!==epoca){lista.filter(b=>b.esp==="gralha").forEach(b=>b.fim=true);S.epoca=epoca;S.gralhaT=20;}
+    S.gralhaT=(S.gralhaT||0)+dt;if(S.gralhaT>12&&!lista.some(b=>b.esp==="gralha"&&!b.fim)){S.gralhaT=0;spawnGralha(J);}
     /* nasce */
     const Qx = qualidade(), alvoN = Math.round(C.max * Qx.aves * (per === "noite" ? 0 : .25 + .75 * C.coro[per] / Math.max(.01, C.coro.alvorada)));
-    S.spawn += dt; if(S.spawn > C.intervaloSpawn && per !== "noite"){ S.spawn = 0; if(lista.length < alvoN) { const op = Object.entries(C.pesos).filter(([k]) => k !== "tucano" || (E.alt > 4)).map(([k, w]) => [k, w * (k === "queroquero" || k === "curicaca" || k === "passarinho" ? 1 : 1)]); const k = sorteia(op); const fn = SPAWN[k]; if(fn) fn(J); } }
+    S.spawn += dt; if(S.spawn > C.intervaloSpawn && per !== "noite"){ S.spawn = 0; if(lista.length < alvoN) { const op = Object.entries(C.pesos).filter(([k]) => k !== "tucano" || (E.alt > 4)).map(([k, w]) => [k, w * (k === "queroquero" || k === "curicaca" || k === "ticotico" ? 1 : 1)]); const k = sorteia(op); const fn = SPAWN[k]; if(fn) fn(J); } }
     /* revoadas de papagaios */
     S.papa -= dt; if(S.papa <= 0){ S.papa = 6; const janela = (per === "alvorada" && E.h > 5) || per === "entardecer"; if(janela && Math.random() < C.papagaios.porMinuto / 10) revoada(J); }
     /* gavião sobrevoando (expulso pelas gralhas) */
@@ -324,6 +338,7 @@ export function criarAves(M){
     tickGaviao(dt, J); fundo(dt, J, E, per); desenha();
   }
 
+  function revoadaGralhas(J){const n=tamanhoBando(M.lugares?.epoca?.()||'2026');if(lista.length+n>CAP)return false;const g={esp:'gralha',mem:[],alarme:0,id:Math.random()},yaw=J.yaw||0;for(let i=0;i<n;i++){const side=(i%2?1:-1)*(2+Math.floor(i/2))*U,b=nova('gralha',J.x-Math.sin(yaw)*18*U+Math.cos(yaw)*side,J.y+(9+i*.18)*U,J.z-Math.cos(yaw)*18*U-Math.sin(yaw)*side,'sobrevoo',{g,rumo:yaw,vm:.65});g.mem.push(b);}return g;}
   /* ---------- depuração ---------- */
   function forcaQuero(J){ const a = (J.yaw !== undefined ? J.yaw : 0), x = J.x + Math.sin(a) * 18 * U, z = J.z + Math.cos(a) * 18 * U; lista.filter(b => b.esp === "queroquero").forEach(b => { b.fim = true; }); ninhos.length = 0; for(let i = 0; i < 12; i++){ const q = [x + rnd(-6, 6) * U, z + rnd(-6, 6) * U]; if(habitat(q[0], q[1]) === "campo"){ const g = spawnQuero(J, q); if(g){ g.mem.forEach(b => { b.x = q[0] + rnd(-2, 2) * U; b.z = q[1] + rnd(-2, 2) * U; }); return true; } } } return false; }
   /* para os guias: bando de gralhas pousado ou ninho de quero-quero a ~22 m */
@@ -334,5 +349,5 @@ export function criarAves(M){
   }
   const info = () => { const c = {}; lista.forEach(b => { c[b.esp] = (c[b.esp] || 0) + 1; }); return "Aves " + lista.length + " (" + Object.keys(c).map(k => k[0] + c[k]).join(" ") + ") · " + S.per + (S.sil ? " · silêncio " + S.sil.t.toFixed(0) + " s" : "") + (S.hawk ? " · gavião×gralhas" : ""); };
   const maisPerto = (x, z) => { let m = null, d = 1e18; lista.forEach(b => { const q = Math.hypot(b.x - x, b.z - z); if(q < d){ d = q; m = b; } }); return m ? { b: m, d } : null; };
-  return { lista, ninhos, S, ESP, tick, info, somExt: som, silencio, alarme, iniciaGaviao, lugarPerto, revoada: (J) => revoada(J, true), forcaQuero, maisPerto, spawn: (k, J) => (SPAWN[k] ? SPAWN[k](J) : null), desliga(){ lista.length = 0; ninhos.length = 0; S.hawk = null; S.sil = null; desenha(); } };
+  return { picaCampo,sabias,ticoTicos,charao,peitoRoxo,revoadaGralhas,gralhas,desenha,lista, ninhos, S, ESP, tick, info, somExt: som, silencio, alarme, guiar:(x,z)=>{let g=lista.find(b=>b.esp==="gralha"&&!b.fim)?.g;if(!g)return false;g.mem.forEach((b,i)=>{b.estado="voa";b.alvo={x:x+Math.cos(i*2.4)*3*U,z:z+Math.sin(i*2.4)*3*U,y:chao(x,z)+2*U};b.espera=i*.035;b.vm=.6;b.asa=1;});return true;},iniciaGaviao, lugarPerto, revoada: (J) => revoada(J, true), forcaQuero, maisPerto, spawn: (k, J) => (SPAWN[k] ? SPAWN[k](J) : null), desliga(){ lista.length = 0; ninhos.length = 0; S.hawk = null; S.sil = null; desenha(); } };
 }

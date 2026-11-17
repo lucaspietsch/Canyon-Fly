@@ -1,3 +1,5 @@
+import {criarAncestral} from './ancestral/ancestral.js';
+import {criarAparicoes} from './ancestral/aparicoes.js';
 import {criarTrilha} from './trilha.js';
 import { criarCoordenacao } from "./personagens/coordenacao.js";
 import { ehToque } from "../modo.js";
@@ -151,7 +153,9 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.cascata = criarCascata(M, M.vento); M.registra({ zona: "parque", tick: (dt, J, E) => M.cascata.tick(dt, J, E), info: () => M.cascata.info(), desliga: () => M.cascata.desliga() });
   M.vegetacao = criarVegetacao(M, M.vento); M.registra({ tick: (dt, J, E) => M.vegetacao.tick(dt, J, E), info: () => M.vegetacao.info(), tecla: (e) => M.vegetacao.placas.tecla(e), desliga: () => M.vegetacao.placas.desliga() }); M.kml.aoCarregar(() => M.vegetacao.regenera());
   M.fauna.sapinhos = criarSapinhos(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.sapinhos.tick(dt, J, E), info: () => M.fauna.sapinhos.info(), desliga: () => M.fauna.sapinhos.desliga() });
-  M.fauna.aves = criarAves(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.aves.tick(dt, J, E), info: () => M.fauna.aves.info(), desliga: () => M.fauna.aves.desliga(), aoSalto: () => M.fauna.aves.desliga() });
+  M.fauna.aves = criarAves(M); M.registra({ tick: (dt, J, E) => {if(M.zonas.atual==="parque"||M.lugares.epoca()!=="2026"||M.fauna.aves.lista.some(b=>b.esp==="gralha"))M.fauna.aves.tick(dt,J,E);}, info: () => M.fauna.aves.info(), desliga: () => M.fauna.aves.desliga(), aoSalto: () => M.fauna.aves.desliga() });
+  M.ancestral=criarAncestral(M);M.registra({tick:(dt,J)=>M.ancestral.tick(dt,J),desliga:()=>M.ancestral.desliga()});
+  M.espiritoGralha=criarAparicoes(M);M.registra({tick:(dt,J)=>M.espiritoGralha.tick(dt,J),desliga:()=>M.espiritoGralha.desliga()});
   M.fauna.andorinhas = criarAndorinhas(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.andorinhas.tick(dt, J, E), info: () => M.fauna.andorinhas.info(), desliga: () => M.fauna.andorinhas.desliga() });
   M.agenda.registra({ id: "andorinhas", cfg: EVENTOS.andorinhas, dispara: () => M.fauna.andorinhas.chega() });
   M.fauna.conflitos = criarConflitos(M); M.registra({ zona: "parque", tick: (dt, J) => M.fauna.conflitos.tick(dt, J), info: () => M.fauna.conflitos.info() });

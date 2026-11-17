@@ -1,0 +1,12 @@
+import {Group,Mesh,MeshStandardMaterial,MeshBasicMaterial,SphereGeometry,TorusGeometry,Color,AdditiveBlending} from 'three';
+import {geometriasGralha} from '../fauna/gralha-visual.js';
+export function criarGralhaEspiritual(){
+ const g=new Group();g.name='Gralha Ancestral Sagrada';g.userData.entidade='guardia-dos-pinheirais';const geo=geometriasGralha(),mat=new MeshStandardMaterial({vertexColors:true,roughness:.55,emissive:0x5944ad,emissiveIntensity:.4});
+ function tons(geometry,kind){const p=geometry.attributes.position,c=geometry.attributes.color;for(let i=0;i<c.count;i++){const x=c.getX(i),y=c.getY(i),z=c.getZ(i);if(z>x*1.5&&z>y*1.2){const k=kind==='asa'?0x8371ce:0x284bb0;const col=new Color(k);c.setXYZ(i,col.r,col.g,col.b);}if(kind==='corpo'&&p.getY(i)<-.06&&p.getZ(i)>.0){const col=new Color(0xe4dfcf);c.setXYZ(i,col.r,col.g,col.b);}if(kind==='cauda'&&p.getZ(i)<-.47){const col=new Color(0xe5ddef);c.setXYZ(i,col.r,col.g,col.b);}}}
+ tons(geo.corpo,'corpo');tons(geo.asa,'asa');tons(geo.cauda,'cauda');geo.cauda.scale(1.1,1,2.15);
+ const body=new Mesh(geo.corpo,mat),head=new Mesh(geo.cab,mat),wingD=new Mesh(geo.asa,mat),wingE=new Mesh(geo.asa,mat),tail=new Mesh(geo.cauda,mat),legs=new Mesh(geo.pernas,mat);head.position.set(0,.20,.30);tail.position.set(0,-.01,-.25);wingD.position.x=.15;wingE.position.x=-.15;wingE.scale.x=-1;legs.position.set(0,-.17,.07);g.add(body,head,wingD,wingE,tail,legs);
+ const gold=new MeshBasicMaterial({color:0xffe7a1}),violet=new MeshBasicMaterial({color:0x9ba5ff,transparent:true,opacity:.08,depthWrite:false,blending:AdditiveBlending});for(const s of [-1,1]){const eye=new Mesh(new SphereGeometry(.024,12,8),gold);eye.scale.set(.3,1,1);eye.position.set(s*.172,.225,.385);g.add(eye);}
+ const aura=new Mesh(new SphereGeometry(.78,20,14),violet);aura.scale.set(1.5,.9,1.8);g.add(aura);const dots=[];for(let i=0;i<12;i++){const p=new Mesh(new SphereGeometry(.014,6,4),gold);g.add(p);dots.push(p);}
+ function tick(t){wingD.rotation.z=Math.sin(t*3.4)*.43;wingE.rotation.z=-wingD.rotation.z;tail.rotation.x=Math.sin(t*.8)*.09;body.rotation.x=Math.sin(t*.6)*.035;dots.forEach((p,i)=>{const a=t*.5+i*2.399;p.position.set(Math.cos(a)*(.55+i*.015),-.2+((t*.12+i/12)%1)*.8,Math.sin(a)*(.7+i*.018));});violet.opacity=.07+.025*Math.sin(t*2);}
+ return{g,tick,dispose(){g.removeFromParent();new Set(Object.values(geo)).forEach(x=>x.dispose());const gs=new Set(),ms=new Set();g.traverse(o=>{if(o.geometry)gs.add(o.geometry);if(o.material)ms.add(o.material);});gs.forEach(x=>x.dispose());ms.forEach(x=>x.dispose());}};
+}

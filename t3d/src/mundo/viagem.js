@@ -41,7 +41,7 @@ export function criarViagem(M){
     return null;
   }
   const todos = () => C.destinos.map(d => ({ ...d, pos: resolve(d) })).filter(d => d.pos);
-  const destinos = () => todos().filter(d => d.soOperador ? sessao.logado() : (!M.missoes || M.missoes.viagemPermitida(d.id)));      // tempo antigo: só para operador logado                  // as missões decidem quais destinos já estão liberados
+  const destinos = () => todos().filter(d => d.soOperador ? (sessao.logado()||M.lugares?.epoca?.()==="1950"&&M.missoes?.viagemPermitida(d.id)) : (!M.missoes || M.missoes.viagemPermitida(d.id)));      // tempo antigo: só para operador logado                  // as missões decidem quais destinos já estão liberados
   /* ---------- distância (km de percurso) e tempo ---------- */
   function eixo(x, z){                                                                         // posição (m) ao longo da estrada: parque (antes do começo) → estrada → cidade → complexo da Vila Oswaldo Kroeff
     const Z = M.zonas, zona = Z.zonaDe(x, z), Es = M.estrada, p0 = Es.pts[0];
@@ -84,7 +84,7 @@ export function criarViagem(M){
     return true;
   }
   /* ---------- menu de destinos (no marco) ---------- */
-  function abreMenu(){
+  function abreMenu(){if(M.ancestral?.ativo()){M.ctx?.mostraAviso("Use o portal dourado para voltar às vilas");return;}
     if(S.menu || S.viajando) return; const J = M.jogador(); if(!J) return;
     S.menu = document.createElement("div"); S.menu.style.cssText = "position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:80;background:rgba(18,19,14,.94);border:2px solid #8a9a3b;border-radius:14px;padding:14px 18px;min-width:280px;font:600 14px ui-monospace,Consolas,monospace;color:#e9efc0;pointer-events:auto;";
     const t = document.createElement("div"); t.textContent = "Viagem rápida"; t.style.cssText = "font-size:17px;margin-bottom:10px;color:#ffd36a;"; S.menu.appendChild(t);

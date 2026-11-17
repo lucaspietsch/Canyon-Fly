@@ -101,7 +101,7 @@ export function criarLugares(M){
     return false;
   }
   const info = () => { const v = [...S.vivos.keys()]; return "Lugares: " + (v.length ? v.join(", ") : "nenhum construído") + (S.itens.length ? " · KML: " + S.itens.map(i => i.id).join(", ") : ""); };
-  const epoca = () => { if(S.antigo) return "1950"; const v = vivo("vila-santana"); return v ? v.epoca() : "2026"; };
+  const epoca = () => { if(M.ancestral?.ativo())return "1689-1700"; if(S.antigo) return "1950"; const v = vivo("vila-santana"); return v ? v.epoca() : "2026"; };
   /* ---------- o passado (portal violeta): vilas, Olaria e Cambará S/A viram mata densa, com o dobro de bichos do parque ---------- */
   const poligonosAntigos = () => ["vila", "olaria", "industrial", "fabrica"].flatMap(t => poly(t).map(q => aberto(q.pts)));
   function entraAntigo(x, z){ if(S.antigo) return false; S.antigo = true; S.focoT = 0; const L = poligonosAntigos();

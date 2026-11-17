@@ -271,7 +271,7 @@ export const SAPINHOS = {
 };
 
 /* ============================================================================================================
-   AVES DA MATA E DO CAMPO (gralha-azul, papagaios, pica-pau, sabiá, passarinhos, tucano, quero-quero, curicaca, gavião) + coro do amanhecer
+   AVES DA MATA E DO CAMPO (gralha-azul, papagaios, pica-pau, sabiá, ticoticos, tucano, quero-quero, curicaca, gavião) + coro do amanhecer
    Só existem num raio em volta do jogador. Quantidade e densidade × QUALIDADE.aves. Tudo em metros / segundos reais.
    ============================================================================================================ */
 export const AVES = {
@@ -281,8 +281,8 @@ export const AVES = {
   intervaloSpawn: .6,          // s entre tentativas de aparecer uma ave/bando
   volume: .6,                  // volume geral das vozes (0–1)
   coro: { alvorada: 1, dia: .45, meioDia: .1, entardecer: .7, noite: 0 },   // intensidade do canto ao fundo por período (meio-dia fica quieto)
-  fuga: { gralha: 16, papagaio: 20, picapau: 11, sabia: 9, passarinho: 6, tucano: 18, queroquero: 7, curicaca: 15, gaviao: 30 },   // m: distância em que levantam voo
-  pesos: { gralha: 30, picapau: 9, sabia: 16, passarinho: 22, tucano: 2.2, queroquero: 20, curicaca: 11 },                         // sorteio de espécie no lugar (mata/campo)
+  fuga: { gralha: 16, papagaio: 20, picapau: 11, sabia: 9, ticotico: 6, tucano: 18, queroquero: 7, curicaca: 15, gaviao: 30 },   // m: distância em que levantam voo
+  pesos: { papagaio:6,papagaioRoxo:4,gralha: 30, picapau: 9, sabia: 16, ticotico: 22, tucano: 2.2, queroquero: 20, curicaca: 11 },                         // sorteio de espécie no lugar (mata/campo)
   papagaios: { porMinuto: .7, grupo: [4, 9], alturaM: [26, 60], velocidade: 17 },    // revoadas de passagem ao amanhecer e ao entardecer
   gaviao: { porMinuto: .22, duracaoSeg: [14, 24] },                                  // gavião sobrevoa; se há gralhas por perto elas o expulsam
   quero: { raioNinhoM: 13, mergulhoSeg: [3.2, 5.5], mostraNinho: true },             // defesa do ninho: rasantes sobre quem chegar perto
