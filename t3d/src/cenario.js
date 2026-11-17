@@ -1,4 +1,5 @@
-import { ShaderMaterial, Vector4, Group, Mesh, BoxGeometry, CylinderGeometry, SphereGeometry, TorusGeometry, PlaneGeometry, InstancedMesh, MeshStandardMaterial, MeshBasicMaterial, FogExp2, BackSide, DoubleSide, Object3D, RepeatWrapping, Vector3 } from "three";
+import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { ShaderMaterial, Vector4, Group, Mesh, IcosahedronGeometry, BoxGeometry, CylinderGeometry, SphereGeometry, TorusGeometry, PlaneGeometry, InstancedMesh, MeshStandardMaterial, MeshBasicMaterial, FogExp2, BackSide, DoubleSide, Object3D, RepeatWrapping, Vector3 } from "three";
 import { m, NIVEL, canvasTex, texPlacaHD, placaLegivel, rng, mat, caixa, coluna, barra, grupo } from "./lib.js";
 import { criarPlataforma, guardaCorpo, DECK } from "./plataforma.js";
 import { criarCasinha, CASA } from "./casinha.js";
@@ -252,12 +253,12 @@ export function criarCenario({ ag, cena, M, luzes }){
   const Hvale = (x, z) => { if(!noVazio(x, z)) return -MID; const dw = minDist(rimDens, x, z), dr = minDist(axDens, x, z), t = dw / (dw + dr + .001), sv = t * t * (3 - 2 * t) * .35 + t * .65; return -(MID + (FUNDO_H - MID) * sv); };
   /* paredões naturais (camadas de basalto, saliências, balanços, tálus, liquens e umidade): malha única gerada no carregamento */
   const mapaParede = texCamadas(); mapaParede.wrapS = RepeatWrapping; const rochaM = materialRocha(mapaParede);
-  { const p1 = criaParedao(BORDA_PTS, { dentro: (x, z) => emPoli(terraPoli, x, z), Hvale, chao, MID, seed: 3, material: rochaM.mat }); g.add(p1.mesh);
-    const p2 = criaParedao(NORTE_RIM, { dentro: (x, z) => emPoli(NORTE_POLI, x, z), Hvale, chao, MID, seed: 7, material: rochaM.mat, escalaH: 2.2, talus: .35 }); g.add(p2.mesh); }
+  { const p1 = criaParedao(BORDA_PTS, { dentro: (x, z) => emPoli(terraPoli, x, z), Hvale, chao, MID, seed: 3, material: rochaM.mat }); p1.mesh.name="fortaleza-paredao-sul";g.add(p1.mesh);
+    const p2 = criaParedao(NORTE_RIM, { dentro: (x, z) => emPoli(NORTE_POLI, x, z), Hvale, chao, MID, seed: 7, material: rochaM.mat, escalaH: 2.2, talus: .35 }); p2.mesh.name="fortaleza-paredao-norte";g.add(p2.mesh); }
   let fitaRio = null;
   const tigreTex = texAguaCorrente(); tigreTex.wrapS = tigreTex.wrapT = RepeatWrapping;
   { const mataV = texMata(); mataV.wrapS = mataV.wrapT = RepeatWrapping; mataV.repeat.set(1, 1);
-    const matV = new MeshStandardMaterial({ map: mataV, color: 0xcfe0c4, roughness: 1 });
+    const matV = new MeshStandardMaterial({ map: mataV, color: 0x607b61, roughness: 1 });
     const malha = (x0, x1, z0, z1, cel) => { const nx = Math.ceil((x1 - x0) / cel), nz = Math.ceil((z1 - z0) / cel), pos = [], uv = [], terra_ = [], idx = [];
       for(let j = 0; j <= nz; j++) for(let i = 0; i <= nx; i++){ const x = x0 + i * cel, z = z0 + j * cel; terra_.push(!noVazio(x, z)); pos.push(x, chao + Hvale(x, z), z); uv.push(x / 110, z / 110); }
       for(let j = 0; j < nz; j++) for(let i = 0; i < nx; i++){ const a = j * (nx + 1) + i, b = a + 1, c = a + nx + 1, d = c + 1; if(terra_[a] && terra_[b] && terra_[c] && terra_[d]) continue; idx.push(a, c, b, b, c, d); }
@@ -322,11 +323,12 @@ export function criarCenario({ ag, cena, M, luzes }){
       FIOS[i].forEach((f, k) => { const w = criaQueda(f.w * 1.6, alt, i * 7 + k * 3 + 1); w.position.set(q.x + 1.2 + k * .35, (q.y0 + q.y1) / 2, ZQ + f.dz * 1.3); g.add(w); w.userData.queda = alt; quedaMeshes.push(w); });
       const nb = new Mesh(new PlaneGeometry(40 + i * 10, 40 + i * 10), new MeshBasicMaterial({ map: texNeblinaQueda(), transparent: true, depthWrite: false, opacity: .7 - i * .08, side: DoubleSide })); nb.rotation.x = -Math.PI / 2; nb.position.set(q.x + 12, q.y1 + 2, ZQ); g.add(nb); });
     /* floresta na base e nas encostas do cânion: copas esféricas (instâncias) */
-    const NA = 2400, arv = new InstancedMesh(new SphereGeometry(1, 7, 5), new MeshStandardMaterial({ color: 0x2f6a35, roughness: 1 }), NA), dm = new Object3D(); const rd = rng(91); let ni = 0;
-    const cores = [0x2a5f30, 0x3a7a3a, 0x1f4a26, 0x4c9145, 0x336b38];
-    for(let i = 0; i < 4200 && ni < NA; i++){ const x = -3600 + rd() * 8200, z = -5300 + rd() * 7400; if(!noVazio(x, z)) continue; if(x < QUEDAS[2].x + 50 && Math.abs(z - ZQ) < 50) continue; const e = 14 + rd() * 20, yv = chao + Hvale(x, z) + e * .45;
+    const copaVale=mergeGeometries([[0,0,0,1],[-.45,-.10,.15,.73],[.38,.18,-.14,.70]].map(([x,y,z,r])=>new IcosahedronGeometry(r,1).scale(1,.85,1).translate(x,y,z)));
+    const NA = 6000, arv = new InstancedMesh(copaVale, new MeshStandardMaterial({ color: 0xffffff, roughness: 1 }), NA), dm = new Object3D(); const rd = rng(91); let ni = 0;
+    const cores = [0x204f32, 0x2d633e, 0x1c432c, 0x386c42, 0x285b39];
+    for(let i = 0; i < 11000 && ni < NA; i++){ const x = -3600 + rd() * 8200, z = -5300 + rd() * 7400; if(!noVazio(x, z)) continue; if(x < QUEDAS[2].x + 50 && Math.abs(z - ZQ) < 50) continue; const e = 18 + rd() * 22, yv = chao + Hvale(x, z) + e * .45;
       dm.position.set(x, yv, z); dm.scale.set(e, e * .9, e); dm.updateMatrix(); arv.setMatrixAt(ni, dm.matrix); arv.setColorAt(ni, new Color(cores[i % 5])); ni++; }
-    arv.count = ni; g.add(arv); }
+    arv.name="fortaleza-mata-encostas";arv.count = ni; g.add(arv); }
   /* capões de araucária: pequenos grupos unidos, fora da faixa da tirolesa (z de -40 a 12) e longe do cercado e do riacho */
   /* as árvores agora vivem só dentro das áreas de mata do KML (mundo/veg/arvores.js); os antigos capões fixos foram removidos */
 
@@ -673,5 +675,5 @@ export function criarCenario({ ag, cena, M, luzes }){
   };
   terr.troncos.forEach(([x, z]) => colisores.push({ x0: x - .95, x1: x + .95, z0: z - .95, z1: z + .95 }));          // tronco das araucárias dos capões
   const tickAmb = tick;
-  return { cascata: { x: XR, z: ZQ, quedas: QUEDAS, MID, chao, quedaMeshes, yBase: chao - MID + 2 }, paredao: rochaM, extraChao: EXTRA, ceuMatTex, nevoas, ouveClima, clima: climaTudo, lumUniformes: quedaMeshes.map(w => w.material.uniforms.uLum), trilhas: { TM, TB, TREC }, estac: ESTAC, colinas: COLINAS, relevo: (x, z) => chao + (x > TERR.x0 ? terr.altura(x, z) : 0) + colinaAltura(x, z) + (EXTRA.rel ? EXTRA.rel(x, z) : 0), colinaAltura, agua: (x, z) => terr.agua(x, z), pocos: terr.pocos, rios: { ARROIO, TIGRE, FORT, AXIS }, campo: { terraPoli, BORDA_PTS, emPoli, BORDA, fundoH: FUNDO_H, chao, norte: NORTE_POLI, norteRim: NORTE_RIM }, cabo7Meio: port.cabo7Meio, registraPeca, terreno: terr, tf, sincroniza, ceu, proximoClima, climaAtual: () => climaAtual, climas: CLIMAS, grupo: g, pecas, colisores, hotspots, tick, chao: chaoY, dentro: dentroCasa, paredes: casa.paredes, limites: casa.limites, casa, lona: lonaG, spawn, spawnLan: { x: PORT.lanca + 12, z: 26, yaw: -Math.PI / 2 }, lancamento, ceu, area: AREA, deck: DECK, chaoNivel: chao };
+  return { cascata: { x: XR, z: ZQ, quedas: QUEDAS, MID, chao, quedaMeshes, yBase: chao - MID + 2 }, paredao: rochaM, extraChao: EXTRA, ceuMatTex, nevoas, ouveClima, clima: climaTudo, lumUniformes: quedaMeshes.map(w => w.material.uniforms.uLum), trilhas: { TM, TB, TREC }, estac: ESTAC, colinas: COLINAS, relevo: (x, z) => chao + (x > TERR.x0 ? terr.altura(x, z) : 0) + colinaAltura(x, z) + (EXTRA.rel ? EXTRA.rel(x, z) : 0), colinaAltura, agua: (x, z) => terr.agua(x, z), pocos: terr.pocos, rios: { ARROIO, TIGRE, FORT, AXIS }, campo: { terraPoli, NORTE_POLI, NORTE_RIM, BORDA_PTS, emPoli, BORDA, fundoH: FUNDO_H, chao, norte: NORTE_POLI, norteRim: NORTE_RIM }, cabo7Meio: port.cabo7Meio, registraPeca, terreno: terr, tf, sincroniza, ceu, proximoClima, climaAtual: () => climaAtual, climas: CLIMAS, grupo: g, pecas, colisores, hotspots, tick, chao: chaoY, dentro: dentroCasa, paredes: casa.paredes, limites: casa.limites, casa, lona: lonaG, spawn, spawnLan: { x: PORT.lanca + 12, z: 26, yaw: -Math.PI / 2 }, lancamento, ceu, area: AREA, deck: DECK, chaoNivel: chao };
 }

@@ -23,7 +23,8 @@
     "test:carlao": "node test/browser/carlao.cjs",
     "test:carlao:game": "node test/browser/carlao-game.cjs",
     "test:graxaim:game": "node test/browser/graxaim-game.cjs",
-    "test:puma:game": "node test/browser/puma-game.cjs"
+    "test:puma:game": "node test/browser/puma-game.cjs",
+    "test:fortaleza:game": "node test/browser/fortaleza-game.cjs"
   },
   "keywords": [],
   "author": "",

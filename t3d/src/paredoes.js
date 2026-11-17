@@ -57,8 +57,8 @@ export function texNormalRocha(N = 512){
 /* ---------- material da rocha: albedo + normal + liquens (triplanar) + umidade ---------- */
 export function materialRocha(map){
   const U = { uRuido: { value: texRuido() }, uWet: { value: 0 }, uCasc: { value: new Vector3(1e9, 0, 1e9) }, uCascR: { value: 600 }, uLiq: { value: 1 }, uLum: { value: 1 } };
-  const m = new MeshStandardMaterial({ map, normalMap: texNormalRocha(), roughness: .94, metalness: 0, vertexColors: true });
-  m.normalMap.repeat.set(2.4, 22); m.normalScale.set(.65, .65);
+  const m = new MeshStandardMaterial({ map, normalMap: texNormalRocha(), roughness: .94, metalness: 0, vertexColors: true, flatShading:true });
+  m.normalMap.repeat.set(3.2, 26); m.normalScale.set(.85, .85);
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, U);
     sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nvarying vec3 vWP; varying vec3 vWN;").replace("#include <begin_vertex>", "#include <begin_vertex>\n vWP = (modelMatrix * vec4(position, 1.0)).xyz; vWN = normalize(mat3(modelMatrix) * normal);");
@@ -67,8 +67,18 @@ export function materialRocha(map){
       vec4 tri(vec3 p, vec3 n, float sc){ vec3 w = pow(abs(n), vec3(4.0)); w /= (w.x + w.y + w.z + 1e-4); return texture2D(uRuido, p.zy * sc) * w.x + texture2D(uRuido, p.xz * sc) * w.y + texture2D(uRuido, p.xy * sc) * w.z; }`)
       .replace("#include <map_fragment>", `#include <map_fragment>
       {
-        vec3 N = normalize(vWN); vec4 a = tri(vWP, N, 0.0021); vec4 b = tri(vWP + a.rgb * 46.0, N, 0.0074); vec4 c = tri(vWP + b.rgb * 18.0, N, 0.027); vec4 d = tri(vWP, N, 0.085);
+        vec3 N = normalize(vWN);
+        // Juntas verticais e contatos entre derrames, em escala de metros do mundo.
+        float lateral=dot(vWP.xz,normalize(vec2(abs(N.z)+.03,-abs(N.x)-.03)));
+        float fracture=pow(1.0-abs(sin(lateral*.115+sin(vWP.y*.012)*.55)),18.0);
+        float beds=pow(1.0-abs(sin(vWP.y*.055+sin(lateral*.004)*1.2)),24.0);
+        float stain=texture2D(uRuido,vec2(lateral*.0015,vWP.y*.00035)).r;
+        diffuseColor.rgb *= 1.0-fracture*.25-beds*.15;
+        diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.69,.73,.76),smoothstep(.60,.83,stain)*.35);
+        vec4 a = tri(vWP, N, 0.0021); vec4 b = tri(vWP + a.rgb * 46.0, N, 0.0074); vec4 c = tri(vWP + b.rgb * 18.0, N, 0.027); vec4 d = tri(vWP, N, 0.085);
         float vert = 1.0 - smoothstep(0.50, 0.97, abs(N.y));
+        vec3 basalto=mix(vec3(.28,.29,.30),vec3(.64,.62,.56),a.r*.6+b.g*.4);
+        diffuseColor.rgb=mix(diffuseColor.rgb,basalto,.40*vert);
         float casc = 1.0 - smoothstep(uCascR * 0.25, uCascR, distance(vWP, uCasc));
         float umido = clamp(uWet * (0.55 + 0.45 * a.g) + casc * 0.9, 0.0, 1.0);
         float base = a.r * 0.52 + b.g * 0.30 + c.b * 0.2 + d.a * 0.06;
@@ -77,10 +87,10 @@ export function materialRocha(map){
         float mancha = smoothstep(lim, lim + 0.035, base + c.a * 0.10) * (1.0 - fresco * 0.85);
         float pontos = step(0.80, d.r) * smoothstep(lim - 0.13, lim - 0.02, base) * (1.0 - mancha);
         float k = b.a;
-        vec3 branco = vec3(0.90, 0.92, 0.88), verde = vec3(0.56, 0.74, 0.36), cinza = vec3(0.64, 0.70, 0.60), amar = vec3(0.72, 0.76, 0.34);
+        vec3 branco = vec3(0.73, 0.74, 0.69), verde = vec3(0.22, 0.34, 0.18), cinza = vec3(0.44, 0.49, 0.42), amar = vec3(0.49, 0.53, 0.29);
         vec3 liq = mix(mix(branco, verde, smoothstep(0.28, 0.46, k)), mix(cinza, amar, smoothstep(0.74, 0.90, k)), smoothstep(0.55, 0.72, k));
         liq *= mix(1.0, 0.82, umido);
-        diffuseColor.rgb = mix(diffuseColor.rgb, liq, clamp(mancha + pontos * 0.8, 0.0, 1.0) * 0.62 * uLiq);
+        diffuseColor.rgb = mix(diffuseColor.rgb, liq, clamp(mancha + pontos * 0.8, 0.0, 1.0) * 0.45 * uLiq);
         diffuseColor.rgb *= mix(1.0, 0.70, umido * (1.0 - mancha));                       // rocha molhada: mais escura e saturada
         diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * diffuseColor.rgb * 1.5, umido * 0.25);
         wetRough = mix(1.0, 0.45, umido);
@@ -88,7 +98,7 @@ export function materialRocha(map){
       .replace("#include <roughnessmap_fragment>", "#include <roughnessmap_fragment>\n roughnessFactor *= wetRough;")
       .replace("void main() {", "float wetRough = 1.0;\nvoid main() {");
   };
-  m.customProgramCacheKey = () => "rocha-liquen-v1";
+  m.customProgramCacheKey = () => "rocha-fortaleza-v2";
   return { mat: m, U };
 }
 
@@ -114,8 +124,10 @@ export function criaParedao(rim, { dentro, Hvale, chao, MID, seed = 3, material,
     let o = (c.O * am + c.sag * Math.sin(u * Math.PI)) * topo;
     if(balanco) o += (9 + 7 * hash(k, seed + 12)) * Math.sin(Math.min(1, u * 1.3) * Math.PI * .5) * topo;                          // cornija projetada
     if(k > 0 && camadas[k - 1].balanco) o -= 8 * (1 - sstep(0, .5, u)) * topo;                                                    // recuo sob a cornija
+    const coluna=ridged1(s/46,seed+44,3),fenda=Math.pow(1-Math.abs(ruido1(s/17,seed+45)),9);
+    o+=(coluna*17.0-fenda*7.0)*(0.55+.45*ruido1(d/290,seed+46))*topo;
     o += 2.2 * ridged1(s / 9 + d / 25, seed + 20, 2) * topo + 1.1 * ruido2(s / 3.2, d / 5, seed + 21) * topo;                        // fraturas e blocos
-    o += 1.6 * (1 - sstep(0, 5, d)) * (ruido1(s / 14, seed + 22) * .5 + .5);                                                          // topo quebrado
+    o += 1.6 * topo * (1 - sstep(0, 5, d)) * (ruido1(s / 14, seed + 22) * .5 + .5);                                                          // topo quebrado
     /* tálus: rampa de blocos na base, só em parte da extensão */
     const base = MID - d, tl = Math.max(0, ruido1(s / 420 + seed * 2, seed + 30) + .15 + talus - .45) * 1.1;
     if(tl > 0) o += tl * 70 * Math.pow(sstep(0, 260, 260 - base) * (base < 260 ? 1 : 0), 1.6) * (.75 + .5 * ruido2(s / 11, d / 9, seed + 31));
