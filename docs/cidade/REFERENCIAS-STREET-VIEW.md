@@ -623,6 +623,7 @@ Grade: colunas **0 1 2 3**, linhas **Z A B C** (Z = mais ao norte). Ordem de env
   - **89° (leste):** a avenida vira **estrada asfaltada** entrando na **mata de pinus/eucalipto**; à esq. **galpão e casa de tábuas cinza**; à dir. **casinha branca de serviço com cerca azul** (provável estação de água/elevatória — confirmar) e casas de madeira.
   - **142° (sudeste):** a casinha branca de **cerca azul** de perto; portão para um terreno com **casa branca de acabamento vermelho**, **palmeira**, casas de madeira; **morros com mata** ao fundo.
   - **262° (oeste, voltando à cidade):** à esq. o **morro com as 2 torres de antena** (uma **listrada vermelha e branca**, outra treliçada) — as mesmas vistas do SV-I9; galpões e casas na base; à dir. **esqueleto de prédio de madeira em obra** sob **araucárias**; caminhão branco estacionado; "Av. Getúlio Vargas" pintado no asfalto.
+  - **193° (sul-sudoeste):** terreno com **casa branca de acabamento vermelho** (alpendre, varal), **palmeira**, casas de tábuas e galpões; ao fundo o **MORRO DAS ANTENAS** com as **2 torres** a ~**215–225°** deste ponto → o morro fica **ao sul da avenida**, entre aqui e a R. Tradição (≈ (+650, +60) — estimativa; confirmar). Morros de campo e mata ao redor.
   - Clima do lugar: **fim da cidade**, casas de madeira, mata de pinus/eucalipto e araucárias — transição para a estrada do parque.
 - **A receber:** prints **360°** de cada saída (Street View) e depois o **arquivo do Google Earth** (estrada e área do Itaimbezinho).
 
