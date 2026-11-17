@@ -50,17 +50,24 @@
 <text x="536" y="703" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado cinza nº 1152</text>
 <rect transform="rotate(-3.9 460.0 724.0)" x="432" y="700" width="56" height="48" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio 3 pav. canto sudeste — em andamento (blocos) (refs 25)</title></rect>
 <text x="460" y="727" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio 3 pav. canto sudeste</text>
-<rect transform="rotate(-20.8 480.0 236.0)" x="468" y="222" width="24" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas sul da Dona Úrsula — em andamento (blocos) (refs 37-39)</title></rect>
-<text x="480" y="275" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casas sul da Dona Úrsula</text>
-<rect transform="rotate(-20.8 508.0 228.0)" x="496" y="214" width="24" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 2 — em andamento (blocos) (refs 37-39)</title></rect>
-<rect transform="rotate(-20.8 536.0 220.0)" x="524" y="206" width="24" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 3 — em andamento (blocos) (refs 37-39)</title></rect>
-<rect transform="rotate(-20.8 564.0 212.0)" x="552" y="198" width="24" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 4 — em andamento (blocos) (refs 37-39)</title></rect>
-<rect transform="rotate(-20.8 596.0 204.0)" x="582" y="190" width="28" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 5 — em andamento (blocos) (refs 37-39)</title></rect>
-<rect transform="rotate(-20.8 640.0 188.0)" x="624" y="174" width="32" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· sul D. Úrsula 6 — em andamento (blocos) (refs 37-39)</title></rect>
-<rect transform="rotate(-20.8 492.0 136.0)" x="476" y="122" width="32" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casas norte da Dona Úrsula — em andamento (blocos) (refs 38 40-44)</title></rect>
-<text x="492" y="99" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casas norte da Dona Úrsula</text>
-<rect transform="rotate(-20.8 536.0 128.0)" x="520" y="114" width="32" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· norte D. Úrsula 2 — em andamento (blocos) (refs 40-44)</title></rect>
-<rect transform="rotate(-20.8 580.0 108.0)" x="564" y="94" width="32" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>· norte D. Úrsula 3 — em andamento (blocos) (refs 40-44)</title></rect>
+<rect transform="rotate(-20.8 480.0 257.6)" x="468" y="244" width="24" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea bege (D. Úrsula) — em andamento (blocos) (refs 37)</title></rect>
+<text x="480" y="261" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa térrea bege (D. Úrsula)</text>
+<rect transform="rotate(-20.8 504.0 250.4)" x="493" y="234" width="22" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado bege com varanda de madeira — em andamento (blocos) (refs 37 38)</title></rect>
+<text x="504" y="253" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado bege com varanda de madeira</text>
+<rect transform="rotate(-20.8 530.0 240.4)" x="519" y="224" width="22" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa branca de madeira nº 125 (trapeira) — em andamento (blocos) (refs 39)</title></rect>
+<text x="530" y="243" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa branca de madeira nº 125 (trapeira)</text>
+<rect transform="rotate(-20.8 596.0 217.6)" x="580" y="200" width="32" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Prédio de tijolo inacabado (obra) — em andamento (blocos) (refs 42)</title></rect>
+<text x="596" y="221" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Prédio de tijolo inacabado (obra)</text>
+<rect transform="rotate(-20.8 640.0 198.8)" x="622" y="183" width="36" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea rosa-avermelhada — em andamento (blocos) (refs 42 43)</title></rect>
+<text x="640" y="202" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa térrea rosa-avermelhada</text>
+<rect transform="rotate(-20.8 492.0 157.2)" x="478" y="141" width="28" height="32" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa térrea avermelhada c/ portão branco — em andamento (blocos) (refs 40)</title></rect>
+<text x="492" y="160" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa térrea avermelhada c/ portão branco</text>
+<rect transform="rotate(-20.8 536.0 138.8)" x="522" y="121" width="28" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Sobrado bege-mostarda nº 707 — em andamento (blocos) (refs 40)</title></rect>
+<text x="536" y="142" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Sobrado bege-mostarda nº 707</text>
+<rect transform="rotate(-20.8 566.0 131.2)" x="556" y="117" width="20" height="28" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casinha antiga de tábuas brancas — em andamento (blocos) (refs 41)</title></rect>
+<text x="566" y="134" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casinha antiga de tábuas brancas</text>
+<rect transform="rotate(-20.8 600.0 120.4)" x="590" y="108" width="20" height="24" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Garagem coberta — em andamento (blocos) (refs 41)</title></rect>
+<text x="600" y="123" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Garagem coberta</text>
 <rect transform="rotate(-20.8 648.0 68.0)" x="624" y="50" width="48" height="36" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa mal-assombrada — em andamento (blocos) (refs 45 47 48)</title></rect>
 <text x="648" y="71" text-anchor="middle" fill="#111" stroke="#f6f4ee" stroke-width="2.5" paint-order="stroke">Casa mal-assombrada</text>
 <rect transform="rotate(-11.9 900.0 152.0)" x="872" y="128" width="56" height="48" rx="3" fill="#e0a800" fill-opacity=".75" stroke="#222" stroke-width=".6"><title>Casa histórica da esquina (alpendre vermelho) — em andamento (blocos) (refs 49-51)</title></rect>

@@ -26,15 +26,15 @@ Gerado por `mapa_progresso.py` — mapa: [`MAPA-PROGRESSO.svg`](MAPA-PROGRESSO.s
 | 🟡 | Casa térrea c/ bandeirinhas | (+35, +53) | 29 |
 | 🟡 | Sobrado cinza nº 1152 | (+34, -10) | 26 81 |
 | 🟡 | Prédio 3 pav. canto sudeste | (+15, -16) | 25 |
-| 🟡 | Casas sul da Dona Úrsula | (+20, +106) | 37-39 |
-| 🟡 | sul D. Úrsula 2 | (+27, +108) | 37-39 |
-| 🟡 | sul D. Úrsula 3 | (+34, +110) | 37-39 |
-| 🟡 | sul D. Úrsula 4 | (+41, +112) | 37-39 |
-| 🟡 | sul D. Úrsula 5 | (+49, +114) | 37-39 |
-| 🟡 | sul D. Úrsula 6 | (+60, +118) | 37-39 |
-| 🟡 | Casas norte da Dona Úrsula | (+23, +131) | 38 40-44 |
-| 🟡 | norte D. Úrsula 2 | (+34, +133) | 40-44 |
-| 🟡 | norte D. Úrsula 3 | (+45, +138) | 40-44 |
+| 🟡 | Casa térrea bege (D. Úrsula) | (+20, +100.6) | 37 |
+| 🟡 | Sobrado bege com varanda de madeira | (+26, +102.4) | 37 38 |
+| 🟡 | Casa branca de madeira nº 125 (trapeira) | (+32.5, +104.9) | 39 |
+| 🟡 | Prédio de tijolo inacabado (obra) | (+49, +110.6) | 42 |
+| 🟡 | Casa térrea rosa-avermelhada | (+60, +115.3) | 42 43 |
+| 🟡 | Casa térrea avermelhada c/ portão branco | (+23, +125.7) | 40 |
+| 🟡 | Sobrado bege-mostarda nº 707 | (+34, +130.3) | 40 |
+| 🟡 | Casinha antiga de tábuas brancas | (+41.5, +132.2) | 41 |
+| 🟡 | Garagem coberta | (+50, +134.9) | 41 |
 | 🟡 | Casa mal-assombrada | (+62, +148) | 45 47 48 |
 | 🟡 | Casa histórica da esquina (alpendre vermelho) | (+125, +127) | 49-51 |
 | 🟡 | Sobrado madeira escura | (+77, +116) | 52 53 |
