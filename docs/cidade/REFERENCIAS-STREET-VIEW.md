@@ -600,6 +600,11 @@ Arquivo: `docs/cidade/kml/estrada-itaimbezinho-ate-serra-do-faxinal.kml` ("estra
           - → este é o **ponto alto (vértice)** da trilha — provavelmente a **ponta mais distante** do desenho do Lucas.
           - No jogo: modelo padrão de **mirante do parque** (madeira grossa + tela), reutilizável em todos os mirantes do Itaimbezinho.
         - → A guarita e este prédio formam um **conjunto arquitetônico** (branco + pedra + madeira escura + telha colonial) — usar o mesmo estilo nas construções do parque no jogo.
+      - **Vista de cima no Earth (print do Lucas, imagem de 08/02/2023):** a linha amarela do Lucas sobre as linhas azuis do Street View:
+        - o **retorno da estrada interna** é um **laço grande** com **estacionamento** (fileira de vagas e carros ao norte), **prédio de telhado verde** e casinha azul no meio do laço (lanchonete/banheiros — confirmar);
+        - o **centro de visitantes** (ícone de câmera roxo) fica no **noroeste**, junto à borda; a trilha passa por ele e desce para o **oeste** até o **"Mirante — Cachoeira das Andorinhas"** (ícone roxo) na **borda do cânion**;
+        - dali a trilha segue para o **sul/sudeste acompanhando a borda** (outro ícone de câmera = **outro mirante**) e volta para o leste, fechando por baixo do laço;
+        - uma **linha pontilhada branca** marcada **"SANTA CATARINA"** atravessa a área → é a **DIVISA RS/SC**, que passa **pelo meio do cânion e da área do parque** (o Itaimbezinho fica na divisa dos dois estados).
       - **Dúvida:** qual parte é a **Trilha do Vértice** e qual é a **Casa do Vô Marçal** (onde fica a casa)? E as pontas (2) e (3) são **mirantes**?
     - Do laço até a borda do cânion: a receber (área do Itaimbezinho).
 - **[Lucas] NO JOGO A ESTRADA TODA É ASFALTADA, DE PISTA DUPLA (duas faixas)**, desde o início — mesmo onde a real é de terra.
