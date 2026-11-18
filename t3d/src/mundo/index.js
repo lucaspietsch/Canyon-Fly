@@ -1,3 +1,4 @@
+import {criarCapaPreta} from './lenda/capa-preta.js';
 import {criarExtracao1950} from './historico/extracao.js';
 import {criarMoradores1950} from './historico/moradores.js';
 import {criarFlorestaOlaria} from './lenda/olaria.js';
@@ -162,6 +163,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.fauna.libelulas=criarLibelulas(M);M.registra({tick:(dt,J,E)=>M.fauna.libelulas.tick(dt,J,E),info:()=>M.fauna.libelulas.info(),desliga:()=>M.fauna.libelulas.desliga()});
   M.fauna.sapinhos = criarSapinhos(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.sapinhos.tick(dt, J, E), info: () => M.fauna.sapinhos.info(), desliga: () => M.fauna.sapinhos.desliga() });
   M.fauna.aves = criarAves(M); M.registra({ tick: (dt, J, E) => {if(M.zonas.atual==="parque"||M.lugares.epoca()!=="2026"||M.fauna.aves.lista.some(b=>b.esp==="gralha"))M.fauna.aves.tick(dt,J,E);}, info: () => M.fauna.aves.info(), desliga: () => M.fauna.aves.desliga(), aoSalto: () => M.fauna.aves.desliga() });
+  M.capaPreta=criarCapaPreta(M);M.registra({tick:(dt,J)=>M.capaPreta.tick(dt,J),desliga:()=>M.capaPreta.desliga()});
   M.extracao1950=criarExtracao1950(M);M.registra({tick:(dt,J)=>M.extracao1950.tick(dt,J),desliga:()=>M.extracao1950.desliga()});
   M.moradores1950=criarMoradores1950(M);M.registra({tick:(dt,J)=>M.moradores1950.tick(dt,J),desliga:()=>M.moradores1950.desliga()});
   M.npcsCentro=criarNpcsCentro(M);M.registra({tick:(dt,J)=>M.npcsCentro.tick(dt,J),desliga:()=>M.npcsCentro.desliga()});

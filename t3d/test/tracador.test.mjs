@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {criarProgressoCorte,CORTE_CENTENARIA} from '../src/mundo/historico/tracador.js';
+test('traçador: corte só conclui após quatro dias completos do jogo',()=>{const c=criarProgressoCorte();assert.equal(CORTE_CENTENARIA.segundosJogo,345600);assert.equal(c.avanca(2879,120),false);assert.equal(c.dia,4);assert.ok(c.fracao<1);assert.equal(c.avanca(1,120),true);assert.equal(c.fracao,1);c.avanca(9999,120);assert.equal(c.S.segundos,345600);});
+test('traçador: relógio pausado não corta e multiplicador de tempo é respeitado',()=>{const c=criarProgressoCorte();c.avanca(100,0);assert.equal(c.S.segundos,0);c.avanca(10,240);assert.equal(c.S.segundos,2400);for(const dt of [-1,NaN,Infinity])c.avanca(dt,120);assert.equal(c.S.segundos,2400);});
+test('traçador: progresso guardado retoma o mesmo dia e fração',()=>{const c=criarProgressoCorte(2.5*86400);assert.equal(c.dia,3);assert.equal(c.fracao,.625);const restored=criarProgressoCorte(JSON.parse(JSON.stringify(c.S)).segundos);assert.equal(restored.S.segundos,c.S.segundos);assert.equal(restored.avanca(1.5*86400,1),true);assert.equal(criarProgressoCorte(-10).fracao,0);assert.equal(criarProgressoCorte(Infinity).fracao,0);});

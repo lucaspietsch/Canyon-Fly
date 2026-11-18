@@ -15,7 +15,7 @@ people=[{'nome':c['nome'],'legenda':vilas[c['vila']]+' · '+c['papel'],'arquivo'
 trucks=[{'nome':'Caminhão com toras','legenda':'Toras de 1,44 a 1,80 m no modelo','arquivo':'caminhao-toras.png'},{'nome':'Tora gigante de araucária','legenda':'Uma tora de 2,50 m de diâmetro no modelo','arquivo':'caminhao-gigante.png'},{'nome':'Caminhão com tábuas','legenda':'35 camadas e cintas de amarração','arquivo':'caminhao-tabuas.png'}]
 sheet(people,'MORADORES GAÚCHOS · VILAS EM 1950','gauchos.jpg');sheet(trucks,'CAMINHÕES DE ÉPOCA · TRANSPORTE DE MADEIRA','caminhoes.jpg')
 world=[{'nome':'Vila '+name,'arquivo':'vila-'+id+'.png'} for id,name in vilas.items()]
-preview=[{'nome':'Prévia dos lenhadores · locais de corte pendentes','arquivo':'lenhadores-previa-sem-local.png'}]
+preview=[{'nome':'Serrote traçador · duas pessoas · quatro dias do jogo','arquivo':'lenhadores-previa-sem-local.png'}]
 sections=[]
 for title,cards in [('Moradores em 1950',people),('Cargas de madeira',trucks),('Presença nas vilas',world),('Extração · prévia técnica',preview)]:
  sections.append('<h2>'+title+'</h2><div class="grid">'+''.join('<figure><a href="'+c['arquivo']+'"><img loading="lazy" src="'+c['arquivo']+'"></a><figcaption>'+html.escape(c['nome'])+'<br>'+html.escape(c.get('legenda',''))+'</figcaption></figure>' for c in cards)+'</div>')

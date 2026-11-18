@@ -1,0 +1,9 @@
+{
+  "epoca": "1950",
+  "noturno": true,
+  "capaAnimada": true,
+  "retornoSemDuplicacao": true,
+  "fabricaConstruida": true,
+  "cleanup": true,
+  "errors": []
+}
