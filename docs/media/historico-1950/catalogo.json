@@ -1,0 +1,137 @@
+{
+  "moradores": [
+    {
+      "id": "anselmo",
+      "nome": "Seu Anselmo",
+      "papel": "Tropeiro",
+      "vila": "santana",
+      "camisa": 12959140,
+      "bombacha": 7693905,
+      "chapeu": 3156516,
+      "lenco": 14735549,
+      "poncho": 8156773,
+      "barba": true,
+      "pele": 12026720
+    },
+    {
+      "id": "pedro",
+      "nome": "Pedro",
+      "papel": "Carpinteiro",
+      "vila": "santana",
+      "camisa": 14208438,
+      "bombacha": 3882041,
+      "chapeu": 6904388,
+      "lenco": 15590087,
+      "poncho": null,
+      "pele": 13738365
+    },
+    {
+      "id": "joaquim",
+      "nome": "Joaquim",
+      "papel": "Morador",
+      "vila": "santana",
+      "camisa": 7826265,
+      "bombacha": 12760218,
+      "chapeu": 3682861,
+      "lenco": 13814190,
+      "poncho": 6444103,
+      "pele": 10317904
+    },
+    {
+      "id": "ernesto",
+      "nome": "Ernesto",
+      "papel": "Operário",
+      "vila": "ouro-verde",
+      "camisa": 13287591,
+      "bombacha": 4868160,
+      "chapeu": 5327421,
+      "lenco": 15524551,
+      "poncho": null,
+      "pele": 11897447
+    },
+    {
+      "id": "vicente",
+      "nome": "Vicente",
+      "papel": "Carreteiro",
+      "vila": "ouro-verde",
+      "camisa": 8549474,
+      "bombacha": 12891541,
+      "chapeu": 3288617,
+      "lenco": 15326656,
+      "poncho": 8549204,
+      "barba": true,
+      "pele": 13015154
+    },
+    {
+      "id": "antonio",
+      "nome": "Antônio",
+      "papel": "Morador",
+      "vila": "ouro-verde",
+      "camisa": 14537661,
+      "bombacha": 3883842,
+      "chapeu": 7693131,
+      "lenco": 9124914,
+      "poncho": null,
+      "pele": 9659725
+    },
+    {
+      "id": "francisco",
+      "nome": "Francisco",
+      "papel": "Tropeiro",
+      "vila": "oswaldo-kroeff",
+      "camisa": 13682612,
+      "bombacha": 4473657,
+      "chapeu": 2631973,
+      "lenco": 14800313,
+      "poncho": 7954506,
+      "pele": 12487268
+    },
+    {
+      "id": "manuel",
+      "nome": "Manuel",
+      "papel": "Comerciante",
+      "vila": "oswaldo-kroeff",
+      "camisa": 10786686,
+      "bombacha": 14141607,
+      "chapeu": 5587759,
+      "lenco": 15787208,
+      "poncho": null,
+      "barba": true,
+      "pele": 13672830
+    },
+    {
+      "id": "sebastiao",
+      "nome": "Sebastião",
+      "papel": "Morador",
+      "vila": "oswaldo-kroeff",
+      "camisa": 7497561,
+      "bombacha": 3423552,
+      "chapeu": 4868410,
+      "lenco": 15261644,
+      "poncho": 5262659,
+      "pele": 10252630
+    }
+  ],
+  "cargas": {
+    "toras": {
+      "diametrosM": [
+        1.8,
+        1.7,
+        1.44
+      ],
+      "comprimentoM": 10.5
+    },
+    "gigante": {
+      "diametrosM": [
+        2.5
+      ],
+      "comprimentoM": 10.5
+    },
+    "tabuas": {
+      "camadas": 35,
+      "larguraM": 2.5,
+      "alturaM": 3.64,
+      "comprimentoM": 7.8
+    }
+  }
+}

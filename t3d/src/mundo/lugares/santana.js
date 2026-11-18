@@ -68,7 +68,7 @@ export function criarSantana(M, { poli }){
     if(M.terminal) M.terminal.msg("sobrenatural", e === "1950" ? "Você cruza o pórtico: Vila Santana, 1950." : "Você volta ao presente."); if(M.missoes && M.missoes.emite) M.missoes.emite("epoca", { epoca: e }); }
 
   /* polígonos do tempo antigo (KML): a época 1950 vale em todos eles, depois do pórtico (ou com operador logado) */
-  function dentroAntigo(x, z){ const K = M.kml && M.kml.S; if(!K) return false; return K.poligonos.some(e => (e.tipo === "olaria" || e.tipo === "industrial" || e.tipo === "fabrica" || (e.tipo === "vila" && /ouro/i.test(e.nome))) && dentroPoli(e.mundoPts || e.pts, x, z)); }
+  function dentroAntigo(x, z){ const K = M.kml && M.kml.S; if(!K) return false; return K.poligonos.some(e => (e.tipo === "olaria" || e.tipo === "industrial" || e.tipo === "fabrica" || (e.tipo === "vila" && /ouro|oswaldo/i.test(e.nome))) && dentroPoli(e.mundoPts || e.pts, x, z)); }
   function tick(dt, J){
     S.t += dt; if(S.anim < 1 && S.aberta){ S.anim = Math.min(1, S.anim + dt / 1.6); } const k = S.aberta ? S.anim : 0; folhas.forEach(({ f, sx }) => { f.rotation.y = sx * k * 1.45; });
     if(S.lampadas){ const h = M.ciclo.hora(), noite = h < 5.8 || h >= 18 || S.epoca === "1950" && h < 6.2; S.lampadas.forEach(m => { m.emissiveIntensity += ((noite ? 2 : .1) - m.emissiveIntensity) * Math.min(1, dt * 1.5); }); }

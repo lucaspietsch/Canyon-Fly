@@ -134,3 +134,27 @@ Pedido seguinte: permitir transformar Pit já no presente, aumentar caminhada/co
 Arquivos principais: `t3d/src/ajustes-jogador.js`, `resolucao.js`, `mundo/poderes/pit-mobilidade.js`, integrações em `andar.js`, `trolley3d.js`, `mundo/index.js`, `mundo/poderes/pit.js`, `mundo/personagens/transformacao.js` e `index.html`. Bundle reconstruído. Documentação de uso atualizada em `docs/pit.md`.
 
 Validação: 72 testes unitários passaram; a regressão de poderes dos 11 personagens passou sem erros JavaScript, incluindo hologramas, hack, congelamento do tempo e controles do Pit. `t3d/test/browser/pit-mobilidade-game.cjs` verifica no bundle real o início em 2026 sem login, transformação manual, caminhada/corrida, voo/turbo/altura, pouso, limpeza ao destransformar, bloqueio para outro personagem, resolução real do canvas e preferência após recarregar. No teste, 1280 px de largura viraram 448 px no modo Mínima. Prints e relatório em `docs/media/pit-mobilidade/`.
+
+## Gaúchos em 1950 e transporte de madeira
+
+Referências novas do usuário: trajes gaúchos históricos com chapéu, lenço, guaiaca, bombachas, botas, barba/bigode e ponchos; caminhões de cabine arredondada com toras muito grossas e pilhas altas de tábuas. Os moradores são personagens fictícios e as medidas dos veículos/cargas são escolhas de modelagem inspiradas nas fotos.
+
+### Moradores
+
+Nove NPCs, três em cada vila: Santana (Anselmo, Pedro, Joaquim), Ouro Verde (Ernesto, Vicente, Antônio) e Oswaldo Kroeff (Francisco, Manuel, Sebastião). Aparecem apenas em 1950, carregam por proximidade, têm poses/animação leve e conversa por interação. Locais derivados dos polígonos reais do KML; a busca evita colisores/água e o apoio dos pés usa as faces desenhadas do terreno. Os modelos são mantidos em cache para reutilização e os hotspots são removidos ao sair. A regra de reconhecimento de 1950 inclui Oswaldo Kroeff, após o acesso ao passado, sem modificar o login do portão. A arquitetura/cronologia geral dos lugares permanece a existente no projeto.
+
+Fontes: `t3d/src/mundo/historico/gauchos.js`, `moradores.js`, `chao.js`; integração em `mundo/index.js`, ajustes de área antiga em `lugares/lugares.js` e `lugares/santana.js`.
+
+### Caminhões e extração
+
+`historico/caminhao-madeira.js` cria três cargas: várias toras (diâmetros de 1,44 a 1,80 m), uma tora gigante (2,50 m) ou tábuas em 35 camadas, com amarrações. Toras com casca irregular e anéis nas seções cortadas; cabine arredondada, capô longo e seis rodas. A versão com tábuas fica próxima à chegada conhecida da fábrica durante 1950, quando o jogador se aproxima.
+
+`historico/extracao.js` prepara dois lenhadores com machados, araucária de tronco espesso/copa em guarda-chuva e ciclo de corte → queda → carregamento → transporte → descarga → retorno vazio. Trabalha com um número finito de árvores próprias da frente, sem editar a distribuição global da vegetação. Caminhões seguem a rota fornecida, ou um trajeto de acesso à estrada existente até a chegada da fábrica. O acesso entre a frente e a estrada deve ser conferido quando chegarem as localizações reais.
+
+**Pendente por informação do usuário:** as coordenadas de corte ainda não foram enviadas. `LOCAIS_EXTRACAO_1950` está vazio; nenhuma frente foi colocada arbitrariamente no mapa. Os modelos/ciclo estão prontos e a captura de extração é uma prévia técnica. Para ativar, preencher a lista no fonte ou chamar `M.extracao1950.defineLocais([{id:'frente-01',x:...,z:...,arvores:3,rota:[[x0,z0],...,[xf,zf]]}])`. Coordenadas/rotas são do mundo do jogo; a fábrica continua na posição KML existente. O caminhão com tábuas é estático no acesso da fábrica; destinos de expedição das tábuas ainda não foram definidos.
+
+### Validação e prints
+
+76 testes unitários passaram. `historico-1950.test.mjs` cobre cargas/geometrias, rodas, validação de locais, construção de rota e presença/ocultação do caminhão de tábuas. O teste do bundle real `test/browser/historico-game.cjs` verificou três moradores e três interações em cada vila de 1950, retirada no presente, geometrias finitas e um ciclo de entrega/retorno concluído em rota sintética, sem erros JavaScript. Esse trajeto curto valida a máquina de estados; não é uma extração já ativada em local real.
+
+Galeria: `docs/media/historico-1950/index.html`; retratos individuais, prints nas três vilas, três caminhões e prévia de lenhadores. Montagem reproduzível: `scripts/montar-historico.py`. A galeria geral também inclui os nove moradores. Build regenerado com os dois avisos preexistentes de chaves duplicadas.

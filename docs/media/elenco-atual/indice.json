@@ -269,6 +269,42 @@
     {
       "nome": "JHONATAN",
       "arquivo": "npcs-47.png"
+    },
+    {
+      "nome": "Seu Anselmo · 1950 · Santana",
+      "arquivo": "npcs-48.png"
+    },
+    {
+      "nome": "Pedro · 1950 · Santana",
+      "arquivo": "npcs-49.png"
+    },
+    {
+      "nome": "Joaquim · 1950 · Santana",
+      "arquivo": "npcs-50.png"
+    },
+    {
+      "nome": "Ernesto · 1950 · Ouro Verde",
+      "arquivo": "npcs-51.png"
+    },
+    {
+      "nome": "Vicente · 1950 · Ouro Verde",
+      "arquivo": "npcs-52.png"
+    },
+    {
+      "nome": "Antônio · 1950 · Ouro Verde",
+      "arquivo": "npcs-53.png"
+    },
+    {
+      "nome": "Francisco · 1950 · Oswaldo Kroeff",
+      "arquivo": "npcs-54.png"
+    },
+    {
+      "nome": "Manuel · 1950 · Oswaldo Kroeff",
+      "arquivo": "npcs-55.png"
+    },
+    {
+      "nome": "Sebastião · 1950 · Oswaldo Kroeff",
+      "arquivo": "npcs-56.png"
     }
   ],
   "animais": [

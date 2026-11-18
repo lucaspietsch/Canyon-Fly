@@ -1,0 +1,42 @@
+{
+  "vilas": [
+    {
+      "vila": "santana",
+      "nomes": [
+        "Seu Anselmo",
+        "Pedro",
+        "Joaquim"
+      ],
+      "interacoes": 3,
+      "epoca": "1950"
+    },
+    {
+      "vila": "ouro-verde",
+      "nomes": [
+        "Ernesto",
+        "Vicente",
+        "Antônio"
+      ],
+      "interacoes": 3,
+      "epoca": "1950"
+    },
+    {
+      "vila": "oswaldo-kroeff",
+      "nomes": [
+        "Francisco",
+        "Manuel",
+        "Sebastião"
+      ],
+      "interacoes": 3,
+      "epoca": "1950"
+    }
+  ],
+  "errors": [],
+  "extracao": {
+    "sim": {
+      "fase": "concluido",
+      "entregas": 1
+    },
+    "locaisPendentes": true
+  }
+}
