@@ -1,3 +1,4 @@
+import {criarPererecas,COMPRIMENTO_PERERECA} from './perereca-visual.js';
 import {criarDorsalis,COMPRIMENTO_DORSALIS} from './dorsalis-visual.js';
 import {criarCambaraensis,COMPRIMENTO_CAMBARAENSIS} from './cambaraensis-visual.js';
 import { Group, InstancedMesh, IcosahedronGeometry, SphereGeometry, BoxGeometry, CylinderGeometry, MeshStandardMaterial, DynamicDrawUsage, Color, Matrix4, Quaternion, Vector3, Euler } from "three";
@@ -19,21 +20,19 @@ const pick = (L) => L[Math.floor(Math.random() * L.length)];
 export function criarSapinhos(M){
   const { cen } = M, V = M.vegetacao, base = V.base, T = V.turfeira, Z = M.fauna.zonas, grupo = new Group(); cen.grupo.add(grupo);
   const CAP = C.max + (C.peregrecas.ativo ? C.peregrecas.max : 0), PARTES = 14;
-  const cambaraensis=criarCambaraensis(grupo,CAP),dorsalis=criarDorsalis(grupo,CAP);
+  const cambaraensis=criarCambaraensis(grupo,CAP),dorsalis=criarDorsalis(grupo,CAP),pererecas=criarPererecas(grupo,C.peregrecas.max);
   const mat = new MeshStandardMaterial({ roughness: .65, metalness: 0, vertexColors: false });
   const mk = (geo, n = CAP) => { const im = new InstancedMesh(geo, mat, n); im.instanceMatrix.setUsage(DynamicDrawUsage); im.count = 0; im.frustumCulled = false; im.setColorAt(0, new Color(1, 1, 1)); im.instanceColor.setUsage(DynamicDrawUsage); im.castShadow = false; grupo.add(im); return im; };
   const G = {
     corpo: mk(new IcosahedronGeometry(.5, 1)), cabeca: mk(new IcosahedronGeometry(.3, 1)), barriga: mk(new IcosahedronGeometry(.44, 1)), olho: mk(new IcosahedronGeometry(.075, 0), CAP * 2), listra: mk(new BoxGeometry(.1, .03, .8)),
     perna: mk(new BoxGeometry(.16, .12, .46), CAP * 4), pe: mk(new IcosahedronGeometry(.1, 0), CAP * 4), pontos: mk(new IcosahedronGeometry(.04, 0), CAP * 6)
   };
-  /* libélulas */
-  const lib = { corpo: mk(new CylinderGeometry(.05, .03, 1.2, 5), 8), asa: mk(new BoxGeometry(.9, .01, .22), 16) }; const dr = []; for(let i = 0; i < 6; i++) dr.push({ x: 0, y: 0, z: 0, yaw: 0, ativo: false, t: Math.random() * 6, alvo: [0, 0], alt: 1 });
   const lista = [], S = { umido: 0, forcaUmido: false, t: 0, spawn: 0, canto: 0, coaxa: 0, ac: null };
   const M4 = new Matrix4(), Qn = new Quaternion(), Vt = new Vector3(), Sc = new Vector3(), E = new Euler(), col = new Color(), loc = new Matrix4();
   const parte = (im, k, base_, x, y, z, sx, sy, sz, rx = 0, ry = 0, rz = 0, cor = null) => { E.set(rx, ry, rz); Qn.setFromEuler(E); Vt.set(x, y, z); Sc.set(sx, sy, sz); loc.compose(Vt, Qn, Sc); M4.multiplyMatrices(base_, loc); im.setMatrixAt(k, M4); if(cor) im.setColorAt(k, cor); };
 
   /* ---------- aparência de cada espécie ---------- */
-  const ESP = { ...C.especies, perereca: { ativo: true, nome: "Perereca", dorso: [.2, .45, .18], listra: null, vermelho: [.9, .85, .5], grande: 1.5 } };
+  const ESP = { ...C.especies, perereca: { ativo: true, nome: "Perereca", tamanhoM: [.035, .055], dorso: [.58, .44, .24], listra: null, vermelho: [.9, .85, .5], grande: 1.5 } };
   const sorteiaEsp = () => { const L = Object.entries(C.especies).filter(([, e]) => e.ativo); if(!L.length) return null; let t = Math.random() * L.reduce((s, [, e]) => s + e.peso, 0); for(const [k, e] of L){ t -= e.peso; if(t <= 0) return k; } return L[0][0]; };
 
   /* ---------- onde nascem ---------- */
@@ -51,7 +50,7 @@ export function criarSapinhos(M){
   }
   const chao = (x, z) => base.alturaNo(x, z);
   function novo(esp, x, z, zona, par){
-    const e = ESP[esp], f = { esp, zona, x, z, y: chao(x, z), yaw: Math.random() * 6.283, estado: "para", t: rnd(1, 3), fase: Math.random() * 6, hop: 0, hopV: 0, pitch: 0, alerta: 0, vida: rnd(C.vidaSeg[0], C.vidaSeg[1]), par: par || null, alvo: null, esc: e.tamanhoM ? rnd(...e.tamanhoM)*U/(esp==="dorsalis"?COMPRIMENTO_DORSALIS:COMPRIMENTO_CAMBARAENSIS) : C.escalaVisual * .12 * (e.grande || 1) * rnd(.9, 1.1), piscada: rnd(1, 4), cabeca: 0, vis: 1, tem: false };
+    const e = ESP[esp], f = { esp, zona, x, z, y: chao(x, z), yaw: Math.random() * 6.283, estado: "para", t: rnd(1, 3), fase: Math.random() * 6, hop: 0, hopV: 0, pitch: 0, alerta: 0, vida: rnd(C.vidaSeg[0], C.vidaSeg[1]), par: par || null, alvo: null, esc: e.tamanhoM ? rnd(...e.tamanhoM)*U/(esp==="perereca"?COMPRIMENTO_PERERECA:esp==="dorsalis"?COMPRIMENTO_DORSALIS:COMPRIMENTO_CAMBARAENSIS) : C.escalaVisual * .12 * (e.grande || 1) * rnd(.9, 1.1), piscada: rnd(1, 4), cabeca: 0, vis: 1, tem: false };
     lista.push(f); return f;
   }
   function tentaSpawn(J, alvoN, E){
@@ -88,8 +87,8 @@ export function criarSapinhos(M){
   /* ---------- desenho ---------- */
   const corD = new Color(), corV = new Color(), corP = new Color();
   function desenha(){
-    dorsalis.inicia();cambaraensis.inicia();let n = 0, ne = 0, nl = 0, nPt = 0; const B = new Matrix4();
-    lista.forEach(f => { if(f.esp==="cambaraensis"||f.esp==="dorsalis"){if(f.piscada<-.12)f.piscada=rnd(1.5,5);(f.esp==="dorsalis"?dorsalis:cambaraensis).escreve(f);return;}const e = ESP[f.esp], ci = n; Qn.setFromEuler(E.set(f.pitch, f.yaw, 0, "YXZ")); Vt.set(f.x, f.y + .3 * f.esc * 1.0, f.z); Sc.set(f.esc, f.esc, f.esc); B.compose(Vt, Qn, Sc); const al = f.alerta, abre = al * .55;
+    pererecas.inicia();dorsalis.inicia();cambaraensis.inicia();let n = 0, ne = 0, nl = 0, nPt = 0; const B = new Matrix4();
+    lista.forEach(f => { if(f.esp==="cambaraensis"||f.esp==="dorsalis"||f.esp==="perereca"){if(f.piscada<-.12)f.piscada=rnd(1.5,5);(f.esp==="perereca"?pererecas:f.esp==="dorsalis"?dorsalis:cambaraensis).escreve(f);return;}const e = ESP[f.esp], ci = n; Qn.setFromEuler(E.set(f.pitch, f.yaw, 0, "YXZ")); Vt.set(f.x, f.y + .3 * f.esc * 1.0, f.z); Sc.set(f.esc, f.esc, f.esc); B.compose(Vt, Qn, Sc); const al = f.alerta, abre = al * .55;
       corD.setRGB(...e.dorso); corV.setRGB(...e.vermelho); corP.setRGB(...(e.listra || e.dorso));
       const dorso = corD.clone().multiplyScalar(.85 + .3 * ((f.fase * 7) % 1 > 2 ? 1 : 1));
       parte(G.corpo, n, B, 0, .25 + al * .2, 0, 1, .62, .85, 0, 0, 0, dorso);
@@ -105,19 +104,8 @@ export function criarSapinhos(M){
         parte(G.pe, n * 4 + q, B, px + s * (.05 + al * .12), py - .08 + lev * .3, pz + (frente ? .26 : .3), 1.2 + al * .5, .7, 1.7, rx * .5, 0, 0, corV); });
       for(let k = 0; k < 6; k++){ const a = k * 1.9, rr = .3 + (k % 3) * .08; parte(G.pontos, n * 6 + k, B, Math.cos(a) * rr * .8, .5 + al * .2, Math.sin(a) * rr * .6 - .05, 1, 1, 1, 0, 0, 0, e.listra ? corP.setRGB(.9, .8, .5) : corP.setRGB(.55, .5, .42)); }
       n++; nPt += 6; void ci; });
-    dorsalis.fim();cambaraensis.fim();G.corpo.count = G.cabeca.count = G.barriga.count = G.listra.count = n; G.olho.count = n * 2; G.perna.count = G.pe.count = n * 4; G.pontos.count = n * 6;
+    pererecas.fim();dorsalis.fim();cambaraensis.fim();G.corpo.count = G.cabeca.count = G.barriga.count = G.listra.count = n; G.olho.count = n * 2; G.perna.count = G.pe.count = n * 4; G.pontos.count = n * 6;
     Object.values(G).forEach(im => { im.instanceMatrix.needsUpdate = true; if(im.instanceColor) im.instanceColor.needsUpdate = true; }); void ne; void nl; void nPt;
-  }
-  /* ---------- libélulas (horas quentes, sobre poças e nascentes) ---------- */
-  function libelulas(dt, J, E){
-    const quente = E.h > 10 && E.h < 17 && E.alt > 20 && S.umido < .9; let nl = 0, na = 0; const B = new Matrix4();
-    const alvos = []; T.nascentes().forEach(n => { if(Math.hypot(n.x - J.x, n.z - J.z) < 70 * U) alvos.push([n.x, n.z]); }); const pm = T.polis(); if(pm.length && !alvos.length){ const b = T.meio(pm[0]); if(b && Math.hypot(b.x - J.x, b.z - J.z) < 80 * U) alvos.push([b.x, b.z]); }
-    dr.forEach(d => { if(!d.ativo && quente && alvos.length && Math.random() < dt * .08){ const a = pick(alvos); d.x = a[0] + rnd(-20, 20); d.z = a[1] + rnd(-20, 20); d.y = chao(d.x, d.z) + 4; d.alvo = [a[0], a[1]]; d.ativo = true; d.t = 0; d.vida = rnd(30, 80); }
-      if(!d.ativo) return; d.vida -= dt; d.t += dt; if(d.vida < 0 || !quente){ d.ativo = false; return; } const dx = d.alvo[0] - d.x, dz = d.alvo[1] - d.z; if(Math.random() < dt * .8) d.alvo = [d.alvo[0] + rnd(-14, 14), d.alvo[1] + rnd(-14, 14)];
-      const ya = Math.atan2(dx, dz) + Math.sin(d.t * 2) * .6; d.yaw += ang(ya - d.yaw) * Math.min(1, dt * 3); const v = 9 + Math.sin(d.t * 1.3) * 5; d.x += Math.sin(d.yaw) * v * dt; d.z += Math.cos(d.yaw) * v * dt; d.y += (chao(d.x, d.z) + 3.5 + Math.sin(d.t * 1.7) * 1.5 - d.y) * Math.min(1, dt * 2);
-      Qn.setFromEuler(E.set(0, d.yaw + Math.PI / 2 * 0, 0, "YXZ")); Vt.set(d.x, d.y, d.z); Sc.set(1, 1, 1); B.compose(Vt, Qn, Sc); E.set(Math.PI / 2, 0, 0); const q2 = new Quaternion().setFromEuler(E); const l2 = new Matrix4().compose(new Vector3(0, 0, 0), q2, new Vector3(1, 1, 1)); lib.corpo.setMatrixAt(nl, B.clone().multiply(l2)); lib.corpo.setColorAt(nl, corP.setRGB(.1, .35, .5)); nl++;
-      for(const s of [-1, 1]){ const bat = Math.sin(d.t * 55) * .5; const lw = new Matrix4().compose(new Vector3(s * .5, .05, .2), new Quaternion().setFromEuler(E.set(0, 0, s * bat)), new Vector3(1, 1, 1)); lib.asa.setMatrixAt(na, B.clone().multiply(lw)); lib.asa.setColorAt(na, corP.setRGB(.8, .9, .95)); na++; lw.compose(new Vector3(s * .5, .05, -.2), new Quaternion().setFromEuler(E.set(0, 0, s * bat)), new Vector3(1, 1, 1)); lib.asa.setMatrixAt(na, B.clone().multiply(lw)); lib.asa.setColorAt(na, corP.setRGB(.8, .9, .95)); na++; } });
-    lib.corpo.count = nl; lib.asa.count = Math.min(na, 16); [lib.corpo, lib.asa].forEach(m => { m.instanceMatrix.needsUpdate = true; if(m.instanceColor) m.instanceColor.needsUpdate = true; });
   }
   /* ---------- sons: coro de sapinhos (agudo, curto) e coaxar de sapos à noite ---------- */
   const audio = () => { try{ return S.ac = S.ac || new (window.AudioContext || window.webkitAudioContext)(); }catch(_){ return null; } };
@@ -131,7 +119,7 @@ export function criarSapinhos(M){
     const alvoN = dia ? Math.round(C.max * (.1 + .9 * S.umido)) : 0;
     S.spawn += dt; if(S.spawn > C.intervaloSpawn){ S.spawn = 0; const nS = lista.filter(f => f.esp !== "perereca").length; if(nS < alvoN) tentaSpawn(J, alvoN, E); if(C.peregrecas.ativo && crepusculo && Math.random() < .4) tentaPerereca(J); }
     for(let i = lista.length - 1; i >= 0; i--){ const f = lista[i]; const dm = atualiza(f, dt, J) / U; const fora = dm > C.raio * 1.15, seco = f.esp !== "perereca" && (!dia || (!S.forcaUmido && S.umido < .06)), noite = f.esp === "perereca" && !crepusculo; if(fora || f.vida < 0 || seco || noite){ lista.splice(i, 1); } }
-    desenha(); libelulas(dt, J, E);
+    desenha();
     /* coros */
     const nPerto = lista.filter(f => f.esp !== "perereca").length; S.canto -= dt;
     if(S.canto <= 0 && nPerto && S.umido > .35 && dia){ S.canto = rnd(.5, 1.7) / Math.sqrt(nPerto); const meio = lista.filter(f => f.zona === "meio"), mp = meio.length ? Math.min(...meio.map(f => Math.hypot(f.x - J.x, f.z - J.z) / U)) : 20; chilro(cl(1 - mp / 24, .1, 1) * (.4 + .6 * S.umido) * (meio.length ? 1 : .5)); }
@@ -139,5 +127,5 @@ export function criarSapinhos(M){
   }
   const maisPerto = (x, z) => { let b = null, bd = 1e18; lista.forEach(f => { if(f.esp === "perereca") return; const d = Math.hypot(f.x - x, f.z - z) / U; if(d < bd){ bd = d; b = f; } }); return b ? { x: b.x, z: b.z, d: bd * U, f: b } : null; };
   const info = () => "Sapinhos " + lista.filter(f => f.esp !== "perereca").length + " · pererecas " + lista.filter(f => f.esp === "perereca").length + " · umidade " + S.umido.toFixed(2) + (S.forcaUmido ? " (forçada)" : "");
-  return { dorsalis,cambaraensis,desenha,lista, S, tick, maisPerto, info, forcaUmido(on){ S.forcaUmido = on === undefined ? !S.forcaUmido : on; return S.forcaUmido; }, ESP, desliga(){ lista.length = 0; desenha(); } };
+  return { pererecas,dorsalis,cambaraensis,desenha,lista, S, tick, maisPerto, info, forcaUmido(on){ S.forcaUmido = on === undefined ? !S.forcaUmido : on; return S.forcaUmido; }, ESP, desliga(){ lista.length = 0; desenha(); } };
 }

@@ -1,3 +1,10 @@
+import {criarCapaPreta} from './lenda/capa-preta.js';
+import {criarExtracao1950} from './historico/extracao.js';
+import {criarMoradores1950} from './historico/moradores.js';
+import {criarFlorestaOlaria} from './lenda/olaria.js';
+import {criarEpilogo} from './futuro/epilogo.js';
+import {criarNpcsCentro} from './cidade/npcs-centro.js';
+import {criarLibelulas} from './fauna/libelulas.js';
 import {criarAncestral} from './ancestral/ancestral.js';
 import {criarAparicoes} from './ancestral/aparicoes.js';
 import {criarTrilha} from './trilha.js';
@@ -105,7 +112,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.mapa = criarMinimapa(M); M.registra(M.mapa);
   M.trilha=criarTrilha(M);M.registra({tick:()=>M.trilha.tick(),desliga:()=>M.trilha.desliga()});
   M.personagens = criarPersonagens(M); M.registra({ tick: (dt) => M.personagens.tick(dt), tecla: (e) => M.personagens.tecla(e), info: () => M.personagens.info(), desliga: () => M.personagens.desliga() });
-  M.transformacao = criarTransformacao(M); M.registra({ semCongelar: true, tick: (dt) => M.transformacao.tick(dt), info: () => M.transformacao.info(), desliga: () => M.transformacao.desligaTudo() }); M.cen.extraChao.velMult = () => M.transformacao.velMult(); M.cen.extraChao.alturaExtra = () => M.transformacao.alturaExtra(); M.cen.extraChao.escalaJogador = () => (M.poderes && M.poderes.kauling ? M.poderes.kauling.escala() : 1);
+  M.transformacao = criarTransformacao(M); M.registra({ semCongelar: true, tick: (dt) => M.transformacao.tick(dt), info: () => M.transformacao.info(), tecla:(e)=>M.transformacao.tecla(e), desliga: () => M.transformacao.desligaTudo() }); M.cen.extraChao.velMult = () => M.transformacao.velMult(); M.cen.extraChao.alturaExtra = () => M.transformacao.alturaExtra(); M.cen.extraChao.escalaJogador = () => (M.poderes && M.poderes.kauling ? M.poderes.kauling.escala() : 1);
   M.login = { sessao, confereLogin, modoDebug };                                                                       // depuração no console: M.login.confereLogin("login", "senha")
   M.terminal = criarTerminal(M);
   M.missoes = criarMissoes(M); M.registra({ tick: (dt) => M.missoes.tick(dt), tecla: (e) => M.missoes.tecla(e), liga: (ui) => M.missoes.liga(ui), info: () => M.missoes.info(), desliga: () => M.missoes.desliga() }); M.operacao = criarOperacao(M); M.coordenacao = criarCoordenacao(M); M.registra({ tick: (dt) => M.operacao.tick(dt), desliga: () => M.operacao.desliga() });
@@ -123,6 +130,7 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.cenaEstrada = criarCenaEstrada(M); M.registra({ tick: (dt, J) => M.cenaEstrada.tick(dt, J), info: () => M.cenaEstrada.info() });
   M.registra({ aoZona: (z, ant) => { if(z !== "parque"){ M.fauna.animais.slice().forEach(a => { a.fim = true; }); M.fauna.sapinhos.desliga(); M.fauna.aves.desliga(); } else M.gente.aoSalto(); } });                  // saiu do parque: some a fauna; voltou: a gente se ajusta à hora (como num salto de relógio)
   M.zonas = criarZonas(M); M.registra({ info: () => M.zonas.infoJogador() }); M.cidade = criarCidade(M); M.registra({ tick: (dt, J) => M.cidade.tick(dt, J), info: () => M.cidade.info() }); M.zonas.liga(); M.registra({ tick: (dt, J) => M.zonas.tick(dt, J) });
+  M.registra({tick:(dt,J,E)=>{if(M.zonas.atual!=="parque"){M.fauna.ctx.pessoasRaw.length=0;if(J)M.fauna.ctx.pessoasRaw.push({x:J.x,z:J.z,jogador:true});M.fauna.serp.tick(dt,J,E);}}});
   M.registra({ tick: (dt, J, E) => M.fauna.antigo.tick(dt, J, E), info: () => M.fauna.antigo.info(), desliga: () => M.fauna.antigo.desliga() });                  // bichos do passado (só com o portal violeta), em qualquer zona
   M.portal = criarPortal(M); M.registra({ tick: (dt, J) => M.portal.tick(dt, J), desliga: () => M.portal.desliga() });
   M.poderes = criarPoderes(M); M.registra({ semCongelar: true, liga: () => M.poderes.liga(), tick: (dt, J) => M.poderes.tick(dt, J), tecla: (e) => M.poderes.tecla(e), info: () => M.poderes.info(), desliga: () => M.poderes.desliga() });
@@ -153,10 +161,17 @@ export function criarMundo({ cena, cam, renderer, el, luzes, H, opts }){
   M.vento = criarVento(M); M.registra({ tick: (dt, J, E) => M.vento.tick(dt, J, E), info: () => M.vento.info(), desliga: () => M.vento.parar() });
   M.cascata = criarCascata(M, M.vento); M.registra({ zona: "parque", tick: (dt, J, E) => M.cascata.tick(dt, J, E), info: () => M.cascata.info(), desliga: () => M.cascata.desliga() });
   M.vegetacao = criarVegetacao(M, M.vento); M.registra({ tick: (dt, J, E) => M.vegetacao.tick(dt, J, E), info: () => M.vegetacao.info(), tecla: (e) => M.vegetacao.placas.tecla(e), desliga: () => M.vegetacao.placas.desliga() }); M.kml.aoCarregar(() => M.vegetacao.regenera());
+  M.fauna.libelulas=criarLibelulas(M);M.registra({tick:(dt,J,E)=>M.fauna.libelulas.tick(dt,J,E),info:()=>M.fauna.libelulas.info(),desliga:()=>M.fauna.libelulas.desliga()});
   M.fauna.sapinhos = criarSapinhos(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.sapinhos.tick(dt, J, E), info: () => M.fauna.sapinhos.info(), desliga: () => M.fauna.sapinhos.desliga() });
   M.fauna.aves = criarAves(M); M.registra({ tick: (dt, J, E) => {if(M.zonas.atual==="parque"||M.lugares.epoca()!=="2026"||M.fauna.aves.lista.some(b=>b.esp==="gralha"))M.fauna.aves.tick(dt,J,E);}, info: () => M.fauna.aves.info(), desliga: () => M.fauna.aves.desliga(), aoSalto: () => M.fauna.aves.desliga() });
+  M.capaPreta=criarCapaPreta(M);M.registra({tick:(dt,J)=>M.capaPreta.tick(dt,J),desliga:()=>M.capaPreta.desliga()});
+  M.extracao1950=criarExtracao1950(M);M.registra({tick:(dt,J)=>M.extracao1950.tick(dt,J),desliga:()=>M.extracao1950.desliga()});
+  M.moradores1950=criarMoradores1950(M);M.registra({tick:(dt,J)=>M.moradores1950.tick(dt,J),desliga:()=>M.moradores1950.desliga()});
+  M.npcsCentro=criarNpcsCentro(M);M.registra({tick:(dt,J)=>M.npcsCentro.tick(dt,J),desliga:()=>M.npcsCentro.desliga()});
   M.ancestral=criarAncestral(M);M.registra({tick:(dt,J)=>M.ancestral.tick(dt,J),desliga:()=>M.ancestral.desliga()});
+  M.futuro=criarEpilogo(M);M.registra({tick:(dt,J)=>M.futuro.tick(dt,J),desliga:()=>M.futuro.desliga()});
   M.espiritoGralha=criarAparicoes(M);M.registra({tick:(dt,J)=>M.espiritoGralha.tick(dt,J),desliga:()=>M.espiritoGralha.desliga()});
+  M.olaria=criarFlorestaOlaria(M);M.registra({tick:(dt,J)=>M.olaria.tick(dt,J),desliga:()=>M.olaria.desliga()});
   M.fauna.andorinhas = criarAndorinhas(M); M.registra({ zona: "parque", tick: (dt, J, E) => M.fauna.andorinhas.tick(dt, J, E), info: () => M.fauna.andorinhas.info(), desliga: () => M.fauna.andorinhas.desliga() });
   M.agenda.registra({ id: "andorinhas", cfg: EVENTOS.andorinhas, dispara: () => M.fauna.andorinhas.chega() });
   M.fauna.conflitos = criarConflitos(M); M.registra({ zona: "parque", tick: (dt, J) => M.fauna.conflitos.tick(dt, J), info: () => M.fauna.conflitos.info() });

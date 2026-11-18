@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/trolley3d.js --bundle --format=iife --global-name=Trolley3D --minify --outfile=dist/trolley3d.min.js",
+    "build": "esbuild src/trolley3d.js --bundle --format=iife --global-name=Trolley3D --minify --outfile=dist/trolley3d.min.js && node scripts/versao-build.mjs",
     "start": "npx serve ..",
     "test": "node --test test/*.test.mjs",
     "test:browser": "node test/browser/poderes.cjs",

@@ -1,0 +1,50 @@
+{
+  "base": {
+    "caminhada": 10.709999999831888,
+    "corrida": 28.89999999971448,
+    "epoca": "2026",
+    "resolucao": {
+      "modo": "baixa",
+      "pixelRatio": 0.5,
+      "max": 1,
+      "min": 0.5,
+      "opcoes": {
+        "auto": {
+          "nome": "Automática",
+          "escala": 1
+        },
+        "alta": {
+          "nome": "Alta · 100%",
+          "escala": 1
+        },
+        "media": {
+          "nome": "Média · 75%",
+          "escala": 0.75
+        },
+        "baixa": {
+          "nome": "Baixa · 50%",
+          "escala": 0.5
+        },
+        "minima": {
+          "nome": "Mínima · 35%",
+          "escala": 0.35
+        }
+      }
+    },
+    "login": null
+  },
+  "voo": {
+    "normal": 264.599999996235,
+    "turbo": 440.99999999723116,
+    "altura": 102.33444799797482,
+    "subiu": true,
+    "voando": true
+  },
+  "res": {
+    "n": 0.35,
+    "w": 448,
+    "modo": "minima",
+    "salvo": "minima"
+  },
+  "errors": []
+}

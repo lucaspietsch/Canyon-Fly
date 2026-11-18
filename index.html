@@ -37,6 +37,11 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
   <p>Mundo aberto do Cânion Fortaleza e de Cambará do Sul. Explore trilhas, observe a fauna e viva a aventura da tirolesa.</p>
   <div id="aparelho">Reconhecendo o aparelho…</div>
   <button id="som-menu" type="button" aria-label="Configurar música" style="position:absolute;right:16px;top:16px;min-width:44px;min-height:44px;border:1px solid #63785c;border-radius:12px;background:#17241f;color:#f3e5ba;cursor:pointer">♫</button>
+  <label style="font-size:14px">Resolução do jogo
+    <select id="resolucao-inicial" aria-label="Resolução do jogo" style="background:#17241f;color:#e9efc0;border:1px solid #63785c;border-radius:8px;padding:10px">
+      <option value="auto">Automática</option><option value="alta">Alta · 100%</option><option value="media">Média · 75%</option><option value="baixa">Baixa · 50%</option><option value="minima">Mínima · 35%</option>
+    </select>
+  </label>
   <button id="jogar">▶ CanyonFly</button>
   <div id="barra"><i></i></div>
   <div id="status"></div>
@@ -45,8 +50,10 @@ html,body{margin:0;height:100%;background:#0b0e08;overflow:hidden;font-family:"S
 <script>
   /* CanyonFly: mundo aberto do Cânion Fortaleza e arredores. Abra por um servidor estático (ex.: Live Server do VS Code, ou `npx serve .`).
      O pacote t3d/dist/trolley3d.min.js só é baixado depois do clique, com barra de progresso; o tamanho e o tempo saem no console. */
-  const BUNDLE = "t3d/dist/trolley3d.min.js";
+  const BUNDLE = "t3d/dist/trolley3d.min.js?v=4ab98475dcba";
   const $ = (id) => document.getElementById(id), btn = $("jogar"), barra = $("barra"), fill = barra.firstElementChild, status = $("status");
+  const resolucaoInicial=$("resolucao-inicial");try{const r=localStorage.getItem('canyonfly:resolucao');if([...resolucaoInicial.options].some(o=>o.value===r))resolucaoInicial.value=r;}catch(_){}
+  resolucaoInicial.onchange=()=>{try{localStorage.setItem('canyonfly:resolucao',resolucaoInicial.value);}catch(_){}};
   const mb = (n) => (n / 1048576).toFixed(2) + " MB";
   async function baixa(url, aoProgresso){
     const r = await fetch(url, { cache: "force-cache" }); if(!r.ok) throw new Error("HTTP " + r.status + " em " + url);

@@ -1,0 +1,21 @@
+{
+  "centro": {
+    "x": 329.174928697316,
+    "z": -27341.05291160772
+  },
+  "golpes": 2,
+  "lados": [
+    0,
+    1
+  ],
+  "protecao": true,
+  "retornoSemDuplicacao": true,
+  "formas": [
+    "cervo",
+    "boi",
+    "pirarucu",
+    "humano",
+    "cervoHumano"
+  ],
+  "errors": []
+}

@@ -9,16 +9,20 @@ Pit tem modelo próprio no jogador e nas missões do Dia 1: pele morena clara, c
 
 ## Login
 
-Em `data/seguranca/senhas.js`, preencher `OPERADORES.pit.salt`, `iter` e `hash` com a saída de `tools/gerar-hash.html` ou `node tools/gerar_hash.mjs pit pit`. Login reservado: `pit`. Não inserir senha em texto. O placeholder vazio mantém a vaga bloqueada em produção. O corpo normal inicial continua disponível para o passeio de visitante; escolher o operador e usar sua transformação exige a sessão própria.
+Em `data/seguranca/senhas.js`, preencher `OPERADORES.pit.salt`, `iter` e `hash` com a saída de `tools/gerar-hash.html` ou `node tools/gerar_hash.mjs pit pit`. Login reservado: `pit`. Não inserir senha em texto. O placeholder vazio mantém a vaga bloqueada em produção. O Pit inicial pode agora ativar a armadura manualmente com T ou pelo painel “Pit / Desempenho”, sem login e sem atravessar o portal. A seleção das contas de operador mantém o login existente. A mudança solicitada libera o poder do personagem inicial; não altera senhas nem sessões dos outros operadores.
 
 PBKDF2/SHA-256, salt próprio e mínimo de 100.000 iterações seguem o sistema existente. O login de teste `teste` agora seleciona Pit; `teste.pit` também funciona, com a senha de teste já configurada, exclusivamente em localhost ou `?debug`. Sessão por aba. Não há senha nova de produção neste commit.
 
 ## Poderes e comandos
 
-Transformação automática com Pit logado e selecionado na época 1950; retorna ao uniforme e desfaz hologramas/tempo parado ao sair da transformação. A armadura tem capacete integral, placas pretas, linhas azuis/violeta pulsantes e CardPuter com tela de energia e tipo. Pit não possui Lábia; ela continua na Diully.
+A transformação manual com T funciona no presente e permanece ativa ao mudar de época. T novamente retorna ao uniforme. A troca de personagem e a saída da partida desfazem a forma, o voo e os poderes. A transformação automática de operadores logados em 1950 continua disponível. A armadura tem capacete integral, placas pretas, linhas azuis/violeta pulsantes e CardPuter com tela de energia e tipo. Pit não possui Lábia; ela continua na Diully.
 
 | Ação | Teclado/mouse | Controle padrão |
 | --- | --- | --- |
+| Transformar / voltar ao normal | T ou painel Pit / Desempenho | Painel na tela |
+| Voar / pousar | G ou painel | Painel na tela |
+| Subir / descer no voo | Espaço / Ctrl | — |
+| Acelerar no voo | Shift ou corrida ligada por R | — |
 | Projetar holograma | Clique curto no cenário ou V | R2 |
 | Alternar fraco/forte | Q | R1 |
 | Hackear o alvo na mira | E | L1 |
@@ -41,3 +45,9 @@ Tempo parado suspende a simulação do mundo, incluindo NPCs, fauna/aves, água,
 - `PIT_SCREENSHOTS=1 node t3d/test/browser/pit-game.cjs` — teste do bundle real no debug, área de treino, transformação com sessão simulada após validação separada da autenticação, três famílias, combate, hack e retorno normal. Compara o mundo antes/depois durante o congelamento e verifica que Pit se move. O parâmetro salva os quatro prints desta página; sem ele, apenas testa. `PLAYWRIGHT_CHROMIUM_EXECUTABLE` permite selecionar o Chromium instalado.
 
 O controle físico não estava disponível: seu mapeamento foi testado com Gamepad API simulada. O build mantém dois avisos preexistentes de chaves duplicadas em `cenario.js` e `terreno.js`.
+
+## Mobilidade e desempenho
+
+Caminhada e corrida do Pit receberam multiplicador 1,7, tanto normal quanto transformado. O voo da armadura percorre o mapa a 90 m/s, com 150 m/s no turbo. Começa a 35 m acima do chão; Espaço/Ctrl ajustam entre 8 e 180 m. O voo acompanha o relevo e atravessa os obstáculos terrestres. Ao pousar, retorna à área caminhável mais próxima; água funda exige procurar terra firme. Ao destransformar sobre uma área imprópria, usa a origem segura do voo.
+
+A resolução pode ser escolhida na tela inicial ou no painel “Pit / Desempenho”: Automática, Alta (100%), Média (75%), Baixa (50%) ou Mínima (35%). As porcentagens são relativas à densidade máxima de pixels do aparelho. A opção manual permanece fixa e é salva em `canyonfly:resolucao`. A automática mantém o ajuste por desempenho já existente.

@@ -1,0 +1,31 @@
+import {Group,Mesh,CylinderGeometry,SphereGeometry,BufferGeometry,Float32BufferAttribute,MeshStandardMaterial,DoubleSide,PointLight} from 'three';
+import {U} from '../config.js';
+import {pisoHistorico} from '../historico/chao.js';
+export function criarVisualCapaPreta(H){
+ const mat=(color,extra={})=>new MeshStandardMaterial({color,roughness:.9,...extra}),preto=mat(0x101115),pele=mat(0xa6a49c),lapela=mat(0x26282c,{roughness:.5,side:DoubleSide}),chapeu=mat(0x0a0c0f,{roughness:.65});
+ const r=H.pessoa3d({nome:'Capa Preta',x:0,y:0,z:0,yaw:0,camisa:preto,manga:preto,calca:preto,pele,cabelo:0x141414,barba:false,oculos:false});r.av.name='capa-preta-cambara-sa';r.capG.visible=r.ocG.visible=false;r.equip.forEach(o=>o.visible=false);if(r.nome)r.nome.visible=false;r.estat.forEach(o=>o.visible=false);r.pernasA.grupo.visible=true;
+ for(const q of r.pernasA.quadril){for(const o of q.children)if(o.isMesh&&o.geometry.type==='BoxGeometry')o.visible=false;q.traverse(o=>{if(o.isMesh)o.material=preto;});}
+ for(const b of [r.bD,r.bE]){b.mao.traverse(o=>{if(o.isMesh)o.material=preto;});for(const o of b.co.children)if(o.isMesh&&(o.geometry.type==='BoxGeometry'||o.position.y<-.9))o.visible=false;}
+ const hat=new Group();hat.name='cartola-capa-preta';r.cab.add(hat);const brim=new Mesh(new CylinderGeometry(1.24,1.24,.10,36),chapeu);brim.position.y=.76;brim.scale.z=.88;hat.add(brim);const crown=new Mesh(new CylinderGeometry(.82,.89,1.35,32),chapeu);crown.position.y=1.42;crown.scale.z=.88;hat.add(crown);const band=new Mesh(new CylinderGeometry(.90,.90,.22,32),lapela);band.position.y=.93;band.scale.z=.88;hat.add(band);
+ // A sombra acompanha o rosto, sem uma máscara ou óculos sobre os olhos.
+ const head=r.rosto.cabeca;head.geometry=head.geometry.clone();const hp=head.geometry.attributes.position,shade=[];for(let i=0;i<hp.count;i++){const v=Math.max(.12,Math.min(1,(-hp.getY(i)+.2)*2.2));shade.push(v,v,v);}head.geometry.setAttribute('color',new Float32BufferAttribute(shade,3));head.material=head.material.clone();head.material.vertexColors=true;head.material.needsUpdate=true;r.rosto.olhos.forEach(o=>o.visible=false);for(const o of r.cab.children)if(o.isMesh&&o.position.z>.7&&o.position.y>=-.2){o.material=o.material.clone();o.material.color.multiplyScalar(o.position.y<-.1?.65:.4);}
+
+ const tri=(p,points,m)=>{const geo=new BufferGeometry();geo.setAttribute('position',new Float32BufferAttribute(points.flat(),3));geo.computeVertexNormals();p.add(new Mesh(geo,m));};
+ for(const s of [-1,1]){tri(r.tronco,[[s*.16,1.98,.76],[s*.72,1.75,.70],[s*.27,.68,.77]],lapela);tri(r.tronco,[[s*.18,2.13,.76],[s*.10,1.84,.82],[s*.43,1.91,.73]],lapela);}tri(r.tronco,[[-.07,1.88,.83],[.07,1.88,.83],[.12,1.17,.81],[.12,1.17,.81],[-.12,1.17,.81],[-.07,1.88,.83]],preto);
+ for(let i=0;i<4;i++){const b=new Mesh(new SphereGeometry(.035,8,6),mat(0x6a6b6c));b.position.set(.06,.39+i*.29,.72);r.tronco.add(b);}
+ const rows=14,cols=36,positions=[],indices=[];for(let y=0;y<=rows;y++)for(let x=0;x<=cols;x++){const f=y/rows,a=1.02+x/cols*(Math.PI*2-2.04),radius=.91+f*1.35;positions.push(Math.sin(a)*radius,4.27-f*4.06,Math.cos(a)*radius*.72-.10);}for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const a=y*(cols+1)+x,b=a+cols+1;indices.push(a,b,a+1,a+1,b,b+1);}const base=new Float32Array(positions),geo=new BufferGeometry();geo.setAttribute('position',new Float32BufferAttribute(base.slice(),3));geo.setIndex(indices);geo.computeVertexNormals();const cape=new Mesh(geo,mat(0x12151a,{side:DoubleSide}));cape.name='capa-preta-tecido-animado';cape.frustumCulled=false;r.av.add(cape);
+ function tick(t){const a=geo.attributes.position;for(let i=0;i<a.count;i++){const f=1-(base[i*3+1]-.21)/4.06;a.setXYZ(i,base[i*3]+Math.sin(t*1.6+i*.11)*.10*f,base[i*3+1]+Math.sin(t*2+i*.4)*.035*f,base[i*3+2]+Math.sin(t*1.9+i*.15)*.15*f);}a.needsUpdate=true;geo.computeVertexNormals();r.bD.pv.rotation.set(.10,0,-.10);r.bE.pv.rotation.set(.05,0,.10);r.bD.co.rotation.x=-.32;r.bE.co.rotation.x=-.45;r.cab.rotation.y=Math.sin(t*.5)*.08;}
+ const geos=new Map(),mats=new Map();r.av.traverse(o=>{if(o.isMesh&&o!==cape){if(!geos.has(o.geometry))geos.set(o.geometry,o.geometry.clone());o.geometry=geos.get(o.geometry);const arr=Array.isArray(o.material)?o.material:[o.material],copy=arr.map(m=>{if(!mats.has(m))mats.set(m,m.clone());return mats.get(m);});o.material=Array.isArray(o.material)?copy:copy[0];}});
+ return{g:r.av,rig:r,cape,tick,dispose(){r.av.removeFromParent();for(const o of geos.values())o.dispose();for(const o of mats.values())o.dispose();geo.dispose();cape.material.dispose();}};
+}
+export const capaPretaAparece=(epoca,hora,distancia)=>epoca==='1950'&&(hora>=19||hora<5)&&Number.isFinite(distancia)&&distancia<100*U;
+export function criarCapaPreta(M){
+ const S={ativo:false,visual:null,t:0,hot:null,luz:null,origem:null};
+ function ponto(){const it=M.lugares?.item?.('fabrica');if(!it)return null;const p=it.chegada||{x:it.centro[0],z:it.centro[1],yaw:0},yaw=p.yaw||0;return{x:p.x+Math.cos(yaw)*8*U+Math.sin(yaw)*30*U,z:p.z-Math.sin(yaw)*8*U+Math.cos(yaw)*30*U,yaw};}
+ function oculta(){if(S.visual)S.visual.g.visible=false;if(S.luz)S.luz.visible=false;if(S.hot){const i=M.cen.hotspots.indexOf(S.hot);if(i>=0)M.cen.hotspots.splice(i,1);S.hot=null;}S.ativo=false;}
+ function tick(dt,J){S.t+=dt;const p=ponto(),h=M.ciclo.hora(),on=!!J&&!!p&&capaPretaAparece(M.lugares.epoca(),h,Math.hypot(J.x-p.x,J.z-p.z));if(!on){if(S.ativo)oculta();return;}
+  if(!S.visual){S.visual=criarVisualCapaPreta(M.H);M.cen.grupo.add(S.visual.g);S.luz=new PointLight(0x98b2cb,6,13*U,1);M.cen.grupo.add(S.luz);}
+  if(!S.ativo){S.hot={id:'capa-preta-cambara',x:p.x,z:p.z,r:5*U,rotulo:()=> 'Capa Preta · assombração da Cambará S/A',acao(){M.terminal?.msg('sobrenatural','Uma figura de cartola observa o pátio da Cambará S/A. Sua capa se move mesmo quando o vento se cala.');M.ctx?.mostraAviso('Capa Preta · Cambará S/A');}};M.cen.hotspots.push(S.hot);}S.ativo=true;S.origem=p;if(S.ultimoPiso===undefined||S.t-S.ultimoPiso>2){S.piso=pisoHistorico(M,p.x,p.z);S.ultimoPiso=S.t;}const y=S.piso;S.visual.g.visible=true;S.visual.g.position.set(p.x,y+.12*U+Math.sin(S.t*.85)*.06*U,p.z);S.visual.g.rotation.y=Math.atan2(J.x-p.x,J.z-p.z);S.visual.tick(S.t);S.luz.visible=true;S.luz.position.set(p.x+3*U,y+4*U,p.z+3*U);S.hot.x=p.x;S.hot.z=p.z;
+ }
+ return{S,ponto,tick,desliga:oculta};
+}

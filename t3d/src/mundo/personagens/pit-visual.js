@@ -1,3 +1,5 @@
+import {criarOculosPit} from './pit-oculos.js';
+import {criarBarbaPit} from './pit-barba.js';
 import { Group, Mesh, Shape, ExtrudeGeometry, SphereGeometry, CylinderGeometry, TorusGeometry, TubeGeometry, CatmullRomCurve3, Vector3, MeshStandardMaterial, MeshBasicMaterial, CanvasTexture, SRGBColorSpace } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { criarRosto, geometriaCabeca } from './rosto.js';
@@ -62,8 +64,9 @@ export function personalizaPit(rig, modelo={}){
   // Cabeça normal, própria: mandíbula mais marcada, barba escura, olhos castanhos e sobrancelhas sérias.
   const rostoG=grupo(rig.cab,'normal');const rosto=criarRosto(rostoG,{pele,cabelo:barba,olhos:0x493c2c});rig.rosto=rosto;
   const pos=rosto.cabeca.geometry.attributes.position;for(let i=0;i<pos.count;i++)if(pos.getY(i)<-.28)pos.setX(i,pos.getX(i)*1.07);pos.needsUpdate=true;rosto.cabeca.geometry.computeVertexNormals();
-  mk(rostoG,geometriaCabeca(false,-.25).scale(1.035,1.06,1.035),barba);
-  for(const s of [-1,1]){oval(rostoG,barba,s*.12,-.32,.73,.15,.045,.06);linha(rostoG,[[s*.13,.23,.72],[s*.30,.28,.73],[s*.51,.24,.65]],barba,.049);}
+  criarBarbaPit(rostoG,barba);
+  criarOculosPit(rostoG);
+  for(const s of [-1,1]){linha(rostoG,[[s*.13,.23,.72],[s*.30,.28,.73],[s*.51,.24,.65]],barba,.049);}
   const cabelo=mk(rostoG,new SphereGeometry(.88,28,20,0,Math.PI*2,0,Math.PI*.46),barba,0,.08,-.06);cabelo.scale.set(1,1.08,.95);
   const brinco=mk(rostoG,new TorusGeometry(.075,.026,10,22),borracha,.92,-.18,-.04);brinco.rotation.y=Math.PI/2;
   const casco=mat(0xd98432,.42,.08);mk(rostoG,new SphereGeometry(1.03,36,24,0,Math.PI*2,0,Math.PI*.48),casco,0,.15,0);

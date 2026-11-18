@@ -1,3 +1,5 @@
+import {criarAnhangaCervoHumano} from './anhanga-cervo-humano.js';
+import {criarAnhangaHumano} from './anhanga-humano.js';
 import { Group, Mesh, SphereGeometry, CylinderGeometry, BoxGeometry, ConeGeometry, TubeGeometry, CatmullRomCurve3, Vector3, MeshStandardMaterial, MeshBasicMaterial, PointLight, Points, PointsMaterial, BufferGeometry, Float32BufferAttribute, AdditiveBlending } from "three";
 import { canvasTex } from "../../lib.js";
 import { U } from "../config.js";
@@ -5,13 +7,13 @@ import { U } from "../config.js";
 /* ============================================================================================================
    ANHANGÁ — espírito protetor da caça e da mata na tradição tupi ("anhanga": espírito, sombra, alma). Justiça na mata: castiga quem maltrata os bichos.
    • Forma principal: CERVO BRANCO GIGANTE, pelagem alva, galhada alta, olhos de BRASA que pulsam. NÃO há cruz na testa.
-   • Metamorfoses: tatu · boi · pirarucu · humano — sempre com os mesmos olhos de brasa, trocando de corpo no meio de uma névoa.
+   • Metamorfoses: boi · pirarucu · humano · cervo humanoide — sempre com os mesmos olhos de brasa, trocando de corpo no meio de uma névoa.
    • Este arquivo só desenha e anima. Quem o põe no mundo (perto da Árvore Anciã e dos pontos encantados) é a Antiga Floresta da Olaria.
    Depuração (F3 aberto): Shift+' (aspas) ou Numpad* — Ctrl+' ou Numpad/ some — aparece à frente do jogador; de novo, troca de forma. Ctrl+' some com ele.
    ============================================================================================================ */
 
 export const ANHANGA = {
-  formas: ["cervo", "tatu", "boi", "pirarucu", "humano"],
+  formas: ["cervo", "boi", "pirarucu", "humano", "cervoHumano"],
   tempoTroca: 1.1,                                   // s de névoa em cada metade da metamorfose
   distanciaDebug: 13,                                // m à frente do jogador (Shift+' (aspas) ou Numpad* — Ctrl+' ou Numpad/ some)
   brasa: 0xff5a1c, brasaHalo: 0xff7a2a, pelo: 0xf3f0e8, osso: 0xe9e2cf
@@ -46,12 +48,8 @@ export function criaAnhanga(H){
       membro(g, pelo, q, jo, .2, .11); membro(g, pelo, jo, pe.clone().setY(.1), .1, .06); const c = new Mesh(new BoxGeometry(.13, .14, .17), nariz); c.position.set(x, .06, z + .03); g.add(c); }
     elip(g, pelo, .12, .16, .1, 0, 2.2, -1.0).rotation.x = -.6; }
 
-  /* ---------- TATU ---------- */
-  { const g = new Group(); formas.tatu = g; const faixas = canvasTex(128, 128, (c, w, h) => { c.fillStyle = "#8d7f70"; c.fillRect(0, 0, w, h); for(let y = 0; y < h; y += 10){ c.fillStyle = "rgba(40,30,22,.55)"; c.fillRect(0, y, w, 2.5); } for(let x = 0; x < w; x += 12){ c.fillStyle = "rgba(255,255,255,.08)"; c.fillRect(x, 0, 1.5, h); } }, { repeat: [1, 1] });
-    const casco = mat(0xffffff, { roughness: .8 }); casco.map = faixas; const dome = elip(g, casco, .52, .4, .82, 0, .55, 0); dome.rotation.x = 0;
-    elip(g, mat(0x9a8d7e), .2, .2, .34, 0, .38, .86); elip(g, mat(0x9a8d7e), .1, .09, .2, 0, .33, 1.16); for(const sx of [-1, 1]){ const o = elip(g, mat(0x9a8d7e), .05, .15, .06, sx * .1, .56, .74); o.rotation.z = sx * -.2; }
-    olhos(g, .13, .45, 1.04, .8); tubo(g, mat(0x8d7f70), [[0, .4, -.75], [0, .3, -1.1], [0, .12, -1.4]], .09);
-    for(const [x, z] of [[.3, .5], [-.3, .5], [.3, -.45], [-.3, -.45]]){ membro(g, mat(0x9a8d7e), new Vector3(x, .4, z), new Vector3(x * 1.1, .05, z + .06), .12, .08); } }
+  // Marcas geométricas e galhada ampliada na forma animal.
+  {const g=formas.cervo,vermelho=mat(0x9e3430);for(const side of [-1,1]){for(const z of [-.44,0,.44])tubo(g,vermelho,[[1.75,z-.12],[1.88,z],[1.75,z+.12],[1.62,z],[1.75,z-.12]].map(([y,z])=>[side*(.52*Math.sqrt(1-((y-1.75)/.55)**2-z*z)+.012),y,z]),.018);for(const z of [.62,-.68])for(const y of [.22,.35]){const ring=new Mesh(new CylinderGeometry(.104,.104,.045,14),vermelho);ring.position.set(side*.30,y,z);g.add(ring);}}const head=g.userData.cabeca;tubo(head,vermelho,[[0,.11,.38],[0,.21,.12],[0,.23,-.08]],.014);head.children.filter(o=>o.isGroup&&o.position.y===.18).forEach(o=>o.scale.set(1.25,1.15,1.12));}
 
   /* ---------- BOI ---------- */
   { const g = new Group(), boi = mat(0xd9d3c5, { emissive: 0x15130f, emissiveIntensity: .5 }); formas.boi = g;
@@ -72,10 +70,8 @@ export function criaAnhanga(H){
     elip(fg, mat(0x3f4d3f), .03, .24, .55, 0, .36, -.7); for(const sx of [-1, 1]){ const o = elip(fg, mat(0x6b7a6b), .03, .2, .32, sx * .3, -.2, .9); o.rotation.z = sx * .8; } }
 
   /* ---------- HUMANO ---------- */
-  { const g = new Group(); formas.humano = g; if(H && H.pessoa3d){ const M = H.M, c = M(0xe9e4d6, { roughness: .95 }), p = new Group();
-      const rig = H.pessoa3d({ nome: "", x: 0, y: 0, z: 0, yaw: 0, camisa: c, manga: c, calca: c, pele: M(0xd9cfc0, { roughness: .8 }), cabelo: 0xe9e6e0, barba: false, rabo: true, olhos: C.brasa });
-      rig.capG.visible = false; rig.ocG.visible = false; rig.equip.forEach(o => { o.visible = false; }); if(rig.nome) rig.nome.visible = false; rig.av.parent && rig.av.parent.remove(rig.av); rig.av.scale.setScalar(1.2 / U); p.add(rig.av); g.add(p); g.userData.rig = rig;
-      olhos(rig.cab, .33, .08, .9, .85); } }
+  { const g=new Group();formas.humano=g;if(H&&H.pessoa3d){const visual=criarAnhangaHumano(H),rig=visual.rig;rig.av.removeFromParent();rig.av.scale.setScalar(1.2/U);g.add(rig.av);g.userData.rig=rig;g.userData.visual=visual;olhos(rig.cab,.33,.08,.9,.85);}}
+  {const g=new Group();formas.cervoHumano=g;if(H&&H.pessoa3d){const visual=criarAnhangaCervoHumano(H),rig=visual.rig;rig.av.removeFromParent();rig.av.scale.setScalar(1.2/U);g.add(rig.av);g.userData.rig=rig;g.userData.visual=visual;}}
   for(const k in formas){ raiz.add(formas[k]); formas[k].visible = false; }
 
   /* névoa da metamorfose */
@@ -94,6 +90,7 @@ export function criaAnhanga(H){
     ng.attributes.position.needsUpdate = true; nevoa.material.opacity = Math.min(.85, S.mist * 1.1);
     for(let i = 0; i < NP; i++){ const s = seed[i], a = s[0] + S.rel * (.2 + s[2] * .3), r = .6 + s[1] * 2.2 * (.5 + S.mist * .6); np[i * 3] = Math.cos(a) * r; np[i * 3 + 1] = .1 + ((S.rel * (.25 + s[2] * .3) + s[1] * 3) % 1) * 2.8 * (.6 + S.mist); np[i * 3 + 2] = Math.sin(a) * r; }
     const pulso = .8 + .2 * Math.sin(S.rel * 2.6) + .08 * Math.sin(S.rel * 7.3); olhosMat.color.setRGB(1, .28 + .14 * pulso, .07); halos.forEach(h => { h.material.opacity = .22 + .3 * pulso; }); (halos.luzes || []).forEach(l => { l.intensity = .5 + .6 * pulso; });
+    formas.humano.userData.visual?.tick(S.rel);formas.cervoHumano.userData.visual?.tick(S.rel);
     const c = formas.cervo.userData.cabeca; if(c){ c.rotation.x = .5 + Math.sin(S.rel * .5) * .08; c.rotation.y = Math.sin(S.rel * .33) * .22; }
     const p = formas.pirarucu.userData; if(p.nado){ p.nado.position.y = 1.1 + Math.sin(S.rel * 1.4) * .08; p.nado.rotation.z = Math.sin(S.rel * 1.2) * .05; p.cauda.rotation.y = Math.sin(S.rel * 3) * .5; }
   }

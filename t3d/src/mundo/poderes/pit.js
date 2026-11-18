@@ -1,3 +1,4 @@
+import {criarVooPit} from './pit-mobilidade.js';
 import { Group, Mesh, BoxGeometry, SphereGeometry, CylinderGeometry, MeshBasicMaterial, MeshStandardMaterial, CanvasTexture, RepeatWrapping, AdditiveBlending, PointLight, SRGBColorSpace } from "three";
 import { visualPitDe } from "../personagens/pit-visual.js";
 import { U } from "../config.js";
@@ -10,6 +11,7 @@ export function criarPit(M, X){
   M.cen.grupo.add(S.g);
   const d = () => PODERES.pit, T = () => M.transformacao;
   const ativo = () => S.ativo && M.personagens && M.personagens.ativo === "pit" && T() && T().ativa();
+  const mobilidade=criarVooPit(M,ativo);
   const avatar = () => { const am = M.H && M.H.andarMod; return am && am.avatar ? am.avatar() : (M.ctx && M.ctx.avatar ? M.ctx.avatar() : null); };
   /* ---- material holográfico: cor aditiva + linhas de varredura + tremulação ---- */
   const scan = (() => { const c = document.createElement("canvas"); c.width = 8; c.height = 64; const x = c.getContext("2d"); x.fillStyle = "#ffffff"; x.fillRect(0, 0, 8, 64); x.fillStyle = "#5a5a5a"; for(let k = 0; k < 64; k += 4) x.fillRect(0, k, 8, 2); const t = new CanvasTexture(c); t.wrapS = t.wrapT = RepeatWrapping; t.repeat.set(1, 6); t.colorSpace = SRGBColorSpace; return t; })();
@@ -87,8 +89,9 @@ export function criarPit(M, X){
   const vesteEm=av=>{const v=visualPitDe(av);v?.forma(true);v?.tick(.4,S.energia,S.tipo);};
   const despeEm=av=>visualPitDe(av)?.forma(false);
   const corpo=tipo=>tipo==="assombracao"?corpoAssombracao(0xb44cff):tipo==="humano"?corpoHumano(0x4fd8ff):corpoLobo(0x4fd8ff);
-  function aoTransformar(id, on){ if(id !== "pit") return; S.ativo = on; if(on){ S.energia = 100; veste(); } else { S.foco=null;S.focoT=0;despe(); S.holos.forEach(h => some(h, null)); S.holos = []; if(M.congelado) liberaTempo(); } }
+  function aoTransformar(id, on){ if(id !== "pit") return; S.ativo = on; if(on){ S.energia = 100; veste(); } else { mobilidade.desliga();S.foco=null;S.focoT=0;despe(); S.holos.forEach(h => some(h, null)); S.holos = []; if(M.congelado) liberaTempo(); } }
   function tecla(e){ if(!podeControlar() || e.repeat || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return false; const J = M.jogador(), k = d().teclas; if(!J) return false;
+    if(e.code==="KeyG"){e.preventDefault();return mobilidade.voo();}
     if([k.tipo,"KeyY"].includes(e.code)){ e.preventDefault(); S.tipo = S.tipo === "lobo" ? "assombracao" : "lobo"; if(M.ctx) M.ctx.mostraAviso("Holograma: " + (S.tipo === "lobo" ? "pessoa/animal AZUL (fraco)" : "assombração VIOLETA (forte)")); return true; }
     if([k.hack,"KeyU"].includes(e.code)){ if(!alvoHack(J))return false;e.preventDefault(); hackeia(J); return true; } if([k.tempo,"KeyI"].includes(e.code)){ e.preventDefault(); paraTempo(); return true; } return false; }
   function tick(dt){ S.t += dt; S.cdHack=Math.max(0,S.cdHack-dt);S.focoT=Math.max(0,S.focoT-dt);if(S.focoT===0||S.foco?.morto)S.foco=null; S.cdTempo = Math.max(0, S.cdTempo - dt); if(S.parado > 0){ S.parado -= dt; const e = el(); if(e) e.style.transform = Math.random() < .12 ? "translateX(" + ((Math.random() - .5) * 4).toFixed(1) + "px)" : ""; if(S.parado <= 0) liberaTempo(); }
@@ -101,7 +104,7 @@ export function criarPit(M, X){
 
   }
 
-  const info = () => (ativo() ? "Pit: clique/R2/V holograma (" + (S.tipo === "lobo" ? "lobo azul" : "assombração violeta") + ") " + S.holos.length + "/" + d().maxHolos + (S.foco?" · foco "+S.foco.nome:"") + " · energia " + Math.round(S.energia) + "% · " + d().teclas.tipo.replace("Key", "") + " tipo · " + d().teclas.hack.replace("Key", "") + " hackear · " + d().teclas.tempo.replace("Key", "") + " parar tempo" + (S.parado > 0 ? " (PARADO " + S.parado.toFixed(1) + ")" : S.cdTempo > 0 ? " (" + Math.ceil(S.cdTempo) + ")" : "") : "");
+  const info = () => (ativo() ? "Pit: G voo rápido · clique/R2/V holograma (" + (S.tipo === "lobo" ? "lobo azul" : "assombração violeta") + ") " + S.holos.length + "/" + d().maxHolos + (S.foco?" · foco "+S.foco.nome:"") + " · energia " + Math.round(S.energia) + "% · " + d().teclas.tipo.replace("Key", "") + " tipo · " + d().teclas.hack.replace("Key", "") + " hackear · " + d().teclas.tempo.replace("Key", "") + " parar tempo" + (S.parado > 0 ? " (PARADO " + S.parado.toFixed(1) + ")" : S.cdTempo > 0 ? " (" + Math.ceil(S.cdTempo) + ")" : "") : "");
   function podeControlar(){return ativo() && (!M.andando || M.andando()) && !M.personagens?.S?.tela && !M.gente?.dialogoAberto?.() && !M.ctx?.construindo?.() && !M.H?.andarMod?.emCinema?.() && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||"");}
   let inicio=null, botoes=[];
   const down=e=>{if(e.button===0&&e.pointerType!=="touch"&&podeControlar())inicio={x:e.clientX,y:e.clientY,t:performance.now()};};
@@ -109,5 +112,5 @@ export function criarPit(M, X){
   const canvas=el();canvas?.addEventListener("pointerdown",down);canvas?.addEventListener("pointerup",up);
   function controle(){const pad=typeof navigator!=="undefined"?navigator.getGamepads?.()?.find(p=>p?.connected && p.mapping==="standard"):null;const novos=pad?pad.buttons.map(b=>b.pressed):[];if(podeControlar()&&pad){const J=M.jogador();if(novos[7]&&!botoes[7])M.poderes?.usa();for(const [i,code]of [[5,d().teclas.tipo],[4,d().teclas.hack],[3,d().teclas.tempo]])if(novos[i]&&!botoes[i])tecla({code,preventDefault(){}});}botoes=novos;}
   function dispose(){aoTransformar("pit",false);canvas?.removeEventListener("pointerdown",down);canvas?.removeEventListener("pointerup",up);S.hacks.forEach(h=>{h.luzes.forEach(([n,v,em])=>{if(em)n.emissiveIntensity=v;else n.intensity=v;});if(h.g)h.g.userData.hack=false;h.restaura?.();});S.hacks=[];S.hackeaveis.clear();scan.dispose();}
-  return { projeta, hackeia, alvoHack, registraHackeavel, paraTempo, liberaTempo, tecla, tick, aoTransformar, info, S, vesteEm, despeEm, corpo, controle, dispose };
+  return { mobilidade,voo:mobilidade.voo,voando:mobilidade.voando,projeta, hackeia, alvoHack, registraHackeavel, paraTempo, liberaTempo, tecla, tick, aoTransformar, info, S, vesteEm, despeEm, corpo, controle, dispose };
 }

@@ -1,3 +1,4 @@
+import {MODOS_RESOLUCAO,CHAVE_RESOLUCAO,perfilResolucao} from './resolucao.js';
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Shape, Path, ExtrudeGeometry, CylinderGeometry, BoxGeometry, TorusGeometry,
   RingGeometry, PlaneGeometry, CircleGeometry, RepeatWrapping, BackSide, InstancedMesh, ConeGeometry, Object3D, Quaternion, Euler, SphereGeometry, MeshStandardMaterial, MeshBasicMaterial, Mesh, AmbientLight, DirectionalLight, HemisphereLight,
@@ -83,7 +84,8 @@ export function montar(el, opts = {}){
   catch(e){ return null; }
   const RES = { max: Math.min(TOQUE ? 1.5 : 2, window.devicePixelRatio || 1), min: .75, soma: 0, n: 0, t: 0, espera: 5, pular: false };
   document.addEventListener("visibilitychange", () => { RES.pular = true; });                  // a volta de uma aba escondida não é lentidão
-  RES.pr = RES.max; renderer.setPixelRatio(RES.pr);
+  let salvoRes='auto';try{salvoRes=localStorage.getItem(CHAVE_RESOLUCAO)||'auto';}catch(_){}
+  RES.modo=perfilResolucao(salvoRes,RES.max).modo;RES.pr=perfilResolucao(RES.modo,RES.max).pixelRatio;renderer.setPixelRatio(RES.pr);
   renderer.outputColorSpace = SRGBColorSpace;
   el.appendChild(renderer.domElement);
   renderer.domElement.style.cssText = "display:block;width:100%;height:100%;touch-action:none;outline:none";
@@ -761,7 +763,7 @@ export function montar(el, opts = {}){
     const hit = ray.intersectObjects(alvos, false)[0]; renderer.domElement.style.cursor = hit ? "pointer" : "grab"; });
   el.addEventListener("click", e => { const m = e.target.closest(".mk"); if(m){ e.stopPropagation(); foco(m.dataset.id); } });
 
-  H.resolucao = () => ({ pixelRatio: RES.pr, max: RES.max, min: RES.min });
+  H.resolucao = (modo) => {if(modo!==undefined){const p=perfilResolucao(modo,RES.max);RES.modo=p.modo;RES.pr=p.pixelRatio;RES.soma=RES.n=RES.t=0;RES.espera=5;renderer.setPixelRatio(RES.pr);ajustar();try{localStorage.setItem(CHAVE_RESOLUCAO,RES.modo);}catch(_){}}return{modo:RES.modo,pixelRatio:RES.pr,max:RES.max,min:RES.modo==="auto"?RES.min:RES.pr,opcoes:MODOS_RESOLUCAO};};
   function ajustar(){ const w = el.clientWidth || 600, h = el.clientHeight || 400; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
   new ResizeObserver(ajustar).observe(el); ajustar();
 
@@ -985,7 +987,7 @@ export function montar(el, opts = {}){
     if(!vivo) return; requestAnimationFrame(quadro);
     if(el.clientWidth === 0 || el.clientHeight === 0) return;      // (offsetParent seria nulo em tela cheia)
     const agora = performance.now(), dtReal = (agora - ult) / 1000, dtq = Math.min(0.05, dtReal); ult = agora; if(J && !H.mundo?.congelado) J.tick(dtq);
-    if(RES.pular || document.hidden) RES.pular = false; else { RES.soma += dtReal; RES.n++; RES.t += dtReal; RES.espera -= dtReal;                 // resolução adaptativa (o primeiro quadro após a aba voltar não conta)
+    if(RES.pular || document.hidden) RES.pular = false; else if(RES.modo==="auto"){ RES.soma += dtReal; RES.n++; RES.t += dtReal; RES.espera -= dtReal;                 // resolução adaptativa (o primeiro quadro após a aba voltar não conta)
       if(RES.t >= 2){ const fps = RES.n / RES.soma; RES.t = RES.soma = 0; RES.n = 0;
         if(RES.espera <= 0){ const novo = fps < 28 ? Math.max(RES.min, RES.pr - .25) : fps > 52 ? Math.min(RES.max, RES.pr + .25) : RES.pr;
           if(novo !== RES.pr){ RES.pr = novo; renderer.setPixelRatio(novo); ajustar(); RES.espera = 4; } } } }
