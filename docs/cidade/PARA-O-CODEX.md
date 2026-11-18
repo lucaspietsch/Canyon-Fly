@@ -82,3 +82,4 @@ cd t3d && npm run build
 - `cidade/carro-pedra.js` (NOVO): Carro de Pedra + capela de São Cristóvão na saída sudoeste da cidade, [E] conta a lenda. `cidade.js` chama `criarCarroPedra(M, u, ruas)` na sede.
 - `docs/cidade/gera_cidade.py`: Av. Getúlio Vargas estendida rumo ao pórtico (KML do Lucas) até a borda do mapa; casas genéricas só até y −870; ruas densificadas a cada 20 m no KML gerado.
 - Conhecido: na borda sudoeste do mapa da cidade a fita da avenida some num trecho (o terreno de fora fica por cima).
+- `lugares/pavilhao.js` (NOVO): pavilhão de pedra + Capa Preta; criado junto com a fábrica em `lugares.js` (tick/dispose encadeados, `pavilhao` no objeto). Missão `l01-capa-preta` em `em-breve.js`. Rótulos de hotspot sem "[E]" (o HUD já põe).

@@ -94,3 +94,9 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - Monumento junto ao pórtico de entrada (29°03'57.50"S 50°09'40.93"W), com a capelinha de **São Cristóvão**. No jogo fica na **saída sudoeste** da cidade (o pórtico real está além da borda do mapa; distâncias de fora são comprimidas). `t3d/src/mundo/cidade/carro-pedra.js`, [E] conta a lenda.
 - Lenda (anos 1940): caminhões de madeira perdiam força na subida do Morro da Restinga Feia; um vulto de padre, morto num acidente ali, aparecia na janela pedindo carona. Em 1955 motoristas encomendaram o carrinho de pedra junto a São Cristóvão.
 - **Ideia de missão (terror leve):** à noite, dirigindo pela saída sudoeste, o motor "apaga" e aparece o vulto do padre pedindo carona; o jogador precisa levá-lo até a capelinha (ou buzinar ao passar). Combina com a volta no tempo: em 1955, ver os motoristas entregando o carrinho (versão amarela, faróis redondos).
+
+## Série "lendas" — 1ª missão: O Capa Preta (pavilhão de pedra da Cambará S/A)
+- Lugar: pavilhão comprido de PEDRA com abóbada coberta de musgo, janelas basculantes, portão verde de correr para a RS-020, guarita "Cambará S.A. BALANÇA" com a rampa da balança (Street Views de jul/2025, RS-020 nº 160, enviados pelo Lucas). `t3d/src/mundo/lugares/pavilhao.js`.
+- Lenda (Lucas): o Capa Preta voava por dentro do pavilhão e assustava os trabalhadores do turno da noite.
+- No jogo: das 19h às 5h ele voa em elipse sob a abóbada (capa batendo, olhos vermelhos), lampiões acendem e piscam; ao entrar à noite, aviso "O Capa Preta!". [E] no portão: o vigia conta a história.
+- Cadastrada como `l01-capa-preta` (em breve) em `data/missoes/em-breve.js`. Ligação com a Atiara (PROMPT-MESTRE: "missão contra as serrarias e contra o Capa Preta").

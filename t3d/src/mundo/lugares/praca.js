@@ -113,7 +113,7 @@ export function criarPraca(M, { poli, seq, urna, carona }){
       const dir = carona ? [carona.x - sc[0], carona.z - sc[1]] : [q.vx, q.vz], dl = Math.hypot(dir[0], dir[1]) || 1;
       try{ const en = criarEntornoSequoia(M, { sc, Y, dir: [dir[0] / dl, dir[1] / dl] }); G.add(en.g); S.colisores.push(...en.colisores); }catch(err){ console.warn("entorno da Sequoia:", err); } }
     S.colisores.push({ x0: sc[0] - 4.6, x1: sc[0] + 4.6, z0: sc[1] - 4.6, z1: sc[1] + 4.6 });
-    S.hotspots.push({ id: "sequoia", x: sc[0], z: sc[1], r: 11 * U, rotulo: () => "Sequoia Lunar — [E] ler a placa", rotuloE: "[E] ler a placa", acao: () => { if(M.terminal) M.terminal.msg("info", "Sequoia Lunar: uma das Árvores da Lua (Apollo 14, 1971), plantada nesta praça em 26/09/1982."); abrePlaca(M); } });
+    S.hotspots.push({ id: "sequoia", x: sc[0], z: sc[1], r: 11 * U, rotulo: () => "Sequoia Lunar — ler a placa", acao: () => { if(M.terminal) M.terminal.msg("info", "Sequoia Lunar: uma das Árvores da Lua (Apollo 14, 1971), plantada nesta praça em 26/09/1982."); abrePlaca(M); } });
   }
 
   /* ---------- Urna do Tempo ---------- */

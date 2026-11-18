@@ -3,6 +3,7 @@ import { U, LUGARES as C } from "../config.js";
 import { aberto, centroide, caixa, dentroPoli, descarta } from "./util.js";
 import { criarPraca, ruasDoEntorno, naPracaOuRua } from "./praca.js";
 import { criarFabrica } from "./fabrica.js";
+import { criarPavilhao } from "./pavilhao.js";
 import { criarVila } from "./vila.js";
 import { criarSantana } from "./santana.js";
 
@@ -40,7 +41,7 @@ export function criarLugares(M){
       S.itens.push({ id: "praca-sequoia", nome: "Sequoia Lunar", tipo: "praca", pts: P, centro: c, bb: caixa(P), carona: null, seq: s.pts, urna: urna && urna.pts, raio: C.cargaU.praca, constroi: () => criarPraca(M, { poli: P, seq: s.pts, urna: urna && urna.pts, carona: null }), chegada: { x: c[0] - 14 * U, z: c[1], yaw: Math.PI / 2 } }); });
     const vOuro = vilas[0] && centroide(aberto(vilas[0].pts));
     fabs.forEach(f => { const P = aberto(f.pts), c = centroide(P);
-      S.itens.push({ id: "fabrica", nome: "Cambará S/A", tipo: "fabrica", pts: P, centro: c, bb: caixa(P), raio: C.cargaU.fabrica, constroi: () => criarFabrica(M, { poli: P, ref: vOuro || c }), chegada: null }); });
+      S.itens.push({ id: "fabrica", nome: "Cambará S/A", tipo: "fabrica", pts: P, centro: c, bb: caixa(P), raio: C.cargaU.fabrica, constroi: () => { const f = criarFabrica(M, { poli: P, ref: vOuro || c }); let pv = null; try{ pv = criarPavilhao(M, f); f.g.add(pv.g); }catch(err){ console.warn("pavilhão de pedra:", err); } return Object.assign({}, f, { pavilhao: pv, tick: (dt, J) => { f.tick(dt, J); if(pv) pv.tick(dt, J); }, dispose: () => { f.dispose && f.dispose(); if(pv) pv.dispose(); } }); }, chegada: null }); });
     vilas.forEach(v => { const P = aberto(v.pts), c = centroide(P), fab = fabs[0] && centroide(aberto(fabs[0].pts));
       S.itens.push({ id: "vila-ouro-verde", nome: "Vila Ouro Verde", tipo: "vila", pts: P, centro: c, bb: caixa(P), raio: C.cargaU.vila, constroi: () => criarVila(M, { poli: P, fabrica: fab }), chegada: null }); });
     poly("vila").filter(v => /santana/.test(v.e.chave)).forEach(v => { const P = aberto(v.pts), c = centroide(P), E = M.estrada; let i0 = E && E.pts ? E.pts.findIndex(p => dentroPoli(P, p[0], p[1])) : -1; if(i0 < 8) i0 = 8;

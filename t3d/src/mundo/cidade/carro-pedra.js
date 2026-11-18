@@ -64,7 +64,7 @@ export function criarCarroPedra(M, u, ruas){
   /* hotspot da lenda e colisores */
   const wx = ox, wz = oz, colisores = [{ x0: wx - 2.2 * U, x1: wx + 2.2 * U, z0: wz - 2.2 * U, z1: wz + 2.2 * U, peca: "carro de pedra" }];
   const cxp = ox + Math.cos(yaw) * 3.6 * U, czp = oz - Math.sin(yaw) * 3.6 * U; colisores.push({ x0: cxp - 1.1 * U, x1: cxp + 1.1 * U, z0: czp - 1.1 * U, z1: czp + 1.1 * U, peca: "capela de São Cristóvão" });
-  const hot = { id: "carro-de-pedra", x: wx, z: wz, r: 9 * U, rotulo: () => "Carro de Pedra — [E] ouvir a lenda", acao: () => { if(M.terminal) M.terminal.msg("sobrenatural", "Dizem que aqui os motores apagavam… e um padre pedia carona."); abrePainel(M, { titulo: LENDA_CARRO.titulo, texto: LENDA_CARRO.texto, subtitulo: "A lenda", itens: LENDA_CARRO.itens, borda: "#3a5f8a" }); } };
+  const hot = { id: "carro-de-pedra", x: wx, z: wz, r: 9 * U, rotulo: () => "Carro de Pedra — ouvir a lenda", acao: () => { if(M.terminal) M.terminal.msg("sobrenatural", "Dizem que aqui os motores apagavam… e um padre pedia carona."); abrePainel(M, { titulo: LENDA_CARRO.titulo, texto: LENDA_CARRO.texto, subtitulo: "A lenda", itens: LENDA_CARRO.itens, borda: "#3a5f8a" }); } };
   colisores.forEach(k => cen.colisores.push(k)); cen.hotspots.push(hot);
   G.userData.descartar = () => { colisores.forEach(k => { const i = cen.colisores.indexOf(k); if(i >= 0) cen.colisores.splice(i, 1); }); const i = cen.hotspots.indexOf(hot); if(i >= 0) cen.hotspots.splice(i, 1); };
   G.userData.pos = [wx, wz];
