@@ -76,3 +76,9 @@ cd t3d && npm run build
 - Pedido do Lucas: a Vila Santana passa a se chamar **Raia** (raia = hípica). IDs internos (`vila-santana`, `santana`, polígono "vila santana", senha `vila-santana`) **não mudaram**; só os textos que o jogador lê (pórtico "RAIA", hotspots, mensagens, `config.js` nome do destino, `lugares.js` nome, portal, 2 missões).
 - **`t3d/src/mundo/lugares/hipica.js`** (NOVO): `criarHipica(M)` — linha da raia do KML do Lucas (`docs/cidade/kml/raia-hipica-e-parque.kml`, "Caminho sem título" de 476 m), pista reta de terra, cercas brancas, tapume alto de tábuas, poste de chegada listrado, torre dos juízes, arquibancada, público de época e **2 cavalos com jóquei** que correm a raia, voltam a trote e largam de novo. Tira o mato da faixa da raia (`M.vegetacao.base.excluir`).
 - `santana.js`: cria a hípica junto com o pórtico (tick/dispose encadeados; `hipica()` no retorno).
+
+## Sequoia Lunar e Carro de Pedra
+- `lugares/sequoia-lunar.js` (NOVO): entorno real da Sequoia + `abrePainel(M, {titulo, texto, subtitulo, itens})` (painel de leitura genérico) e `abrePlaca(M)`. `praca.js`: a placa antiga deu lugar a `criarEntornoSequoia`; o hotspot da árvore abre a placa. `config.js`: Sequoia 38 → 30 m (real).
+- `cidade/carro-pedra.js` (NOVO): Carro de Pedra + capela de São Cristóvão na saída sudoeste da cidade, [E] conta a lenda. `cidade.js` chama `criarCarroPedra(M, u, ruas)` na sede.
+- `docs/cidade/gera_cidade.py`: Av. Getúlio Vargas estendida rumo ao pórtico (KML do Lucas) até a borda do mapa; casas genéricas só até y −870; ruas densificadas a cada 20 m no KML gerado.
+- Conhecido: na borda sudoeste do mapa da cidade a fita da avenida some num trecho (o terreno de fora fica por cima).

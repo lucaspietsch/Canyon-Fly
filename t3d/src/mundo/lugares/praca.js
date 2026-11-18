@@ -4,6 +4,7 @@ import { canvasTex, placaLegivel, texPlacaHD } from "../../lib.js";
 import { U, LUGARES as C } from "../config.js";
 import { criarPessoas } from "../gente/pessoas.js";
 import { aberto, centroide, quadro, inset, malhaPoli, anel, fitaReta, mat, semente, dentroPoli } from "./util.js";
+import { criarEntornoSequoia, abrePlaca } from "./sequoia-lunar.js";
 
 /* ============================================================================================================
    PRAÇA CENTRAL DE CAMBARÁ DO SUL (polígono "área praça da cidade" do KML) + SEQUOIA LUNAR + URNA DO TEMPO.
@@ -108,14 +109,11 @@ export function criarPraca(M, { poli, seq, urna, carona }){
       pe.forEach((p, i) => { mm.compose(new Vector3(p.x, Y(p.x, p.z) + p.r * .35, p.z), new Quaternion().setFromEuler(new Euler(0, p.rot, 0)), new Vector3(p.r, p.r * .7, p.r)); imP.setMatrixAt(i, mm); });
       bu.forEach((p, i) => { mm.compose(new Vector3(p.x, Y(p.x, p.z) + p.r * .55, p.z), new Quaternion(), new Vector3(p.r, p.r * .8, p.r)); imB.setMatrixAt(i, mm); imB.setColorAt(i, new Color().setHSL(.9 + rnd2() * .08, .5, .5 + rnd2() * .15 - .1).lerp(new Color(0x4d7f3a), .55)); });
       imP.castShadow = imB.castShadow = true; G.add(imP, imB); }
-    { /* placa "Sequoia Lunar" na borda do canteiro voltada para o lado da carona */
-      const dir = carona ? [carona.x - sc[0], carona.z - sc[1]] : [q.vx, q.vz], dl = Math.hypot(dir[0], dir[1]) || 1, dx = dir[0] / dl, dz = dir[1] / dl; const hit = raioPoli(Q, sc, [dx, dz]) || [sc[0] + dx * 8 * U, sc[1] + dz * 8 * U]; const px = hit[0] + dx * 1.2 * U, pz = hit[1] + dz * 1.2 * U;
-      const g = new Group(); g.position.set(px, Y(px, pz), pz); g.rotation.y = Math.atan2(dx, dz);
-      for(const sx of [-1, 1]){ const po = new Mesh(new BoxGeometry(.22, 2.4, .22), matMadeira); po.position.set(sx * 1.5, 1.2, 0); g.add(po); }
-      const tex = texPlacaHD(512, 256, (c, w, h) => { c.fillStyle = "#2d3f2a"; c.fillRect(0, 0, w, h); c.strokeStyle = "#e9dcb0"; c.lineWidth = 6; c.strokeRect(10, 10, w - 20, h - 20); c.fillStyle = "#f3ecd0"; c.textAlign = "center"; c.font = "bold 58px Georgia"; c.fillText("SEQUOIA LUNAR", w / 2, 118); c.font = "italic 28px Georgia"; c.fillStyle = "#c9c19a"; c.fillText("a árvore da praça", w / 2, 170); });
-      const pl = placaLegivel(tex, 3.8, 1.9, { verso: tex, cor: 0x3a2a1a }); pl.position.set(0, 2.2, 0); g.add(pl); G.add(g); }
+    { /* entorno real da Sequoia (fotos do Lucas): cerca octogonal, placas, pedra, termômetro, cruz azul e letreiro — sequoia-lunar.js */
+      const dir = carona ? [carona.x - sc[0], carona.z - sc[1]] : [q.vx, q.vz], dl = Math.hypot(dir[0], dir[1]) || 1;
+      try{ const en = criarEntornoSequoia(M, { sc, Y, dir: [dir[0] / dl, dir[1] / dl] }); G.add(en.g); S.colisores.push(...en.colisores); }catch(err){ console.warn("entorno da Sequoia:", err); } }
     S.colisores.push({ x0: sc[0] - 4.6, x1: sc[0] + 4.6, z0: sc[1] - 4.6, z1: sc[1] + 4.6 });
-    S.hotspots.push({ id: "sequoia", x: sc[0], z: sc[1], r: 11 * U, rotulo: () => "Sequoia Lunar", acao: () => { if(M.terminal) M.terminal.msg("info", "Sequoia Lunar: a árvore símbolo da praça de Cambará do Sul. A casca avermelhada é macia e a copa é um cone perfeito."); M.ctx.mostraAviso("Sequoia Lunar — a árvore da praça"); } });
+    S.hotspots.push({ id: "sequoia", x: sc[0], z: sc[1], r: 11 * U, rotulo: () => "Sequoia Lunar — [E] ler a placa", rotuloE: "[E] ler a placa", acao: () => { if(M.terminal) M.terminal.msg("info", "Sequoia Lunar: uma das Árvores da Lua (Apollo 14, 1971), plantada nesta praça em 26/09/1982."); abrePlaca(M); } });
   }
 
   /* ---------- Urna do Tempo ---------- */

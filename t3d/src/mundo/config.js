@@ -380,7 +380,7 @@ export const LUGARES = {
     lampadaCadaM: 24, bancos: 14, arvores: 10,
     npcs: { manha: 4, dia: 10, tarde: 8, noite: 2 }                                  // pessoas passeando (6–9 h · 9–17 h · 17–22 h · resto)
   },
-  sequoia: { alturaM: 38, raioCopaM: 9.5, canteiroPedrasM: 1.1 },
+  sequoia: { alturaM: 30, raioCopaM: 8,   /* real: ~30 m e 70 cm de diâmetro (2021) */ canteiroPedrasM: 1.1 },
   urna: { alturaM: 1.1, aberturaSeg: 8, poeiraQtd: 180, repeteSempre: true },       // a urna pode ser aberta quantas vezes o jogador quiser
   raio: { esperaS: 5, aoEntrar: true, repete: true, intervaloS: 240, desbloqueia: "tupa" },     // raio na Sequoia: ao entrar na praça (1ª vez sempre; depois a cada intervaloS s, se repete)
   fabrica: { muroM: 4.2, portaoM: 16, chamineM: 80, galpoes: 7, fumacaQtd: 26, ruidoVol: .5 },

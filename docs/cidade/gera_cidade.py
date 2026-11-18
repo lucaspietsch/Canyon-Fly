@@ -10,7 +10,7 @@ ll = lambda x, y: (LON0 + x / MLON, LAT0 + y / MLAT)
 
 # ruas reais (traçado aproximado, ±10–15 m, a partir dos prints de satélite/mapa e do KML da avenida do Lucas)
 RUAS = {
-  "avenida getulio vargas": [(1108, 300), (829, 219), (631, 141), (300, 59), (110, 20), (-125, -19), (-205, -38), (-359, -96), (-433, -149), (-511, -229), (-586, -306), (-669, -401), (-744, -489)],
+  "avenida getulio vargas": [(1108, 300), (829, 219), (631, 141), (300, 59), (110, 20), (-125, -19), (-205, -38), (-359, -96), (-433, -149), (-511, -229), (-586, -306), (-669, -401), (-744, -489), (-763, -528), (-779, -693), (-778, -752), (-788, -797), (-826, -866), (-962, -1289), (-1004, -1336), (-1053, -1363)],   # rumo ao pórtico de entrada (KML do Lucas), cortada na borda do mapa da cidade; o pórtico real fica 0,6 km adiante: no jogo o Carro de Pedra e a capela ficam aqui, na saída sudoeste
   "rua dona ursula": [(-604, -53), (-300, 25), (-58, 92), (-2, 104), (93, 140), (150, 144), (300, 190), (479, 243)],
   "rua quinze de marco": [(-60, -12), (-64, 60), (-68, 160)],
   "rua laurindo francisco de macedo": [(9, -8), (3, 60), (-3, 160)],
@@ -30,7 +30,10 @@ RUAS = {
 def kml():
     pm = []
     for nome, pts in RUAS.items():
-        c = " ".join("%.8f,%.8f,0" % ll(x, y) for x, y in pts)
+        dens = [pts[0]]                                                                                      # pontos a cada ~20 m: a fita da rua acompanha o relevo (sem afundar nos morros)
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            n = max(1, int(math.hypot(x1 - x0, y1 - y0) // 20)); dens += [(x0 + (x1 - x0) * k / n, y0 + (y1 - y0) * k / n) for k in range(1, n + 1)]
+        c = " ".join("%.8f,%.8f,0" % ll(x, y) for x, y in dens)
         pm.append("<Placemark><name>%s</name><LineString><coordinates>%s</coordinates></LineString></Placemark>" % (nome, c))
     return '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>ruas do centro</name>' + "".join(pm) + "</Document></kml>"
 
@@ -80,6 +83,7 @@ def genericas(P):
                     w, d = rnd.choice([7, 8, 9, 10]), rnd.choice([8, 9, 10])
                     off = 6 + 2.2 + d / 2 + 1.5; x, y = cx - ty * lado * off, cy + tx * lado * off
                     if -60 < x < 5 and 10 < y < 50: continue                                                  # praça
+                    if y < -870: continue                                                                     # avenida até o pórtico: trecho de campo (Restinga), sem casas
                     if dist_rua(x, y) < off - .5: continue                                                    # perto de outra rua (esquina)
                     if any(math.hypot(x - a, y - b) < r + max(w, d) / 2 for a, b, r in ocup): continue
                     k += 1; cor = rnd.choice(CORES_GEN); alt = rnd.choice([4.5, 4.5, 4.5, 7])

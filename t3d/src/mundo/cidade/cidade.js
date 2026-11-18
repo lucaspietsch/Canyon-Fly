@@ -3,6 +3,7 @@ import { canvasTex, placaLegivel, texPlacaHD } from "../../lib.js";
 import { U, CIDADE as C, DEM as CD } from "../config.js";
 import { normaliza } from "../resgate/kml.js";
 import { criarCentro } from "./centro.js";
+import { criarCarroPedra } from "./carro-pedra.js";
 import { RUAS_OK, PREDIOS_OK, ORIGEM_OK } from "../dados/vila-ok.js";
 import { latLonParaMundo } from "../resgate/kml.js";
 
@@ -96,7 +97,8 @@ export function criarCidade(M){
       }
       fitaRuas(ruas).forEach(m => g.add(m)); if(!u.pracaPoli && !vilaOK) g.add(praca(u)); u.ruas = ruas;
       if(vilaOK){ try{ g.add(criarCentro(M, u, { predios: PREDIOS_OK, origem: ORIGEM_OK, extras: false, ruasMundo: ruas })); }catch(err){ console.warn("Vila Oswaldo Kroeff:", err); } }   // casas, igrejas, escola e comércios da vila
-      if(u.tipo === "cidade"){ try{ g.add(criarCentro(M, u)); }catch(err){ console.warn("centro da cidade:", err); } }       // prédios do centro (blocos), igreja e Rua Coberta
+      if(u.tipo === "cidade"){ try{ g.add(criarCentro(M, u)); }catch(err){ console.warn("centro da cidade:", err); } }
+      if(u.tipo === "cidade"){ try{ g.add(criarCarroPedra(M, u, ruas)); }catch(err){ console.warn("carro de pedra:", err); } }   // Carro de Pedra + capela de São Cristóvão, junto ao pórtico       // prédios do centro (blocos), igreja e Rua Coberta
     }
     return g;
   }

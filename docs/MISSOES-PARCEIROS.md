@@ -89,3 +89,8 @@ e criar **missões nesses lugares**, com os próprios donos como personagens.
 - [ ] Loja Thewes: fotos do interior e autorização.
 - [ ] Fotos e lenda do **carrinho de pedra** (pórtico).
 - [ ] Lista de outros estabelecimentos interessados em patrocinar.
+
+## Carro de Pedra da Restinga Feia (lenda) — já no jogo
+- Monumento junto ao pórtico de entrada (29°03'57.50"S 50°09'40.93"W), com a capelinha de **São Cristóvão**. No jogo fica na **saída sudoeste** da cidade (o pórtico real está além da borda do mapa; distâncias de fora são comprimidas). `t3d/src/mundo/cidade/carro-pedra.js`, [E] conta a lenda.
+- Lenda (anos 1940): caminhões de madeira perdiam força na subida do Morro da Restinga Feia; um vulto de padre, morto num acidente ali, aparecia na janela pedindo carona. Em 1955 motoristas encomendaram o carrinho de pedra junto a São Cristóvão.
+- **Ideia de missão (terror leve):** à noite, dirigindo pela saída sudoeste, o motor "apaga" e aparece o vulto do padre pedindo carona; o jogador precisa levá-lo até a capelinha (ou buzinar ao passar). Combina com a volta no tempo: em 1955, ver os motoristas entregando o carrinho (versão amarela, faróis redondos).
