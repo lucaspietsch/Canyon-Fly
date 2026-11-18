@@ -71,3 +71,8 @@ cd t3d && npm run build
 - `docs/vilas/ok_prints.py` (leitura dos prints do Google Earth do Lucas, calibrada) → `docs/vilas/gera_vila_ok.py` → **`t3d/src/mundo/dados/vila-ok.js`** (GERADO: `RUAS_OK`, `PREDIOS_OK`, `ORIGEM_OK`).
 - `cidade/cidade.js`: na vila "oswaldo" a grade provisória e a praça de obra saem; entram as ruas de `RUAS_OK` e `criarCentro(M, u, { predios, origem, extras:false, ruasMundo })`.
 - `cidade/centro.js`: `criarCentro(M, u, dados)` — sem `dados` = cidade (com igreja, antenas, Rua Coberta); com `dados` = vila: sem os extras da cidade, **não põe casa em cima da estrada do jogo** (`M.estrada.ocupa`) e registra em `M.vegetacao.base.excluir` um mapa de células (casas +6 m, ruas ±14 m) para o capim/samambaias/árvores não nascerem nas ruas e quintais (removido no `descartar`).
+
+## RAIA (antiga Vila Santana) — hípica de 1950
+- Pedido do Lucas: a Vila Santana passa a se chamar **Raia** (raia = hípica). IDs internos (`vila-santana`, `santana`, polígono "vila santana", senha `vila-santana`) **não mudaram**; só os textos que o jogador lê (pórtico "RAIA", hotspots, mensagens, `config.js` nome do destino, `lugares.js` nome, portal, 2 missões).
+- **`t3d/src/mundo/lugares/hipica.js`** (NOVO): `criarHipica(M)` — linha da raia do KML do Lucas (`docs/cidade/kml/raia-hipica-e-parque.kml`, "Caminho sem título" de 476 m), pista reta de terra, cercas brancas, tapume alto de tábuas, poste de chegada listrado, torre dos juízes, arquibancada, público de época e **2 cavalos com jóquei** que correm a raia, voltam a trote e largam de novo. Tira o mato da faixa da raia (`M.vegetacao.base.excluir`).
+- `santana.js`: cria a hípica junto com o pórtico (tick/dispose encadeados; `hipica()` no retorno).

@@ -94,7 +94,7 @@ export function criarPortal(M){
     cortina(800, () => {
       remove("p"); M.lugares.entraAntigo(dst.x, dst.z); M.ctx.teleporta(dst.x, dst.z); const J = M.jogador(); if(M.H.andarMod && M.H.andarMod.colocar) M.H.andarMod.colocar(dst.x, dst.z, dst.yaw + Math.PI);
       setTimeout(() => { const j = M.jogador(); if(j && !S.volta){ const x = j.x + Math.sin(j.yaw) * 10 * U + Math.cos(j.yaw) * 5 * U, z = j.z + Math.cos(j.yaw) * 10 * U - Math.sin(j.yaw) * 5 * U; S.volta = constroi(x, z, Math.atan2(j.x - x, j.z - z), "volta"); }
-        msg("sobrenatural", "Vila Santana, 1950. A mata cobre tudo; os bichos andam sem medo da estrada. O portal de volta brilha atrás de você."); M.ctx.mostraAviso("1950 — Vila Santana"); if(M.missoes && M.missoes.emite) M.missoes.emite("portal:passado", {}); S.viajando = false; }, 600);
+        msg("sobrenatural", "Raia, 1950. A mata cobre tudo; os bichos andam sem medo da estrada. O portal de volta brilha atrás de você."); M.ctx.mostraAviso("1950 — Raia"); if(M.missoes && M.missoes.emite) M.missoes.emite("portal:passado", {}); S.viajando = false; }, 600);
     });
     return true;
   }
